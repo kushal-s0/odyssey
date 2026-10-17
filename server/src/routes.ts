@@ -119,7 +119,9 @@ router.get("/examples", (_req, res) =>
     : res.status(404).json({ error: "Examples are disabled." }),
 );
 router.use(requireAccount);
-router.get("/dashboard", async (req, res) => res.json({ summary: await dashboardSummary(req.actor!) }));
+router.get("/dashboard", async (req, res) =>
+  res.json({ summary: await dashboardSummary(req.actor!) }),
+);
 router.use("/training", requireAssessor);
 router.use("/locations", requireAssessor);
 router.get("/cohorts", requireAssessor, async (_req, res) =>

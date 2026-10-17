@@ -50,9 +50,15 @@ export default function App() {
       ? location.pathname === "/dashboard"
       : location.pathname.startsWith(l.to),
   );
-  const name = entrepreneur && current?.to === "/dashboard" ? "My dashboard" : entrepreneur && current?.to === "/submissions" ? "My submissions" :
-    current?.label ??
-    (location.pathname === "/settings" ? "Workspace settings" : "Assessment");
+  const name =
+    entrepreneur && current?.to === "/dashboard"
+      ? "My dashboard"
+      : entrepreneur && current?.to === "/submissions"
+        ? "My submissions"
+        : (current?.label ??
+          (location.pathname === "/settings"
+            ? "Workspace settings"
+            : "Assessment"));
   return (
     <div className="app-shell">
       <aside className={`sidebar ${menu ? "sidebar-open" : ""}`}>
@@ -101,7 +107,9 @@ export default function App() {
                 <span>
                   {entrepreneur && to === "/submissions"
                     ? "My submissions"
-                    : entrepreneur && to === "/dashboard" ? "My dashboard" : label}
+                    : entrepreneur && to === "/dashboard"
+                      ? "My dashboard"
+                      : label}
                 </span>
                 {to === "/submissions" && (
                   <span className="nav-count">{w.submissions.length}</span>

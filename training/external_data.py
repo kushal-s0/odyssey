@@ -116,8 +116,8 @@ def prepare(output='data/training', maximum=600, validation_maximum=120):
     for split, rows, candidates in [('train',training,training_candidates),('validation',validation,validation_candidates)]:
         path = output / f'external-qnli-{split}.jsonl'
         content = ''.join(json.dumps(row,ensure_ascii=False)+'\n' for row in rows)
-        path.write_text(content,encoding='utf-8')
-        manifest['files'][split] = {'path':str(path), 'rows':len(rows), 'filteredCandidates':len(candidates),
+        path.write_bytes(content.encode('utf-8'))
+        manifest['files'][split] = {'path':path.as_posix(), 'rows':len(rows), 'filteredCandidates':len(candidates),
                                    'groups':len({row['groupId'] for row in rows}), 'classCounts':dict(collections.Counter(row['label'] for row in rows)),
                                    'sourceSha256':HASHES[split], 'preparedSha256':hashlib.sha256(content.encode()).hexdigest()}
     (output/'external-data-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')

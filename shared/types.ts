@@ -28,9 +28,18 @@ export interface WorkspaceUser {
 }
 export interface DashboardSummary {
   scope: "personal" | "programme";
-  total: number; processing: number; assessed: number; awaitingReview: number;
-  needsClarification: number; failed: number; meanScore: number | null;
-  latestScore: number | null; latestCompleteness: number | null; latestSubmissionId: string | null;
+  total: number;
+  processing: number;
+  assessed: number;
+  scored?: number;
+  meanCompleteness?: number;
+  awaitingReview: number;
+  needsClarification: number;
+  failed: number;
+  meanScore: number | null;
+  latestScore: number | null;
+  latestCompleteness: number | null;
+  latestSubmissionId: string | null;
 }
 export const FIELD_LABELS: Record<FieldKey, string> = {
   businessName: "Business idea",

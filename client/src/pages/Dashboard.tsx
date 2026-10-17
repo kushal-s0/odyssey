@@ -27,17 +27,24 @@ export default function Dashboard() {
   const w = useWorkspace(),
     [cohort, setCohort] = useState("");
   const items = w.submissions.filter((s) => !cohort || s.cohortId === cohort);
-  const total = !cohort&&w.dashboard?w.dashboard.total:items.length;
-  const assessable = items.filter((s) => s.assessment?.score != null).length;
-  const repair = !cohort&&w.dashboard?w.dashboard.needsClarification:items.filter(
-    (s) => (s.assessment?.questions.length ?? 0) > 0,
-  ).length;
-  const completion = total
-    ? Math.round(
-        items.reduce((n, s) => n + (s.assessment?.completeness ?? 0), 0) /
-          total,
-      )
-    : 0;
+  const total = !cohort && w.dashboard ? w.dashboard.total : items.length;
+  const assessable =
+    !cohort && w.dashboard?.scored !== undefined
+      ? w.dashboard.scored
+      : items.filter((s) => s.assessment?.score != null).length;
+  const repair =
+    !cohort && w.dashboard
+      ? w.dashboard.needsClarification
+      : items.filter((s) => (s.assessment?.questions.length ?? 0) > 0).length;
+  const completion =
+    !cohort && w.dashboard?.meanCompleteness !== undefined
+      ? w.dashboard.meanCompleteness
+      : items.length
+        ? Math.round(
+            items.reduce((n, s) => n + (s.assessment?.completeness ?? 0), 0) /
+              items.length,
+          )
+        : 0;
   const languages = new Set(items.map((s) => s.language)).size;
   const pending = items
     .filter((s) => (s.assessment?.questions.length ?? 0) > 0)
@@ -84,7 +91,7 @@ export default function Dashboard() {
       "text/csv",
     );
   }
-  if(w.session?.user?.role === "entrepreneur")return <PersonalDashboard/>;
+  if (w.session?.user?.role === "entrepreneur") return <PersonalDashboard />;
   return (
     <>
       <PageIntro

@@ -93,8 +93,15 @@ export default function Detail() {
     void reload();
   }, [reload]);
   useEffect(() => {
-    if (!record || !["queued", "processing", "needs_review"].includes(record.status)) return;
-    const timer = setInterval(() => void reload(), record.status === "needs_review" ? 15000 : 3500);
+    if (
+      !record ||
+      !["queued", "processing", "needs_review"].includes(record.status)
+    )
+      return;
+    const timer = setInterval(
+      () => void reload(),
+      record.status === "needs_review" ? 15000 : 3500,
+    );
     return () => clearInterval(timer);
   }, [record?.status, reload]);
   useEffect(() => {

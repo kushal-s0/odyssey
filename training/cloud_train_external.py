@@ -15,6 +15,7 @@ from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_sc
 from sklearn.model_selection import StratifiedGroupKFold
 from train_cloud import check_training_file, features, embedding, EMBEDDING_MODEL, DIMENSION, FEATURE_VERSION
 from external_data import prepare, remove_overlap
+from sharktank_data import prepare_sharktank
 
 def evaluate_labels(labels, probabilities):
     labels, probabilities = np.asarray(labels), np.asarray(probabilities)
@@ -86,16 +87,22 @@ def train_with_external(path, api_key, maximum_external=600):
     if any(row.get('weakAuxiliary') or row.get('sourceDataset')=='SetFit/qnli' for row in target):
         raise ValueError('Upload the reviewed target answers separately. External rows must never be counted as reviewed business evidence.')
     external, validation, manifest=prepare('external-data',maximum_external,120)
+    shark_train,shark_test,shark_manifest=prepare_sharktank('external-data',30,10)
+    external=external+shark_train
     external=remove_overlap(external,target)
     validation=remove_overlap(validation,target+external)
+    # Shark Tank template questions intentionally repeat across different companies.
+    # Split those by company, and exclude repeated answer values rather than template questions.
+    known_answers={row['answer'].strip().casefold() for row in target+external}
+    shark_test=[row for row in shark_test if row['answer'].strip().casefold() not in known_answers]
     counts=collections.Counter(row['label'] for row in external)
     if min(counts.get(0,0),counts.get(1,0))<5:
         raise ValueError('Too few external examples remain after removing overlap.')
-    all_rows=target+external+validation
+    all_rows=target+external+validation+shark_test
     print(f'Using {len(target)} reviewed target answers, {len(external)} auxiliary training pairs, and {len(validation)} separate auxiliary validation pairs.')
     print('QNLI negatives mean does-not-answer, not necessarily off-topic. Target metrics stay separate.')
     matrix=cached_vectors(all_rows,api_key,Path('embedding_cache.json'))
-    target_x=matrix[:len(target)]; external_x=matrix[len(target):len(target)+len(external)]; validation_x=matrix[len(target)+len(external):]
+    target_x=matrix[:len(target)]; external_x=matrix[len(target):len(target)+len(external)]; validation_x=matrix[len(target)+len(external):len(target)+len(external)+len(validation)]; shark_x=matrix[len(target)+len(external)+len(validation):]
     target_y=np.array([row['label'] for row in target]); external_y=np.array([row['label'] for row in external])
     groups=np.array([row['groupId'] for row in target])
     predictions={name:np.full(len(target),np.nan) for name in ['baseline','externalCandidate']}
@@ -116,15 +123,16 @@ def train_with_external(path, api_key, maximum_external=600):
     comparison={'evaluation':'Same held-out business-family folds for target-only baseline and auxiliary-data candidate; development selection, not an independent final test.',
                 'baseline':baseline_metrics,'externalCandidate':candidate_metrics,'promotion':decision,'folds':folds,
                 'targetRows':len(target),'targetGroups':len(set(groups)), 'auxiliaryTrainingRows':len(external),
-                'auxiliaryValidationRows':len(validation),'externalData':manifest,
+                'auxiliaryValidationRows':len(validation),'externalData':manifest,'sharkTankData':shark_manifest,
                 'limitations':['Only five target families in the supplied prepared file; uncertainty is high.','Assistant-reviewed target labels are not independent expert ground truth.','English auxiliary data does not establish regional-language accuracy.','No model predicts business success or certifies factual truth.']}
     baseline_final=fit_model(target_x,target_y)
     candidate_final=fit_model(target_x,target_y,external_x,external_y)
     comparison['auxiliaryValidation']={name:evaluate_labels([r['label'] for r in validation],model.predict_proba(validation_x)[:,1]) for name,model in [('baseline',baseline_final),('externalCandidate',candidate_final)]}
+    comparison['sharkTankPositiveOnlyTest']={name:{'rows':len(shark_test),'relevantRecallAtHalf':float((model.predict_proba(shark_x)[:,1]<.5).mean()),'falseOffTopicFlagRateAtAdvisoryThreshold':float((model.predict_proba(shark_x)[:,1]>=.75).mean()),'offTopicRecall':None,'note':'Positive-only schema-derived labels cannot measure off-topic detection accuracy.'} for name,model in [('baseline',baseline_final),('externalCandidate',candidate_final)]} if len(shark_test) else {'rows':0,'note':'No non-overlapping positive test examples remained.'}
     for name,metrics in [('baseline',baseline_metrics),('externalCandidate',candidate_metrics)]:
         metrics.update({'evaluation':comparison['evaluation'],'groups':len(set(groups)),'advisoryThreshold':.75,
                         'classCounts':dict(collections.Counter(row['label'] for row in target)),
-                        'externalRows':0 if name=='baseline' else len(external),'selection':decision,'languages':{}})
+                        'externalRows':0 if name=='baseline' else len(external),'trainingRows':len(target)+(0 if name=='baseline' else len(external)),'selection':decision,'languages':{}})
     baseline_artifact=artifact(baseline_final,target,baseline_metrics,'baseline')
     candidate_artifact=artifact(candidate_final,target+external,candidate_metrics,'external')
     selected=candidate_artifact if decision['recommendCandidate'] else baseline_artifact

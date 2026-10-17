@@ -1,0 +1,30 @@
+{
+  "dataset": "isaidchia/sharktank_pitches",
+  "revision": "3ccc6b50b06a93d7cb68a55f7baf8391fd3431b8",
+  "license": "MIT (dataset publisher declaration)",
+  "datasetCard": "https://huggingface.co/datasets/isaidchia/sharktank_pitches/blob/3ccc6b50b06a93d7cb68a55f7baf8391fd3431b8/README.md",
+  "sourceRows": {
+    "train": 196,
+    "test": 49
+  },
+  "sourceSha256": {
+    "train": "27e35f7ad27bc5e4570310d497e6093b0e409e0d4f0c721ff595a42b1c267766",
+    "test": "873d56d2fa8f7fc783f66c4e3f46ee8b0affcaf5e839b516c078e4bcf605dee3"
+  },
+  "labelMeaning": "Positive-only question/structured-field mapping; no off-topic, funding-success or readiness labels.",
+  "limitations": "Structured values may be paraphrases of the pitch. They are not called transcript quotations unless an exact match is present. These are not independently reviewed labels.",
+  "files": {
+    "train": {
+      "path": "data/training/external-sharktank-train.jsonl",
+      "rows": 122,
+      "groups": 30,
+      "preparedSha256": "1b4fc9eb6941256100b7a6da595f22d727e67495791f48b0adbc602943262ad8"
+    },
+    "test": {
+      "path": "data/training/external-sharktank-test.jsonl",
+      "rows": 40,
+      "groups": 10,
+      "preparedSha256": "548af24b28395d5ec6c54f6e83ecb1be3254a4ed2240d2c5aae5b3be755d9c0d"
+    }
+  }
+}

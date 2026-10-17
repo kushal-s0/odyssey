@@ -223,9 +223,11 @@ export function SubmissionsTable({
       <table className="ideas-table">
         <thead>
           <tr>
-            <th>{personal?"My business idea":"Business idea / beneficiary"}</th>
+            <th>
+              {personal ? "My business idea" : "Business idea / beneficiary"}
+            </th>
             {!compact && !personal && <th>Trade / cohort</th>}
-            {personal&&<th>My score</th>}
+            {personal && <th>My score</th>}
             <th>Submission</th>
             <th>Completeness</th>
             <th>Status</th>
@@ -239,7 +241,9 @@ export function SubmissionsTable({
                 <Link to={`/submissions/${item.id}`} className="idea-link">
                   {item.title}
                 </Link>
-                {!personal&&<div className="cell-secondary">{item.beneficiaryName}</div>}
+                {!personal && (
+                  <div className="cell-secondary">{item.beneficiaryName}</div>
+                )}
               </td>
               {!compact && !personal && (
                 <td>
@@ -250,7 +254,13 @@ export function SubmissionsTable({
                   </div>
                 </td>
               )}
-              {personal&&<td>{item.assessment?.score==null?"Pending":`${item.assessment.score} / 100`}</td>}
+              {personal && (
+                <td>
+                  {item.assessment?.score == null
+                    ? "Pending"
+                    : `${item.assessment.score} / 100`}
+                </td>
+              )}
               <td>
                 <span className="format-label">
                   <Icon type={item.inputType} />

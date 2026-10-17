@@ -116,12 +116,10 @@ export async function register(req: Request, res: Response) {
   }
   const data = registrationSchema.parse(req.body);
   if (data.email === config.ASSESSOR_EMAIL.trim().toLowerCase()) {
-    res
-      .status(400)
-      .json({
-        error:
-          "This email is reserved for programme access. Use your provided credentials.",
-      });
+    res.status(400).json({
+      error:
+        "This email is reserved for programme access. Use your provided credentials.",
+    });
     return;
   }
   if (await UserModel.exists({ email: data.email })) {

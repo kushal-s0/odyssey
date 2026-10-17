@@ -23,6 +23,7 @@ const original = {
   user: UserModel.findById,
   record: SubmissionModel.findOne,
   records: SubmissionModel.find,
+  aggregate: SubmissionModel.aggregate,
   exists: SubmissionModel.exists,
   clarification: ClarificationModel.findOne,
 };
@@ -92,6 +93,27 @@ before(async () => {
     };
     return chain;
   }) as any;
+  SubmissionModel.aggregate = (async (pipeline: any[]) => {
+    const owns = allowed(pipeline[0].$match);
+    return [
+      {
+        totals: owns
+          ? [
+              {
+                total: 1,
+                processing: 0,
+                assessed: 1,
+                awaitingReview: 1,
+                needsClarification: 1,
+                failed: 0,
+                meanScore: 60,
+              },
+            ]
+          : [],
+        latest: owns ? [{ _id: recordId, score: 60, completeness: 75 }] : [],
+      },
+    ];
+  }) as any;
   ClarificationModel.findOne = (async () => {
     throw new Error(
       "Foreign clarification should be rejected before source lookup.",
@@ -109,6 +131,7 @@ after(async () => {
   UserModel.findById = original.user;
   SubmissionModel.findOne = original.record;
   SubmissionModel.find = original.records;
+  SubmissionModel.aggregate = original.aggregate;
   SubmissionModel.exists = original.exists;
   ClarificationModel.findOne = original.clarification;
   mongoose.connection.readyState = original.state;
@@ -129,6 +152,25 @@ test("entrepreneurs see only their own records while assessors see programme rec
     assert.equal(response.status, 200);
     assert.equal(((await response.json()) as any).submissions.length, count);
   }
+});
+test("dashboard aggregates are account scoped and ignore forged owner filters", async () => {
+  for (const [token, total, scope] of [
+    ["owner", 1, "personal"],
+    ["other", 0, "personal"],
+    ["assessor", 1, "programme"],
+  ] as const) {
+    const response = await fetch(base + `/dashboard?ownerId=${owner}`, {
+      headers: headers(token),
+    });
+    assert.equal(response.status, 200);
+    const { summary } = (await response.json()) as any;
+    assert.equal(summary.scope, scope);
+    assert.equal(summary.total, total);
+    assert.equal(summary.latestScore, total ? 60 : null);
+    assert.equal(summary.latestSubmissionId, total ? recordId : null);
+    assert.equal("ownerId" in summary, false);
+  }
+  assert.equal((await fetch(base + "/dashboard")).status, 401);
 });
 test("foreign records and original files are hidden even when an entrepreneur knows the IDs", async () => {
   for (const path of [

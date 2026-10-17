@@ -15,7 +15,7 @@
   "modifications": "Filtered, sampled, converted field names and added provenance and connected-component groups for STRIVE; 2026-10-18.",
   "files": {
     "train": {
-      "path": "data\\training\\external-qnli-train.jsonl",
+      "path": "data/training/external-qnli-train.jsonl",
       "rows": 600,
       "filteredCandidates": 3344,
       "groups": 465,
@@ -27,7 +27,7 @@
       "preparedSha256": "deab3a779790f8559a86ec5b56cc0fbc781af5564d3101bd3c05897b19255a94"
     },
     "validation": {
-      "path": "data\\training\\external-qnli-validation.jsonl",
+      "path": "data/training/external-qnli-validation.jsonl",
       "rows": 120,
       "filteredCandidates": 230,
       "groups": 93,

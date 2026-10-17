@@ -1,5 +1,7 @@
 # Run the project training in Google Colab
 
+For the new automated external-data comparison, use **`training/external_cloud_training.ipynb`** and follow [EXTERNAL_DATA.md](EXTERNAL_DATA.md). It downloads QNLI and `isaidchia/sharktank_pitches` automatically, compares an augmented classifier against the target-only baseline, and exports a selected artifact only after checking measured performance. Upload `data/training/reviewed-answers.jsonl` when prompted. The remaining instructions below describe the earlier target-only notebook.
+
 This project trains an answer-relevance classifier: `0 = relevant`, `1 = off-topic`. Hosted Gemini handles document reading, translation, and embeddings. The custom classifier is advisory; it does not predict business success or guarantee factual accuracy.
 
 ## Prepared training file

@@ -3,11 +3,19 @@
 Updated: 18 October 2026. `[x]` implementation complete, `[-]` in progress, `[ ]` pending. Live account verification is tracked separately from implemented code.
 
 ## Personal dashboards and external-data cloud training
-- [-] Add public home, dedicated authentication, protected role dashboards and automatic progress updates.
-- [-] Scope dashboard statistics in the database to each entrepreneur; verify cross-account isolation.
-- [-] Prepare a pinned external business/economics question-answer subset with source labels, attribution and provenance.
-- [-] Add an automated Colab comparison run with grouped target-data evaluation and conservative model promotion.
+- [x] Add public home, dedicated authentication, protected role dashboards and automatic progress updates.
+- [x] Scope dashboard statistics in the database to each entrepreneur; verify cross-account isolation.
+- [x] Prepare pinned QNLI and Shark Tank business-field subsets with source labels, attribution and provenance.
+- [x] Add an automated Colab comparison run with grouped target-data evaluation and conservative model promotion.
 - [ ] User runs the hosted Colab notebook and returns its measured evaluation/artifact. No local model training or deployment.
+
+Completed details: public home and separate authentication screens; private dashboard per role; account-scoped MongoDB aggregation; no example/cohort/training data fetched for entrepreneur dashboards; automatic progress/feedback refresh and session-expiry cleanup. Public registration creates entrepreneur accounts and the assessor bootstrap explicitly sets its privileged role. The default database role is now entrepreneur.
+
+Prepared external data: QNLI 600 training / 120 validation pairs, and Shark Tank 122 training pairs from 30 companies / 40 test pairs from 10 companies. Shark Tank is positive-only schema-derived supervision, not human-reviewed relevance or outcome data. Sources are revision-pinned and SHA256-checked, with exact provenance and separate holdouts. The original 48 reviewed target answers remain separate and unchanged.
+
+The self-contained `training/external_cloud_training.ipynb` installs dependencies, downloads both datasets, caches hosted Gemini embeddings, trains target-only and auxiliary-data candidates, compares identical target business-family folds and downloads a results ZIP. It keeps the baseline unless measured target macro-F1, precision, recall, evaluation coverage and high-threshold flag checks pass. No new accuracy or successful training is claimed before the user runs it in hosted Colab.
+
+Validation: 62 application tests, 15 Python data/notebook/promotion-rule checks and 11 desktop/mobile browser checks passed. The production build passed, and home/personal mobile screenshots were visually inspected. Live Atlas checks with two temporary entrepreneur accounts verified own-only dashboard counts, resistance to forged owner filters, protected sources, assessor access and review validation; temporary records/accounts were removed. No AI requests were made for these access checks and no deployment was started.
 
 ## Foundation
 - [x] Scaffold the React/TypeScript and Express/TypeScript workspaces.

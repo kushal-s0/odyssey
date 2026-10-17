@@ -16,9 +16,13 @@ npm.cmd run dev
 
 Open **http://localhost:5173**. The Express API runs at **http://localhost:4000**. Vite proxies API requests, so cookies remain on the same browser origin.
 
-Without Atlas or AI credentials, the app offers **eight explicitly labelled, read-only examples**. These use synthetic profiles and cohorts. They are not results from processing the supplied dataset, and they are excluded from model training. A missing database never causes a fallback to a local database.
+After setup, **`npm.cmd run dev`** is the single command to start both the React frontend and Express API concurrently. Press **Ctrl+C** to stop both. If either process exits, the other is stopped automatically. For a production build, `npm.cmd run build` followed by `npm.cmd start` serves the frontend and API together from Express on port 4000.
+
+The public home page is available without signing in. **Sign in** opens the appropriate private dashboard; **Get started** creates an entrepreneur account. Workspace pages require authentication. Entrepreneurs see only their own ideas, scores, statistics, clarification requests and feedback; assessors have the programme overview and review tools. A missing database never causes a fallback to a local database. The public examples API retains eight labelled synthetic test/demo records, but private dashboards do not fetch or count them.
 
 ## Configure the live workspace
+
+Routes: `/` public home, `/login` sign-in for both roles, `/register` entrepreneur registration, `/dashboard` personal or programme dashboard, `/submissions` account-scoped ideas. The server decides account roles and ownership; query parameters cannot change the dashboard's scope. Sign-out and expired sessions clear browser workspace data and return to sign-in. Dashboard updates run automatically while the page is visible, with faster polling during processing.
 
 `npm run setup` creates an ignored root `.env`, generates a session secret and initial assessor password, and does not print secrets. It preserves any existing `.env`. Open the file in your editor and set:
 
@@ -155,6 +159,8 @@ The app rejects incompatible models. A missing/unavailable classifier is disclos
 The user explicitly searches for and confirms a business location, then chooses the business category and radius. Nominatim lookups are cached and limited to one per 1.1 seconds per API process; run a single process for this public-service MVP. No autocomplete or bulk geocoding is used. Overpass returns sourced OpenStreetMap listings with retrieval time, radius and attribution. No returned listings means **no mapped results found**, not no competitors. Public service availability and map coverage vary.
 
 ## Checks
+
+For the automated external-data model comparison, open [training/external_cloud_training.ipynb](training/external_cloud_training.ipynb) in hosted Google Colab and choose **Run all**. Upload `data/training/reviewed-answers.jsonl` when prompted. The run downloads pinned QNLI and `isaidchia/sharktank_pitches` data, uses hosted embeddings, and exports a baseline/candidate comparison with a conservatively selected artifact. See [training/EXTERNAL_DATA.md](training/EXTERNAL_DATA.md) for source labels, licensing, split controls, quotas and model-promotion conditions. New accuracy is unmeasured until that hosted run finishes. No training or inference runs locally.
 
 With `GROQ_API_KEY` configured, Gemini generation falls back to Groq on quota errors, network failures, temporary service errors, missing Gemini credentials or denied model access. Groq uses [strict JSON schema output](https://console.groq.com/docs/structured-outputs); unsupported source quotes, citations, numbers and financial claims still pass through the same evidence checks. Blocked, truncated or invalid Gemini output fails validation without automatically resubmitting it to another provider. The assessment records the actual source/extraction models used.
 
