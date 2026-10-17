@@ -43,7 +43,7 @@ Optional local test Postgres is already on127.0.0.1:55432 with ignored .local/te
 
 ## Next work
 
-Requested startup/access repair and live PDF check/cleanup are complete. Reports/status/CSV updated; commit locally as Kartik. Keep T04/T05/T06 blocked where the full hosted matrix/quota/recovery gates remain unverified; do not equate partial engineering gates with no working product.
+Requested startup/access repair and live PDF check/cleanup are complete. Reports/status/CSV updated. Feature commit e75bf9c is local; author and committer both verified as Kartik Verma, no attribution trailers. Keep T04/T05/T06 blocked where the full hosted matrix/quota/recovery gates remain unverified; do not equate partial engineering gates with no working product.
 
 Then follow the user priority and HACKATHON_RESET.md: reliable handwritten OCR, audio/translation, assessor workspace, similar submissions, sourced local business context and four comparison views. Reuse working stages/contracts, keep README short, maintain explanations/, and finish with T27 detailed free deployment instructions. Publication still requires separate explicit approval. Do not train unrelated internet data into fake screening labels or spend time on secondary HF/scale work before the brief.
 
