@@ -1,0 +1,1778 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Udyam Saathi API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health/live": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Live",
+        "operationId": "live_health_live_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Live Health Live Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Ready",
+        "operationId": "ready_health_ready_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AdditionalFact": {
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "maxLength": 150,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "fact": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          }
+        },
+        "required": [
+          "label",
+          "fact"
+        ],
+        "title": "AdditionalFact",
+        "type": "object"
+      },
+      "Alternative_Location_": {
+        "additionalProperties": false,
+        "properties": {
+          "value": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "source_segment_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Source Segment Ids",
+            "type": "array"
+          },
+          "note": {
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "value",
+          "source_segment_ids",
+          "note"
+        ],
+        "title": "Alternative[Location]",
+        "type": "object"
+      },
+      "Alternative_Money_": {
+        "additionalProperties": false,
+        "properties": {
+          "value": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "source_segment_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Source Segment Ids",
+            "type": "array"
+          },
+          "note": {
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "value",
+          "source_segment_ids",
+          "note"
+        ],
+        "title": "Alternative[Money]",
+        "type": "object"
+      },
+      "Alternative_bool_": {
+        "additionalProperties": false,
+        "properties": {
+          "value": {
+            "title": "Value",
+            "type": "boolean"
+          },
+          "source_segment_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Source Segment Ids",
+            "type": "array"
+          },
+          "note": {
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "value",
+          "source_segment_ids",
+          "note"
+        ],
+        "title": "Alternative[bool]",
+        "type": "object"
+      },
+      "Alternative_list_str__": {
+        "additionalProperties": false,
+        "properties": {
+          "value": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Value",
+            "type": "array"
+          },
+          "source_segment_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Source Segment Ids",
+            "type": "array"
+          },
+          "note": {
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "value",
+          "source_segment_ids",
+          "note"
+        ],
+        "title": "Alternative[list[str]]",
+        "type": "object"
+      },
+      "Alternative_str_": {
+        "additionalProperties": false,
+        "properties": {
+          "value": {
+            "title": "Value",
+            "type": "string"
+          },
+          "source_segment_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Source Segment Ids",
+            "type": "array"
+          },
+          "note": {
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "value",
+          "source_segment_ids",
+          "note"
+        ],
+        "title": "Alternative[str]",
+        "type": "object"
+      },
+      "Assessment": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "submission_id": {
+            "format": "uuid",
+            "title": "Submission Id",
+            "type": "string"
+          },
+          "input_revision_id": {
+            "format": "uuid",
+            "title": "Input Revision Id",
+            "type": "string"
+          },
+          "version": {
+            "minimum": 1,
+            "title": "Version",
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "pipeline_version": {
+            "minLength": 1,
+            "title": "Pipeline Version",
+            "type": "string"
+          },
+          "model_manifest_hash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Model Manifest Hash",
+            "type": "string"
+          },
+          "business": {
+            "$ref": "#/components/schemas/BusinessRecord"
+          },
+          "evidence": {
+            "items": {
+              "discriminator": {
+                "mapping": {
+                  "audio": "#/components/schemas/AudioEvidence",
+                  "pdf": "#/components/schemas/PdfEvidence",
+                  "text": "#/components/schemas/TextEvidence"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/TextEvidence"
+                },
+                {
+                  "$ref": "#/components/schemas/PdfEvidence"
+                },
+                {
+                  "$ref": "#/components/schemas/AudioEvidence"
+                }
+              ]
+            },
+            "maxItems": 1000,
+            "title": "Evidence",
+            "type": "array"
+          },
+          "domains": {
+            "items": {
+              "$ref": "#/components/schemas/DomainRating"
+            },
+            "maxItems": 6,
+            "minItems": 6,
+            "title": "Domains",
+            "type": "array"
+          },
+          "scores": {
+            "$ref": "#/components/schemas/ScoreSummary"
+          },
+          "strengths": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10,
+            "title": "Strengths",
+            "type": "array"
+          },
+          "gaps": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 20,
+            "title": "Gaps",
+            "type": "array"
+          },
+          "risks": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 20,
+            "title": "Risks",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "submission_id",
+          "input_revision_id",
+          "version",
+          "created_at",
+          "pipeline_version",
+          "model_manifest_hash",
+          "business",
+          "evidence",
+          "domains",
+          "scores"
+        ],
+        "title": "Assessment",
+        "type": "object"
+      },
+      "AudioEvidence": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "submission_id": {
+            "format": "uuid",
+            "title": "Submission Id",
+            "type": "string"
+          },
+          "input_revision_id": {
+            "format": "uuid",
+            "title": "Input Revision Id",
+            "type": "string"
+          },
+          "original_text": {
+            "maxLength": 30000,
+            "minLength": 1,
+            "title": "Original Text",
+            "type": "string"
+          },
+          "english_text": {
+            "anyOf": [
+              {
+                "maxLength": 30000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "English Text"
+          },
+          "language": {
+            "$ref": "#/components/schemas/LanguageResult"
+          },
+          "translation_uncertain": {
+            "default": false,
+            "title": "Translation Uncertain",
+            "type": "boolean"
+          },
+          "kind": {
+            "const": "audio",
+            "default": "audio",
+            "title": "Kind",
+            "type": "string"
+          },
+          "attachment_id": {
+            "format": "uuid",
+            "title": "Attachment Id",
+            "type": "string"
+          },
+          "start_seconds": {
+            "minimum": 0,
+            "title": "Start Seconds",
+            "type": "number"
+          },
+          "end_seconds": {
+            "exclusiveMinimum": 0,
+            "title": "End Seconds",
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "submission_id",
+          "input_revision_id",
+          "original_text",
+          "attachment_id",
+          "start_seconds",
+          "end_seconds"
+        ],
+        "title": "AudioEvidence",
+        "type": "object"
+      },
+      "BusinessRecord": {
+        "additionalProperties": false,
+        "properties": {
+          "schema_version": {
+            "const": "1",
+            "default": "1",
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "business_type": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "offer": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "target_customers": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "problem": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "location": {
+            "$ref": "#/components/schemas/EvidenceField_Location_"
+          },
+          "market_research": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "raw_materials": {
+            "$ref": "#/components/schemas/EvidenceField_list_str__"
+          },
+          "suppliers": {
+            "$ref": "#/components/schemas/EvidenceField_list_str__"
+          },
+          "investment": {
+            "$ref": "#/components/schemas/EvidenceField_Money_"
+          },
+          "own_funds": {
+            "$ref": "#/components/schemas/EvidenceField_Money_"
+          },
+          "requested_loan": {
+            "$ref": "#/components/schemas/EvidenceField_Money_"
+          },
+          "unit_price": {
+            "$ref": "#/components/schemas/EvidenceField_Money_"
+          },
+          "revenue": {
+            "$ref": "#/components/schemas/EvidenceField_Money_"
+          },
+          "expenses": {
+            "$ref": "#/components/schemas/EvidenceField_Money_"
+          },
+          "profit": {
+            "$ref": "#/components/schemas/EvidenceField_Money_"
+          },
+          "competition": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "differentiation": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "existing_business": {
+            "$ref": "#/components/schemas/EvidenceField_bool_"
+          },
+          "sector": {
+            "default": "unknown",
+            "enum": [
+              "agriculture",
+              "food_beverage",
+              "retail",
+              "services",
+              "manufacturing",
+              "other",
+              "unknown"
+            ],
+            "title": "Sector",
+            "type": "string"
+          },
+          "trade": {
+            "$ref": "#/components/schemas/Trade",
+            "default": "unknown"
+          },
+          "additional_facts": {
+            "items": {
+              "$ref": "#/components/schemas/AdditionalFact"
+            },
+            "maxItems": 50,
+            "title": "Additional Facts",
+            "type": "array"
+          }
+        },
+        "title": "BusinessRecord",
+        "type": "object"
+      },
+      "ClarificationAnswer": {
+        "additionalProperties": false,
+        "properties": {
+          "expected_revision_id": {
+            "format": "uuid",
+            "title": "Expected Revision Id",
+            "type": "string"
+          },
+          "question_id": {
+            "format": "uuid",
+            "title": "Question Id",
+            "type": "string"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "maxLength": 10000,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Text"
+          },
+          "attachment_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Attachment Id"
+          }
+        },
+        "required": [
+          "expected_revision_id",
+          "question_id"
+        ],
+        "title": "ClarificationAnswer",
+        "type": "object"
+      },
+      "Domain": {
+        "enum": [
+          "clarity",
+          "customer_need",
+          "market_potential",
+          "feasibility",
+          "competition",
+          "differentiation"
+        ],
+        "title": "Domain",
+        "type": "string"
+      },
+      "DomainRating": {
+        "additionalProperties": false,
+        "properties": {
+          "domain": {
+            "$ref": "#/components/schemas/Domain"
+          },
+          "rating": {
+            "anyOf": [
+              {
+                "maximum": 4,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rating"
+          },
+          "reason": {
+            "maxLength": 4000,
+            "minLength": 1,
+            "title": "Reason",
+            "type": "string"
+          },
+          "source_segment_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 50,
+            "title": "Source Segment Ids",
+            "type": "array"
+          },
+          "basis": {
+            "default": "self_reported",
+            "enum": [
+              "self_reported",
+              "reviewer_verified",
+              "mixed",
+              "insufficient"
+            ],
+            "title": "Basis",
+            "type": "string"
+          }
+        },
+        "required": [
+          "domain",
+          "rating",
+          "reason"
+        ],
+        "title": "DomainRating",
+        "type": "object"
+      },
+      "ErrorEnvelope": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "retryable": {
+            "title": "Retryable",
+            "type": "boolean"
+          },
+          "request_id": {
+            "format": "uuid",
+            "title": "Request Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "retryable",
+          "request_id"
+        ],
+        "title": "ErrorEnvelope",
+        "type": "object"
+      },
+      "EvidenceField_Location_": {
+        "additionalProperties": false,
+        "properties": {
+          "value": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Location"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "status": {
+            "$ref": "#/components/schemas/FieldStatus",
+            "default": "missing"
+          },
+          "source_segment_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 50,
+            "title": "Source Segment Ids",
+            "type": "array"
+          },
+          "alternatives": {
+            "items": {
+              "$ref": "#/components/schemas/Alternative_Location_"
+            },
+            "maxItems": 10,
+            "title": "Alternatives",
+            "type": "array"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Note"
+          }
+        },
+        "title": "EvidenceField[Location]",
+        "type": "object"
+      },
+      "EvidenceField_Money_": {
+        "additionalProperties": false,
+        "properties": {
+          "value": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Money"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "status": {
+            "$ref": "#/components/schemas/FieldStatus",
+            "default": "missing"
+          },
+          "source_segment_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 50,
+            "title": "Source Segment Ids",
+            "type": "array"
+          },
+          "alternatives": {
+            "items": {
+              "$ref": "#/components/schemas/Alternative_Money_"
+            },
+            "maxItems": 10,
+            "title": "Alternatives",
+            "type": "array"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Note"
+          }
+        },
+        "title": "EvidenceField[Money]",
+        "type": "object"
+      },
+      "EvidenceField_bool_": {
+        "additionalProperties": false,
+        "properties": {
+          "value": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Value"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FieldStatus",
+            "default": "missing"
+          },
+          "source_segment_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 50,
+            "title": "Source Segment Ids",
+            "type": "array"
+          },
+          "alternatives": {
+            "items": {
+              "$ref": "#/components/schemas/Alternative_bool_"
+            },
+            "maxItems": 10,
+            "title": "Alternatives",
+            "type": "array"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Note"
+          }
+        },
+        "title": "EvidenceField[bool]",
+        "type": "object"
+      },
+      "EvidenceField_list_str__": {
+        "additionalProperties": false,
+        "properties": {
+          "value": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Value"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FieldStatus",
+            "default": "missing"
+          },
+          "source_segment_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 50,
+            "title": "Source Segment Ids",
+            "type": "array"
+          },
+          "alternatives": {
+            "items": {
+              "$ref": "#/components/schemas/Alternative_list_str__"
+            },
+            "maxItems": 10,
+            "title": "Alternatives",
+            "type": "array"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Note"
+          }
+        },
+        "title": "EvidenceField[list[str]]",
+        "type": "object"
+      },
+      "EvidenceField_str_": {
+        "additionalProperties": false,
+        "properties": {
+          "value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Value"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FieldStatus",
+            "default": "missing"
+          },
+          "source_segment_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 50,
+            "title": "Source Segment Ids",
+            "type": "array"
+          },
+          "alternatives": {
+            "items": {
+              "$ref": "#/components/schemas/Alternative_str_"
+            },
+            "maxItems": 10,
+            "title": "Alternatives",
+            "type": "array"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Note"
+          }
+        },
+        "title": "EvidenceField[str]",
+        "type": "object"
+      },
+      "FieldStatus": {
+        "enum": [
+          "present",
+          "missing",
+          "irrelevant",
+          "ambiguous",
+          "unreadable"
+        ],
+        "title": "FieldStatus",
+        "type": "string"
+      },
+      "JobStatus": {
+        "enum": [
+          "queued",
+          "extracting",
+          "translating",
+          "structuring",
+          "assessing",
+          "enriching",
+          "completed",
+          "partial",
+          "needs_review",
+          "waiting_for_worker",
+          "waiting_for_runtime",
+          "quota_exhausted",
+          "failed",
+          "cancelled"
+        ],
+        "title": "JobStatus",
+        "type": "string"
+      },
+      "JobView": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "submission_id": {
+            "format": "uuid",
+            "title": "Submission Id",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobStatus"
+          },
+          "backend": {
+            "enum": [
+              "owned_worker",
+              "hf_zerogpu"
+            ],
+            "title": "Backend",
+            "type": "string"
+          },
+          "completed_stages": {
+            "minimum": 0,
+            "title": "Completed Stages",
+            "type": "integer"
+          },
+          "total_stages": {
+            "exclusiveMinimum": 0,
+            "title": "Total Stages",
+            "type": "integer"
+          },
+          "attempt": {
+            "minimum": 0,
+            "title": "Attempt",
+            "type": "integer"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ErrorEnvelope"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "retry_after_seconds": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Retry After Seconds"
+          }
+        },
+        "required": [
+          "id",
+          "submission_id",
+          "status",
+          "backend",
+          "completed_stages",
+          "total_stages",
+          "attempt"
+        ],
+        "title": "JobView",
+        "type": "object"
+      },
+      "LanguageResult": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "default": "und",
+            "enum": [
+              "en",
+              "hi",
+              "mr",
+              "te",
+              "bn",
+              "or",
+              "und"
+            ],
+            "title": "Code",
+            "type": "string"
+          },
+          "provenance": {
+            "default": "unknown",
+            "enum": [
+              "declared",
+              "detected",
+              "confirmed",
+              "unknown"
+            ],
+            "title": "Provenance",
+            "type": "string"
+          },
+          "model_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Model Id"
+          },
+          "model_confidence": {
+            "anyOf": [
+              {
+                "maximum": 1,
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Model Confidence"
+          },
+          "needs_confirmation": {
+            "default": true,
+            "title": "Needs Confirmation",
+            "type": "boolean"
+          }
+        },
+        "title": "LanguageResult",
+        "type": "object"
+      },
+      "Location": {
+        "additionalProperties": false,
+        "properties": {
+          "locality": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Locality"
+          },
+          "block": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Block"
+          },
+          "district": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "District"
+          },
+          "state": {
+            "anyOf": [
+              {
+                "maxLength": 100,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "State"
+          },
+          "pin": {
+            "anyOf": [
+              {
+                "pattern": "^[1-9][0-9]{5}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Pin"
+          },
+          "latitude": {
+            "anyOf": [
+              {
+                "maximum": 90,
+                "minimum": -90,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Latitude"
+          },
+          "longitude": {
+            "anyOf": [
+              {
+                "maximum": 180,
+                "minimum": -180,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Longitude"
+          },
+          "precision": {
+            "default": "unknown",
+            "enum": [
+              "unknown",
+              "district",
+              "locality",
+              "pin",
+              "confirmed_point"
+            ],
+            "title": "Precision",
+            "type": "string"
+          },
+          "applicant_confirmed": {
+            "default": false,
+            "title": "Applicant Confirmed",
+            "type": "boolean"
+          }
+        },
+        "title": "Location",
+        "type": "object"
+      },
+      "Money": {
+        "additionalProperties": false,
+        "properties": {
+          "amount": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,12}|(?=[\\d.]{1,15}0*$)\\d{0,12}\\.\\d{0,2}0*$)",
+            "title": "Amount",
+            "type": "string"
+          },
+          "currency": {
+            "enum": [
+              "INR",
+              "unknown"
+            ],
+            "title": "Currency",
+            "type": "string"
+          },
+          "period": {
+            "default": "unknown",
+            "enum": [
+              "day",
+              "week",
+              "month",
+              "year",
+              "once",
+              "unknown"
+            ],
+            "title": "Period",
+            "type": "string"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "maxLength": 100,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Unit"
+          }
+        },
+        "required": [
+          "amount",
+          "currency"
+        ],
+        "title": "Money",
+        "type": "object"
+      },
+      "PdfEvidence": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "submission_id": {
+            "format": "uuid",
+            "title": "Submission Id",
+            "type": "string"
+          },
+          "input_revision_id": {
+            "format": "uuid",
+            "title": "Input Revision Id",
+            "type": "string"
+          },
+          "original_text": {
+            "maxLength": 30000,
+            "minLength": 1,
+            "title": "Original Text",
+            "type": "string"
+          },
+          "english_text": {
+            "anyOf": [
+              {
+                "maxLength": 30000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "English Text"
+          },
+          "language": {
+            "$ref": "#/components/schemas/LanguageResult"
+          },
+          "translation_uncertain": {
+            "default": false,
+            "title": "Translation Uncertain",
+            "type": "boolean"
+          },
+          "kind": {
+            "const": "pdf",
+            "default": "pdf",
+            "title": "Kind",
+            "type": "string"
+          },
+          "attachment_id": {
+            "format": "uuid",
+            "title": "Attachment Id",
+            "type": "string"
+          },
+          "page": {
+            "maximum": 100,
+            "minimum": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "normalized_box": {
+            "anyOf": [
+              {
+                "maxItems": 4,
+                "minItems": 4,
+                "prefixItems": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Normalized Box"
+          }
+        },
+        "required": [
+          "id",
+          "submission_id",
+          "input_revision_id",
+          "original_text",
+          "attachment_id",
+          "page"
+        ],
+        "title": "PdfEvidence",
+        "type": "object"
+      },
+      "ReviewCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "expected_revision_id": {
+            "format": "uuid",
+            "title": "Expected Revision Id",
+            "type": "string"
+          },
+          "outcome": {
+            "enum": [
+              "needs_clarification",
+              "deeper_evaluation",
+              "mentoring",
+              "skilling",
+              "reviewed"
+            ],
+            "title": "Outcome",
+            "type": "string"
+          },
+          "reason": {
+            "maxLength": 4000,
+            "minLength": 5,
+            "title": "Reason",
+            "type": "string"
+          },
+          "corrections": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BusinessRecord"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "expected_revision_id",
+          "outcome",
+          "reason"
+        ],
+        "title": "ReviewCreate",
+        "type": "object"
+      },
+      "ScoreSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "rubric_version": {
+            "const": "rubric-v1",
+            "default": "rubric-v1",
+            "title": "Rubric Version",
+            "type": "string"
+          },
+          "provisional_potential": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provisional Potential"
+          },
+          "headline_potential": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Headline Potential"
+          },
+          "evidence_coverage": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Evidence Coverage",
+            "type": "string"
+          },
+          "completeness_percent": {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Completeness Percent",
+            "type": "string"
+          },
+          "usable_fields": {
+            "minimum": 0,
+            "title": "Usable Fields",
+            "type": "integer"
+          },
+          "applicable_fields": {
+            "minimum": 0,
+            "title": "Applicable Fields",
+            "type": "integer"
+          },
+          "excluded_fields": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Excluded Fields",
+            "type": "object"
+          },
+          "needs_clarification": {
+            "title": "Needs Clarification",
+            "type": "boolean"
+          },
+          "ranking_eligible": {
+            "title": "Ranking Eligible",
+            "type": "boolean"
+          },
+          "withheld_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Withheld Reason"
+          }
+        },
+        "required": [
+          "provisional_potential",
+          "headline_potential",
+          "evidence_coverage",
+          "completeness_percent",
+          "usable_fields",
+          "applicable_fields",
+          "needs_clarification",
+          "ranking_eligible"
+        ],
+        "title": "ScoreSummary",
+        "type": "object"
+      },
+      "StageClaim": {
+        "additionalProperties": false,
+        "properties": {
+          "job_id": {
+            "format": "uuid",
+            "title": "Job Id",
+            "type": "string"
+          },
+          "stage_id": {
+            "format": "uuid",
+            "title": "Stage Id",
+            "type": "string"
+          },
+          "lease_generation": {
+            "exclusiveMinimum": 0,
+            "title": "Lease Generation",
+            "type": "integer"
+          },
+          "lease_expires_at": {
+            "format": "date-time",
+            "title": "Lease Expires At",
+            "type": "string"
+          },
+          "capability": {
+            "minLength": 16,
+            "title": "Capability",
+            "type": "string"
+          },
+          "input_revision_id": {
+            "format": "uuid",
+            "title": "Input Revision Id",
+            "type": "string"
+          },
+          "pipeline_version": {
+            "title": "Pipeline Version",
+            "type": "string"
+          },
+          "input_hash": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Input Hash",
+            "type": "string"
+          }
+        },
+        "required": [
+          "job_id",
+          "stage_id",
+          "lease_generation",
+          "lease_expires_at",
+          "capability",
+          "input_revision_id",
+          "pipeline_version",
+          "input_hash"
+        ],
+        "title": "StageClaim",
+        "type": "object"
+      },
+      "SubmissionAccepted": {
+        "additionalProperties": false,
+        "properties": {
+          "submission_id": {
+            "format": "uuid",
+            "title": "Submission Id",
+            "type": "string"
+          },
+          "revision_id": {
+            "format": "uuid",
+            "title": "Revision Id",
+            "type": "string"
+          },
+          "job_id": {
+            "format": "uuid",
+            "title": "Job Id",
+            "type": "string"
+          },
+          "status": {
+            "const": "queued",
+            "default": "queued",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "submission_id",
+          "revision_id",
+          "job_id"
+        ],
+        "title": "SubmissionAccepted",
+        "type": "object"
+      },
+      "SubmissionCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "anyOf": [
+              {
+                "maxLength": 30000,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Text"
+          },
+          "attachment_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 1,
+            "title": "Attachment Ids",
+            "type": "array"
+          },
+          "preferred_language": {
+            "default": "en",
+            "enum": [
+              "en",
+              "hi",
+              "mr",
+              "te",
+              "bn",
+              "or",
+              "und"
+            ],
+            "title": "Preferred Language",
+            "type": "string"
+          },
+          "cohort_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Cohort Id"
+          },
+          "declared_location": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Location"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "consent": {
+            "const": true,
+            "title": "Consent",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "consent"
+        ],
+        "title": "SubmissionCreate",
+        "type": "object"
+      },
+      "TextEvidence": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "submission_id": {
+            "format": "uuid",
+            "title": "Submission Id",
+            "type": "string"
+          },
+          "input_revision_id": {
+            "format": "uuid",
+            "title": "Input Revision Id",
+            "type": "string"
+          },
+          "original_text": {
+            "maxLength": 30000,
+            "minLength": 1,
+            "title": "Original Text",
+            "type": "string"
+          },
+          "english_text": {
+            "anyOf": [
+              {
+                "maxLength": 30000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "English Text"
+          },
+          "language": {
+            "$ref": "#/components/schemas/LanguageResult"
+          },
+          "translation_uncertain": {
+            "default": false,
+            "title": "Translation Uncertain",
+            "type": "boolean"
+          },
+          "kind": {
+            "const": "text",
+            "default": "text",
+            "title": "Kind",
+            "type": "string"
+          },
+          "start_character": {
+            "minimum": 0,
+            "title": "Start Character",
+            "type": "integer"
+          },
+          "end_character": {
+            "exclusiveMinimum": 0,
+            "title": "End Character",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "submission_id",
+          "input_revision_id",
+          "original_text",
+          "start_character",
+          "end_character"
+        ],
+        "title": "TextEvidence",
+        "type": "object"
+      },
+      "Trade": {
+        "enum": [
+          "tea_stall",
+          "tailoring",
+          "food_service",
+          "dairy",
+          "poultry",
+          "beauty_services",
+          "mobile_repair",
+          "agricultural_inputs",
+          "solar_services",
+          "packaged_water",
+          "bag_manufacturing",
+          "other",
+          "unknown"
+        ],
+        "title": "Trade",
+        "type": "string"
+      }
+    }
+  }
+}

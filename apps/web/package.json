@@ -9,7 +9,8 @@
     "typecheck": "tsc -b",
     "lint": "eslint src",
     "preview": "vite preview --host 127.0.0.1",
-    "test:smoke": "node scripts/browser-smoke.mjs"
+    "test:smoke": "node scripts/browser-smoke.mjs",
+    "generate:types": "openapi-typescript openapi.json -o src/api/generated/schema.ts"
   },
   "dependencies": {
     "lucide-react": "0.468.0",
@@ -23,6 +24,7 @@
     "@types/react-dom": "19.2.2",
     "@vitejs/plugin-react": "5.0.4",
     "eslint": "10.13.0",
+    "openapi-typescript": "7.10.1",
     "typescript": "5.9.3",
     "typescript-eslint": "8.71.2",
     "vite": "7.1.10"

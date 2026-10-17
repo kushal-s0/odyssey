@@ -13,6 +13,7 @@ from starlette.exceptions import HTTPException
 from starlette.responses import Response
 
 from .config import Settings, get_settings
+from .contracts.schema import build_openapi
 
 logger = logging.getLogger("udyam.api")
 
@@ -68,6 +69,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return JSONResponse(status_code=503, content={"status": "not_ready", "checks": {
             "database": "not_verified", "storage": "not_verified", "models": "not_verified"}})
 
+    application.openapi = lambda: build_openapi(application)  # type: ignore[method-assign]
     return application
 
 

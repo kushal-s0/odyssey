@@ -6,6 +6,7 @@ This directory explains the implementation as it is built. It is a companion to 
 |---|---|
 | [01-dataset-and-feasibility.md](01-dataset-and-feasibility.md) | Inventory, evidence privacy, model feasibility and limitations |
 | [02-application-foundation.md](02-application-foundation.md) | App structure, configuration, health, frontend and verification |
+| [03-contracts-and-rubric.md](03-contracts-and-rubric.md) | Typed evidence, nulls, provenance, scoring and comparison eligibility |
 | [COMMITTEE_QUESTIONS.md](COMMITTEE_QUESTIONS.md) | Likely judging questions and evidence-backed answers |
 
 Each implemented module gets an explanation of its purpose, main files/functions, input/output, data flow, security boundaries, failure handling, verification and tradeoffs. Add a link here when a guide exists. The final T27 adds `docs/DEPLOYMENT_GUIDE.md` and deployment Q&A after the actual configuration is known.

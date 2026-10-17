@@ -1,0 +1,271 @@
+[
+  {
+    "id": "complete",
+    "origin": "synthetic",
+    "original_text": "Synthetic example: A new tea/snack stall for office workers and commuters needing quick affordable tea near a bus stop. Ten shop workers were asked about demand. Tea, milk, sugar and cups come from a local grocer and dairy. Investment is INR 30000, own savings INR 18000, requested loan INR 12000. Tea costs INR 10 per cup. Projected monthly revenue INR 30000, expenses INR 18000 and profit INR 12000. Two nearby tea stalls compete. Covered ingredients and quick service are the proposed difference. The applicant confirms Example locality, Example district, Example state. No existing business.",
+    "business": {
+      "business_type": {
+        "value": "Tea and snack stall",
+        "status": "present",
+        "source_segment_ids": [
+          "30000000-0000-0000-0000-000000000001"
+        ]
+      },
+      "offer": {
+        "value": "Tea and snacks",
+        "status": "present",
+        "source_segment_ids": [
+          "30000000-0000-0000-0000-000000000001"
+        ]
+      },
+      "target_customers": {
+        "value": "Office workers and commuters",
+        "status": "present",
+        "source_segment_ids": [
+          "30000000-0000-0000-0000-000000000001"
+        ]
+      },
+      "problem": {
+        "value": "Quick affordable tea near the bus stop",
+        "status": "present",
+        "source_segment_ids": [
+          "30000000-0000-0000-0000-000000000001"
+        ]
+      },
+      "market_research": {
+        "value": "Spoke to ten nearby shop workers",
+        "status": "present",
+        "source_segment_ids": [
+          "30000000-0000-0000-0000-000000000001"
+        ]
+      },
+      "raw_materials": {
+        "value": [
+          "Tea",
+          "Milk",
+          "Sugar",
+          "Cups"
+        ],
+        "status": "present",
+        "source_segment_ids": [
+          "30000000-0000-0000-0000-000000000001"
+        ]
+      },
+      "suppliers": {
+        "value": [
+          "Local grocer",
+          "Local dairy"
+        ],
+        "status": "present",
+        "source_segment_ids": [
+          "30000000-0000-0000-0000-000000000001"
+        ]
+      },
+      "competition": {
+        "value": "Two nearby tea stalls",
+        "status": "present",
+        "source_segment_ids": [
+          "30000000-0000-0000-0000-000000000001"
+        ]
+      },
+      "differentiation": {
+        "value": "Covered ingredients and quick service",
+        "status": "present",
+        "source_segment_ids": [
+          "30000000-0000-0000-0000-000000000001"
+        ]
+      },
+      "existing_business": {
+        "value": false,
+        "status": "present",
+        "source_segment_ids": [
+          "30000000-0000-0000-0000-000000000001"
+        ]
+      },
+      "location": {
+        "value": {
+          "locality": "Example locality",
+          "district": "Example district",
+          "state": "Example state",
+          "precision": "locality",
+          "applicant_confirmed": true
+        },
+        "status": "present",
+        "source_segment_ids": [
+          "30000000-0000-0000-0000-000000000001"
+        ]
+      },
+      "investment": {
+        "value": {
+          "amount": "30000",
+          "currency": "INR",
+          "period": "once",
+          "unit": null
+        },
+        "status": "present",
+        "source_segment_ids": [
+          "30000000-0000-0000-0000-000000000001"
+        ]
+      },
+      "own_funds": {
+        "value": {
+          "amount": "18000",
+          "currency": "INR",
+          "period": "once",
+          "unit": null
+        },
+        "status": "present",
+        "source_segment_ids": [
+          "30000000-0000-0000-0000-000000000001"
+        ]
+      },
+      "requested_loan": {
+        "value": {
+          "amount": "12000",
+          "currency": "INR",
+          "period": "once",
+          "unit": null
+        },
+        "status": "present",
+        "source_segment_ids": [
+          "30000000-0000-0000-0000-000000000001"
+        ]
+      },
+      "unit_price": {
+        "value": {
+          "amount": "10",
+          "currency": "INR",
+          "period": "once",
+          "unit": "cup"
+        },
+        "status": "present",
+        "source_segment_ids": [
+          "30000000-0000-0000-0000-000000000001"
+        ]
+      },
+      "revenue": {
+        "value": {
+          "amount": "30000",
+          "currency": "INR",
+          "period": "month",
+          "unit": null
+        },
+        "status": "present",
+        "source_segment_ids": [
+          "30000000-0000-0000-0000-000000000001"
+        ]
+      },
+      "expenses": {
+        "value": {
+          "amount": "18000",
+          "currency": "INR",
+          "period": "month",
+          "unit": null
+        },
+        "status": "present",
+        "source_segment_ids": [
+          "30000000-0000-0000-0000-000000000001"
+        ]
+      },
+      "profit": {
+        "value": {
+          "amount": "12000",
+          "currency": "INR",
+          "period": "month",
+          "unit": null
+        },
+        "status": "present",
+        "source_segment_ids": [
+          "30000000-0000-0000-0000-000000000001"
+        ]
+      }
+    },
+    "expected_offer_status": "present"
+  },
+  {
+    "id": "partial",
+    "origin": "synthetic",
+    "original_text": "I would like to sell tea.",
+    "business": {
+      "offer": {
+        "value": "Tea",
+        "status": "present",
+        "source_segment_ids": [
+          "30000000-0000-0000-0000-000000000001"
+        ]
+      }
+    },
+    "expected_offer_status": "present"
+  },
+  {
+    "id": "irrelevant",
+    "origin": "synthetic",
+    "original_text": "My favourite colour is blue.",
+    "business": {
+      "offer": {
+        "value": null,
+        "status": "irrelevant",
+        "source_segment_ids": [
+          "30000000-0000-0000-0000-000000000001"
+        ]
+      }
+    },
+    "expected_offer_status": "irrelevant"
+  },
+  {
+    "id": "conflicting",
+    "origin": "synthetic",
+    "original_text": "Tea is INR 10 or INR 20 per cup; the correction is unclear.",
+    "business": {
+      "offer": {
+        "value": "Tea",
+        "status": "present",
+        "source_segment_ids": [
+          "30000000-0000-0000-0000-000000000001"
+        ]
+      },
+      "unit_price": {
+        "value": null,
+        "status": "ambiguous",
+        "note": "Unresolved overwritten price",
+        "alternatives": [
+          {
+            "value": {
+              "amount": "10",
+              "currency": "INR",
+              "period": "once",
+              "unit": "cup"
+            },
+            "source_segment_ids": [
+              "30000000-0000-0000-0000-000000000001"
+            ],
+            "note": "First visible amount"
+          },
+          {
+            "value": {
+              "amount": "20",
+              "currency": "INR",
+              "period": "once",
+              "unit": "cup"
+            },
+            "source_segment_ids": [
+              "30000000-0000-0000-0000-000000000001"
+            ],
+            "note": "Competing visible amount"
+          }
+        ]
+      }
+    },
+    "expected_offer_status": "present"
+  },
+  {
+    "id": "runtime_failure",
+    "origin": "synthetic",
+    "error": {
+      "code": "runtime_unavailable",
+      "message": "Processing is waiting for the owned worker.",
+      "retryable": true,
+      "request_id": "50000000-0000-0000-0000-000000000001"
+    }
+  }
+]
