@@ -5,8 +5,8 @@
 
 **Application state:** implementation started; no application/model deployed.
 **Budget:** zero paid API or hosting dependencies.  
-**Active application task:** T08. **Current scope:** full implementation, explanations/ and final T27 deployment walkthrough; local commits only.
-**Last update:** 2026-10-17, Asia/Calcutta. **Progress:** 4 / 29 tasks done.
+**Active application task:** none. **Current scope:** full implementation, explanations/ and final T27 deployment walkthrough; local commits only.
+**Last update:** 2026-10-17, Asia/Calcutta. **Progress:** 5 / 29 tasks done.
 
 **Deadline:** 2026-10-18 06:00 Asia/Calcutta, working deployed demo included. Read [SESSION_HANDOFF.md](SESSION_HANDOFF.md), [HACKATHON_DELIVERY_PLAN.md](HACKATHON_DELIVERY_PLAN.md) and [PROJECT_REVIEW.md](PROJECT_REVIEW.md). Prefer verified laptop inference; English/Hindi human review only. Implementation is authorized by the latest user request; publication remains unapproved.
 
@@ -16,14 +16,14 @@ Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FRE
 
 | ID | Task | Status | Report path (create during execution) | Blocker |
 |---|---|---|---|---|
-| T01 | Inspect dataset and prove free-runtime feasibility | blocked | `task-reports/T01.md` | Gated language/embedding inference, owned-worker integration and HF provisioning/access/quota unverified |
+| T01 | Inspect dataset and prove free-runtime feasibility | blocked | `task-reports/T01.md` | Gated language models/handwriting/audio and HF provisioning/access/quota unverified; owned English assessment and embeddings restored |
 | T02 | Scaffold application and local toolchain | done | `task-reports/T02.md` | None confirmed |
 | T03 | Define contracts, domain rules and rubric | done | `task-reports/T03.md` | None confirmed |
 | T04 | Implement database, durable stage leases and private storage | blocked | `task-reports/T04.md` | Local PG/RLS/fencing/recovery passed; hosted Supabase Free plan, connection and private-object operations unverified |
 | T05 | Implement authentication and authorization | blocked | `task-reports/T05.md` | Local signatures/access/UI passed; actual Supabase signing, identities and hosted login/refresh unverified |
 | T06 | Implement uploads and submission APIs | blocked | `task-reports/T06.md` | All 55 files verified through local API/PG/private disk; actual Supabase object upload/download/delete and retry recovery unverified |
-| T07 | Implement durable Postgres jobs and free-runtime dispatch | blocked | `task-reports/T07.md` | Local HTTP/native recovery verified; required live owned HF enqueue/auth/quota/sleep and ZeroGPU compatibility unverified |
-| T08 | Build applicant submission and recording UI | in_progress | `task-reports/T08.md` | Checkpoint: nine actual local applicant browser journeys passed; pending-microphone race review and prior landing/auth regressions remain |
+| T07 | Implement durable Postgres jobs and free-runtime dispatch | blocked | `task-reports/T07.md` | Owned HTTP/native recovery verified; secondary HF provisioning/quota compatibility deferred and unverified |
+| T08 | Build applicant submission and recording UI | done | `task-reports/T08.md` | None confirmed |
 | T09 | Implement self-hosted extraction and Indic translation | blocked | `task-reports/T09.md` | English/adversarial owned assessments verified; IndicTrans2 401, longer exact-quote extraction, human review and remaining runtime gates pending |
 | T09A | Train and evaluate our answer-relevance model | done | `task-reports/T09A.md` | None confirmed |
 | T10 | Implement PDF and handwritten scans with open weights | pending | `task-reports/T10.md` | None confirmed |
@@ -52,7 +52,7 @@ The prior plan records an eligible Hugging Face account for free ZeroGPU. Actual
 
 ## Resume note
 
-User redirected work to the functional hackathon demo; read HACKATHON_RESET.md and SESSION_HANDOFF.md. Current branch second, current machine Kartik's RTX5050. New commits only as Kartik Verma <kartikverma2204number1@gmail.com>, confirmed in chat. Preserve historical attribution and original sources. Current model environment needs restoration; uploaded files are not PDF/audio processing. Prioritize actual assessor, modality, translation, similarity/context and comparison requirements; no extra production infrastructure. Publication unapproved.
+User redirected work to the functional hackathon demo; read HACKATHON_RESET.md and SESSION_HANDOFF.md. Current branch second, current machine Kartik's RTX5050. New commits only as Kartik Verma <kartikverma2204number1@gmail.com>, confirmed in chat. Preserve historical attribution and original sources. Current model environment restored and actual English inference verified; uploaded files are not PDF/audio processing. Prioritize actual assessor, modality, translation, similarity/context and comparison requirements; no extra production infrastructure. Publication unapproved.
 
 ## History
 
@@ -61,3 +61,5 @@ User redirected work to the functional hackathon demo; read HACKATHON_RESET.md a
 - 2026-10-17: Reviewed original brief, dataset containers/PDFs, plans, official runtime limits and laptop hardware. Confirmed 18 October 06:00 IST deployed-demo deadline, preference for owned inference and English/Hindi review. Added deadline/continuation documents and reconciled stale T01 state; no application task marked complete.
 
 - 2026-10-17: User authorized full implementation, external resources with retained license/provenance, ongoing explanations/ and final T27 deployment walkthrough. T01 started; actual branch main retained.
+
+- 2026-10-17 22:22 IST: Cleanup/single local env/startup complete; setup and launcher preview/cleanup passed. Real RTX5050 English assessment and 10 applicant browser journeys passed; T08 done. Supabase service key missing and supplied database hostname does not resolve. No hosted changes/publication.

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { Upload, Send } from 'lucide-react'
 import { apiRequest, ApiError } from '../api/client'
 import type { components } from '../api/generated/schema'
@@ -60,7 +60,8 @@ export function SubmitIdea({ actor, token, onAccepted }: { actor: Actor; token: 
   const [progress, setProgress] = useState<number | null>(null)
   const lock = useRef(false)
   const operation = useRef<AbortController | null>(null)
-  const recording = useRef<HTMLDivElement>(null)
+  const recordingActive = useRef(false)
+  const onRecordingActivity = useCallback((active: boolean) => { recordingActive.current = active }, [])
   const fileInput = useRef<HTMLInputElement>(null)
   const pending = useRef<Pending | null>(null)
   const storageKey = `udyam:pending:${actor.id}`
@@ -86,7 +87,7 @@ export function SubmitIdea({ actor, token, onAccepted }: { actor: Actor; token: 
   async function submit(event: FormEvent) {
     event.preventDefault()
     if (lock.current) return
-    if (recording.current?.querySelector('[role="alert"]')) { setError('Stop recording before submitting.'); return }
+    if (recordingActive.current) { setError('Finish microphone permission or stop recording before submitting.'); return }
     if (!consent || (mode === 'text' ? !text.trim() : !file)) { setError('Add your idea and give consent before submitting.'); return }
     lock.current = true; setBusy(true); setError(''); setMessage('Preparing your private submission…'); setProgress(null)
     const controller = new AbortController()
@@ -139,7 +140,7 @@ export function SubmitIdea({ actor, token, onAccepted }: { actor: Actor; token: 
     <form onSubmit={event => { void submit(event) }}>
       <fieldset disabled={busy}>
         {mode === 'text' ? <label>Your idea<textarea required maxLength={30000} rows={7} value={text} onChange={event => setText(event.target.value)} placeholder="I plan to sell… My customers are…" /><small>{text.length.toLocaleString()} / 30,000 characters</small></label> : <>
-          {mode === 'audio' && <div ref={recording}><AudioRecorder onFile={pickFile} disabled={busy} /></div>}
+          {mode === 'audio' && <AudioRecorder onFile={pickFile} disabled={busy} onActivityChange={onRecordingActivity} />}
           <label className="file-picker"><Upload size={20} />{mode === 'pdf' ? 'Choose a PDF' : 'Upload an audio file'}<input ref={fileInput} aria-label={mode === 'pdf' ? 'PDF file' : 'Audio file'} type="file" accept={mode === 'pdf' ? 'application/pdf,.pdf' : 'audio/*,video/mp4,.m4a,.mp4,.ogg,.webm,.wav,.mp3'} onChange={event => pickFile(event.target.files?.[0] || null)} /></label>
           <p className="field-note">{mode === 'pdf' ? 'Maximum 20 pages and 25 MB. Keep the original readable.' : 'Maximum 10 minutes and 25 MB.'} Your file is saved privately. {mode === 'pdf' ? 'Document' : 'Audio'} processing is pending; uploading does not mean assessment is complete.</p>
           {file && <p className="selected-file">{file.name} · {(file.size / 1024).toFixed(1)} KB</p>}

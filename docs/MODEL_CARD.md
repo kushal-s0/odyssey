@@ -35,3 +35,17 @@ verified on this runtime, not guaranteed bit-for-bit across arbitrary hardware.
 Next: independently review English/Hindi QA boundaries, labels and families;
 collect both classes across multiple independent groups; repeat disjoint grouped
 evaluation. Other languages remain unvalidated. No candidate deployment occurred.
+
+## Fast hackathon serving decision
+
+Results first use actual pretrained Qwen3-VL-2B inference and the pinned MiniLM advisory baseline. This is not new model training. The earlier small relevance head was rejected for serving because the tiny, unreviewed and imbalanced labels cannot validate it. Adding unrelated internet business descriptions would not supply trustworthy assessment-score labels. Review a relevant evaluation set before claiming any fine-tuning improvement.
+
+Candidates researched from primary model cards:
+
+| Model | Useful role | Current decision/limits |
+|---|---|---|
+| [Qwen3-VL-2B-Instruct](https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct) | Current facts/assessment, later visual PDF extraction | Cached and actual English inference verified here; no training required |
+| [NLLB-200 distilled 600M](https://huggingface.co/facebook/nllb-200-distilled-600M) | Sentence-level Indian-language ? English translation | Public candidate avoiding current AI4Bharat access gate; CC-BY-NC-4.0, research/noncommercial restrictions; not integrated or quality-tested |
+| [Whisper small](https://huggingface.co/openai/whisper-small) | Local multilingual speech transcription | Public Apache-2.0 candidate; does not establish quality/coverage for every required language, especially Odia; not integrated |
+
+The existing IndicTrans2/IndicConformer config probes still returned401 with current configured access. Tokens/access conditions must be resolved or an accessible candidate verified. Do not claim these model candidates are serving or independently validated. External resources retain their licenses/provenance; no paid hosted inference is used.

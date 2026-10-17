@@ -1,6 +1,6 @@
 {
   "scope": "Actual Edge/API/Postgres/owned model on synthetic inputs; Auth provider responses are fixtures, not hosted Supabase verification",
-  "seconds": 96.849,
+  "seconds": 133.626,
   "new_submissions": 4,
   "text_assessment_persisted": true,
   "pdf_and_audio_processing_pending": true,
@@ -10,6 +10,7 @@
     "Actual owned Qwen text pipeline persists assessment; UI shows withheld headline, domain reasoning and original/English evidence.",
     "Refresh restores authenticated saved submission, processing status and real assessment.",
     "Real PDF upload retry/progress and authenticated original download preserve bytes; processing explicitly pending.",
+    "Pending microphone permission blocks submission of a previously selected file; no POST is sent.",
     "Denied microphone has working real audio-upload/playback fallback; audio processing remains pending.",
     "Real MediaRecorder encodes synthetic browser microphone input; playback and actual private WebM upload succeed.",
     "390px mobile fits without overflow; keyboard format control/tab order and regional-script input work.",

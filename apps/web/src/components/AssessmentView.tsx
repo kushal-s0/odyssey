@@ -4,6 +4,21 @@ import type { Assessment } from '../api/client'
 const labels: Record<string, string> = { clarity: 'Business clarity', customer_need: 'Customer need', market_potential: 'Market potential',
   feasibility: 'Feasibility', competition: 'Competition', differentiation: 'Differentiation' }
 
+function describe(value: unknown): string {
+  if (value === null || value === undefined) return 'Not supplied'
+  if (Array.isArray(value)) return value.map(describe).join(', ')
+  if (typeof value === 'object') {
+    const item = value as Record<string, unknown>
+    if ('amount' in item) {
+      const amount = Number(item.amount)
+      const money = item.currency === 'INR' ? new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(amount) : String(item.amount)
+      return `${money}${item.period && item.period !== 'unknown' ? ` / ${String(item.period)}` : ''}${item.unit ? ` per ${String(item.unit)}` : ''}`
+    }
+    return [item.locality, item.district, item.state].filter(Boolean).join(', ') || 'Location needs clarification'
+  }
+  return typeof value === 'boolean' ? value ? 'Yes' : 'No' : String(value)
+}
+
 export function AssessmentView({ value }: { value: Assessment }) {
   const [selected, setSelected] = useState<string | null>(null)
   const scores = value.scores
@@ -12,6 +27,16 @@ export function AssessmentView({ value }: { value: Assessment }) {
   const risks = value.risks || []
   return <section className="assessment-view" aria-labelledby="assessment-title">
     <div className="panel-heading"><span className="eyebrow">AUTOMATED FIRST-LEVEL ASSESSMENT</span><h2 id="assessment-title">A clearer view of your idea</h2><p>Source-backed suggestions for authorized human review. This is not a funding decision or a prediction of business success.</p></div>
+    <section aria-labelledby="business-facts-title"><h3 id="business-facts-title">What we understood</h3><dl className="business-facts">{([
+      ['offer', 'Product or service'], ['target_customers', 'Customers'], ['problem', 'Customer problem'],
+      ['location', 'Business location'], ['investment', 'Investment'], ['unit_price', 'Price'],
+      ['revenue', 'Revenue'], ['expenses', 'Expenses'], ['competition', 'Competition'], ['differentiation', 'What makes it different'],
+    ] as const).map(([key, label]) => {
+      const field = value.business[key]
+      return <div key={key}><dt>{label}</dt><dd>{field?.status === 'present' ? describe(field.value) : !field || field.status === 'missing' ? 'Not supplied' : field.status.replaceAll('_', ' ')}
+        {(field?.source_segment_ids || []).map(id => <button className="text-button" type="button" key={id} onClick={() => setSelected(id)}>View source {value.evidence.findIndex(item => item.id === id) + 1}</button>)}
+      </dd></div>
+    })}</dl></section>
     <div className="score-grid"><div><span>Potential</span><strong>{scores.headline_potential === null ? 'Clarification needed' : `${scores.headline_potential} / 100`}</strong>{scores.headline_potential === null && <small>Provisional: {scores.provisional_potential === null ? 'Not assessable' : `${scores.provisional_potential} / 100`}. Headline withheld: {scores.withheld_reason?.replaceAll('_', ' ')}.</small>}</div>
       <div><span>Evidence coverage</span><strong>{(Number(scores.evidence_coverage) * 100).toFixed(0)}%</strong><small>Weight of dimensions with usable evidence.</small></div>
       <div><span>Information completeness</span><strong>{scores.completeness_percent}%</strong><small>{scores.usable_fields} of {scores.applicable_fields} applicable fields. Completeness is separate from potential.</small></div></div>

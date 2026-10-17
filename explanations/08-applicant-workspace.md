@@ -25,6 +25,9 @@ is explicitly unvalidated and decisions remain with humans.
 
 The Edge harness uses a synthetic signed issuer and browser microphone input,
 while API verification, Postgres, private file operations and Qwen are actual
-local integrations. Nine journeys passed; see T08.md for exact evidence and the
-remaining pending-permission race review plus prior browser regressions. Hosted
+local integrations. Ten journeys passed; the pending-permission race is fixed with a synchronous
+activity ref and a browser no-POST regression. Existing landing/auth browser
+regressions also passed. See T08.md for exact evidence. Hosted
 Auth, translations, human semantic review and deployment are not established.
+
+The result panel now includes extracted business fields and original-source buttons. Missing/optional fields display Not supplied, never a fabricated zero.

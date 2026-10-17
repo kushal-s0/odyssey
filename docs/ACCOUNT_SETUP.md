@@ -16,3 +16,42 @@ Accept the access conditions for the three AI4Bharat repositories linked in [SOU
 6. Do not depend on default email delivery for public signup or judging. Trusted limited password demo accounts will be created without committing credentials. Free default SMTP has recipient/rate restrictions.
 
 The application will report unavailable/blocked infrastructure until real checks pass. Configured strings alone do not establish a deployed database, working auth or private storage. The final T27 guide will document the complete verified deployment/recovery procedure for the finished configuration.
+
+## First login on your own project
+
+1. Fill the root `.env.local` settings described above, then run:
+
+   ```powershell
+   .venv/Scripts/python.exe -B scripts/configure.py
+   .venv/Scripts/python.exe -B scripts/migrate.py
+   ```
+
+   This applies the app tables and private storage policies to the configured project.
+   It does not create an Auth account. Never use the hosted project for test-suite fixtures.
+2. In Supabase Authentication > Users > Add user, create a password account with
+   email confirmation enabled through the trusted dashboard. Keep its password private.
+   Copy the user's UUID. Public self-registration is not implemented.
+3. In Supabase SQL Editor, create a cohort once and copy the returned UUID:
+
+   ```sql
+   INSERT INTO public.cohorts(name) VALUES ('Hackathon demo') RETURNING id;
+   ```
+
+4. Run the existing trusted operator command, replacing the two UUID placeholders:
+
+   ```powershell
+   .venv/Scripts/python.exe -B scripts/provision_access.py --user-id AUTH_USER_UUID --role applicant --cohort-id COHORT_UUID
+   ```
+
+   Use `applicant` for submission accounts. The API trusts this database role,
+   never a role typed into the browser. Assessor accounts require the separate
+   assessor workspace, which is still on the implementation backlog.
+5. Run `start.cmd`, open http://127.0.0.1:5173 and sign in with that password account.
+   Submit an English idea with concrete business details to exercise the current
+   working model path. The first assessment includes model loading time.
+
+If login succeeds but workspace access is denied, verify the trusted profile and
+cohort assignment in step 4. If the JWT uses HS256, configure a supported asymmetric
+signing key in the project's Auth signing-key settings; this API accepts ES256/RS256.
+If the database hostname fails to resolve, use the actual shared session-pooler URI
+from Connect and check project status; do not substitute the public API URL.

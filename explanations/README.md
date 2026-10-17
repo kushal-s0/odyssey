@@ -4,6 +4,7 @@ This directory explains the implementation as it is built. It is a companion to 
 
 | Guide | Purpose |
 |---|---|
+| [00-startup-and-model-results.md](00-startup-and-model-results.md) | One local config, simple startup and measured real inference |
 | [01-dataset-and-feasibility.md](01-dataset-and-feasibility.md) | Inventory, evidence privacy, model feasibility and limitations |
 | [02-application-foundation.md](02-application-foundation.md) | App structure, configuration, health, frontend and verification |
 | [03-contracts-and-rubric.md](03-contracts-and-rubric.md) | Typed evidence, nulls, provenance, scoring and comparison eligibility |

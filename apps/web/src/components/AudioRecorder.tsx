@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { Mic, Square } from 'lucide-react'
 
-export function AudioRecorder({ onFile, disabled }: { onFile: (file: File) => void; disabled: boolean }) {
+export function AudioRecorder({ onFile, disabled, onActivityChange }: {
+  onFile: (file: File) => void; disabled: boolean; onActivityChange: (active: boolean) => void
+}) {
   const [recording, setRecording] = useState(false)
   const [message, setMessage] = useState('')
   const recorder = useRef<MediaRecorder | null>(null)
@@ -13,14 +15,16 @@ export function AudioRecorder({ onFile, disabled }: { onFile: (file: File) => vo
     alive.current = true
     return () => {
       alive.current = false
+      onActivityChange(false)
       window.clearTimeout(timer.current)
       if (recorder.current?.state === 'recording') recorder.current.stop()
       stream.current?.getTracks().forEach(track => track.stop())
     }
-  }, [])
+  }, [onActivityChange])
   async function start() {
     if (recorder.current?.state === 'recording' || requesting.current) return
     requesting.current = true
+    onActivityChange(true)
     setMessage('')
     try {
       if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') throw new Error('unsupported')
@@ -51,6 +55,7 @@ export function AudioRecorder({ onFile, disabled }: { onFile: (file: File) => vo
         window.clearTimeout(timer.current)
         input.getTracks().forEach(track => track.stop())
         recorder.current = null
+        onActivityChange(false)
         if (!alive.current) return
         setRecording(false)
         if (!failed && bytes > 0) {
@@ -67,7 +72,10 @@ export function AudioRecorder({ onFile, disabled }: { onFile: (file: File) => vo
     } catch {
       stream.current?.getTracks().forEach(track => track.stop())
       if (alive.current) { setRecording(false); setMessage('Microphone unavailable or permission denied. Upload an existing audio file below, or choose Text.') }
-    } finally { requesting.current = false }
+    } finally {
+      requesting.current = false
+      if (recorder.current?.state !== 'recording') onActivityChange(false)
+    }
   }
   return <div className="recorder">
     <button type="button" className="secondary-button" disabled={disabled} onClick={() => {

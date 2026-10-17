@@ -18,7 +18,10 @@ logging.getLogger('huggingface_hub').setLevel(logging.ERROR)
 
 from dotenv import dotenv_values
 import httpx
+import truststore
 from app.worker.manifest import MANIFEST, MANIFEST_HASH
+
+truststore.inject_into_ssl()
 
 
 def checksum(path,kind='sha256'):
@@ -106,7 +109,8 @@ def main():
         print('Downloading pinned artifact: '+name,flush=True)
         try:
             with httpx.Client(timeout=60,follow_redirects=True,trust_env=False) as client:
-                files=provision(client,artifact,token)
+                # Public artifacts do not depend on an optional gated-model token being valid.
+                files=provision(client,artifact,None if name in {'qwen','embedding'} else token)
             report.append({'artifact':name,**artifact,'files':files})
             print('Pinned artifact cached and hashed: '+name,flush=True)
         except Exception as error:

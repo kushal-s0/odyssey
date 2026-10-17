@@ -103,6 +103,21 @@ try {
   await page.getByLabel('Audio file', { exact: true }).setInputFiles(resolve(fixture.directory, 'synthetic.wav'))
   await expect(page.getByLabel('Recording playback')).toBeVisible()
   await page.getByRole('checkbox').check()
+  // A selected older file must not be submitted while a new recording awaits permission.
+  let submittedDuringPermission = 0
+  const pendingRequest = request => { if (request.url() === submissionRoute && request.method() === 'POST') submittedDuringPermission++ }
+  page.on('request', pendingRequest)
+  await page.evaluate(() => {
+    navigator.mediaDevices.getUserMedia = () => new Promise((_resolve, reject) => { window.__rejectPendingMicrophone = reject })
+  })
+  await page.getByRole('button', { name: 'Record your idea' }).click()
+  await page.getByRole('button', { name: 'Submit idea', exact: true }).click()
+  await expect(page.getByRole('alert')).toContainText('Finish microphone permission or stop recording')
+  if (submittedDuringPermission) throw new Error('An old file was submitted during microphone permission')
+  page.off('request', pendingRequest)
+  await page.evaluate(() => window.__rejectPendingMicrophone(new DOMException('Synthetic denied permission', 'NotAllowedError')))
+  await expect(page.getByText('Microphone unavailable or permission denied.', { exact: false })).toBeVisible()
+  checks.push('Pending microphone permission blocks submission of a previously selected file; no POST is sent.')
   const audioSaved = page.waitForResponse(response => response.url() === submissionRoute && response.request().method() === 'POST' && response.status() === 202)
   await page.getByRole('button', { name: 'Submit idea', exact: true }).click()
   await audioSaved

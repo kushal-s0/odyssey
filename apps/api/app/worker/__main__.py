@@ -1,4 +1,4 @@
-"""Operator-started, finite outbound sessions. Ctrl+C stops this worker only."""
+"""Operator-started outbound sessions. Continuous mode runs only until the operator stops it."""
 import argparse
 import os
 import re
@@ -26,6 +26,7 @@ def main() -> None:
     parser.add_argument('--handler', help='Trusted installed Python module:function; model handlers arrive in T09-T12')
     parser.add_argument('--stages', nargs='+', help='Advertise only stages the selected handler implements')
     parser.add_argument('--probe', action='store_true', help='Synthetic orchestration ONLY; never claims screening stages')
+    parser.add_argument('--continuous', action='store_true', help='Operator-run owned worker until Ctrl+C; no provider keep-alive')
     args = parser.parse_args()
     private = dotenv_values(args.env_file) if args.env_file.exists() else {}
     if not os.environ.get('HF_TOKEN') and private.get('HF_TOKEN'):
@@ -44,8 +45,8 @@ def main() -> None:
         worker = WorkerRequest(worker_id=identity, supported_stages=stages, manifest_hash=MANIFEST_HASH)
     except ValueError:
         parser.error('Check worker origin, identity, stages and private WORKER_CREDENTIAL configuration')
-    deadline = time.monotonic()+args.session_seconds
-    idle_until = time.monotonic()+args.idle_seconds
+    deadline = float('inf') if args.continuous else time.monotonic()+args.session_seconds
+    idle_until = float('inf') if args.continuous else time.monotonic()+args.idle_seconds
     backoff = 1.0
     try:
         while time.monotonic() < min(deadline, idle_until):
@@ -54,7 +55,7 @@ def main() -> None:
                 if work:
                     print(f'stage_claimed id={work.stage_id} generation={work.lease_generation}', flush=True)
                     execute(client, work, handler, max_seconds=min(args.stage_seconds, max(1, deadline-time.monotonic())))
-                    idle_until = time.monotonic()+args.idle_seconds
+                    idle_until = float('inf') if args.continuous else time.monotonic()+args.idle_seconds
                     backoff = 1.0
                 else:
                     backoff = min(30.0, backoff*2)

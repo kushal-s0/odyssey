@@ -1,4 +1,4 @@
-# Hackathon reset ? current code audit and repair order
+# Hackathon reset: current code audit and repair order
 
 Updated 2026-10-17 21:39 IST. Latest user direction: solve the problem statement quickly; this is a hackathon build, not a production-readiness program. This file takes priority over the older sequential release gates. Deadline remains 18 October, 06:00 IST. No paid APIs or publication without approval.
 
@@ -70,3 +70,22 @@ Basic privacy, bounded files, real model evidence, correct arithmetic and honest
 ## Immediate next implementation action
 
 Restore the existing model environment minimally, provision missing MiniLM, then run `scripts/verify_owned_text.py --case english --with-assessment` here. In parallel only when safe, finish the small T08 microphone fix and reuse AssessmentView in a real assessor workspace. Do not start another infrastructure project or claim the app complete from the build/test results.
+
+## Latest execution order requested by user
+
+1. Cleanup: unused tracked .tools vendor copies, old clean-install copies and duplicate setup documents removed; originals/models/history retained.
+2. Startup/secrets: one canonical root .env.local, preserved public settings/HF token, locally generated worker secrets, one start.cmd. Supabase login ONLY, explicitly selected by the user; no local demo bypass.
+3. Results: existing GPU packages reused, missing dependencies/MiniLM installed, real English model check running. Do inference first: additional training is not required to display pretrained model results.
+4. Training/data: the existing tiny rejected relevance experiment remains experimental. Use accessible pretrained models now; train only with relevant reviewed labels and a measured benefit. NLLB/Whisper are candidates, not integrated capabilities. Keep licenses/source attribution.
+5. Complete the brief's input modalities and assessor/similarity/context/comparison features next. Deployment remains free and requires separate publication approval.
+
+## Latest implementation checkpoint, 22:22 IST
+
+The audit findings above describe the starting checkout. Cleanup and restoration
+have now been implemented: one root private config, verified setup/start scripts,
+Qwen/MiniLM dependencies/cache restored, actual English assessment and ten browser
+journeys passed, microphone race fixed, extracted business facts visible. T08 is
+done. See SESSION_HANDOFF.md for current measurements and specific Supabase blockers.
+The service key is missing and the configured DB hostname failed DNS; no hosted
+integration is claimed. Next implement actual PDF/audio/translation and assessor
+requirements, with continued safe grounding improvements.
