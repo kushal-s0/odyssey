@@ -4,6 +4,8 @@
 **Executor:** Codex. This replaces the earlier assignment of tasks to three human builders.  
 **Current state:** planning only; no application tasks have been executed.
 
+**Budget policy:** no paid API or hosting purchases, no trial-credit dependency and no paid fallback. The user confirmed an eligible free Hugging Face account; still verify real provisioning and quotas. Existing open weights are self-hosted; only the small answer-relevance model is trained for this project.
+
 ## 1. Start or resume
 
 Read these files in this order:
@@ -12,7 +14,8 @@ Read these files in this order:
 2. The latest report in `planning/task-reports/`, if one exists.
 3. [IMPLEMENTATION_TASKS.md](IMPLEMENTATION_TASKS.md) — ordered task instructions and acceptance checks.
 4. [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) — product requirements, data model, API contracts, scoring and dataset findings.
-5. [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md) — release requirements.
+5. [FREE_MODEL_HOSTING_PLAN.md](FREE_MODEL_HOSTING_PLAN.md) - zero-spend stack, custom-model experiment and model deployment requirements.
+6. [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md) — release requirements.
 
 Inspect the real repository state before trusting a report. Preserve existing user changes and source datasets. Start with T01 when the user requests implementation. Do not execute implementation merely because this planning document exists.
 
@@ -45,7 +48,7 @@ No task is complete until its acceptance checks pass and its report is written. 
 
 These are project tracker states, independent of any system-level goal tooling.
 
-If an API key, account, language reviewer, deployment target or permission is missing:
+If model-repository access, free quota, an account, language reviewer, deployment target or permission is missing:
 
 - Complete the safe, independent parts first: adapter code, schema handling, fixtures, error states, local build and infrastructure manifests where applicable.
 - Write a partial `TXX.md` report stating exactly what works, what was tested with fixtures, and which live check cannot run. Mark that task `blocked`, not `done`.
@@ -57,23 +60,23 @@ Do not mark T24 complete without a verified HTTPS deployment. T23 can establish 
 
 ## 4. Application-wide implementation rules
 
-- Build a modular application: React/TypeScript frontend; FastAPI API; Celery workers; Redis-compatible broker; Postgres/pgvector; private object storage; provider adapters. Use the selected stack in the architecture document unless inspection establishes a concrete incompatibility.
+- Build the free profile: React/TypeScript on Cloudflare Pages, lightweight FastAPI on Render Free, Supabase Free persistence, durable Postgres stage leases and two owned Gradio ZeroGPU model runtimes. No hosted Redis or paid background worker. Follow FREE_MODEL_HOSTING_PLAN.md for runtime contracts.
 - Keep APIs stateless. Store files in object storage and job/result state in Postgres. Use bounded temporary files only for processing and clean them in failure paths.
 - Run OCR, speech processing, AI calls and report generation in durable background jobs where they can exceed short request handling. Do not use in-process fire-and-forget jobs as the persistence mechanism.
 - Treat queue delivery as at-least-once. Use revision/pipeline/stage keys, database uniqueness, durable checkpoints, worker leases, bounded retries and stale-job reconciliation. At most one result version may be published for a given key.
-- External calls are not automatically exactly-once: use provider idempotency where available, and record unavoidable retry/billing uncertainty after a crash. Do not promise zero duplicate provider charges without evidence.
+- Inference can be repeated after a crash even when result publication is idempotent. Checkpoint work, cap retries and account for shared GPU quota. Never introduce a paid fallback or quota bypass.
 - Validate authorization at every resource boundary, including job polling, uploaded attachments, evidence, reports, similarity and aggregates. Use trusted role assignment and scoped data access.
 - Keep source evidence and English translations together. Unknown facts remain null. Never use language, name or social category to infer business quality. Preserve ambiguity in overwritten answers.
 - Use typed, versioned contracts. Keep one source of truth for API models and generated frontend types. Record breaking changes before altering dependent clients.
 - Keep credentials server-side; public frontend configuration contains only public identifiers. Separate development and deployment data.
-- Control load: file/page/duration limits, per-user jobs, request rate limits, queue admission, worker concurrency, connection pools and provider budget reservations. Limits must be shared across API instances.
+- Control load: file/page/duration limits, per-user jobs, request rate limits, queue admission, worker concurrency, connection pools and shared free-runtime quota reservations. Limits must be shared across API instances.
 - Log request/job IDs, stage timings, safe errors and measured usage. Avoid logging source personal data. Distinguish partial completion from total failure.
 - Implement the full brief: all three input formats, six dataset languages subject to measured validation, reasoned domain ratings, similar ideas, location context and all four comparison views.
 - Include the clarification loop and arithmetic checker as explicit tasks. Read-aloud, collaboration matching and a full map remain future scope.
 
 ## 5. Scalability must have evidence
 
-T22 must demonstrate stateless API replication and independent worker scaling. Use this **initial verification workload**, recording the hardware/container limits, dataset shape and measured results:
+T22 must demonstrate stateless API replication and independent worker scaling on local/owned test infrastructure. Do not run load tests against public free services. Use this **initial verification workload**, recording the hardware/container limits, dataset shape and measured results:
 
 | Area | Workload and gate |
 |---|---|
@@ -81,24 +84,25 @@ T22 must demonstrate stateless API replication and independent worker scaling. U
 | API replication | Two API instances behind a local proxy; submit/poll across both without sticky sessions or missing state |
 | Worker concurrency | Two workers, 20 queued jobs, duplicate delivery and a worker termination; no lost accepted jobs or duplicate published versions |
 | Concurrent requests | 50 virtual users for metadata/status traffic for 5 minutes; target p95 below 500 ms and unexpected errors below 1% in the documented test environment |
-| Provider pressure | Inject rate limits/timeouts; verify bounded retry, queue backpressure and shared budget enforcement |
+| Runtime pressure | Inject GPU quota exhaustion, Space sleep, OOM and timeouts; verify bounded retry, queue backpressure, preserved checkpoints and shared quota enforcement |
 
 Provider-free load tests measure application infrastructure only. Record real AI latency separately on representative samples. No claim of thousands of simultaneous AI submissions follows from a metadata test. Begin with exact vector search for the small corpus; introduce an approximate index only when the larger benchmark/query plan justifies it and retrieval quality remains acceptable.
 
-T23 must deliver reproducible container builds, migrations, service configuration, health checks, CI, rollback and operating instructions. T24 and T25 must validate the live environment. The final readiness report distinguishes verified results, targets not reached and work that remains blocked.
+T23 must deliver reproducible application builds, migrations, service configuration, health checks, CI, rollback and operating instructions. T23A must deliver model manifests, classifier/baseline artifacts, two free Space deployments and cold/warm memory/latency measurements. T09A performs the small relevance-model training experiment with an explicit promotion/rejection decision. T24 and T25 must validate the live environment. The final readiness report distinguishes verified results, targets not reached and work that remains blocked.
 
 ## 6. Completion and handover
 
-The implementation is complete when T01–T26 are `done`, every report exists, the deployed end-to-end checks pass, and the deployment checklist is supported by recorded evidence. If any of these remain unmet, provide a precise partial-completion report instead of calling the application production-ready.
+The implementation is complete when all 28 tasks (T01-T26 plus T09A and T23A) are `done`, every report exists, the deployed end-to-end checks pass, and the deployment checklist is supported by recorded evidence. If any of these remain unmet, provide a precise partial-completion report instead of calling the application production-ready.
 
-At handover, provide the deployed URL, release/version identifier, startup/deployment instructions, actual test results, dataset evaluation, scaling measurements, cost/configuration notes and any residual limitations. The app is a first-line assessment aid; final program/funding decisions remain with authorized reviewers.
+At handover, distinguish quota-limited free deployment from capacity on additional owned hardware. Provide the deployed URL, release/version identifier, startup/deployment instructions, actual test results, dataset evaluation, scaling measurements, cost/configuration notes and any residual limitations. The app is a first-line assessment aid; final program/funding decisions remain with authorized reviewers.
 
 ## 7. Prompt to start implementation
 
 ```text
 Implement this application by following planning/CODEX_EXECUTION_PLAN.md.
 Read planning/TASK_STATUS.md, planning/IMPLEMENTATION_TASKS.md and
-planning/IMPLEMENTATION_PLAN.md before editing application code.
+planning/IMPLEMENTATION_PLAN.md and planning/FREE_MODEL_HOSTING_PLAN.md
+before editing application code. Use no paid APIs or purchased hosting.
 
 Start at the first eligible incomplete task and work through the full
 ordered backlog. For each task: implement its complete behavior, run

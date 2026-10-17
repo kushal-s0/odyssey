@@ -1,61 +1,57 @@
 # Ordered implementation tasks for Codex
 
-**Executor: Codex.** This replaces the earlier assignment to three human builders. No application task has been executed yet.
+**Executor: Codex. Budget: no paid APIs or purchased hosting.** All 28 tasks are pending. T09A and T23A add custom-model training and model deployment without renumbering existing tasks.
 
-Read [CODEX_EXECUTION_PLAN.md](CODEX_EXECUTION_PLAN.md), resume from [TASK_STATUS.md](TASK_STATUS.md), and use [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) for the detailed product, API and scoring specification.
+Read [CODEX_EXECUTION_PLAN.md](CODEX_EXECUTION_PLAN.md), [FREE_MODEL_HOSTING_PLAN.md](FREE_MODEL_HOSTING_PLAN.md), [TASK_STATUS.md](TASK_STATUS.md) and [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 
-Execute in ascending order by default. The listed dependencies allow independent work to continue around external blockers; record any out-of-order execution. Missing required live verification prevents an integration being marked done.
+Execute in the listed order. Dependencies allow independent work around a recorded blocker. Every task requires implementation, actual acceptance checks, its own report using [TEMPLATE.md](task-reports/TEMPLATE.md), then tracker/CSV updates. No paid fallback, mock-as-live result or fabricated completion. T09A may conclude with a justified experimental-model rejection and a validated baseline; do not mislabel this as a successful trained-model deployment.
 
 ## Task index
 
 | ID | Task | Dependencies | Required report |
 |---|---|---|---|
-| T01 | Inspect repository and inventory the dataset | None | `task-reports/T01.md` |
+| T01 | Inspect dataset and prove free-runtime feasibility | None | `task-reports/T01.md` |
 | T02 | Scaffold application and local toolchain | T01 | `task-reports/T02.md` |
 | T03 | Define contracts, domain rules and rubric | T02 | `task-reports/T03.md` |
-| T04 | Implement database, revisions and private storage | T03 | `task-reports/T04.md` |
+| T04 | Implement database, durable stage leases and private storage | T03 | `task-reports/T04.md` |
 | T05 | Implement authentication and authorization | T04 | `task-reports/T05.md` |
 | T06 | Implement uploads and submission APIs | T05 | `task-reports/T06.md` |
-| T07 | Implement durable workers and job progress | T06 | `task-reports/T07.md` |
+| T07 | Implement durable Postgres jobs and free-runtime dispatch | T06 | `task-reports/T07.md` |
 | T08 | Build applicant submission and recording UI | T03, T05, T06, T07 | `task-reports/T08.md` |
-| T09 | Implement translation and structured text extraction | T03, T07 | `task-reports/T09.md` |
-| T10 | Implement digital PDF and handwritten scan processing | T09 | `task-reports/T10.md` |
-| T11 | Implement regional audio transcription | T09 | `task-reports/T11.md` |
-| T12 | Implement evidence-backed ratings and totals | T09 | `task-reports/T12.md` |
+| T09 | Implement self-hosted extraction and Indic translation | T03, T07 | `task-reports/T09.md` |
+| T09A | Train and evaluate our answer-relevance model | T09 | `task-reports/T09A.md` |
+| T10 | Implement PDF and handwritten scans with open weights | T09 | `task-reports/T10.md` |
+| T11 | Implement self-hosted regional audio transcription | T09 | `task-reports/T11.md` |
+| T12 | Implement evidence-backed ratings and deterministic totals | T09, T09A | `task-reports/T12.md` |
 | T13 | Build assessor workspace, evidence viewer and review | T08, T10, T11, T12 | `task-reports/T13.md` |
 | T14 | Implement authorized similar-idea retrieval | T04, T09, T12 | `task-reports/T14.md` |
-| T15 | Implement sourced local-business context | T05, T09, T13 | `task-reports/T15.md` |
+| T15 | Implement free OpenStreetMap business context | T05, T09, T13 | `task-reports/T15.md` |
 | T16 | Implement all four comparison views | T12, T13, T14 | `task-reports/T16.md` |
 | T17 | Implement clarification and reassessment | T11, T12, T13 | `task-reports/T17.md` |
 | T18 | Implement business arithmetic checks | T09, T12, T13 | `task-reports/T18.md` |
 | T19 | Implement reports and version history | T13, T14, T15, T16, T17, T18 | `task-reports/T19.md` |
-| T20 | Evaluate dataset and publish actual results | T10, T11, T12, T14, T17, T18 | `task-reports/T20.md` |
+| T20 | Evaluate dataset and our model with real measurements | T09A, T10, T11, T12, T14, T17, T18 | `task-reports/T20.md` |
 | T21 | Harden access, uploads and failure boundaries | T05, T06, T07, T13, T14, T15, T16, T17, T19 | `task-reports/T21.md` |
-| T22 | Implement and measure scalability | T07, T14, T16, T21 | `task-reports/T22.md` |
-| T23 | Package reproducible deployment and CI | T02, T04, T07, T19, T21, T22 | `task-reports/T23.md` |
-| T24 | Deploy and verify hosted environment | T20, T22, T23 | `task-reports/T24.md` |
+| T22 | Measure portable API and model scalability | T07, T14, T16, T21 | `task-reports/T22.md` |
+| T23 | Package zero-spend application deployment | T02, T04, T07, T19, T21, T22 | `task-reports/T23.md` |
+| T23A | Package and deploy versioned model runtimes | T09A, T10, T11, T12, T23 | `task-reports/T23A.md` |
+| T24 | Deploy and verify the full free hosted application | T20, T22, T23, T23A | `task-reports/T24.md` |
 | T25 | Run deployed acceptance and recovery checks | T24 | `task-reports/T25.md` |
 | T26 | Write final implementation and readiness handover | T25 | `task-reports/T26.md` |
 
-## Completion rule for every task
-
-Implement the task, run its acceptance checks, then create `planning/task-reports/TXX.md` using [TEMPLATE.md](task-reports/TEMPLATE.md). Include actual changed files, observable behavior, exact commands/results, test environment, configuration/migrations, limitations and next task. Update `TASK_STATUS.md` and `implementation-tasks.csv` after the report exists. Unmet required checks prevent `done`.
-
-Paths below are intended implementation targets, not existing files. Equivalent clear names are acceptable if recorded. Choose verification commands from the actual toolchain and record what ran; do not invent test success.
-
-## T01 - Inspect repository and inventory the dataset
+## T01 - Inspect dataset and prove free-runtime feasibility
 
 **Dependencies:** None.
 
-**Primary files:** `scripts/inventory_dataset.py`, `evals/manifests/`, `docs/DATASET_NOTES.md`.
+**Primary files:** `scripts/inventory_dataset.py`, `evals/manifests/`, `docs/DATASET_NOTES.md`, `docs/FREE_FEASIBILITY.md`.
 
 **Implement:**
 
-Read repository instructions and the original brief; preserve user files and uploaded archives. Build repeatable manifest entries with paths, hashes, sizes, language labels, PDF pages/text quality, audio codecs/durations and scenario families. Normalize Telegu/Telugu and trailing spaces; reject traversal/collisions. Inspect difficult representative samples and identify provider prerequisites.
+Preserve sources and inventory the 55 files with hashes, media metadata and scenario families. Inspect representative hard inputs. Confirm the user-owned eligible Hugging Face account can create the two free Gradio ZeroGPU runtimes; do not create paid Docker Spaces. Spike authenticated API-to-Gradio stage enqueue, checkpointing and account-attributed GPU quotas. Test model access/license gates and one handwritten page, one regional audio chunk and one translated answer. Record memory/latency/compatibility; the user has confirmed eligibility, not successful provisioning.
 
 **Acceptance checks:**
 
-Account for 42 PDFs and 13 recordings, including four 11-page scans without text layers. Re-running preserves identifiers and originals. Record uninspected content and human annotation needs; filenames are not ground truth.
+Repeatable inventory accounts for 42 PDFs/13 recordings and the four 11-page scans. Verify real free plan selection, no paid inference dependency and bounded stage access before committing to hosting. Record unavailable model permissions/quotas as specific blockers; never assume old CPU-Space advice applies.
 
 **Required final action:** write `planning/task-reports/T01.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
@@ -91,7 +87,7 @@ Schema checks accept valid partial records and reject invalid ratings/evidence s
 
 **Required final action:** write `planning/task-reports/T03.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
-## T04 - Implement database, revisions and private storage
+## T04 - Implement database, durable stage leases and private storage
 
 **Dependencies:** T03.
 
@@ -99,11 +95,11 @@ Schema checks accept valid partial records and reject invalid ratings/evidence s
 
 **Implement:**
 
-Migrate all tables in the architecture plan with foreign keys, scoped uniqueness, indexes and pgvector metadata. Add transactional enqueue intent/outbox, durable job stages and atomic publication keys. Keep files in private object storage. Configure database/storage policies and worker access boundaries; document deletion, retention and backup responsibilities.
+Implement the architecture tables on Supabase Free with indexes, scoped uniqueness and pgvector. Postgres is the durable queue: input/job/stage creation and dispatch intent are transactional; add leases, retry-at times and atomic publication keys. Protect claim/checkpoint operations and private object storage. No hosted Redis requirement. Budget database/object storage/egress within free limits; define deletion and manual export/restore procedures.
 
 **Acceptance checks:**
 
-Migrations apply to an empty development database and are repeatable. History persists after restart; invalid relations/duplicate publication keys are rejected. Test storage privacy separately from database policies.
+Migrations apply cleanly and repeatably. Multiple claimants cannot own one unexpired stage lease. History survives restart and duplicate publication is rejected. Database and storage policies are separately checked; free quotas and absence of paid backup assumptions are documented.
 
 **Required final action:** write `planning/task-reports/T04.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
@@ -139,19 +135,19 @@ All required input formats preserve intact originals; 11-page scans are accepted
 
 **Required final action:** write `planning/task-reports/T06.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
-## T07 - Implement durable workers and job progress
+## T07 - Implement durable Postgres jobs and free-runtime dispatch
 
 **Dependencies:** T06.
 
-**Primary files:** `apps/api/app/worker/`, `apps/api/app/services/jobs.py`, `apps/api/app/routes/jobs.py`, `infra/compose.yaml`.
+**Primary files:** `apps/api/app/worker/`, `apps/api/app/services/jobs.py`, `apps/api/app/routes/jobs.py`, `apps/api/app/routes/internal_jobs.py`.
 
 **Implement:**
 
-Connect Celery/broker to durable jobs. Add stage states, checkpoints, leases/heartbeats, bounded retries/backoff, cancellation and stale-job reconciliation with scheduler locking. Enforce revision/pipeline/stage idempotency and atomic final publication. Expose authorized polling. Validate orchestration initially with a clearly labeled deterministic test handler.
+Implement Postgres stage claiming and bounded Gradio event enqueue through a runtime adapter, plus a local worker adapter for tests/owned hardware. Persist event IDs, checkpoints, leases/heartbeats and finite retry-at times. Authenticate job-specific capabilities before inference and use restricted HTTPS checkpoint APIs, not full database keys in models. Reconcile on startup, authorized app activity and explicit resume; allow completion-triggered next-stage dispatch. Do not assume a daemon can run while free services sleep.
 
 **Acceptance checks:**
 
-Worker termination resumes checkpointed work. Duplicate delivery and queue publication failure recover with one published result. Polling is authorized and actionable. Test-handler output is never described as actual AI assessment.
+A duplicate event, lost enqueue response, worker termination and sleeping runtime do not lose accepted input or publish duplicate versions. Progress exposes waiting_for_runtime and quota_exhausted accurately. A deterministic handler proves orchestration only; no Celery/Redis or paid worker is required for the free release.
 
 **Required final action:** write `planning/task-reports/T07.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
@@ -171,23 +167,39 @@ A signed-in applicant submits each supported type and sees persisted state. Refr
 
 **Required final action:** write `planning/task-reports/T08.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
-## T09 - Implement translation and structured text extraction
+## T09 - Implement self-hosted extraction and Indic translation
 
 **Dependencies:** T03, T07.
 
-**Primary files:** `apps/api/app/providers/llm.py`, `apps/api/app/pipeline/normalize.py`, `apps/api/app/pipeline/structure.py`.
+**Primary files:** `apps/api/app/providers/local_models.py`, `apps/api/app/pipeline/normalize.py`, `apps/api/app/pipeline/structure.py`, `models/manifest.json`.
 
 **Implement:**
 
-Implement configured hosted model adapter with explicit model ID, schemas, timeouts and usage tracking. Segment original text, detect language per segment and translate preserving numbers/units/places. Map fields semantically, preserving missing/irrelevant/ambiguous/unreadable statuses and conflict alternatives. Remove identity from scoring input. Validate references and allow one bounded JSON repair.
+Run pinned Qwen3-VL-2B-Instruct text extraction in owned runtime A and IndicTrans2 distilled models in runtime B. Use confirmed/validated language and answer-level segmentation, retaining original/English text and numbers/units. Enforce bounded output and Pydantic validation; small open models are not guaranteed schema adherence. Preserve missing/irrelevant/ambiguous/unreadable statuses and evidence alternatives. Record weights/license/runtime revisions and timings; no paid model key or fallback.
 
 **Acceptance checks:**
 
-Real representative text/mixed-language examples persist typed records with valid sources. Unknowns stay null and changed questions do not invent facts. Invalid JSON, timeouts and source instruction injection are handled. Missing live credentials block required live verification.
+Actual owned-model inference handles representative text and mixed-language examples with valid evidence and null unknowns. JSON repair is bounded and prompt injection is ignored. Measure peak memory, cold/warm time and quota failure behavior; paid endpoints are absent from the executed path.
 
 **Required final action:** write `planning/task-reports/T09.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
-## T10 - Implement digital PDF and handwritten scan processing
+## T09A - Train and evaluate our answer-relevance model
+
+**Dependencies:** T09.
+
+**Primary files:** `training/build_pairs.py`, `training/train_relevance.py`, `training/evaluate_relevance.py`, `models/relevance/`, `docs/MODEL_CARD.md`.
+
+**Implement:**
+
+Follow FREE_MODEL_HOSTING_PLAN.md: create question-answer pairs with family/source IDs and label provenance; remove identity. Compare a rules/cosine baseline with frozen MiniLM features plus logistic regression. Keep all family variants/translations together in group splits. Report real class/group counts, confusion matrix, macro-F1, irrelevant precision/recall and abstention. Export reproducible candidate artifacts and a model card; record an explicit promote/reject decision. Do not train foundation models or a funding/business-success predictor.
+
+**Acceptance checks:**
+
+Re-running with pinned data/features/seed reproduces the experiment. No holdout leakage and no synthetic-only real-world accuracy claim. Promotion gates use independently reviewed real data; insufficient labels or failed gates keep the baseline active and candidate experimental. The task may finish with a justified rejection, but the release must not advertise an unvalidated model as validated.
+
+**Required final action:** write `planning/task-reports/T09A.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
+
+## T10 - Implement PDF and handwritten scans with open weights
 
 **Dependencies:** T09.
 
@@ -195,43 +207,43 @@ Real representative text/mixed-language examples persist typed records with vali
 
 **Implement:**
 
-Extract text/layout and check corruption/question mapping. Render suspect/scanned pages for configured visual extraction with bounded pixels/pages/runtime/temp storage. Keep actual page references and reliable boxes. Preserve overwritten alternatives; text extraction order does not identify the intended answer. Feed T09 and checkpoint page progress with reviewable partial output.
+Use text/layout extraction first; render only suspect/scanned pages. Run bounded one-page Qwen3-VL calls in our document Space, preserving original scans, source pages and reliable boxes. Printed OCR fallback does not prove handwriting support. Checkpoint page work and preserve uncertain overwrites as alternatives. Enforce pixel/page/runtime/memory budgets; no paid vision endpoint.
 
 **Acceptance checks:**
 
-Process complete, broken-text, mixed-language and overwritten examples plus a full 11-page Hindi scan. Sources open actual pages and uncertain handwriting is flagged. Malformed/encrypted inputs fail safely; interrupted processing resumes.
+Evaluate complete, corrupted-text, mixed-language and overwritten cases plus a full 11-page Hindi scan. Original pages open correctly and uncertain handwriting is flagged. Restart/quota exhaustion resumes from saved pages. Record actual extraction quality and GPU scheduling versus execution time.
 
 **Required final action:** write `planning/task-reports/T10.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
-## T11 - Implement regional audio transcription
+## T11 - Implement self-hosted regional audio transcription
 
 **Dependencies:** T09.
 
-**Primary files:** `apps/api/app/pipeline/audio.py`, `apps/api/app/providers/speech.py`, `evals/fixtures/audio/`.
+**Primary files:** `apps/api/app/pipeline/audio.py`, `apps/api/app/providers/speech.py`, `deploy/spaces/speech_translation/`.
 
 **Implement:**
 
-Inspect/normalize audio using safe ffprobe/FFmpeg arguments. Call the configured speech model, retaining original-language transcript and supported timestamps. Chunk within provider limits, preserve global offsets and remove overlap duplication. Pass segments through T09. Record uncertain language/quality and measured usage; do not fabricate timestamp precision.
+Use FFmpeg and pinned IndicConformer 600M with ONNX Runtime CPU in the speech Space initially. Verify model access and inspected remote code; do not assume ONNX GPU execution is ZeroGPU-compatible. Chunk audio with global offsets and preserve original transcripts; translate via IndicTrans2. Require/confirm audio language when automatic identification is unreliable and label declared versus detected language. Use segment references if precise word timestamps are unavailable.
 
 **Acceptance checks:**
 
-Representative Hindi, Telugu, Bengali and Odia recordings produce inspectable transcripts/records. Playback references align with actual sources. Silence, invalid/long media and provider errors stay within retry/runtime limits.
+Run representative Hindi/Telugu/Bengali/Odia recordings on the actual owned runtime. Verify transcript/evidence alignment, CPU memory and chunk latency. Silence/invalid media and quota/runtime interruption have bounded recovery. No Sarvam or other paid ASR API is invoked.
 
 **Required final action:** write `planning/task-reports/T11.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
-## T12 - Implement evidence-backed ratings and totals
+## T12 - Implement evidence-backed ratings and deterministic totals
 
-**Dependencies:** T09.
+**Dependencies:** T09, T09A.
 
 **Primary files:** `apps/api/app/pipeline/assess.py`, `apps/api/app/domain/scoring.py`, `apps/api/app/routes/assessments.py`, `tests/api/test_scoring.py`.
 
 **Implement:**
 
-Assess validated facts in a separate structured call using versioned domain anchors. Calculate potential, coverage, completeness applicability and review gating deterministically. Preserve strengths/gaps/risks, claim-versus-external evidence and model/prompt/rubric/input versions. Validate references/ranges before publication; exclude partial/incompatible records from rankings.
+Use validated facts and our self-hosted text model for evidence-grounded domain judgments, then calculate weights/coverage/completeness deterministically. Use the custom relevance classifier only when promoted; otherwise run its documented baseline. Neither classifier confidence nor missing answers predict business success. Preserve rubric/model/input versions, strengths/gaps/risks and evidence; compare only eligible records.
 
 **Acceptance checks:**
 
-Exact arithmetic checks cover complete, partial, no-assessable-domain and conflicting cases. Reasons have valid evidence or insufficient-evidence labels. Real results survive restart; identity/social category/grammar are not scoring features.
+Exact arithmetic checks cover complete/partial/no-evidence/conflicting cases. Actual self-hosted outputs cite valid evidence or state insufficiency. Identity/grammar are excluded from scoring. Promoted versus baseline classifier selection is explicit and reproducible; no paid inference dependency.
 
 **Required final action:** write `planning/task-reports/T12.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
@@ -267,19 +279,19 @@ Annotated positive/hard-negative pairs yield measured Recall@5 and grounded reas
 
 **Required final action:** write `planning/task-reports/T14.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
-## T15 - Implement sourced local-business context
+## T15 - Implement free OpenStreetMap business context
 
 **Dependencies:** T05, T09, T13.
 
-**Primary files:** `apps/api/app/providers/places.py`, `apps/api/app/routes/location_insights.py`, `apps/web/src/components/LocalContext.tsx`.
+**Primary files:** `apps/api/app/providers/osm.py`, `apps/api/app/routes/location_insights.py`, `apps/web/src/components/LocalContext.tsx`.
 
 **Implement:**
 
-Query configured Places using confirmed location/category; resolve ambiguity before exact-area claims. Show attribution, query scope/time and precision in a list. Separate applicant claims from retrieved businesses. Follow provider display/retention requirements and avoid blanket caching. Handle missing location/key, empty results, timeout and quota limits independently of core assessment.
+Use applicant-confirmed location/category with bounded Overpass queries; Nominatim is only explicit user-triggered geocoding with identifiable User-Agent, cache and a shared maximum one request/second. No bulk dataset geocoding/autocomplete. Cache results with attribution/date and include a small licensed regional snapshot fallback. Never send beneficiary identity. Distinguish retrieved listings, applicant claims, dated snapshots and fixtures; no Google Places API.
 
 **Acceptance checks:**
 
-One real configured lookup returns attributed context. Empty results never prove no competition; approximate locations stay labeled. Outages/ambiguity do not destroy core results or generate invented enrichment.
+A real policy-compliant lookup shows source/area/time and approximate location. Empty results do not prove no competition. Timeout/rate-limit/poor-coverage states preserve the assessment; rate limiting is shared across API replicas. Offline snapshot labels and attribution are correct.
 
 **Required final action:** write `planning/task-reports/T15.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
@@ -347,19 +359,19 @@ Multipage reports are readable with required sections and honest unavailable sta
 
 **Required final action:** write `planning/task-reports/T19.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
-## T20 - Evaluate dataset and publish actual results
+## T20 - Evaluate dataset and our model with real measurements
 
-**Dependencies:** T10, T11, T12, T14, T17, T18.
+**Dependencies:** T09A, T10, T11, T12, T14, T17, T18.
 
 **Primary files:** `evals/annotations/`, `evals/run.py`, `evals/reports/`, `docs/EVALUATION.md`.
 
 **Implement:**
 
-Prepare reviewed labels and family-separated tuning/holdout manifests. Measure field/critical-number accuracy, status precision/recall, evidence validity, retrieval and rating stability. Use manually transcribed audio and verified equivalent-language pairs for speech and fairness checks. Account for all 55 inputs; record actual usage/latency and annotation limitations.
+Use reviewed family-separated labels for extraction/statuses/numbers/evidence/retrieval/rating checks and the relevance classifier. Account for all 55 inputs. Manually validated audio and equivalent-language pairs support speech/fairness claims. Record model manifests, real cold/warm inference time, CPU/RAM/GPU use, queue wait, free quota usage and uncertainty. Compare the classifier to its baseline; do not force promotion.
 
 **Acceptance checks:**
 
-Report numerators/denominators by language/format/difficulty. No family leakage or filename-based ground truth. Measure targets in IMPLEMENTATION_PLAN.md and fix failures; missing required human validation/unmet release gates remain explicit blockers.
+Reports include real numerators/denominators per language/format and no family leakage. Distinguish owned open-weight inference from the project-trained classifier. Assess release gates honestly; missing reviewed data and unmet required quality gates remain visible. Never substitute hosted paid models to meet a target.
 
 **Required final action:** write `planning/task-reports/T20.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
@@ -371,7 +383,7 @@ Report numerators/denominators by language/format/difficulty. No family leakage 
 
 **Implement:**
 
-Test all routes/storage with two users/two cohorts. Bound parsing/subprocess resources, sanitize rendered output and prevent unsafe arbitrary URL fetches. Inject source instructions, silent media, encrypted PDFs, invalid JSON and provider auth/quota/timeouts. Verify log redaction/trusted roles; implement authorized source/derived deletion with minimal audit retention.
+Test all routes/storage with two users/two cohorts. Bound parsing/subprocess resources, sanitize rendered output and prevent unsafe arbitrary URL fetches. Inject source instructions, silent media, encrypted PDFs, invalid JSON and model access/quota/timeouts. Verify log redaction/trusted roles; implement authorized source/derived deletion with minimal audit retention.
 
 **Acceptance checks:**
 
@@ -379,7 +391,7 @@ Resource access matrix passes including similarity/aggregates. Failures are boun
 
 **Required final action:** write `planning/task-reports/T21.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
-## T22 - Implement and measure scalability
+## T22 - Measure portable API and model scalability
 
 **Dependencies:** T07, T14, T16, T21.
 
@@ -387,43 +399,59 @@ Resource access matrix passes including similarity/aggregates. Failures are boun
 
 **Implement:**
 
-Run two stateless API replicas and two workers with bounded database pools, shared rate/concurrency controls, queue admission and atomic provider budgets. Seed 10000 synthetic metadata records; inspect plans/indexes and remove unbounded/N+1 queries. Add request/job correlation, queue age/depth, heartbeats, latency/errors/usage metrics. Run the workload in CODEX_EXECUTION_PLAN.md and tune measured bottlenecks.
+Use only local/owned infrastructure for two APIs, two stage workers and a local Postgres test database. Seed 10000 synthetic metadata records; inspect query plans/indexes. Test 50 virtual metadata users and 20 queued recovery jobs as specified. Add shared admission/rate limits, bounded connection pools and model concurrency, memory/time budgets and free-quota states. Separately benchmark actual model stages at concurrency 1 and, if memory allows, 2.
 
 **Acceptance checks:**
 
-Faults preserve accepted jobs and one published result per revision/pipeline. Record real hardware, workload, p50/p95 and errors; meet stated initial gates or keep required shortfalls open. Limits/budgets apply across replicas; mock throughput is separate from live AI capacity.
+Record real hardware and p50/p95/errors/cold starts/peak RAM/VRAM. Accepted jobs survive duplicate/crash recovery with one published result. No load test hits free Supabase/ZeroGPU/Nominatim/Overpass. Report infrastructure capacity separately from inference throughput; the free demo does not claim automatic horizontal GPU scaling.
 
 **Required final action:** write `planning/task-reports/T22.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
-## T23 - Package reproducible deployment and CI
+## T23 - Package zero-spend application deployment
 
 **Dependencies:** T02, T04, T07, T19, T21, T22.
 
-**Primary files:** `infra/Dockerfile.api`, `infra/compose.yaml`, `infra/render.yaml`, `.github/workflows/ci.yml`, `.env.example`, `docs/OPERATIONS.md`.
+**Primary files:** `infra/Dockerfile.api`, `infra/compose.yaml`, `infra/render-free.yaml`, `deploy/pages/`, `.github/workflows/ci.yml`, `.env.example`, `docs/OPERATIONS.md`.
 
 **Implement:**
 
-Build pinned non-root API/worker images with FFmpeg/PDF tools/embedding assets and frontend static output. Define services, secret references, reconciliation, resource limits, readiness/liveness and graceful shutdown. CI checks builds/types/contracts/tests and clean migrations. Document isolation, migrations, backup/restore ownership, rollback, secrets, spend and recovery.
+Build a lightweight non-root API image without model frameworks/weights and a static Pages frontend. Define Render Free API and Supabase Free persistence settings; model events replace paid workers/Redis. Keep a local container profile for durable stage workers and local load tests. CI validates contracts/builds/tests/migrations. Document free plan limits, pause/resume, backup exports, rollback and no-paid-fallback policy.
 
 **Acceptance checks:**
 
-Clean setup builds/starts; migrations apply to empty test database. Health/shutdown/persistence checks pass and assets/images contain no secrets. CI-equivalent checks/manifests validate. This establishes deployability, not a public deployment.
+Clean local deployment works and API fits the selected free runtime budget. Manifests contain no paid worker, broker, domain, GPU or add-on. Configuration/quotas are verified; a zero-spend flag alone is not proof. Secrets stay out of images/assets and runtime files remain disposable.
 
 **Required final action:** write `planning/task-reports/T23.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
-## T24 - Deploy and verify hosted environment
+## T23A - Package and deploy versioned model runtimes
 
-**Dependencies:** T20, T22, T23.
+**Dependencies:** T09A, T10, T11, T12, T23.
 
-**Primary files:** `infra/render.yaml`, `docs/DEPLOYMENT_RECORD.md`, `planning/DEPLOYMENT_CHECKLIST.md`.
+**Primary files:** `deploy/spaces/text_document/`, `deploy/spaces/speech_translation/`, `models/manifest.json`, `docs/MODEL_DEPLOYMENT.md`.
 
 **Implement:**
 
-Use authorized hosting; configure secrets/policies/origins and limited demo accounts. Apply migrations and deploy broker/API/worker/reconciliation/frontend. Verify health/heartbeat. Run real text/PDF/scan/audio and local-business requests; inspect persisted evidence/usage. Record actual URL/release/configuration. Missing hosting/provider access is a blocker, never a simulated deployment.
+Package two owned Gradio ZeroGPU Spaces using the supported PyTorch placement/decorator pattern; keep ONNX ASR CPU unless compatibility is proven. Pin model weights/preprocessing/licenses/checksums and classifier or baseline artifact. Authenticate stage capabilities before expensive inference. Add loading/ready/quota/unhealthy states, checkpoints, bounded page/chunk work and version rollback. Keep portable local worker entry points with the same contracts; do not republish private data or gated weights without permission.
 
 **Acceptance checks:**
 
-Public HTTPS login-to-assessment works with real providers and restart/refresh recovery. Deployed storage privacy, redirects/CORS and errors are verified. Missing required live checks prevent completion.
+Use the eligible free account and prove owned model endpoints execute actual inference without paid APIs. Record cold/warm latency, peak RAM/VRAM, stage limits and quota attribution. Restart and model rollback preserve evidence and invalidate incompatible caches. Candidate classifier promotion/rejection is reflected in deployed config; runtime never trains on user requests.
+
+**Required final action:** write `planning/task-reports/T23A.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
+
+## T24 - Deploy and verify the full free hosted application
+
+**Dependencies:** T20, T22, T23, T23A.
+
+**Primary files:** `infra/render-free.yaml`, `deploy/pages/`, `docs/DEPLOYMENT_RECORD.md`, `planning/DEPLOYMENT_CHECKLIST.md`.
+
+**Implement:**
+
+Deploy the frontend/API/persistence and connect the two actual free model runtimes. Use platform domains, private secrets and restricted demo accounts. Verify account plan selection without enabling paid overages. Run real text/PDF/scan/audio and bounded OSM context through the public HTTPS application; record actual release URL and model manifests. Missing quota/account/model access remains a blocker, never a paid fallback.
+
+**Acceptance checks:**
+
+Actual HTTPS login-to-assessment works with our own models and stored evidence. Verify private storage, CORS/auth, resume after sleeping runtimes and a quota-exhausted state. No paid API or service dependency is required; all claimed capabilities have live evidence.
 
 **Required final action:** write `planning/task-reports/T24.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
@@ -435,7 +463,7 @@ Public HTTPS login-to-assessment works with real providers and restart/refresh r
 
 **Implement:**
 
-Run actual browser journeys across inputs, evidence, review, clarification, arithmetic, similarity, local context, comparisons and printing. Check mobile/keyboard, refresh/failure states and synthetic labels. Exercise access denial, controlled provider failure, duplicate/restarted jobs and rollback/redeploy. Record live latency/cost, fix regressions and reconcile deployment checklist.
+Run actual browser journeys across inputs, evidence, review, clarification, arithmetic, similarity, local context, comparisons and printing. Check mobile/keyboard, refresh/failure states and synthetic labels. Exercise access denial, controlled model runtime failure, duplicate/restarted jobs and rollback/redeploy. Record live latency/free-quota consumption and verify no paid fallback, fix regressions and reconcile deployment checklist.
 
 **Acceptance checks:**
 
@@ -451,11 +479,11 @@ Required journeys pass on recorded URL/release and blocking regressions are fixe
 
 **Implement:**
 
-Document architecture, setup/deployment/config names, supported formats/languages, roles, operations and limits. Map all brief requirements/features to actual implementation and evidence. Summarize evaluation, scale measurements, usage/cost, release URL/ID and pilot-level work. Prepare five-minute demo with labeled backups; reconcile every report/tracker/CSV entry.
+Document architecture, setup/deployment/config names, supported formats/languages, model manifests, classifier promotion decision, roles, operations and limits. Map all brief requirements/features to actual implementation and evidence. Summarize evaluation, scale measurements, free quota use and zero-service-spend verification, release URL/ID and pilot-level work. Prepare five-minute demo with labeled backups; reconcile every report/tracker/CSV entry.
 
 **Acceptance checks:**
 
-Every done task has substantive report/passed evidence; blocked work stays visible. Setup and actual deployment/evidence are discoverable. Distinguish implemented/tested/deployed/future work; no readiness or scale claim exceeds evidence.
+Every done task has substantive report/passed evidence; blocked work stays visible. Setup and actual free deployment/model evidence are discoverable. Distinguish implemented/tested/deployed/future work; no readiness or scale claim exceeds evidence.
 
 **Required final action:** write `planning/task-reports/T26.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 

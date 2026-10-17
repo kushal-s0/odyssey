@@ -40,6 +40,14 @@ Record failures and repairs. List checks not run and their reason. Do not substi
 - New commands/dependencies and relevant runtime limits.
 - Rollback or recovery implications, if any.
 
+## Model and free-runtime evidence (when relevant)
+
+- Base-model/artifact revision, tokenizer/preprocessing version, license and checksum.
+- Actual runtime/plan, model cold/warm timing, RAM/VRAM, quota use and queue wait.
+- For training: label provenance, group split, seed, baseline comparison and promotion/rejection decision.
+- For deployment: owned runtime IDs, no-paid-fallback verification and sleep/quota recovery evidence.
+- Mark not applicable for tasks that do not touch these areas; do not invent measurements.
+
 ## Limitations and blockers
 
 State any incomplete acceptance criteria, unverified languages, missing credentials, unavailable infrastructure, performance shortfalls or open defects. Use “None identified by the checks above” only when supported. An unmet required criterion prevents `done`.

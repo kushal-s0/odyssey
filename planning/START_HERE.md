@@ -2,12 +2,14 @@
 
 This is a complete task-by-task execution plan for **Codex** to build Udyam Saathi, a scalable and deployable Tata STRIVE business-idea screening application. It replaces the earlier human team assignment plan.
 
-**Current state: planning only. All 26 tasks are pending.** No application implementation or deployment has been performed.
+**Current state: planning only. All 28 tasks are pending.** No application implementation or deployment has been performed.
+
+**Budget requirement:** no paid APIs or purchased hosting. Use our eligible-account Gradio ZeroGPU runtimes, Render Free API, Cloudflare Pages Free and Supabase Free. See [free deployment and model plan](FREE_MODEL_HOSTING_PLAN.md). T09A trains a small relevance model; T23A packages/deploys the model runtimes. Free capacity is quota-limited.
 
 ## Files Codex must follow
 
 1. [CODEX_EXECUTION_PLAN.md](CODEX_EXECUTION_PLAN.md): execution loop, continuation rules, blockers, scalability requirements and the full start prompt.
-2. [IMPLEMENTATION_TASKS.md](IMPLEMENTATION_TASKS.md): T01-T26 in order, dependencies, target files, implementation instructions and acceptance checks.
+2. [IMPLEMENTATION_TASKS.md](IMPLEMENTATION_TASKS.md): T01-T26 plus T09A/T23A in execution order, dependencies, target files, implementation instructions and acceptance checks.
 3. [TASK_STATUS.md](TASK_STATUS.md): progress tracker and resume point.
 4. [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md): product scope, architecture, APIs, data model and scoring behavior.
 5. [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md): actual release verification.
@@ -41,7 +43,9 @@ incomplete task in planning/TASK_STATUS.md.
 
 After each task, run its checks, write planning/task-reports/TXX.md using
 the template, update the tracker and CSV, and continue without asking
-for routine confirmation. Preserve original uploads and user changes.
+for routine confirmation. Preserve original uploads and user changes. Follow
+planning/FREE_MODEL_HOSTING_PLAN.md; do not add paid APIs or hosting. Complete
+T09A model training/evaluation and T23A model deployment as specified.
 
 Implement the durable-worker, access-control, scalability and deployment
 requirements. Record external blockers honestly and continue independent

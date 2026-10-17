@@ -1,7 +1,7 @@
 # Udyam Saathi — implementation plan
 
 **Tata STRIVE: AI-Powered Business Idea Screening and Assessment**  
-**Execution:** Codex follows 26 ordered tasks; the hackathon window remains 30 hours.  
+**Execution:** Codex follows 28 ordered tasks; the hackathon window remains 30 hours.  
 **Status:** planning deliverable; application implementation and deployment have not started.  
 **Prepared and revised:** 17 October 2026
 
@@ -34,7 +34,7 @@ Findings that affect implementation:
 - Recordings were inventoried, not listened to or transcribed during planning. Language counts above use folder labels, which must be checked against content.
 - Normalize `Telegu` to `Telugu` and trailing spaces in folder names in the importer, while retaining the original archive path.
 
-Use this small dataset as a development/evaluation corpus. Do not spend the hackathon training or fine-tuning a model. The machine-readable inventory is [dataset-inventory.json](dataset-inventory.json).
+Use this small dataset primarily for development/evaluation. T09A trains a compact answer-relevance classifier from annotated question-answer pairs, with family-separated evaluation. Do not train or fine-tune a foundation model or predict business success from these 55 scenario files. The machine-readable inventory is [dataset-inventory.json](dataset-inventory.json).
 
 ## 2. Product scope and user journeys
 
@@ -73,57 +73,48 @@ Example demo: a tea-stall submission states 120 items/day × ₹10 × 25 days = 
 
 A more complete answer can improve confidence or change a rating in either direction. The follow-up flow must not promise a higher score.
 
-## 4. Stack and deployment choice
+## 4. Free stack and self-hosted model deployment
 
-Keep one Python application with a background worker, one React frontend, and managed persistence. Avoid adding microservices, a general chatbot or an autonomous agent framework.
+**Hard constraint: no paid APIs or purchased infrastructure.** The user confirmed an eligible Hugging Face account. Use [FREE_MODEL_HOSTING_PLAN.md](FREE_MODEL_HOSTING_PLAN.md) as the detailed model/runtime specification; provisionability, model gates and actual quotas must still be verified. The old paid-model and hosted-worker design is superseded.
 
-| Layer | Selected approach | Reason |
+| Layer | Selected implementation | Deployment boundary |
 |---|---|---|
-| Frontend | React + TypeScript + Vite; Tailwind; a small chart library | Fast implementation of a dashboard and mobile-friendly input |
-| API | FastAPI + Pydantic | Shared validated contracts, file handling and Python AI tooling |
-| Background jobs | Celery + Redis-compatible broker | Long scans/audio survive HTTP request boundaries and worker restarts |
-| Database/auth/storage | Supabase Postgres, Auth, private Storage; pgvector | One managed service for identities, durable records, files and similarity |
-| PDF parsing | pypdf + pdfplumber; pypdfium2 page rendering | Extract text/layout first; render only suspect/scanned pages |
-| Audio | FFmpeg/ffprobe + Sarvam speech-to-text API | Handle the supplied MP4/OGG files and regional-language speech |
-| Extraction/translation/rating | Hosted stable Gemini Flash model through a provider adapter | Start with one multimodal provider and schema-constrained output |
-| Embeddings | `sentence-transformers/all-MiniLM-L6-v2` on normalized English fields | Small CPU model; keep each input inside tokenizer limit |
-| Local business context | Google Places Text Search (New), list display with required attribution | Sourced nearby-business information without building a directory |
-| Hosting | Render static frontend + Docker API + Docker worker + Key Value; Supabase persistence | Explicit worker support and reproducible deployment |
-| Verification | pytest, a small Playwright smoke suite, CI build and migration checks | Check the critical behavior and release path |
+| Frontend | React + TypeScript + Vite, Tailwind and basic charts | Cloudflare Pages Free, platform HTTPS domain |
+| API | Lightweight FastAPI + Pydantic | Render Free web service; no model weights/PyTorch in this process |
+| Durable jobs | Postgres stages, leases, retries and event dispatch | No hosted Redis or paid background worker; checkpoint before/after bounded Space events |
+| Data/auth/files | Supabase Free Postgres, Auth, private Storage and pgvector | Stay within free storage/egress/connection limits; no paid add-ons |
+| PDF | pypdf/pdfplumber + pypdfium2; visual extraction for difficult pages | CPU preprocessing and bounded vision calls in our model runtime |
+| Text/vision | Qwen3-VL-2B-Instruct, pinned revision | Our Gradio ZeroGPU runtime A; verify actual extraction/handwriting quality |
+| Audio | FFmpeg + IndicConformer 600M | ONNX CPU in our runtime B initially; validate dialect/language quality and latency |
+| Translation | IndicTrans2 distilled 200M in each direction | Our runtime B; bounded Indic-English and English-Indic batches |
+| Our trained model | MiniLM features + logistic regression answer-relevance classifier | Train in T09A; promote only if held-out evidence supports it |
+| Similarity | Frozen MiniLM embeddings + pgvector | CPU inference; same model revision across compared vectors |
+| Ratings/arithmetic | Evidence-grounded domain judgments + deterministic versioned formulas | No outcome/funding predictor trained on the supplied files |
+| Local context | OpenStreetMap data, bounded Overpass and user-triggered Nominatim | Attribution, application-wide rate limits/cache; no Google Places dependency |
+| Hosting | Cloudflare Pages Free + Render Free API + Supabase Free + two eligible Gradio ZeroGPU Spaces | No paid inference APIs, worker subscription, hosted broker or GPU purchase |
+| Verification | pytest, browser smoke, local infrastructure load tests and model benchmarks | Public free services get bounded smoke checks, not load tests |
 
-These are implementation choices, not organizer mandates. Use compatible stable dependency versions and commit lockfiles at kickoff.
+Use one modular codebase and model adapters shared between Spaces and a portable local/container worker. No general autonomous-agent framework is needed. The core models are existing open-weight models we deploy; only the small relevance classifier is project-trained.
 
-Provider notes, checked against official documentation:
+Free deployment has limited throughput, shared GPU quotas, cold starts and sleeping services. It is a viable hackathon target subject to verification, not unlimited free production compute. More capacity can use owned/institutional machines with the same contracts; do not automatically enable paid alternatives.
 
-- Sarvam documents Hindi, Telugu, Bengali and Odia support and timestamped transcription. Use an explicit supported model ID and validate it on the supplied audio. Preserve original-language transcription before English translation. See [speech-to-text reference](https://docs.sarvam.ai/api-reference/speech-to-text/transcribe).
-- Gemini supports [PDF understanding](https://ai.google.dev/gemini-api/docs/document-processing) and [structured output](https://ai.google.dev/gemini-api/docs/structured-output). Choose an accessible stable Flash model from the [current model catalog](https://ai.google.dev/gemini-api/docs/models), pin its ID in configuration and verify the exact request during the relevant provider task. Schema validity does not prove factual accuracy.
-- The brief permits open-source LLMs **or** optimal/scalable models. The selected hackathon path uses hosted models. If open weights become mandatory, benchmark [Qwen3-8B](https://huggingface.co/Qwen/Qwen3-8B) for English structured assessment on a separate inference service; it is a text model and does not replace OCR or speech transcription. This alternative is outside the 30-hour default scope.
-- MiniLM produces sentence/paragraph embeddings and truncates beyond 256 word pieces. Embed bounded business/product/customer fields, then combine normalized vectors; record the model revision. See the [model card](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2).
-- Supabase supports [pgvector](https://supabase.com/docs/guides/ai/vector-columns), [row-level security](https://supabase.com/docs/guides/database/postgres/row-level-security) and [storage access policies](https://supabase.com/docs/guides/storage/security/access-control). Render supports [background workers](https://render.com/docs/background-workers) and [Docker deployment](https://render.com/docs/docker).
-
-Codex is the implementation executor. Budget and configure the app's runtime API credentials and hosting independently; do not assume the coding subscription supplies deployed-app inference access.
+Current official hosting limits, model licenses/access conditions, model selection rationale and OSM usage rules are cited in [FREE_MODEL_HOSTING_PLAN.md](FREE_MODEL_HOSTING_PLAN.md). No model has been trained, benchmarked or deployed during planning.
 
 ## 5. Architecture and processing behavior
 
 ```mermaid
 flowchart TD
-  U[Applicant or facilitator] --> W[React application]
-  R[Assessor] --> W
-  W --> A[FastAPI: authentication and authorization]
-  A --> S[Private source-file storage]
-  A --> D[(Postgres: submissions and durable jobs)]
-  A --> Q[Redis queue]
-  Q --> J[Python worker]
-  J --> X[Text extraction / OCR / speech transcription]
-  X --> T[Segment language detection and English translation]
-  T --> N[Structured facts with source references]
-  N --> V[Validation: gaps, conflicts and arithmetic]
-  V --> E[Rubric assessment and deterministic aggregation]
-  N --> M[Embedding similarity]
-  N --> L[Sourced location lookup]
-  E --> D
-  M --> D
-  L --> D
+  U[Applicant or assessor] --> W[React on Cloudflare Pages Free]
+  W --> A[Lightweight FastAPI on Render Free]
+  A --> S[Private Supabase Storage]
+  A --> D[(Postgres: inputs, leases, stages, outputs)]
+  A --> Q[Bounded event dispatcher]
+  Q --> R1[Owned Gradio ZeroGPU A: text and document models]
+  Q --> R2[Owned Gradio ZeroGPU B: speech and translation]
+  R1 --> P[Authenticated HTTPS checkpoint and publication API]
+  R2 --> P
+  P --> D
+  A --> O[Cached, bounded OSM context]
   A --> W
 ```
 
@@ -139,9 +130,9 @@ flowchart TD
 8. Run similarity and local lookup from the validated business record. Their failure must not erase the core assessment; show the unavailable stage and allow retry.
 9. Save immutable assessment versions with input hash, model ID, prompt/rubric/schema versions, timing and measured usage. Reviewer corrections invalidate derived results and create a new version.
 
-Persist stage progress: `queued → extracting → translating → structuring → assessing → enriching → completed`. Include `partial`, `needs_review`, `failed` and `cancelled` outcomes. Use browser polling initially; refresh/reconnect must recover the current state.
+Persist stage progress: `queued → extracting → translating → structuring → assessing → enriching → completed`. Include `partial`, `needs_review`, `failed` and `cancelled` outcomes. Use browser polling initially; refresh/reconnect must recover the current state. Also expose waiting_for_runtime and quota_exhausted as explicit resumable states.
 
-Jobs must be idempotent per input revision and pipeline version. Use a database uniqueness constraint, stage checkpoints, finite retries with backoff and a periodic reconciliation pass for queued/stale jobs. The queue is delivery infrastructure; the database is the source of truth. A duplicate delivery must not publish a duplicate assessment.
+Jobs must be idempotent per input revision and pipeline version. Use a database uniqueness constraint, stage checkpoints, finite retries with backoff and a reconciliation on API startup, authenticated app activity and explicit resume for queued/stale jobs. A sleeping free runtime is not an always-on scheduler. The Space event queue is delivery infrastructure; the database is the source of truth. A duplicate delivery must not publish a duplicate assessment.
 
 ## 6. Structured data and API contract
 
@@ -166,7 +157,7 @@ Every factual field includes `value`, `status`, `source_segment_ids` and optiona
 
 Keep beneficiary identity outside the scoring payload. Names, phone numbers, gender, social category and educational attainment are not scoring features. Business customer demographics may be relevant facts, distinct from the applicant's demographic characteristics.
 
-### Routes to freeze before splitting work
+### Routes to define before feature implementation
 
 | Route | Contract |
 |---|---|
@@ -220,9 +211,9 @@ Domain-wise means assessment dimensions in this plan; also provide sector filter
 
 **Similar ideas:** embed normalized English offer/customer/problem summaries without names or phone numbers. Retrieve top 5 with pgvector cosine distance and show shared products/customers/trade plus differences. Similarity is not plagiarism or proof of competition. Exclude the same submission's revisions. Keep repeated scenario families out of population counts unless explicitly displayed as test data. Calibrate retrieval on annotated relevant/unrelated pairs; do not label raw cosine scores as a probability.
 
-**Nearby businesses:** use confirmed locality/district/PIN and category to query [Places Text Search](https://developers.google.com/maps/documentation/places/web-service/text-search). Show provider attribution, query area and time, category relevance and location precision. A PIN/locality centroid is approximate; do not manufacture an exact operating address. Ask for clarification when locations are ambiguous. Empty listings mean “no results from this source,” not “no competition.”
+**Nearby businesses:** use applicant-confirmed locality/PIN and business categories to query bounded OpenStreetMap data. Nominatim geocoding is explicit user-triggered, cached and globally limited; Overpass business queries are bounded, attributed and cached with dates. Use a small attributed regional snapshot as an honest dated fallback. Do not use Google Places or another paid directory.
 
-Use a list rather than a map for the hackathon. Follow the [Places display and retention rules](https://developers.google.com/maps/documentation/places/web-service/policies): preserve permitted place IDs and query metadata, avoid blanket caching of provider content, and implement required attribution. If a map is added, use the provider-compatible map display. Applicant-stated competitors and externally found businesses remain separately labeled. A failed API request must never turn into an invented local-market assessment.
+Show location precision, search area/time, source and coverage limits. Do not send names/contact data to geocoders or infer an exact address from a PIN. Sparse OSM coverage is not proof that competition is absent. Applicant claims, retrieved listings and demo fixtures remain separate. The model/hosting specification gives the current official service policies and the scaling path to an owned regional OSM database.
 
 ## 9. Codex execution sequence and reporting
 
@@ -232,18 +223,18 @@ Execute the ordered backlog in [IMPLEMENTATION_TASKS.md](IMPLEMENTATION_TASKS.md
 |---|---|---|
 | T01-T03 | Dataset, scaffold and contracts | Reproducible inventory/build and typed API/rubric specification |
 | T04-T08 | Persistent, authorized submission flow | Private uploads, durable jobs and applicant UI work across restarts |
-| T09-T13 | Multilingual processing and assessment | Text/PDF/audio become evidence-backed, reviewable assessments |
+| T09, T09A, T10-T13 | Multilingual processing, custom relevance model and assessment | Text/PDF/audio become evidence-backed, reviewable assessments |
 | T14-T16 | Context and comparisons | Similarity, actual local-business lookup and all four comparison views work |
 | T17-T19 | Distinctive features and reports | Clarification/reassessment, arithmetic checks and versioned report export work |
 | T20-T22 | Quality, access and scaling | Recorded dataset metrics, security checks and multi-instance load/recovery evidence |
-| T23-T25 | Deployability and real release | Reproducible packaging, actual HTTPS deployment and deployed acceptance pass |
+| T23, T23A, T24-T25 | App/model deployability and real free release | Reproducible packaging, versioned models, actual HTTPS deployment and deployed acceptance pass |
 | T26 | Final handover | Requirements-to-evidence mapping and honest readiness report |
 
 After each task, Codex writes `planning/task-reports/TXX.md` using the report template, records actual changes and checks, then updates [TASK_STATUS.md](TASK_STATUS.md) and the CSV. Only then may the task be marked done. All tasks are initially pending. Reports must be written during implementation, not pre-filled with expected success.
 
-The 30-hour constraint should guide simplicity: use one modular backend, basic charts, list-based local context and browser print-to-PDF. Keep read-aloud, full maps, peer matching and self-hosted LLM deployment outside this execution scope. Clarification and arithmetic are explicitly included tasks. Do not silently remove committed requirements to fit the clock.
+The 30-hour constraint should guide simplicity: use one modular backend, basic charts, list-based local context and browser print-to-PDF. Keep read-aloud, full maps, peer matching and large-model training outside this execution scope. Self-hosted open-weight inference and the small relevance-model experiment are included. Clarification and arithmetic are explicitly included tasks. Do not silently remove committed requirements to fit the clock.
 
-Scalability is verified in T22 using two API replicas, two workers, 10,000 synthetic metadata records, a queued-job recovery workload and a concurrent metadata/status workload. The execution plan defines measurement gates. These are planned tests, not achieved capacity claims. T23 verifies deployment packaging; T24 verifies a real public deployment. Missing provider/hosting access remains a named blocker, not a completed integration.
+Scalability is verified in T22 using two API replicas, two workers, 10,000 synthetic metadata records, a queued-job recovery workload and a concurrent metadata/status workload. The execution plan defines measurement gates. These are planned tests, not achieved capacity claims. Run scale workloads locally, not against public free services. T23 verifies app packaging; T23A verifies model packaging/serving; T24 verifies the actual free deployment. Missing model access, exhausted quotas or unavailable hosting remain named blockers.
 
 ## 10. Evaluation and deployment gates
 
@@ -261,12 +252,12 @@ Targets below are goals to measure, not achieved results:
 | Similarity | Recall@5 ≥0.8 on human-labeled positive pairs; include hard negatives and report pair count |
 | Rating consistency | On held-out reviewer-rated ideas, report per-domain agreement and disagreements; repeat 10 records three times and flag unstable outputs |
 | Language fairness | Compare matched, human-verified equivalents; investigate >5/100 potential-score difference and coverage mismatches; small sample is not proof of fairness |
-| Responsiveness | Submission acknowledgment p95 <2 s after upload; text/short digital PDF p95 <45 s; ≤2-minute audio p95 <90 s; 11-page scans p95 <180 s under a documented 3-job load |
+| Responsiveness | Measure cold/warm API acknowledgement, model queue wait and execution separately for short text/PDF/audio and 11-page scans. Free GPU scheduling has no fixed latency guarantee; set realistic local and deployed budgets from measured feasibility, with resumable progress. |
 | Reliability/access | Restarted jobs resume without duplicate results; failed providers surface errors; cross-user and cross-cohort unauthorized access is denied |
 
 Speech evaluation should include business field accuracy and a manually transcribed subset for word/character error reporting. Measure queue wait separately from processing time. Do not claim “real time” for long scanned documents; show stage progress.
 
-For deployment instructions, secrets, failure recovery and handover criteria see [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md). Production readiness requires the tests to pass on the deployed environment, not merely a Dockerfile or successful localhost demo.
+For free deployment, model quotas, failure recovery and handover criteria see [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md). Production readiness requires the tests to pass on the deployed environment, not merely a Dockerfile or successful localhost demo.
 
 ## 11. Five-minute judging demo
 

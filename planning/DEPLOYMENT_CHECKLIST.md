@@ -1,127 +1,117 @@
-# Deployment and handover checklist
+# Free application and model deployment checklist
 
-This is a **planned release checklist**, not a claim that services are already running. Executor: Codex. Apply this checklist during T23-T25 of the ordered backlog and record actual evidence in the corresponding task reports.
+**Executor: Codex. Status: planned, not deployed.** Apply this during T23, T23A, T24 and T25. Every completed check needs actual evidence in its task report. See [FREE_MODEL_HOSTING_PLAN.md](FREE_MODEL_HOSTING_PLAN.md) for official sources, model choices, runtime contracts and account requirements.
 
-Before marking the release complete, record the deployed URL/version and link every completed check to a test result, command or reproducible observation. Unchecked required items remain open. See [CODEX_EXECUTION_PLAN.md](CODEX_EXECUTION_PLAN.md) and [TASK_STATUS.md](TASK_STATUS.md).
+## 1. Deploy exactly this zero-spend profile
 
-## 1. Deployment topology
-
-| Service | Deployable unit | Durable state |
+| Component | Target | Durable state |
 |---|---|---|
-| Web | Vite static build on Render | None; frontend configuration contains public identifiers only |
-| API | FastAPI Docker web service | Postgres and private object storage |
-| Worker | Same Python image, separate Celery worker command | Checkpoints/results in Postgres; source files in private storage |
-| Broker | Render Key Value/Redis-compatible service | Queue delivery; recover missing/stale work from database |
-| Data | Supabase Postgres + Auth + private Storage + pgvector | Inputs, identities, versions, evidence, audit history and embeddings |
-| External providers | Speech, LLM/vision and local business APIs | Record configured model/provider IDs and allowed request metadata |
+| React frontend | Cloudflare Pages Free, supplied HTTPS domain | None |
+| Lightweight API | Render Free web service | Postgres and private storage; no model weights |
+| Jobs | Postgres stages, dispatch intent, leases and idempotency keys | Supabase Free |
+| Model runtime A | Owned Gradio ZeroGPU Space for text/document models, embeddings and classifier | Outputs through restricted HTTPS checkpoint API |
+| Model runtime B | Owned Gradio ZeroGPU Space for regional speech/translation | Outputs through restricted HTTPS checkpoint API |
+| Identity/data/files | Supabase Free Auth, Postgres/pgvector and private Storage | Versions, originals, evidence, audit history |
+| Local business context | Bounded/cached OSM queries or an attributed dated regional snapshot | Source/time/area and allowed cached data |
 
-Use one always-running worker for the demo, with bounded concurrency. Do not depend on ephemeral API filesystem storage or process-local background tasks. Run local API/worker/broker through Docker Compose against a separate development Supabase project, or a documented local equivalent; never point tests at the demo's production data.
+No paid inference keys, background-worker subscription, hosted Redis/Key Value, purchased GPU, paid Space subscription, paid domain or trial-credit dependency. The user confirmed an eligible HF account, but actual free provisioning must be checked. Sleeping services and limited GPU quota remain operational constraints.
 
-## 2. Configuration contract
+For local tests, use a separate local Postgres/object-store/auth setup or documented development Supabase profile. Load tests must use local/owned infrastructure rather than public free services.
 
-Create `.env.example` with placeholders and descriptions. Validate required settings at startup, and distinguish optional enrichment failure from missing core-processing configuration.
+## 2. Environment and model contracts
 
-| Configuration | Visibility/purpose |
+Create `.env.example` with names/descriptions only. Keep all private values in deployment secrets.
+
+| Configuration | Purpose |
 |---|---|
-| `APP_ENV`, `PUBLIC_WEB_URL`, `CORS_ORIGINS` | Explicit development/staging/production behavior and allowed browser origins |
-| `VITE_API_BASE_URL`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` | Public frontend config; access relies on authorization policies |
-| `DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Server secrets and service identity; least-privilege use |
-| `AUTH_ISSUER`, `AUTH_AUDIENCE`, `AUTH_JWKS_URL` | Token verification settings |
-| `PRIVATE_UPLOAD_BUCKET`, `REDIS_URL` | Private object store and internal queue |
-| `LLM_API_KEY`, `LLM_MODEL`, `VISION_MODEL` | Explicit provider credentials/model IDs; may share an accessible model |
-| `SARVAM_API_KEY`, `ASR_MODEL` | Speech provider and pinned supported model |
-| `GOOGLE_PLACES_API_KEY` | Server-side local business lookup; constrained to required API |
-| `EMBEDDING_MODEL`, `EMBEDDING_REVISION` | Consistent vector generation; model packaged/downloaded during image build |
-| `MAX_UPLOAD_MB`, `MAX_PDF_PAGES`, `MAX_AUDIO_SECONDS` | Application limits, including support for the provided scans |
-| `JOB_TIMEOUT_SECONDS`, `PROVIDER_TIMEOUT_SECONDS`, `MAX_JOB_ATTEMPTS` | Bounded runtime and retry settings |
-| `DAILY_AI_BUDGET`, `MAX_AI_CALLS_PER_JOB`, `MAX_ACTIVE_JOBS_PER_USER` | Spend and overload controls; currency/unit documented |
-| `DEMO_MODE`, `ENABLE_CLARIFICATIONS` | Explicit feature flags; no silent fake results |
+| `APP_ENV`, `PUBLIC_WEB_URL`, `CORS_ORIGINS` | Environment and exact browser origins |
+| `VITE_API_BASE_URL`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` | Public frontend identifiers only |
+| `DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | API-only database/service identity; avoid giving full database access to model runtimes |
+| `AUTH_ISSUER`, `AUTH_AUDIENCE`, `AUTH_JWKS_URL` | Verified login tokens |
+| `PRIVATE_UPLOAD_BUCKET` | Private originals and derived artifacts |
+| `JOB_BACKEND=postgres`, `MODEL_RUNTIME=hf_zerogpu` | Selected durable queue and inference profile |
+| `TEXT_DOCUMENT_SPACE`, `SPEECH_TRANSLATION_SPACE` | Owned Space identifiers, not other people's public demos |
+| `HF_TOKEN` | Minimum-scope token for permitted model downloads/API calls; never browser-side |
+| `STAGE_CAPABILITY_SIGNING_KEY`, `INTERNAL_API_URL` | Restricted, expiring stage execution and checkpoint authorization |
+| `MODEL_MANIFEST_PATH`, `RELEVANCE_MODEL_VERSION` | Versioned weights/preprocessing and promoted-classifier or baseline selection |
+| `MAX_MODEL_CONCURRENCY`, `MAX_STAGE_SECONDS`, `MAX_QUEUE_DEPTH` | Measured runtime/admission limits |
+| `MAX_UPLOAD_MB`, `MAX_PDF_PAGES`, `MAX_AUDIO_SECONDS`, `MAX_IMAGE_PIXELS` | Bounded inputs, including support for supplied 11-page scans |
+| `MAX_JOB_ATTEMPTS`, `LEASE_SECONDS`, `MAX_ACTIVE_JOBS_PER_USER` | Bounded retry/claim behavior |
+| `NOMINATIM_URL`, `OVERPASS_URL`, `OSM_USER_AGENT` | Configurable free-data endpoints with application-wide throttling |
+| `ALLOW_PAID_SERVICES=false`, `DEMO_MODE`, `ENABLE_CLARIFICATIONS` | Cost policy and explicit feature modes |
 
-Do not place private keys in `VITE_*`, commit them or log request headers. Codex access, inference-provider access and hosting are separate setup dependencies.
+Do not include legacy Gemini/Sarvam/Google Places keys or an automatic fallback to paid services. The zero-spend flag is a configuration safeguard, not proof: inspect actual service plans, manifests, dependencies and egress destinations.
 
 ## 3. Release sequence
 
-1. [ ] Confirm provider accounts, key access, actual model IDs, quotas and the hosting plan needed for a worker. Test one request per provider before building its UI.
-2. [ ] Create development and deployment configuration; set secrets through the hosting dashboard/secret manager. Record the approved spend ceiling; do not assume free quotas cover the demo.
-3. [ ] Apply versioned migrations to a clean database; enable pgvector; create private bucket and role/storage policies. Create demo accounts through trusted setup.
-4. [ ] Build a reproducible Linux image with pinned Python dependencies, FFmpeg, PDF renderer and embedding model. Use a non-root process, bounded temporary storage and a narrow Docker build context.
-5. [ ] Deploy broker, API and worker; start the periodic stale-job reconciliation process once, with database locking to prevent duplicate scheduling.
-6. [ ] Verify readiness checks for database/queue and worker heartbeat. Expose provider availability as degraded capability status rather than probing paid APIs on every health request.
-7. [ ] Deploy the frontend with correct API/auth origins. Verify HTTPS, CORS, microphone permission behavior and auth redirects from a clean browser session.
-8. [ ] Seed masked demo examples and explicitly synthetic cohort memberships. Keep fixture/demo mode visibly separate from live inference.
-9. [ ] Execute the live smoke flow for text, digital PDF, handwritten scan and short audio. Refresh midway and verify the same job resumes in the interface.
-10. [ ] Run access, failure, restart and idempotency checks below. Capture request IDs, deployed commit, model versions, latency and evaluation report.
-11. [ ] Tag a release, keep the previous image available and rehearse application rollback. Use backward-compatible migrations; do not rely on destructive down-migrations for rollback.
-12. [ ] Publish the README, deployed URL and demo instructions in the hackathon handover. Record known limitations explicitly.
+1. [ ] Verify eligible free Space creation, model access/licenses, account quota and compatible Gradio/PyTorch/ONNX versions. Prove the signed API-to-Space event path before building assumptions around it.
+2. [ ] Select Free plans and supplied subdomains. Keep Render without a payment method; never enable automatic paid overages. Record free resource limits and application cutoffs.
+3. [ ] Apply versioned database migrations; configure private storage and roles. Create limited demo accounts through trusted setup; do not rely on paid SMS or bulk email delivery.
+4. [ ] Build the API image without model weights/frameworks; validate memory against the selected free instance. Build the static frontend.
+5. [ ] Deploy the two Gradio model runtimes from pinned code/model manifests. Check supported startup placement and use GPU decorators only for compatible PyTorch paths. Keep ONNX speech on CPU unless a supported alternative is proven.
+6. [ ] Deploy API and frontend; verify CORS/auth redirects, private uploads, model readiness and restricted checkpoint calls.
+7. [ ] Exercise actual inference for text, digital PDF, handwritten scan and audio, then a policy-compliant OSM lookup. Do not use precomputed fixtures as live evidence.
+8. [ ] Verify all comparison views, clarification, arithmetic, reviewer corrections, report printing and version history.
+9. [ ] Simulate restart/sleep/quota exhaustion and recover from durable stage records. No always-on dispatcher is assumed; app activity/manual resume can restart pending work.
+10. [ ] Record release URL, commit and model manifests, actual timings/resource usage and unresolved limits. Run rollback and confirm compatible historical outputs remain available.
+11. [ ] Update task reports, tracker/CSV and handover documents only with observed results.
 
-## 4. Checks that must pass
+## 4. Acceptance checks
 
-### User-visible behavior
+### Data, access and core behavior
 
-- [ ] Text/audio/PDF submission works from the deployed UI; microphone failure offers upload.
-- [ ] The 11-page Hindi scans are accepted. Broken or encrypted documents produce a helpful error rather than endless processing.
-- [ ] Original text/audio/pages remain accessible to the authorized reviewer alongside English output.
-- [ ] All seven assessment-domain displays exist; unknown values do not become fabricated facts or zero-quality ratings.
-- [ ] Similar ideas, sourced local context and domain/trade/cohort/across-cohort views are functional, including empty states.
-- [ ] A correction creates a new version and makes old/new evidence and reviewer actions understandable.
-- [ ] Report printing/export includes version, coverage, original-source references and review status. Report access is authorized.
-- [ ] Planned clarification and arithmetic features (T17-T18) are fully working and verified; unfinished work stays open in the task tracker.
+- [ ] Text/PDF/MP4/OGG and browser recordings work with intact, privately stored originals.
+- [ ] The 11-page scans use bounded resumable page processing; ambiguous handwriting and conflicting answers remain reviewable.
+- [ ] Every displayed fact/rating cites source evidence or states insufficient evidence; nulls never become invented values.
+- [ ] Domain/trade/cohort/across-cohort comparisons respect rubric eligibility, group counts and cohort permissions.
+- [ ] User A cannot query User B's input/job/file/report; reviewers cannot see unassigned cohorts through search, similarity or aggregates.
+- [ ] Model endpoints verify signed stage access before spending GPU resources. Do not expose an alternate unauthenticated expensive endpoint.
+- [ ] Source data and capability tokens are absent from public Space repositories, Gradio examples/logs and frontend assets.
+- [ ] Malformed files, malicious source instructions and model JSON errors produce bounded actionable results.
+- [ ] Regional feedback, clarification revisions and revenue-versus-profit checks are verified.
 
-### Access and data handling
+### Models and training
 
-- [ ] User A cannot fetch User B's submission, job, source, signed URL or report by changing an ID.
-- [ ] Reviewers cannot retrieve another cohort's protected records through similarity, filters or aggregates.
-- [ ] Applicants cannot change roles, attach someone else's file or choose an unauthorized cohort.
-- [ ] Private storage rules pass tests separately from database policies. Privileged worker queries retain explicit ownership/cohort context.
-- [ ] Logs omit raw submissions, tokens and contact details; error tracking uses request IDs.
-- [ ] Untrusted PDF/audio contents cannot change system prompts, execute tools or override the rubric.
-- [ ] Source retention is defined for the demo; deletion removes related objects, derived outputs and embeddings through an authorized workflow. Preserve audit entries without retaining deleted personal content.
+- [ ] Manifest pins model/tokenizer/preprocessor revisions, licenses and artifact hashes.
+- [ ] The classifier report identifies real/synthetic/Codex/human labels and grouped train/validation/test separation.
+- [ ] Promotion decision is explicit. Failed/insufficient validation leaves a labeled experimental candidate and the baseline active.
+- [ ] Inference loads a released artifact; it never trains on each user request or downloads a moving latest checkpoint.
+- [ ] Capture cold model loading, warm stage time, peak RAM/VRAM, queue wait and actual runtime quota behavior.
+- [ ] Model readiness is separate from API liveness. Loading, unavailable weights, quota exhaustion and incompatible artifacts are visible.
+- [ ] A model rollback and a crashed stage preserve evidence/history; cached outputs use the correct model/input versions.
 
-### Recovery and cost
+### Reliability and capacity
 
-- [ ] Kill/restart a worker during extraction and prove stage recovery with one published assessment.
-- [ ] Deliver the same job twice; unique constraints/checkpoints prevent duplicate stored results.
-- [ ] Simulate queue publication failure and confirm database reconciliation recovers the pending job.
-- [ ] Simulate invalid model JSON, timeout, HTTP 429 and missing credentials; errors are bounded, actionable and do not fabricate output.
-- [ ] Simulate unavailable location lookup; core assessment remains accessible with the missing enrichment labeled.
-- [ ] Apply upload/job limits, capped retries, API call caps and an overall usage budget. Explain budget exhaustion in the UI.
-- [ ] Record actual per-file usage and latency for short text/PDF/audio and long scans; distinguish queue wait, provider time and total time.
-- [ ] Verify rollback to the previous application image. For a later real-user pilot, test database and object-storage backup restoration as well.
+- [ ] Duplicate event/lease races publish one assessment version. Repeated inference after a crash may consume quota; this is measured and bounded.
+- [ ] Accepted jobs survive service sleep/restart and resume after capacity returns; pending jobs are never silently discarded.
+- [ ] T22's multi-instance metadata/job tests run locally and report actual hardware/latency/results.
+- [ ] Model throughput is measured separately from metadata throughput; no claim of unlimited free autoscaling.
+- [ ] Shared queue admission, Nominatim throttling and resource limits hold across API replicas.
+- [ ] Free storage/egress/queue limits stop or defer work safely. No request switches to a paid API.
+- [ ] Manual database/object export and restore instructions are tested; no reliance on paid automatic backup/PITR.
 
-### Scalability and execution traceability
+## 5. Zero-spend and quota record
 
-- [ ] T22 records multi-instance API/worker tests, 10,000-record query behavior and actual load/recovery measurements, including hardware and provider-mocking boundaries.
-- [ ] Shared rate limits, queue admission, database pools and provider budget reservations hold across replicas.
-- [ ] T23 has reproducible build/migration evidence; T24 has actual HTTPS deployment evidence; T25 has deployed regression/recovery evidence.
-- [ ] Each completed task has its own `planning/task-reports/TXX.md`; tracker and CSV agree with reports.
-- [ ] T26 produces `docs/FINAL_IMPLEMENTATION_SUMMARY.md` and `docs/PRODUCTION_READINESS.md` with requirement-to-evidence mapping.
+Record actual account plan names, available allowances and observed use in `docs/DEPLOYMENT_RECORD.md`. Service subscription/API spend must be zero. Existing laptop electricity/network use is separate if a local worker is used.
 
-## 5. Cost worksheet
+| Resource | Measure and record |
+|---|---|
+| API | Free instance hours, memory, cold start, bandwidth/build limits |
+| Persistence | Database bytes, object bytes, egress and connections |
+| Models | GPU quota attribution/time, CPU processing time, model cache size, peak memory |
+| Open map data | Cache hits, global request rate, response/source timestamps |
+| Custom model | Dataset provenance, training time/hardware, artifact bytes, held-out results |
 
-Fill this with actual account rates and measured usage during T20/T25. These documents do not quote unverified prices.
+Do not translate compute availability into a fixed promised requests/day figure without benchmarking actual workload and account quota. Do not keep services awake artificially or bypass platform restrictions.
 
-```text
-Per-submission cost = speech minutes × speech rate
-                    + text input/output tokens × respective model rates
-                    + visual page/image token cost
-                    + local search requests × request rate
-                    + storage/egress allocation
+## 6. Handover
 
-Demo budget = fixed hosting for the event
-            + measured processing cost of the chosen demo/evaluation cases
-            + explicit retry/rehearsal reserve
-```
+- [ ] Public HTTPS app URL and owned model runtime IDs; limited demo login instructions.
+- [ ] Source/lockfiles, migrations, Pages/Render Free manifests, two Space packages and portable local worker entry points.
+- [ ] Model manifest, classifier model card, baseline/promotion decision and reproducible training/evaluation commands.
+- [ ] Dataset inventory and sanitized evaluation artifacts; original beneficiary material excluded from public artifacts.
+- [ ] Actual free-deployment and model benchmark results with limits and cold-start expectations.
+- [ ] One Markdown report per completed task, including T09A and T23A, plus consistent tracker/CSV.
+- [ ] Final implementation summary, readiness report, operations guide and five-minute demo script.
 
-Track per-job estimated usage before expensive calls and reconcile with returned usage afterward. With concurrent jobs, reserve budget atomically so several workers cannot each spend the full remaining allowance. Cache your own validated intermediate outputs by revision/model/prompt; provider data caching remains subject to that provider's rules.
-
-## 6. Handover package
-
-- [ ] Public HTTPS application URL and login instructions using limited-access demo accounts.
-- [ ] Repository with source, lockfiles, migration files, Docker/Render configuration and CI workflow.
-- [ ] README with local run, secrets setup, architecture, deployment, supported formats/languages and known limitations.
-- [ ] Dataset inventory plus sanitized evaluation fixtures; original beneficiary material excluded from public artifacts.
-- [ ] Evaluation report with sample counts, held-out family separation, actual metrics, failure cases and model/rubric versions.
-- [ ] Five-minute demo script, backup recording and clearly labeled preprocessed examples.
-- [ ] Deployment smoke-test record and rollback instructions.
-
-Completing this checklist establishes a deployable hackathon release. A real program rollout additionally needs organizer-approved scoring, a larger independent multilingual benchmark, sustained load testing and operational ownership.
+Completion establishes a verified quota-limited free hackathon deployment. Larger production capacity depends on additional available hardware and validated operational capacity; it is not promised by the free tier.

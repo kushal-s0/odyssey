@@ -2,6 +2,13 @@
 
 This repository contains the uploaded Tata STRIVE problem statement/datasets and a Codex implementation plan. Preserve the original source files.
 
+## Budget and model requirements
+
+- The user requires free deployment and no paid APIs. Read `planning/FREE_MODEL_HOSTING_PLAN.md`; do not restore old hosted-model/paid-worker assumptions or add paid fallbacks.
+- The user confirmed an eligible Hugging Face account. Verify actual free Space provisioning, model access and quotas; no paid plan or GPU purchase is authorized.
+- Complete T09A (small relevance-model experiment) and T23A (versioned model deployment) within the 28-task backlog. Existing open-weight models are self-hosted, not represented as models trained by this project.
+- Distinguish quota-limited free deployment from scalability demonstrated on local/owned hardware. Do not load test public free services.
+
 ## When implementing the application
 
 - Read `planning/CODEX_EXECUTION_PLAN.md`, `planning/TASK_STATUS.md` and `planning/IMPLEMENTATION_TASKS.md` before editing application code. Use `planning/IMPLEMENTATION_PLAN.md` for product/architecture details.
