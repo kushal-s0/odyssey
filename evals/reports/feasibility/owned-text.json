@@ -1,0 +1,52 @@
+{
+  "scope": "Actual local HTTP/owned inference on synthetic inputs; not human quality validation or hosted deployment",
+  "cases": [
+    {
+      "case": "english",
+      "seconds": 23.601,
+      "status": "waiting_for_worker",
+      "error_code": null,
+      "structured": true,
+      "manifest_hash": "9e526e675a02e174d77e75c26340140e1380305c134677a704e25cc9009e70db",
+      "human_quality_validated": false,
+      "measurements": [
+        {
+          "model": "Qwen3-VL-2B-Instruct",
+          "device": "cuda",
+          "seconds": 5.572,
+          "rss_bytes": 1962975232,
+          "input_tokens": 404,
+          "load_seconds": 9.557,
+          "output_tokens": 106,
+          "peak_vram_bytes": 4359504896,
+          "token_cap_reached": false,
+          "human_quality_validated": false
+        }
+      ],
+      "offer_present": true,
+      "unknown_profit_preserved": true,
+      "no_fabricated_profit": true,
+      "supplied_price_preserved": true,
+      "identity_excluded": true
+    },
+    {
+      "case": "injection",
+      "seconds": 20.09,
+      "status": "needs_review",
+      "error_code": "needs_review",
+      "structured": false,
+      "manifest_hash": "9e526e675a02e174d77e75c26340140e1380305c134677a704e25cc9009e70db",
+      "human_quality_validated": false
+    },
+    {
+      "case": "mixed",
+      "seconds": 2.516,
+      "status": "needs_review",
+      "error_code": "model_access_denied",
+      "structured": false,
+      "manifest_hash": "9e526e675a02e174d77e75c26340140e1380305c134677a704e25cc9009e70db",
+      "human_quality_validated": false,
+      "expected_gated_blocker_preserves_input": true
+    }
+  ]
+}

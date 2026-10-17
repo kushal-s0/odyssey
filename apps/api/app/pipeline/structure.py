@@ -11,12 +11,12 @@ from .normalize import numeric_tokens
 
 MONEY_FIELDS={'investment','own_funds','requested_loan','unit_price','revenue','expenses','profit'}
 LIST_FIELDS={'raw_materials','suppliers'}
-IDENTITY=re.compile(r'\b(?:my name|applicant name|phone|mobile number|caste|gender|education|aadhaar)\b',re.I)
+IDENTITY=re.compile(r'\b(?:my name|applicant name|phone|mobile number|caste|gender|my education|educational qualification|aadhaar)\b',re.I)
 SOURCE_INSTRUCTION=re.compile(r'ignore.{0,50}instructions|\b(?:system|assistant)\s*:|\bgive\s+(?:every|all)\s+(?:rating|score)|\binvent\s+(?:INR|₹|\d)',re.I)
 
 
 def quoted_money(quote: str) -> Money | None:
-    if re.search(r'(?<!\w)[-−]\s*\d|%|\bpercent',quote,re.I):
+    if re.search(r'(?<!\w)[-−]\s*\d|%|\bpercent|\d\s*(?:k|lakhs?|crores?|thousands?|millions?|hundreds?)\b',quote,re.I):
         return None
     numbers=numeric_tokens(quote)
     if len(numbers)!=1:
@@ -32,7 +32,8 @@ def quoted_money(quote: str) -> Money | None:
             period=name
             break
     try:
-        return Money(amount=Decimal(numbers[0]),currency=currency,period=period)
+        unit=re.search(r'\b(?:per|a)\s+(cup|kg|kilogram|litre|liter|bag|piece|unit|hour)\b',quote,re.I)
+        return Money(amount=Decimal(numbers[0]),currency=currency,period=period,unit=unit.group(1) if unit else None)
     except ValueError:
         return None
 
@@ -48,7 +49,7 @@ def assemble(bundle: EvidenceBundle, drafts: list[ExtractionDraft]) -> Structure
             segment=bundle.evidence[fact.segment]
             source=segment.english_text
             if (not source or segment.translation_uncertain or fact.quote not in source or
-                    IDENTITY.search(fact.quote) or SOURCE_INSTRUCTION.search(source)):
+                    IDENTITY.search(source) or SOURCE_INSTRUCTION.search(source)):
                 raise ValueError('Unsupported or identity-bearing model fact')
             value: Any=fact.quote
             if fact.status!='present':
@@ -57,6 +58,8 @@ def assemble(bundle: EvidenceBundle, drafts: list[ExtractionDraft]) -> Structure
             if fact.field in MONEY_FIELDS:
                 value=quoted_money(fact.quote)
                 if value is None:
+                    if not numeric_tokens(fact.quote):
+                        continue  # Explicit unknown money remains missing, not a numeric conflict.
                     warnings.append('ambiguous_number:'+fact.field)
                     candidates.setdefault(fact.field,[]).append({'unresolved':True,'source_segment_ids':[segment.id]})
                     continue

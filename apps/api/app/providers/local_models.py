@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import importlib
 import json
+import os
 import time
 from pathlib import Path
 from typing import Any
@@ -36,19 +37,24 @@ class LanguageIdentifier:
 
 class Qwen:
     def __init__(self) -> None:
+        os.environ['HF_HUB_OFFLINE']='1'
+        os.environ['TRANSFORMERS_OFFLINE']='1'
         torch=importlib.import_module('torch')
         transformers=importlib.import_module('transformers')
         self.torch=torch
         self.device='cuda' if torch.cuda.is_available() else 'cpu'
         started=time.perf_counter()
         artifact=MANIFEST['qwen']
-        options={'revision':artifact['revision'],'cache_dir':str(CACHE),'local_files_only':True}
+        snapshot=CACHE/('models--'+artifact['id'].replace('/','--'))/'snapshots'/artifact['revision']
+        if not snapshot.is_dir():
+            raise ModelUnavailable('The pinned model snapshot has not been provisioned')
+        options={'local_files_only':True}
         # Models must be downloaded explicitly by the operator/provisioning
         # command. Inference never switches to a remote/paid model endpoint.
-        self.model=transformers.Qwen3VLForConditionalGeneration.from_pretrained(artifact['id'],
+        self.model=transformers.Qwen3VLForConditionalGeneration.from_pretrained(str(snapshot),
             dtype=torch.float16 if self.device=='cuda' else torch.float32,
             attn_implementation='sdpa',**options).to(self.device).eval()
-        self.processor=transformers.AutoProcessor.from_pretrained(artifact['id'],**options)
+        self.processor=transformers.AutoProcessor.from_pretrained(str(snapshot),**options)
         self.load_seconds=time.perf_counter()-started
         self.measurements: list[dict[str,str|float|int|bool]]=[]
 

@@ -17,3 +17,10 @@ def hang(context):
     assert context['work']['pipeline_version'] == 'orchestration-probe-v1'
     time.sleep(60)
     yield {'publish': {'unexpected':True}}
+
+
+def stream_probe(context):
+    import sys
+    # Model libraries probe stdio when imported after the orphan watcher starts.
+    sys.stdin.isatty()
+    yield {'publish': {'stdio_probe':True,'inference':False,'text':context['input']['source_text']}}

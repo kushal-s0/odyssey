@@ -12,6 +12,7 @@ import sys
 import os
 import queue
 import threading
+import time
 from collections.abc import Iterator
 from typing import Any
 
@@ -35,10 +36,40 @@ def main() -> None:
     channel = sys.stdout
     sys.stdout = sys.stderr
     acknowledgements: queue.Queue[str] = queue.Queue()
+    stdin_descriptor=sys.stdin.fileno()
 
     def watch_parent() -> None:
-        for line in sys.stdin:
-            acknowledgements.put(line.strip())
+        # Read the pipe descriptor directly. Blocking on TextIOWrapper.readline
+        # holds its lock and can deadlock model imports calling stdin.isatty().
+        pending=b''
+        if os.name=='nt':
+            import ctypes
+            import msvcrt
+            from ctypes import wintypes
+            peek=ctypes.WinDLL('kernel32',use_last_error=True).PeekNamedPipe
+            peek.argtypes=[wintypes.HANDLE,wintypes.LPVOID,wintypes.DWORD,
+                           ctypes.POINTER(wintypes.DWORD),ctypes.POINTER(wintypes.DWORD),ctypes.POINTER(wintypes.DWORD)]
+            peek.restype=wintypes.BOOL
+            handle=wintypes.HANDLE(msvcrt.get_osfhandle(stdin_descriptor))
+        while True:
+            if os.name=='nt':
+                available=wintypes.DWORD()
+                if not peek(handle,None,0,None,ctypes.byref(available),None):
+                    os._exit(1)
+                if not available.value:
+                    time.sleep(.05)
+                    continue
+                # Blocking CRT _read holds a descriptor lock needed by NumPy/
+                # Torch DLL initialization. Read only bytes already available.
+                data=os.read(stdin_descriptor,min(4096,available.value))
+            else:
+                data=os.read(stdin_descriptor,4096)
+            if not data:
+                break
+            pending+=data
+            while b'\n' in pending:
+                line,pending=pending.split(b'\n',1)
+                acknowledgements.put(line.decode('ascii',errors='replace').strip())
         # Parent termination closes stdin. Stop an orphaned GPU computation even
         # when it has not yet reached its next checkpoint.
         os._exit(1)

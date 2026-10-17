@@ -29,7 +29,7 @@ Deadline: **18 October 2026, 06:00 Asia/Calcutta**, deployed demo included. Pref
 | T14 | Implement authorized similar-idea retrieval | T04, T09, T12 | `task-reports/T14.md` |
 | T15 | Implement free OpenStreetMap business context | T05, T09, T13 | `task-reports/T15.md` |
 | T16 | Implement all four comparison views | T12, T13, T14 | `task-reports/T16.md` |
-| T17 | Implement clarification and reassessment | T11, T12, T13 | `task-reports/T17.md` |
+| T17
 | T18 | Implement business arithmetic checks | T09, T12, T13 | `task-reports/T18.md` |
 | T19 | Implement reports and version history | T13, T14, T15, T16, T17, T18 | `task-reports/T19.md` |
 | T20 | Evaluate dataset and our model with real measurements | T09A, T10, T11, T12, T14, T17, T18 | `task-reports/T20.md` |
@@ -70,7 +70,7 @@ Repeatable inventory accounts for 42 PDFs/109 pages, 13 recordings and the four 
 
 Create React/TypeScript/Vite and FastAPI projects with compatible stable dependencies and lockfiles. Separate contracts, routes, repositories, pipeline, providers and workers. Add typed settings, liveness endpoint, lint/typecheck/build commands and initial CI. Document separate development persistence/auth/storage. Exclude archives, personal data and secrets from Git/build contexts.
 
-Prepare the minimal deployable frontend/API configuration and preview checklist here; final packaging stays in T23. Stage an exact sanitized preview artifact and destination for explicit publication approval; no Git push, HF upload or automatic deploy. Do not call a skeleton preview the completed application. Original archives and .tools files are already tracked; ignore rules alone do not remove them. Preserve source files/history and exclude them from release build contexts. If T01's HF-only access checks are blocked, record the verified local/dataset prerequisite used for safe scaffolding and keep T01 blocked.
+Prepare the minimal deployable frontend/API configuration and preview checklist here; final packaging stays in T23. Stage an exact sanitized preview artifact and destination for explicit publication approval | Implement clarification and reassessment | T11, T12, T13 | `task-reports/T17.md` |; no Git push, HF upload or automatic deploy. Do not call a skeleton preview the completed application. Original archives and .tools files are already tracked; ignore rules alone do not remove them. Preserve source files/history and exclude them from release build contexts. If T01's HF-only access checks are blocked, record the verified local/dataset prerequisite used for safe scaffolding and keep T01 blocked.
 
 **Acceptance checks:**
 

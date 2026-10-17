@@ -9,7 +9,13 @@ tasks, T09 → T09A → T12 → T08, with local commits as
 `kushal-s0 <kushal.soni@somaiya.edu>` for BOTH author and committer. This supersedes
 the earlier Kartik-only identity below; historical commits must remain unchanged.
 Actual current branch is `second`; preserve it. Publication remains unapproved.
-T09 is active. Its local parser/API persistence checks pass; actual inference
+T09 is blocked after actual English inference passed; T09A is now active.
+See task-reports/T09.md and evals/reports/feasibility/owned-text.json. Both model
+downloads are hash-verified; .venv-model/CUDA are ready. English HTTP/worker
+structure: 23.601 s and 4.36 GB allocated VRAM. Mixed language stops on denied
+gated translation; adversarial extraction stops for review. API suite 126 passed.
+No provisioning sessions remain. The following provisioning notes are historical.
+Its local parser/API persistence checks pass; actual inference
 is pending isolated model environment/weight downloads on this machine's
 RTX 3050 6 GB, which differs from the older RTX 5050 evidence. IndicTrans2
 access checks returned HTTP 401; no paid/hosted fallback is authorized.

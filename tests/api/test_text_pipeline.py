@@ -9,6 +9,7 @@ from app.contracts.worker import StagePublish, WorkerRequest
 from app.pipeline.normalize import normalize_text, numeric_tokens
 from app.pipeline.structure import assemble, quoted_money
 from app.pipeline.text import translated
+from app.providers.local_models import ModelUnavailable
 from app.services.jobs import Jobs
 from app.worker.capabilities import Capabilities
 from app.worker.manifest import MANIFEST_HASH
@@ -43,6 +44,7 @@ def test_supplied_numbers_preserved_and_unknown_money_stays_null():
                                  {'field':'investment','segment':1,'quote':'INR 30000'}])
     result=assemble(value,[draft]).business
     assert str(result.unit_price.value.amount)=='12.50'
+    assert result.unit_price.value.unit=='cup'
     assert result.profit.value is None and result.profit.status=='missing'
     assert numeric_tokens('₹१२,००० and 12.50')==['12000','12.50']
 
@@ -116,6 +118,13 @@ def test_bundle_does_not_accept_unknown_schema_fields():
         EvidenceBundle.model_validate({'evidence':[],'pretend_verified':True})
 
 
-@pytest.mark.parametrize('text',['loss INR -1000','profit 20%','INR 12,50'])
+@pytest.mark.parametrize('text',['loss INR -1000','profit 20%','INR 12,50','INR 1 lakh','INR 30k'])
 def test_negative_percentage_and_invalid_grouping_never_become_positive_cash(text):
     assert quoted_money(text) is None
+
+
+def test_declared_english_does_not_falsely_mark_mixed_regional_text_as_translated():
+    value=bundle('I will sell चाय to office workers.')
+    value.evidence[0].english_text=None
+    with pytest.raises(ModelUnavailable):
+        list(translated(value,None))

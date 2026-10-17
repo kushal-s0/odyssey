@@ -1,0 +1,23 @@
+{
+  "scope": "Initial failed worker protocol checks before model inference; retained as repair history",
+  "cases": [
+    {
+      "case": "english",
+      "seconds": 244.166,
+      "status": "waiting_for_worker",
+      "error_code": "stage_timeout",
+      "structured": false,
+      "manifest_hash": "9e526e675a02e174d77e75c26340140e1380305c134677a704e25cc9009e70db",
+      "human_quality_validated": false
+    },
+    {
+      "case": "injection",
+      "seconds": 137.44,
+      "status": "cancelled",
+      "error_code": null,
+      "structured": false,
+      "manifest_hash": "9e526e675a02e174d77e75c26340140e1380305c134677a704e25cc9009e70db",
+      "human_quality_validated": false
+    }
+  ]
+}

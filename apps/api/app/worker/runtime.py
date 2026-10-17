@@ -22,7 +22,9 @@ def model_environment() -> dict[str, str]:
     allowed = {'SYSTEMROOT','WINDIR','PATH','TEMP','TMP','HOME','USERPROFILE','LOCALAPPDATA',
                'HF_HOME','HF_HUB_CACHE','HF_TOKEN','TRANSFORMERS_CACHE','CUDA_VISIBLE_DEVICES',
                'CUDA_PATH','PYTHONPATH','PYTHONIOENCODING','OMP_NUM_THREADS'}
-    return {key: value for key, value in os.environ.items() if key.upper() in allowed}
+    environment={key: value for key, value in os.environ.items() if key.upper() in allowed}
+    environment['PYTHONIOENCODING']='utf-8'
+    return environment
 
 
 def execute(client: WorkerClient, work: StageWork, handler: str, *, max_seconds: float = 120,

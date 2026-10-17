@@ -185,3 +185,31 @@ def test_hung_child_has_bounded_timeout_and_preserves_checkpoint(database, monke
         finally:
             with database.transaction() as c:
                 c.execute('DELETE FROM public.worker_runtimes WHERE worker_id=%s',(identity,))
+
+
+def test_child_stdio_probe_and_regional_text_do_not_deadlock_or_corrupt(database,monkeypatch):
+    identity='stdio-probe-'+uuid4().hex
+    monkeypatch.setenv('PYTHONPATH',str(ROOT/'tests/fixtures'))
+    text='चाय का प्रस्ताव। Marathi: चहाचा व्यवसाय.'
+    with seeded(database) as data:
+        configure_probe(database,data)
+        digest=hashlib.sha256(text.encode()).hexdigest()
+        with database.transaction() as c:
+            c.execute('UPDATE public.submission_versions SET source_text=%s,input_hash=%s WHERE id=%s',
+                      (text,digest,data['revisions'][0]))
+            c.execute('UPDATE public.job_stages SET input_hash=%s WHERE id=%s',(digest,data['stage']))
+        try:
+            with http_server(process_settings()) as origin:
+                client=WorkerClient(origin,BOOTSTRAP,allow_loopback=True)
+                try:
+                    work=client.claim(WorkerRequest(worker_id=identity,supported_stages=['orchestration:probe'],manifest_hash=MANIFEST_HASH))
+                    assert work
+                    execute(client,work,'recovery_handler:stream_probe',max_seconds=5)
+                    with database.transaction() as c:
+                        row=c.execute('SELECT payload FROM public.stage_publications WHERE stage_id=%s',(data['stage'],)).fetchone()
+                        assert row and row['payload']['text']==text
+                finally:
+                    client.close()
+        finally:
+            with database.transaction() as c:
+                c.execute('DELETE FROM public.worker_runtimes WHERE worker_id=%s',(identity,))

@@ -1,0 +1,35 @@
+{
+  "torch": "2.9.1+cu128",
+  "cuda_available": true,
+  "physical_ram_bytes": 16849256448,
+  "scope": "Current owned hardware/detector execution only; not quality validation",
+  "device": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+  "vram_bytes": 6441926656,
+  "cuda_arithmetic_passed": true,
+  "language_examples": [
+    {
+      "case": "english",
+      "code": "en",
+      "provenance": "detected",
+      "model_id": "py3langid-0.3.0",
+      "model_confidence": 1.0,
+      "needs_confirmation": false
+    },
+    {
+      "case": "hindi",
+      "code": "hi",
+      "provenance": "declared",
+      "model_id": null,
+      "model_confidence": null,
+      "needs_confirmation": true
+    },
+    {
+      "case": "marathi",
+      "code": "mr",
+      "provenance": "detected",
+      "model_id": "py3langid-0.3.0",
+      "model_confidence": 0.9957687854766846,
+      "needs_confirmation": true
+    }
+  ]
+}
