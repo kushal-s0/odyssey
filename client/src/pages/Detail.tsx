@@ -93,8 +93,8 @@ export default function Detail() {
     void reload();
   }, [reload]);
   useEffect(() => {
-    if (!record || !["queued", "processing"].includes(record.status)) return;
-    const timer = setInterval(() => void reload(), 3500);
+    if (!record || !["queued", "processing", "needs_review"].includes(record.status)) return;
+    const timer = setInterval(() => void reload(), record.status === "needs_review" ? 15000 : 3500);
     return () => clearInterval(timer);
   }, [record?.status, reload]);
   useEffect(() => {
@@ -232,7 +232,7 @@ export default function Detail() {
       {!a ? (
         <section className="panel processing-panel">
           <div className="processing-symbol">
-            {record.status === "failed" ? (
+            {record.status !== "processing" ? (
               <Info size={28} />
             ) : (
               <Loader2 size={28} className="spin" />
@@ -241,9 +241,21 @@ export default function Detail() {
           <h2>
             {record.status === "failed"
               ? "This submission needs attention"
-              : "Bringing the evidence together"}
+              : record.errorCode?.includes("QUOTA") ||
+                  record.errorCode === "PROVIDER_RATE_LIMITED"
+                ? "Waiting for AI service quota"
+                : record.status === "queued"
+                  ? "Your submission is in the queue"
+                  : "Bringing the evidence together"}
           </h2>
           <p>{record.error ?? record.stage}</p>
+          {record.nextRetryAt && record.status === "queued" && (
+            <p>
+              Next automatic attempt:{" "}
+              {new Date(record.nextRetryAt).toLocaleString()}. You can leave
+              this page; no resubmission is needed.
+            </p>
+          )}
           <div className="processing-steps">
             <span className="complete">
               <Check size={14} />

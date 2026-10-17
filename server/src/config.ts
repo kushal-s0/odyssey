@@ -28,6 +28,26 @@ export const config = z
     GEMINI_MODEL: z.string().default("gemini-3.8-flash"),
     GEMINI_THINKING_LEVEL: z.enum(["LOW", "MEDIUM", "HIGH"]).default("LOW"),
     GEMINI_EMBEDDING_MODEL: z.string().default("gemini-embedding-001"),
+    GROQ_API_KEY: optional,
+    GROQ_MODEL: z.string().default("openai/gpt-oss-120b"),
+    GROQ_MIN_REQUEST_INTERVAL_MS: z.coerce
+      .number()
+      .int()
+      .min(0)
+      .max(60000)
+      .default(3000),
+    GROQ_MAX_COMPLETION_TOKENS: z.coerce
+      .number()
+      .int()
+      .min(512)
+      .max(16384)
+      .default(4096),
+    GEMINI_MIN_REQUEST_INTERVAL_MS: z.coerce
+      .number()
+      .int()
+      .min(0)
+      .max(60000)
+      .default(12000),
     SARVAM_API_KEY: optional,
     SARVAM_MODEL: z.string().default("saaras:v4"),
     AUDIO_PROVIDER: z.enum(["sarvam", "gemini"]).default("sarvam"),
@@ -46,6 +66,7 @@ export const config = z
 export const health = () => ({
   database: false,
   gemini: !!config.GEMINI_API_KEY,
+  groq: !!config.GROQ_API_KEY,
   sarvam: !!config.SARVAM_API_KEY,
   classifier: !!config.MODEL_SERVICE_URL,
   examples: config.ENABLE_EXAMPLES,

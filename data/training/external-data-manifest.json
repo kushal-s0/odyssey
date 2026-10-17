@@ -1,0 +1,42 @@
+{
+  "dataset": "SetFit/qnli",
+  "revision": "e08ed8239c319cf7f2d2ab393d1b90e276c39570",
+  "upstreamLicense": "CC BY-SA 4.0 (SQuAD)",
+  "datasetCard": "https://huggingface.co/datasets/SetFit/qnli/blob/e08ed8239c319cf7f2d2ab393d1b90e276c39570/README.md",
+  "upstreamLicenseSource": "https://rajpurkar.github.io/SQuAD-explorer/",
+  "taskSource": "https://huggingface.co/datasets/nyu-mll/glue#qnli",
+  "labelMeaning": {
+    "0": "contains an answer",
+    "1": "does not contain an answer; not necessarily unrelated"
+  },
+  "auxiliaryOnly": true,
+  "notEntrepreneurOutcomeData": true,
+  "selection": "Question-only business/economics keyword filter, deterministic balanced sample; no generated negative pairs.",
+  "modifications": "Filtered, sampled, converted field names and added provenance and connected-component groups for STRIVE; 2026-10-18.",
+  "files": {
+    "train": {
+      "path": "data\\training\\external-qnli-train.jsonl",
+      "rows": 600,
+      "filteredCandidates": 3344,
+      "groups": 465,
+      "classCounts": {
+        "0": 300,
+        "1": 300
+      },
+      "sourceSha256": "9dc5d6276c1f71b43817377d8eb9dc3e751dd9e881b1189442c09646e554140b",
+      "preparedSha256": "deab3a779790f8559a86ec5b56cc0fbc781af5564d3101bd3c05897b19255a94"
+    },
+    "validation": {
+      "path": "data\\training\\external-qnli-validation.jsonl",
+      "rows": 120,
+      "filteredCandidates": 230,
+      "groups": 93,
+      "classCounts": {
+        "0": 60,
+        "1": 60
+      },
+      "sourceSha256": "0a1d85bc1de1fe1fec345600a02d3329af2e3e8827c1536a6d08002463a7958d",
+      "preparedSha256": "c2d92b08a3ac08223a86564c0c96f5b93c290707493a4bb2aa5c347b96f7ece6"
+    }
+  }
+}

@@ -117,9 +117,9 @@ export function createApp() {
         ...(error instanceof ProviderError
           ? {
               retryable: error.retryable,
-              code: error.retryable
-                ? "PROVIDER_TEMPORARILY_UNAVAILABLE"
-                : "SOURCE_PROCESSING_FAILED",
+              code: error.code,
+              retryAfterMs: error.retryAfterMs,
+              provider: error.provider,
             }
           : {}),
       });

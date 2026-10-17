@@ -40,11 +40,12 @@ import { examples, exampleCohorts } from "./examples.js";
 import { assess, cosine, fieldValue } from "./domain/assessment.js";
 import {
   readSource,
-  extractFields,
+  extractFieldsWithProvider,
   translateQuestions,
 } from "./providers/gemini.js";
 import { geocode, localBusinesses } from "./providers/location.js";
 import { applyClassifier } from "./providers/classifier.js";
+import { dashboardSummary } from "./domain/dashboard.js";
 import {
   FIELD_KEYS,
   FIELD_LABELS,
@@ -118,6 +119,7 @@ router.get("/examples", (_req, res) =>
     : res.status(404).json({ error: "Examples are disabled." }),
 );
 router.use(requireAccount);
+router.get("/dashboard", async (req, res) => res.json({ summary: await dashboardSummary(req.actor!) }));
 router.use("/training", requireAssessor);
 router.use("/locations", requireAssessor);
 router.get("/cohorts", requireAssessor, async (_req, res) =>
@@ -354,18 +356,40 @@ router.post("/submissions/:id/retry", writableRate, async (req, res) => {
       ...submissionScope(req.actor!),
       status: "failed",
     },
-    { $set: { status: "queued", stage: "Waiting to retry", error: null } },
+    {
+      $set: {
+        status: "queued",
+        stage: "Waiting to retry",
+        error: null,
+        errorCode: null,
+        errorProvider: null,
+        nextRetryAt: null,
+      },
+    },
     { new: true },
   );
   if (!record) {
     res.status(409).json({ error: "Only failed submissions can be retried." });
     return;
   }
-  await JobModel.deleteMany({
-    submissionId: record._id,
-    status: { $in: ["failed", "done"] },
-  });
-  await JobModel.create({ submissionId: record._id });
+  const previousJob = await JobModel.findOneAndUpdate(
+    {
+      submissionId: record._id,
+      status: "failed",
+    },
+    {
+      $set: {
+        status: "queued",
+        attempts: 0,
+        runAt: new Date(),
+        error: null,
+        errorCode: null,
+        errorProvider: null,
+      },
+      $unset: { leaseToken: 1, leaseUntil: 1 },
+    },
+  );
+  if (!previousJob) await JobModel.create({ submissionId: record._id });
   res.json({ submission: serializeSubmission(record) });
 });
 router.post(
@@ -415,6 +439,7 @@ router.post(
         status: 400,
       });
     let language = current.language;
+    let sourceModel = current.providerModel;
     let segments: SourceSegment[];
     const clarificationMime = req.file
       ? await validateFile(req.file, "audio")
@@ -445,6 +470,7 @@ router.post(
       });
       segments = translated.segments;
       language = translated.language;
+      sourceModel = translated.providerModel;
     } else {
       const source = await readSource({
         text: parsed.answer,
@@ -453,6 +479,7 @@ router.post(
       });
       segments = source.segments;
       language = source.language;
+      sourceModel = source.providerModel;
     }
     const prefix = `v${current.version + 1}-`;
     segments = segments.map((s) => ({
@@ -461,11 +488,11 @@ router.post(
       kind: "clarification",
       clarificationId: String(clarification._id),
     }));
-    const candidates = await extractFields(
+    const extraction = await extractFieldsWithProvider(
       segments,
       FIELD_LABELS[parsed.field],
     );
-    const replacement = candidates.find((f) => f.key === parsed.field);
+    const replacement = extraction.fields.find((f) => f.key === parsed.field);
     if (!replacement || replacement.status !== "supported") {
       res.status(422).json({
         error:
@@ -479,7 +506,15 @@ router.post(
       ),
       segments: [...current.segments, ...segments],
       language,
-      providerModel: config.GEMINI_MODEL,
+      providerModel: [
+        ...new Set(
+          [
+            current.providerModel,
+            sourceModel,
+            extraction.providerModel,
+          ].flatMap((model) => model.split(" + ")),
+        ),
+      ].join(" + "),
       version: current.version + 1,
     });
     const repaired = next.fields.find((f) => f.key === parsed.field);

@@ -26,6 +26,12 @@ export interface WorkspaceUser {
   email: string;
   role: "entrepreneur" | "assessor";
 }
+export interface DashboardSummary {
+  scope: "personal" | "programme";
+  total: number; processing: number; assessed: number; awaitingReview: number;
+  needsClarification: number; failed: number; meanScore: number | null;
+  latestScore: number | null; latestCompleteness: number | null; latestSubmissionId: string | null;
+}
 export const FIELD_LABELS: Record<FieldKey, string> = {
   businessName: "Business idea",
   trade: "Trade",
@@ -146,6 +152,9 @@ export interface Submission {
     assessmentVersion?: number;
   } | null;
   error: string | null;
+  errorCode?: string | null;
+  nextRetryAt?: string | null;
+  errorProvider?: "gemini" | "groq" | null;
   example?: boolean;
 }
 export interface Cohort {
@@ -156,6 +165,7 @@ export interface Cohort {
 export interface Health {
   database: boolean;
   gemini: boolean;
+  groq?: boolean;
   sarvam: boolean;
   classifier: boolean;
   examples: boolean;

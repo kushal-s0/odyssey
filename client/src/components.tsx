@@ -200,9 +200,11 @@ export function Modal({
 export function SubmissionsTable({
   items,
   compact = false,
+  personal = false,
 }: {
   items: Submission[];
   compact?: boolean;
+  personal?: boolean;
 }) {
   if (!items.length)
     return (
@@ -221,8 +223,9 @@ export function SubmissionsTable({
       <table className="ideas-table">
         <thead>
           <tr>
-            <th>Business idea / beneficiary</th>
-            {!compact && <th>Trade / cohort</th>}
+            <th>{personal?"My business idea":"Business idea / beneficiary"}</th>
+            {!compact && !personal && <th>Trade / cohort</th>}
+            {personal&&<th>My score</th>}
             <th>Submission</th>
             <th>Completeness</th>
             <th>Status</th>
@@ -236,9 +239,9 @@ export function SubmissionsTable({
                 <Link to={`/submissions/${item.id}`} className="idea-link">
                   {item.title}
                 </Link>
-                <div className="cell-secondary">{item.beneficiaryName}</div>
+                {!personal&&<div className="cell-secondary">{item.beneficiaryName}</div>}
               </td>
-              {!compact && (
+              {!compact && !personal && (
                 <td>
                   {item.assessment?.fields.find((f) => f.key === "trade")
                     ?.value ?? "Unassigned"}
@@ -247,6 +250,7 @@ export function SubmissionsTable({
                   </div>
                 </td>
               )}
+              {personal&&<td>{item.assessment?.score==null?"Pending":`${item.assessment.score} / 100`}</td>}
               <td>
                 <span className="format-label">
                   <Icon type={item.inputType} />

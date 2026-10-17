@@ -21,6 +21,9 @@ const submissionSchema = new Schema(
     history: [Schema.Types.Mixed],
     review: Schema.Types.Mixed,
     error: String,
+    errorCode: String,
+    errorProvider: String,
+    nextRetryAt: Date,
     embedding: [Number],
     embeddingModel: String,
     sourceFamily: String,
@@ -54,7 +57,7 @@ export const UserModel = mongoose.model(
       role: {
         type: String,
         enum: ["assessor", "entrepreneur"],
-        default: "assessor",
+        default: "entrepreneur",
       },
     },
     flexible,
@@ -80,6 +83,9 @@ const jobSchema = new Schema(
     leaseToken: String,
     runAt: { type: Date, default: Date.now },
     error: String,
+    checkpoint: Schema.Types.Mixed,
+    errorCode: String,
+    errorProvider: String,
   },
   flexible,
 );
@@ -178,6 +184,7 @@ export function serializeSubmission(doc: any) {
     embedding,
     embeddingModel,
     sourceFamily,
+    ownerId,
     ...safe
   } = item;
   return {

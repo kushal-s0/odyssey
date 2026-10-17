@@ -22,8 +22,11 @@ export async function api<T>(
     error:
       "The API did not return valid data. Check that the server is running.",
   }));
-  if (!response.ok)
+  if (!response.ok) {
+    if (response.status === 401 && !path.startsWith("/auth/"))
+      window.dispatchEvent(new Event("strive:session-expired"));
     throw new ApiError(data.error ?? "The request failed.", response.status);
+  }
   return data as T;
 }
 export const moneyScore = (value: number | null | undefined) =>

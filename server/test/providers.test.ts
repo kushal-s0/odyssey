@@ -1,6 +1,8 @@
-import { afterEach, test } from "node:test";
+import { afterEach, beforeEach, test } from "node:test";
 import assert from "node:assert/strict";
 import { config } from "../src/config.js";
+import { generationGate, embeddingGate } from "../src/providers/quota.js";
+config.GEMINI_MIN_REQUEST_INTERVAL_MS = 0;
 import {
   readSource,
   extractFields,
@@ -8,14 +10,21 @@ import {
   ProviderError,
 } from "../src/providers/gemini.js";
 const originalFetch = globalThis.fetch,
+  originalGroqKey = config.GROQ_API_KEY,
   originalKey = config.GEMINI_API_KEY,
   originalModel = config.GEMINI_MODEL,
   originalThinking = config.GEMINI_THINKING_LEVEL;
 afterEach(() => {
+  generationGate.reset();
+  embeddingGate.reset();
   globalThis.fetch = originalFetch;
   config.GEMINI_API_KEY = originalKey;
   config.GEMINI_MODEL = originalModel;
   config.GEMINI_THINKING_LEVEL = originalThinking;
+  config.GROQ_API_KEY = originalGroqKey;
+});
+beforeEach(() => {
+  config.GROQ_API_KEY = "";
 });
 function respond(data: unknown, finishReason = "STOP") {
   config.GEMINI_API_KEY = "unit-test-only-key";

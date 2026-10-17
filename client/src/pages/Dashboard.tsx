@@ -22,13 +22,14 @@ import {
   Empty,
 } from "../components";
 import { csvCell, download } from "../api";
+import PersonalDashboard from "./PersonalDashboard";
 export default function Dashboard() {
   const w = useWorkspace(),
     [cohort, setCohort] = useState("");
   const items = w.submissions.filter((s) => !cohort || s.cohortId === cohort);
-  const total = items.length;
+  const total = !cohort&&w.dashboard?w.dashboard.total:items.length;
   const assessable = items.filter((s) => s.assessment?.score != null).length;
-  const repair = items.filter(
+  const repair = !cohort&&w.dashboard?w.dashboard.needsClarification:items.filter(
     (s) => (s.assessment?.questions.length ?? 0) > 0,
   ).length;
   const completion = total
@@ -83,10 +84,11 @@ export default function Dashboard() {
       "text/csv",
     );
   }
+  if(w.session?.user?.role === "entrepreneur")return <PersonalDashboard/>;
   return (
     <>
       <PageIntro
-        eyebrow="THE ASSESSMENT WORKSPACE"
+        eyebrow="YOUR ASSESSOR WORKSPACE"
         title="A clearer view of every idea."
         description="Understand proposals. Find the gaps. Help the next business take shape."
         action={

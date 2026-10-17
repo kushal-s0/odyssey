@@ -63,7 +63,7 @@ export default function Settings() {
           ? "Entrepreneur account created. You can submit your first idea."
           : "Signed in to your workspace.",
       );
-      navigate(response.user.role === "entrepreneur" ? "/submissions" : "/");
+      navigate("/dashboard");
     } catch (failure) {
       setError(
         failure instanceof Error
@@ -117,7 +117,7 @@ export default function Settings() {
                   className="button primary full-width"
                   onClick={() => {
                     w.setMode("live");
-                    navigate(entrepreneur ? "/submissions" : "/");
+                    navigate("/dashboard");
                   }}
                 >
                   Open live workspace <ArrowRight size={15} />
@@ -280,6 +280,13 @@ export default function Settings() {
                   description: "Hosted extraction, translation and embeddings",
                   key: "GEMINI_API_KEY",
                   ready: health?.gemini,
+                },
+                {
+                  name: "Groq fallback API",
+                  description:
+                    "Backup translation and fact extraction when Gemini is unavailable",
+                  key: "GROQ_API_KEY",
+                  ready: health?.groq,
                 },
                 {
                   name: "Sarvam speech API",

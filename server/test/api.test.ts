@@ -21,6 +21,8 @@ test("health exposes configuration status without secrets", async () => {
   const data: any = await r.json();
   assert.equal(data.database, false);
   assert.equal("GEMINI_API_KEY" in data, false);
+  assert.equal("GROQ_API_KEY" in data, false);
+  assert.equal(typeof data.groq, "boolean");
   assert.match(r.headers.get("cache-control") ?? "", /no-store/);
 });
 test("example data is explicit and does not pretend to be actual model results", async () => {

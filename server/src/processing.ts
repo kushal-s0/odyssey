@@ -1,11 +1,17 @@
-import { randomUUID } from "node:crypto";
+import { randomUUID, createHash } from "node:crypto";
 import { PDFDocument } from "pdf-lib";
 import { config } from "./config.js";
-import { JobModel, SubmissionModel, readFile, databaseReady } from "./db.js";
+import {
+  JobModel,
+  SubmissionModel,
+  CacheModel,
+  readFile,
+  databaseReady,
+} from "./db.js";
 import { assess, fieldValue } from "./domain/assessment.js";
 import {
   readSource,
-  extractFields,
+  extractFieldsWithProvider,
   translateQuestions,
   embed,
   ProviderError,
@@ -13,6 +19,51 @@ import {
 import { transcribe } from "./providers/audio.js";
 import { applyClassifier } from "./providers/classifier.js";
 import type { Assessment } from "../../shared/types.js";
+import {
+  generationGate,
+  groqGate,
+  generationAvailability,
+} from "./providers/quota.js";
+
+export interface ProcessingCheckpoint {
+  fingerprint: string;
+  audioSegments?: Awaited<ReturnType<typeof transcribe>>;
+  source?: Awaited<ReturnType<typeof readSource>>;
+  fields?: Awaited<ReturnType<typeof extractFieldsWithProvider>>["fields"];
+  fieldsModel?: string;
+}
+export const quotaCacheKey = (provider: "gemini" | "groq" = "gemini") =>
+  `${provider === "groq" ? "groq" : "generation"}-quota:${createHash("sha256")
+    .update(
+      provider === "groq"
+        ? `${config.GROQ_API_KEY}:${config.GROQ_MODEL}`
+        : `${config.GEMINI_API_KEY}:${config.GEMINI_MODEL}`,
+    )
+    .digest("hex")}`;
+
+export function retryPlan(error: unknown, attempts: number, now = Date.now()) {
+  const provider = error instanceof ProviderError ? error : null;
+  const rateLimit =
+    !!provider?.code.startsWith("PROVIDER_") &&
+    /QUOTA|RATE_LIMITED/.test(provider.code);
+  const retry =
+    !!provider?.retryable &&
+    (attempts < 3 || (rateLimit && !provider.requestMade));
+  return {
+    retry,
+    attempts:
+      rateLimit && !provider?.requestMade
+        ? Math.max(0, attempts - 1)
+        : attempts,
+    runAt: new Date(
+      now +
+        Math.max(
+          60000 * 2 ** Math.max(0, attempts - 1),
+          provider?.retryAfterMs ?? 0,
+        ),
+    ),
+  };
+}
 export async function buildAssessment(input: {
   text?: string;
   buffer?: Buffer;
@@ -21,7 +72,27 @@ export async function buildAssessment(input: {
   language: string;
   version?: number;
   onStage?: (stage: string) => void | Promise<void>;
+  checkpoint?: ProcessingCheckpoint;
+  onCheckpoint?: (checkpoint: ProcessingCheckpoint) => void | Promise<void>;
 }): Promise<{ assessment: Assessment; embedding: number[] | null }> {
+  const fingerprint = createHash("sha256")
+    .update(
+      JSON.stringify([
+        input.kind,
+        input.language,
+        input.mime,
+        config.GEMINI_MODEL,
+        config.GROQ_MODEL,
+        config.AUDIO_PROVIDER,
+        config.SARVAM_MODEL,
+      ]),
+    )
+    .update(input.buffer ?? input.text ?? "")
+    .digest("hex");
+  const checkpoint: ProcessingCheckpoint =
+    input.checkpoint?.fingerprint === fingerprint
+      ? { ...input.checkpoint }
+      : { fingerprint };
   let pageCount: number | undefined;
   if (input.kind === "pdf") {
     try {
@@ -41,27 +112,61 @@ export async function buildAssessment(input: {
     }
   }
   const audioSegments =
-    input.kind === "audio" && config.AUDIO_PROVIDER === "sarvam"
+    checkpoint.audioSegments ??
+    (input.kind === "audio" && config.AUDIO_PROVIDER === "sarvam"
       ? await transcribe(input.buffer!, input.language)
-      : undefined;
+      : undefined);
+  if (audioSegments && !checkpoint.audioSegments) {
+    checkpoint.audioSegments = audioSegments;
+    await input.onCheckpoint?.(checkpoint);
+  }
   await input.onStage?.("Reading and translating source evidence");
-  const source = await readSource({
-    ...input,
-    buffer: audioSegments ? undefined : input.buffer,
-    pageCount,
-    audioSegments,
-  });
+  const source =
+    checkpoint.source ??
+    (await readSource({
+      ...input,
+      buffer: audioSegments ? undefined : input.buffer,
+      pageCount,
+      audioSegments,
+    }));
+  if (!checkpoint.source) {
+    checkpoint.source = source;
+    await input.onCheckpoint?.(checkpoint);
+  }
   await input.onStage?.("Extracting business facts");
-  const fields = await extractFields(source.segments);
+  const extraction = checkpoint.fields
+    ? {
+        fields: checkpoint.fields,
+        providerModel: checkpoint.fieldsModel ?? config.GEMINI_MODEL,
+      }
+    : await extractFieldsWithProvider(source.segments);
+  const fields = extraction.fields;
+  if (!checkpoint.fields) {
+    checkpoint.fields = fields;
+    checkpoint.fieldsModel = extraction.providerModel;
+    await input.onCheckpoint?.(checkpoint);
+  }
   await input.onStage?.("Validating evidence and assessment");
   const assessment = assess({
     fields,
     segments: source.segments,
     language: source.language,
-    providerModel: config.GEMINI_MODEL,
+    providerModel: [
+      ...new Set([
+        source.providerModel ?? config.GEMINI_MODEL,
+        extraction.providerModel,
+      ]),
+    ].join(" + "),
     version: input.version,
     warnings: source.warnings,
   });
+  if (
+    extraction.providerModel.startsWith("groq/") &&
+    !assessment.warnings.some((w) => w.includes("Groq hosted fallback"))
+  )
+    assessment.warnings.push(
+      "Groq hosted fallback performed fact extraction. Source citations and evidence checks still apply.",
+    );
   try {
     const translated = await translateQuestions(
       assessment.questions,
@@ -120,6 +225,102 @@ async function tick() {
   if (ticking || !databaseReady()) return;
   ticking = true;
   try {
+    const [geminiCooldown, groqCooldown] = await Promise.all(
+      (["gemini", "groq"] as const).map((provider) =>
+        CacheModel.findOne({
+          key: quotaCacheKey(provider),
+          expiresAt: { $gt: new Date() },
+        }).lean(),
+      ),
+    );
+    for (const [provider, entry] of [
+      ["gemini", geminiCooldown],
+      ["groq", groqCooldown],
+    ] as const) {
+      if (!entry?.value) continue;
+      const until = new Date(entry.expiresAt!).getTime();
+      const { message, code, retryable } = entry.value;
+      (provider === "gemini" ? generationGate : groqGate).defer(
+        new ProviderError(
+          message,
+          retryable,
+          code,
+          until - Date.now(),
+          false,
+          provider,
+        ),
+        until,
+      );
+    }
+    const availability = generationAvailability([
+      {
+        provider: "gemini",
+        configured: !!config.GEMINI_API_KEY,
+        until: geminiCooldown?.expiresAt?.getTime() ?? 0,
+      },
+      {
+        provider: "groq",
+        configured: !!config.GROQ_API_KEY,
+        until: groqCooldown?.expiresAt?.getTime() ?? 0,
+      },
+    ]);
+    const cooldown = availability.blocked
+      ? availability.provider === "groq"
+        ? groqCooldown
+        : geminiCooldown
+      : null;
+    if (cooldown?.value) {
+      const { message, code } = cooldown.value;
+      await SubmissionModel.updateMany(
+        { status: "queued", nextRetryAt: { $ne: cooldown.expiresAt } },
+        {
+          $set: {
+            stage: "Waiting for AI quota",
+            error: message,
+            errorCode: code,
+            errorProvider: cooldown === groqCooldown ? "groq" : "gemini",
+            nextRetryAt: cooldown.expiresAt,
+          },
+        },
+      );
+      return;
+    }
+    // A ready provider can resume jobs postponed by the other provider's quota.
+    if (
+      (availability.provider === "groq" && config.GROQ_API_KEY) ||
+      (availability.provider === "gemini" && config.GEMINI_API_KEY)
+    ) {
+      const waiting = await SubmissionModel.find({
+        status: "queued",
+        errorProvider: { $ne: availability.provider },
+        errorCode: { $in: ["PROVIDER_DAILY_QUOTA", "PROVIDER_RATE_LIMITED"] },
+      })
+        .select("_id")
+        .lean();
+      if (waiting.length) {
+        const ids = waiting.map((s) => s._id);
+        await JobModel.updateMany(
+          {
+            submissionId: { $in: ids },
+            status: "queued",
+            errorProvider: { $ne: availability.provider },
+          },
+          { $set: { runAt: new Date() } },
+        );
+        await SubmissionModel.updateMany(
+          { _id: { $in: ids }, status: "queued" },
+          {
+            $set: {
+              stage: "Waiting for backup AI service",
+              error: null,
+              errorCode: null,
+              errorProvider: null,
+              nextRetryAt: null,
+            },
+          },
+        );
+      }
+    }
     const exhausted = await JobModel.find({
       status: "processing",
       attempts: { $gte: 3 },
@@ -205,6 +406,9 @@ async function processJob(job: any, token: string) {
               ? "Transcribing recording"
               : "Reading source evidence",
           error: null,
+          errorCode: null,
+          errorProvider: null,
+          nextRetryAt: null,
         },
       },
     );
@@ -217,6 +421,18 @@ async function processJob(job: any, token: string) {
       mime: submission.fileMime ?? undefined,
       kind: submission.inputType as any,
       language: submission.language ?? "auto",
+      checkpoint: job.checkpoint,
+      onCheckpoint: async (checkpoint) => {
+        const saved = await JobModel.updateOne(
+          { _id: job._id, leaseToken: token, status: "processing" },
+          { $set: { checkpoint } },
+        );
+        if (!saved.matchedCount)
+          throw new ProviderError(
+            "Processing lease expired. The saved job will resume safely.",
+            true,
+          );
+      },
       onStage: async (stage) => {
         await SubmissionModel.updateOne(
           { _id: submission._id, status: "processing" },
@@ -243,31 +459,60 @@ async function processJob(job: any, token: string) {
           status: result.assessment.reviewRequired ? "needs_review" : "ready",
           stage: "Assessment complete",
           error: null,
+          errorCode: null,
+          errorProvider: null,
+          nextRetryAt: null,
         },
       },
     );
     await JobModel.updateOne(
       { _id: job._id, leaseToken: token },
-      { $set: { status: "done" } },
+      { $set: { status: "done" }, $unset: { checkpoint: 1 } },
     );
   } catch (error) {
-    const message =
+    const { retry, runAt, attempts } = retryPlan(error, job.attempts);
+    const providerMessage =
       error instanceof Error ? error.message : "Processing failed.";
-    const retry =
-      error instanceof ProviderError && error.retryable && job.attempts < 3;
+    const message =
+      error instanceof ProviderError && error.retryable && !retry
+        ? `${providerMessage.replace(/Processing will (?:retry automatically|resume after the provider's quota reset)\. /, "")} Automatic attempts have stopped after three failures. Check service availability and use Retry processing.`
+        : providerMessage;
+    const errorCode =
+      error instanceof ProviderError ? error.code : "PROCESSING_FAILED";
+    const errorProvider =
+      error instanceof ProviderError ? error.provider : null;
     const lease = await JobModel.exists({
       _id: job._id,
       leaseToken: token,
       status: "processing",
     }).catch(() => null);
     if (lease) {
+      if (
+        error instanceof ProviderError &&
+        error.retryAfterMs > 0 &&
+        /QUOTA|RATE_LIMITED/.test(error.code)
+      ) {
+        await CacheModel.findOneAndUpdate(
+          { key: quotaCacheKey(error.provider) },
+          {
+            $set: {
+              value: { message, code: errorCode, retryable: error.retryable },
+            },
+            $max: { expiresAt: runAt },
+          },
+          { upsert: true },
+        ).catch(() => {});
+      }
       await JobModel.updateOne(
         { _id: job._id, leaseToken: token },
         {
           $set: {
             status: retry ? "queued" : "failed",
             error: message,
-            runAt: new Date(Date.now() + 60000 * job.attempts),
+            errorCode,
+            errorProvider,
+            attempts,
+            runAt,
           },
         },
       ).catch(() => {});
@@ -278,6 +523,9 @@ async function processJob(job: any, token: string) {
             status: retry ? "queued" : "failed",
             stage: retry ? "Waiting to retry" : "Needs attention",
             error: message,
+            errorCode,
+            errorProvider,
+            nextRetryAt: retry ? runAt : null,
           },
         },
       ).catch(() => {});

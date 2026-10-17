@@ -70,10 +70,7 @@ test("entrepreneur registration checks confirmation and never asks for a privile
   page,
 }) => {
   const writes = await workspace(page, null);
-  await page.goto("/settings");
-  await page
-    .getByRole("button", { name: "Create entrepreneur account" })
-    .click();
+  await page.goto("/register");
   await page.getByLabel("Full name", { exact: true }).fill("Test Entrepreneur");
   await page.getByLabel("Email", { exact: true }).fill("person@example.test");
   await page

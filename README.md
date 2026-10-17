@@ -6,7 +6,7 @@ The UI uses white, black and neutral grays. All AI inference uses hosted service
 
 ## Run it
 
-Node.js 22 or newer and Python 3 are needed. On this Windows machine, use `npm.cmd` if PowerShell blocks `npm.ps1`.
+Node.js 22.13 or newer and Python 3 are needed. On this Windows machine, use `npm.cmd` if PowerShell blocks `npm.ps1`.
 
 ```powershell
 npm.cmd install
@@ -33,6 +33,10 @@ Without Atlas or AI credentials, the app offers **eight explicitly labelled, rea
 | `GEMINI_MODEL` | Account-accessible multimodal model; configured default is `gemini-3.8-flash` |
 | `GEMINI_THINKING_LEVEL` | `LOW` by default for Gemini 3+ structured extraction; configurable to `MEDIUM` or `HIGH` |
 | `GEMINI_EMBEDDING_MODEL` | Fixed embedding model; default `gemini-embedding-001`, 768 dimensions |
+| `GROQ_API_KEY` | Optional hosted fallback when Gemini generation is unavailable; server-side only |
+| `GROQ_MODEL` | Strict JSON model on Groq; default `openai/gpt-oss-120b` |
+| `GROQ_MIN_REQUEST_INTERVAL_MS` | Minimum Groq request spacing; default 3000 ms per API process |
+| `GROQ_MAX_COMPLETION_TOKENS` | Groq output budget; default 4096; subject to account limits |
 | `SARVAM_API_KEY` | Indian-language speech transcription, including Odia |
 | `SARVAM_MODEL` | Speech model; default `saaras:v4`; verify account access |
 | `AUDIO_PROVIDER` | `sarvam` by default; explicit `gemini` alternative available |
@@ -43,7 +47,7 @@ Without Atlas or AI credentials, the app offers **eight explicitly labelled, rea
 
 In Atlas, allow the deployment host/development machine through Network Access and create a database user with access to this database. Restart the API after editing `.env`. Then open **Workspace settings**, sign in with the configured assessor credentials, and choose **Open live workspace**. The first assessor account is created only when none exists; editing its bootstrap password later does not reset an existing user.
 
-The live application currently uses an assessor-operated workflow. All original files, annotations and live submissions require the assessor session. A separate public beneficiary account/registration system is outside this MVP.
+Entrepreneurs can register and access their own submissions and originals. Assessors review programme submissions and manage training annotations. API permissions enforce these roles and ownership.
 
 Provider configuration status is not proof of API access. The first real request verifies account/model availability and quota. No API keys, Atlas URI, cloud session, or deployment credentials were available during initial implementation, so live external integrations and actual training must still be exercised with your accounts. Free allowances are finite; Gemini free-tier data-use terms differ from paid-tier terms.
 
@@ -151,6 +155,18 @@ The app rejects incompatible models. A missing/unavailable classifier is disclos
 The user explicitly searches for and confirms a business location, then chooses the business category and radius. Nominatim lookups are cached and limited to one per 1.1 seconds per API process; run a single process for this public-service MVP. No autocomplete or bulk geocoding is used. Overpass returns sourced OpenStreetMap listings with retrieval time, radius and attribution. No returned listings means **no mapped results found**, not no competitors. Public service availability and map coverage vary.
 
 ## Checks
+
+With `GROQ_API_KEY` configured, Gemini generation falls back to Groq on quota errors, network failures, temporary service errors, missing Gemini credentials or denied model access. Groq uses [strict JSON schema output](https://console.groq.com/docs/structured-outputs); unsupported source quotes, citations, numbers and financial claims still pass through the same evidence checks. Blocked, truncated or invalid Gemini output fails validation without automatically resubmitting it to another provider. The assessment records the actual source/extraction models used.
+
+The fallback supports written answers, existing Sarvam speech transcripts and PDFs with selectable text. PDF.js extracts the PDF text with page numbers, and every Groq original quotation must match its cited page. Image-only, blank or unreadable pages fail explicitly; OCR is not silently invented. Raw audio requires the configured Sarvam transcription path before Groq. Gemini embeddings remain unchanged to preserve compatibility with the cloud-trained relevance classifier; embedding failure disables that optional check/similarity rather than substituting incompatible vectors.
+
+Run `npm.cmd run check:groq` for a synthetic structured-output access check without participant content. Restart the API after changing `.env`. Adding a Groq key releases jobs delayed solely by Gemini's quota. Groq also has [finite account limits](https://console.groq.com/docs/rate-limits); the worker respects its retry and reset headers, stores separate cooldowns and resumes when either configured provider becomes available. Request spacing is per API process; use one API process for the hackathon.
+
+Gemini HTTP 429 means the Google project's allowance has been exceeded. Check the active model's limits in [Google AI Studio](https://aistudio.google.com/usage?tab=rate-limit); quotas are shared across API keys in the same project. Daily request quotas reset at midnight Pacific time, according to [Google's rate-limit documentation](https://ai.google.dev/gemini-api/docs/rate-limits).
+
+The worker reads `Retry-After`, `RetryInfo` and quota details. Temporary limits schedule a retry; daily exhaustion with a provider reset time waits until that time. A zero allowance or daily exhaustion without a reset time requires an administrator check and explicit retry. The next scheduled attempt appears on the submission screen. Successful source reading/transcription and extraction are checkpointed in Atlas, bound to the source content and model, and reused on retries. Checkpoints are removed after success. The server also saves model cooldowns in Atlas so restarting does not cause a burst of requests. Changing keys within the same Google project does not increase its allowance.
+
+`GEMINI_MIN_REQUEST_INTERVAL_MS` defaults to 12000 (five request starts per minute per model, per API process). Adjust it to your actual allowance; spacing does not increase daily or token quotas. Run one API process for this hackathon setup, since request spacing is per process. After checking or changing provider configuration, use **Retry processing** for failed submissions. Queued submissions resume automatically after their displayed wait; leave the server running. Credentials stay in `.env`; no re-upload is needed.
 
 With credentials configured, `npm.cmd run check:connections` checks Atlas, Gemini model access, and Sarvam using a generated one-second silent WAV. `npm.cmd run check:pipeline` exercises generation and embeddings using an artificial English business idea. These diagnostics do not read or upload participant content and do not print secrets. Connection reports are saved under ignored `.planning/` files. A successful silence request validates access, not real transcription quality.
 

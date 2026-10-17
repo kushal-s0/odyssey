@@ -5,6 +5,7 @@ import { PageIntro, SubmissionsTable } from "../components";
 import { useWorkspace } from "../workspace";
 export default function Submissions() {
   const w = useWorkspace();
+  const entrepreneur=w.session?.user?.role==="entrepreneur";
   const [query, setQuery] = useState(""),
     [status, setStatus] = useState(""),
     [format, setFormat] = useState(""),
@@ -23,8 +24,8 @@ export default function Submissions() {
     <>
       <PageIntro
         eyebrow="ONE PLACE FOR EVERY PROPOSAL"
-        title="All submissions"
-        description="Review ideas across formats, languages, and programme cohorts."
+        title={entrepreneur?"My submissions":"All submissions"}
+        description={entrepreneur?"Track your ideas, assessments, and next steps.":"Review ideas across formats, languages, and programme cohorts."}
         action={
           <Link to="/submit" className="button primary">
             <Plus size={16} />
@@ -65,7 +66,7 @@ export default function Submissions() {
             <option value="pdf">PDF</option>
             <option value="audio">Audio</option>
           </select>
-          <select
+          {!entrepreneur&&<select
             aria-label="Cohort filter"
             value={cohort}
             onChange={(e) => setCohort(e.target.value)}
@@ -76,7 +77,7 @@ export default function Submissions() {
                 {c.name}
               </option>
             ))}
-          </select>
+          </select>}
         </div>
         <div className="results-caption">
           <span>
@@ -101,7 +102,7 @@ export default function Submissions() {
               : "Latest 500 records"}
           </span>
         </div>
-        <SubmissionsTable items={items} />
+        <SubmissionsTable items={items} personal={entrepreneur}/>
       </section>
     </>
   );

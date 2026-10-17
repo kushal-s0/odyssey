@@ -2,6 +2,13 @@
 
 Updated: 18 October 2026. `[x]` implementation complete, `[-]` in progress, `[ ]` pending. Live account verification is tracked separately from implemented code.
 
+## Personal dashboards and external-data cloud training
+- [-] Add public home, dedicated authentication, protected role dashboards and automatic progress updates.
+- [-] Scope dashboard statistics in the database to each entrepreneur; verify cross-account isolation.
+- [-] Prepare a pinned external business/economics question-answer subset with source labels, attribution and provenance.
+- [-] Add an automated Colab comparison run with grouped target-data evaluation and conservative model promotion.
+- [ ] User runs the hosted Colab notebook and returns its measured evaluation/artifact. No local model training or deployment.
+
 ## Foundation
 - [x] Scaffold the React/TypeScript and Express/TypeScript workspaces.
 - [x] Add configuration validation, Atlas connection, persistent models, and GridFS storage.
@@ -117,3 +124,23 @@ Local UI screenshots: `.planning/screenshots/overview-desktop.png` and `.plannin
 - Live Atlas checks verified two temporary entrepreneur accounts, account isolation, original-source isolation, assessor access, financial validation and persisted structured reviews. All temporary accounts/records were removed; no model calls were made by these checks.
 - Returned model files report macro-F1 0.6783, off-topic recall 0.40, full grouped evaluation coverage and zero flag coverage at threshold 0.75. Model remains advisory and hosted inference is not connected.
 - Final verification: 40 application regression tests, nine desktop/mobile browser tests, workspace type checks and the full production build passed. The guided mobile form was visually inspected. Existing assessor access remains functional and no real participant records were modified during the role checks.
+
+### Gemini quota handling - 18 October 2026
+
+- Diagnosed the reported HTTP 429 with a synthetic prompt. Google returned `RESOURCE_EXHAUSTED`, a daily free-tier allowance of 20 requests for `gemini-3.8-flash`, and a retry delay. No participant content was sent for the diagnosis.
+- Added safe quota parsing, `Retry-After`/`RetryInfo` support, separate generation/embedding cooldowns and configurable request spacing. Daily quota without a reset time and zero allowances require an explicit administrator check; no billing or model configuration was changed.
+- Added a durable generation cooldown in Atlas and next-attempt metadata on submissions. The processing screen now explains the wait and displays its scheduled retry, without an active processing spinner.
+- Added content/model-bound checkpoints for successful transcription, source reading and extraction, retained across automatic and manual retries and removed after successful completion. Evidence validation still runs before publishing an assessment.
+- Recovered the user's existing failed submission through its authenticated retry endpoint. It is queued with zero new attempts, original text unchanged, and no fabricated assessment. Google's reported next retry time is 18 October 2026 at approximately 05:30 IST; this is the returned retry time, not a promise that quota will be available then. The server must remain running or be restarted after that time.
+- Verification: 48 automated tests, 10 desktop/mobile browser tests, workspace type checks and the full production build passed. The quota waiting screen was visually inspected. Live recovery results are recorded in ignored `.planning/quota-recovery-check.json`.
+- Full live reprocessing remains pending the external provider's quota. No deployment was started.
+
+### Groq fallback - 18 October 2026
+
+- At the user's request, added Groq as a hosted generation fallback for Gemini quota, configuration/access and temporary network/service failures. Stored the supplied key only in the ignored server-side `.env`; no client key or deployment was added.
+- Default Groq model is `openai/gpt-oss-120b`, using strict JSON schema output, temperature zero and bounded output. Existing schema checks, exact source quotes, numeric translation checks, citation checks and deterministic assessment still apply. Blocked, incomplete or invalid Gemini output is not automatically routed around validation.
+- Written text and Sarvam speech transcripts use the text fallback. Added Mozilla PDF.js for deterministic extraction of PDF text with page numbers; Groq PDF quotes must match their cited page. Scanned, blank or unreadable PDF pages fail explicitly instead of being silently dropped. No local model or OCR model runs.
+- Gemini embeddings remain fixed for trained-classifier compatibility. Groq never substitutes embeddings; unavailable similarity/classifier checks are disclosed as optional failures.
+- Added separate provider cooldowns, Groq retry/reset-header handling, queue resumption when a provider becomes available, accurate provider attribution and a Groq connection indicator. Added `npm.cmd run check:groq` for synthetic access checks.
+- Synthetic Groq access/strict JSON check passed. The previously blocked Marathi text submission completed through Groq: 15 segments and 10 supported fields. All accepted values match cited evidence; status is `needs_review`, with no processing error and no remaining checkpoint. This does not establish human-verified translation accuracy.
+- Verification: 61 automated tests, 10 browser tests, workspace type checks and the production build passed. No deployment was started.

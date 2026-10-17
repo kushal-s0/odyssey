@@ -23,6 +23,7 @@ export async function bootstrapAssessor() {
     await UserModel.create({
       email: config.ASSESSOR_EMAIL.toLowerCase(),
       name: "Programme assessor",
+      role: "assessor",
       passwordHash: await bcrypt.hash(config.ASSESSOR_PASSWORD, 12),
     });
 }

@@ -9,6 +9,7 @@ dist/
 .planning/
 data/extracted/
 data/training/*.jsonl
+data/training/external-cache/
 data/training/*features*.json
 model-service/artifacts/*.json
 !model-service/artifacts/.gitkeep

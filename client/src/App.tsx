@@ -28,7 +28,7 @@ import { useWorkspace } from "./workspace";
 import { api } from "./api";
 import { Busy, Notice, Empty } from "./components";
 const links = [
-  { to: "/", label: "Overview", icon: LayoutDashboard },
+  { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { to: "/submissions", label: "All submissions", icon: Inbox },
   { to: "/submit", label: "Submit an idea", icon: Plus },
   { to: "/comparisons", label: "Comparisons", icon: ChartNoAxesCombined },
@@ -46,17 +46,17 @@ export default function App() {
         location.pathname === path || location.pathname.startsWith(path + "/"),
     );
   const current = links.find((l) =>
-    l.to === "/"
-      ? location.pathname === "/"
+    l.to === "/dashboard"
+      ? location.pathname === "/dashboard"
       : location.pathname.startsWith(l.to),
   );
-  const name =
+  const name = entrepreneur && current?.to === "/dashboard" ? "My dashboard" : entrepreneur && current?.to === "/submissions" ? "My submissions" :
     current?.label ??
     (location.pathname === "/settings" ? "Workspace settings" : "Assessment");
   return (
     <div className="app-shell">
       <aside className={`sidebar ${menu ? "sidebar-open" : ""}`}>
-        <Link className="brand" to="/" onClick={() => setMenu(false)}>
+        <Link className="brand" to="/dashboard" onClick={() => setMenu(false)}>
           <span className="brand-mark">
             <i />
             <i />
@@ -91,7 +91,7 @@ export default function App() {
               <NavLink
                 key={to}
                 to={to}
-                end={to === "/"}
+                end={to === "/dashboard"}
                 onClick={() => setMenu(false)}
                 className={({ isActive }) =>
                   `nav-item ${isActive ? "active" : ""}`
@@ -101,7 +101,7 @@ export default function App() {
                 <span>
                   {entrepreneur && to === "/submissions"
                     ? "My submissions"
-                    : label}
+                    : entrepreneur && to === "/dashboard" ? "My dashboard" : label}
                 </span>
                 {to === "/submissions" && (
                   <span className="nav-count">{w.submissions.length}</span>
@@ -146,9 +146,7 @@ export default function App() {
                 className="icon-button"
                 aria-label="Sign out"
                 onClick={async () => {
-                  await api("/auth/logout", { method: "POST" });
-                  w.setMode("examples");
-                  await w.refresh();
+                  await w.signOut();
                 }}
               >
                 <LogOut size={16} />
