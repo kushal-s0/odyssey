@@ -24,7 +24,7 @@ Next action: read the rolling checkpoint and latest task report below. Current b
 - Pre-review HEAD: `d2fb9a7` (historical author/committer kushal-s0; preserve). Local Git identity was already configured as Kartik with the email above. Use `git log -1` for the latest planning commit; do not embed a self-referencing guessed hash here.
 - Initial review state had no application scaffold/reports. Current state: T02 scaffold completed; T01 partial report and actual model feasibility evidence exist. Use TASK_STATUS.md for the live count, not historical planning snapshots. No cloud deployment or trained classifier is verified.
 - Original sources: organizer PDF plus three ZIP archives; preserve intact. Independent read-only audit confirmed 55 submissions, 42 PDFs/109 pages, four 11-page scans and 13 recordings. See [PROJECT_REVIEW.md](PROJECT_REVIEW.md). Audit observations are not completion of T01's script/live acceptance checks.
-- Hardware: RTX 5050 Laptop GPU, 8151 MiB VRAM, driver 592.82; system memory 24,841,998,336 bytes. CUDA/framework/model compatibility, latency, model fit and sustained uptime unverified. Docker engine was not available. No model inference ran.
+- Hardware: RTX 5050 Laptop GPU, 8151 MiB VRAM, driver 592.82; system memory 24,841,998,336 bytes. CUDA/framework/model compatibility, latency, model fit and sustained uptime unverified. Docker engine was unavailable at review; T04 started it and tested actual PostgreSQL. T01 follow-up ran local CUDA/Qwen inference; see reports.
 - Original datasets and `.tools/` are already tracked. Do not use `git add .` indiscriminately or assume `.gitignore` removes tracked data. Prepare sanitized build/publication inputs without rewriting history.
 
 ## Open prerequisites and decisions
@@ -33,7 +33,7 @@ Next action: read the rolling checkpoint and latest task report below. Current b
 |---|---|---|
 | Laptop inference | Owned machine available; CUDA environment installation active | Compatible pinned framework, permitted model downloads, measured text/scan/audio/translation execution and authenticated worker recovery |
 | Hugging Face | User configuring read token/acceptance; initial three gated probes HTTP 401 | Actual account access/condition acceptance, two Space provisioning, enqueue/auth and quota measurements; do not assume verified |
-| Cloud services | User confirmed new projects; none provisioned | Account/project access, real Free plans, connection/auth/storage checks and publication approval |
+| Cloud services | User confirmed new projects; Supabase setup request pending | Account/project access, real Free plans, connection/auth/storage checks and publication approval |
 | Publication | No publication approved in this session | Prepare exact sanitized artifacts/destinations, then obtain explicit approval; no push as a workaround |
 | Language quality | English/Hindi reviewer available | Reviewed labels/transcripts; other four languages need fluent reviewers or an explicit unvalidated status |
 | Location provider | Policy reviewed | Public Nominatim remains disabled until Kartik explicitly opts in after reading its restrictions; licensed snapshot/confirmed coordinates can be used |
@@ -66,11 +66,11 @@ Resume from actual evidence and the exact next action, not a fresh rebuild.
 
 - Current scope: full implementation, explanations/ and final T27 deployment walkthrough; 29 total tasks.
 - Completed tasks: T02 scaffold and T03 typed contracts/rubric; see their task reports. T01 remains blocked on gated/HF-specific and remaining language/model integration checks.
-- Active application task: none at T03 completion; next T04.
-- Last checks: 29 API tests (bootstrap/contracts/rubric), ruff/mypy, generated OpenAPI/TypeScript and frontend lint/build passed. T02 clean lock restores and browser smoke passed at 1440/390 viewport widths. No configured private values or source archives in frontend bundle; API runtime lock excludes model frameworks.
-- Live local processes: API exec 64257 (port 8000, no reload); Vite exec 98957 (port 5173). Stop/restart owned API before checking new routes. No cloud deployment.
+- Active application task: none at T04 blocked checkpoint; next T05 local auth using verified persistence.
+- Last checks: 37 API tests including eight real PostgreSQL checks, ruff/mypy (16 source files), checksum migration replay and real owned-container dump/restart/restore passed. T03 generated OpenAPI/TypeScript and frontend lint/build passed. T02 clean lock restores and browser smoke passed at 1440/390 viewport widths. No configured private values or source archives in frontend bundle; API runtime lock excludes model frameworks.
+- Live local resources: API exec 64257 (port 8000, no reload); Vite exec 98957 (port 5173); Docker infra-postgres-1 on loopback 55432, volume infra_udyam-test-pg. Local DB URL/password in ignored .local/test-database-url and .local/postgres.env. Stop/restart owned API before checking new routes. No cloud deployment.
 - Model setup sessions 38311/41110/59081 completed. CUDA arithmetic passed. Pinned Qwen text first/warm inference passed JSON parsing (~8.6/7.4 sec); handwriting inference ran (~39.7 sec) but hit 192-token cap and has no reviewed quality reference. Public metrics are in evals/reports/feasibility; raw private output is .local/qwen-feasibility.private.json. Append these facts to T01 without claiming it complete.
 - T01 CUDA/Qwen follow-up is documented in task-reports/T01.md, scripts/model_feasibility.py, evals/reports/feasibility/ and models/requirements-local.lock. No weights/private outputs belong in Git.
 - HF_TOKEN was still absent at the last safe presence check; user is configuring access. New cloud projects are not yet provisioned.
 - Pending approvals: external publication and public Nominatim opt-in only; implementation is authorized.
-- Next action: start T04. Docker Desktop CLI is installed but engine stopped; start/check it for real local PostgreSQL verification. Implement migrations/private storage boundaries against the verified contracts. Keep actual Supabase/HF/publication blockers separate.
+- Next action: T05 JWT/JWKS verification, trusted roles/cohorts and Supabase login UI. T04 actual local migrations/RLS/concurrent claim/fencing/restart/restore passed; hosted Supabase plan/connection/private-object operations remain unverified. User asked to configure new Free project in ignored root .env.local; keep secrets out of chat/output.

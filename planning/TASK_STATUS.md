@@ -16,7 +16,7 @@ Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FRE
 | T01 | Inspect dataset and prove free-runtime feasibility | blocked | `task-reports/T01.md` | Gated AI4Bharat access pending; CUDA/model inference and HF provisioning/guarded integration unverified |
 | T02 | Scaffold application and local toolchain | done | `task-reports/T02.md` | None confirmed |
 | T03 | Define contracts, domain rules and rubric | done | `task-reports/T03.md` | None confirmed |
-| T04 | Implement database, durable stage leases and private storage | pending | `task-reports/T04.md` | None confirmed |
+| T04 | Implement database, durable stage leases and private storage | blocked | `task-reports/T04.md` | Local PG/RLS/fencing/recovery passed; hosted Supabase Free plan, connection and private-object operations unverified |
 | T05 | Implement authentication and authorization | pending | `task-reports/T05.md` | None confirmed |
 | T06 | Implement uploads and submission APIs | pending | `task-reports/T06.md` | None confirmed |
 | T07 | Implement durable Postgres jobs and free-runtime dispatch | pending | `task-reports/T07.md` | None confirmed |

@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import logging
 import time
+from contextlib import asynccontextmanager
 from collections.abc import Awaitable, Callable
+from collections.abc import AsyncIterator
 from uuid import uuid4
 
 from fastapi import FastAPI, Request
@@ -11,17 +13,39 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException
 from starlette.responses import Response
+from starlette.concurrency import run_in_threadpool
 
 from .config import Settings, get_settings
 from .contracts.schema import build_openapi
+from .db.pool import Database
 
 logger = logging.getLogger("udyam.api")
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
     config = settings or get_settings()
+
+    @asynccontextmanager
+    async def lifespan(instance: FastAPI) -> AsyncIterator[None]:
+        instance.state.database = None
+        database = None
+        if config.database_url and config.database_url.get_secret_value():
+            database = Database(config)
+            try:
+                await run_in_threadpool(database.open)
+                instance.state.database = database
+            except Exception as error:
+                logger.error("database_startup_failed error_type=%s", type(error).__name__)
+                database.close()
+                database = None
+        try:
+            yield
+        finally:
+            if database:
+                database.close()
+
     application = FastAPI(title="Udyam Saathi API", version=config.app_version,
-                          docs_url="/docs" if config.app_env != "production" else None)
+                          docs_url="/docs" if config.app_env != "production" else None, lifespan=lifespan)
     application.state.settings = config
     application.add_middleware(CORSMiddleware, allow_origins=config.cors_origins,
                                allow_credentials=False, allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
@@ -64,10 +88,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return {"status": "ok", "version": config.app_version}
 
     @application.get("/health/ready", tags=["health"])
-    def ready() -> JSONResponse:
+    def ready(request: Request) -> JSONResponse:
         # A configured address is not evidence of database/auth/model connectivity.
+        database = getattr(request.app.state, "database", None)
+        database_status = "ready" if database and database.ready() else "unavailable"
         return JSONResponse(status_code=503, content={"status": "not_ready", "checks": {
-            "database": "not_verified", "storage": "not_verified", "models": "not_verified"}})
+            "database": database_status, "storage": "not_verified", "models": "not_verified"}})
 
     application.openapi = lambda: build_openapi(application)  # type: ignore[method-assign]
     return application

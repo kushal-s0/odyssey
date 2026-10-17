@@ -1,0 +1,10 @@
+{
+  "scope": "Owned local PostgreSQL only, with explicit Auth/Storage metadata shims; not a Supabase live restore.",
+  "restart_preserved_publication": true,
+  "restored_publication_hash_matches": true,
+  "restored_bucket_private": true,
+  "migration_versions": 3,
+  "postgres_version": "17.11 (Debian 17.11-1.pgdg12+2)",
+  "backup_bytes": 89938,
+  "limitations": "Object bytes/Auth service not backed up by this check. Restore uses --no-acl; reapply reviewed role/grant policies before serving users."
+}

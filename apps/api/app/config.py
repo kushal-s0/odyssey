@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     public_web_url: str = "http://localhost:5173"
     cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
     database_url: SecretStr | None = None
+    database_pool_min: int = Field(default=1, ge=0, le=3)
+    database_pool_max: int = Field(default=3, ge=1, le=10)
     supabase_url: str | None = None
     supabase_publishable_key: str | None = None
     supabase_service_role_key: SecretStr | None = None
@@ -41,6 +43,8 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def production_requirements(self) -> "Settings":
+        if self.database_pool_min > self.database_pool_max:
+            raise ValueError("Database pool minimum cannot exceed its maximum")
         if self.app_env == "production":
             missing = [key for key in ("database_url", "supabase_url", "supabase_service_role_key",
                                        "auth_issuer", "auth_jwks_url", "worker_credential",

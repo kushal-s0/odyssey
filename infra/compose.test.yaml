@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: pgvector/pgvector@sha256:ac08538c6f8b9904c33c8224c5e5706dbe760aca29db1d096972b4052c22a75d
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: udyam
+      POSTGRES_PASSWORD: ${LOCAL_POSTGRES_PASSWORD:?Generate the private .local/postgres.env first}
+    ports: ["127.0.0.1:55432:5432"]
+    mem_limit: 512m
+    cpus: 1.5
+    volumes: ["udyam-test-pg:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d udyam"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+volumes:
+  udyam-test-pg:
