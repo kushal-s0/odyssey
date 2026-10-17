@@ -1,5 +1,7 @@
 # Free deployment and model implementation specification
 
+> **Latest user direction (17 October 2026):** prioritize a working hackathon solution, not production completion gates. Read [HACKATHON_RESET.md](HACKATHON_RESET.md) first. Its demo order supersedes the older mandatory sequential release/deployment gates below; preserve unfinished work honestly. Supabase is the single application database; local PG/Docker are optional tests. Secondary HF deployment and large scale experiments are deferred.
+
 **User constraint:** no paid API dependencies; deploy without purchasing hosting, subscriptions, inference credits or GPUs.  
 **Account context:** the user confirmed an eligible Hugging Face account for free ZeroGPU hosting. Actual account provisioning and quotas still require verification.  
 **Status:** plan only, checked against official documentation on 17 October 2026.

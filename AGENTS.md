@@ -2,7 +2,7 @@
 
 ## Identity, publication and continuation
 
-- Latest user override (17 October 2026): every new commit must have both author and committer `kushal-s0 <kushal.soni@somaiya.edu>`, matching the configured Git identity. Verify both after committing. No co-author, sign-off or AI-attribution trailers. Preserve historical attribution. This supersedes the earlier Kartik-only identity requirement.
+- Latest confirmed user instruction (17 October 2026 audit): every new commit must have BOTH author and committer `Kartik Verma <kartikverma2204number1@gmail.com>`. This supersedes the pulled kushal-s0 override. Verify both after each commit. No co-authors, sign-offs or AI-attribution trailers; preserve historical commits.
 - Keep commits local. Never push any branch, create a pull request, upload source to a model host, or publish/deploy changes without Kartik's explicit approval for that publication. Prepare reviewable artifacts first.
 - Confirm repository remote, branch and working tree before work. This project uses `https://github.com/kushal-s0/odyssey.git`; the user changed the current branch to `second` (verified 17 October 2026). Preserve it; do not confuse this with the portfolio repository.
 - Read `planning/SESSION_HANDOFF.md` and `planning/HACKATHON_DELIVERY_PLAN.md` before resuming. A new session/model/account must inspect actual state and reuse verified work; chat history is not the continuation record.
@@ -16,8 +16,14 @@ This repository contains the uploaded Tata STRIVE problem statement/datasets and
 
 - The user requires free deployment and no paid APIs. Read `planning/FREE_MODEL_HOSTING_PLAN.md`; do not restore old hosted-model/paid-worker assumptions or add paid fallbacks.
 - The user confirmed an eligible Hugging Face account. Verify actual free Space provisioning, model access and quotas; no paid plan or GPU purchase is authorized.
-- Complete T09A (small relevance-model experiment) and T23A (versioned model deployment) within the 29-task backlog (including final T27 deployment walkthrough). Existing open-weight models are self-hosted, not represented as models trained by this project.
+- Latest hackathon priority supersedes the old mandatory 29-task release gate: deliver the actual problem-statement features first. T09A already ran and rejected promotion; do not spend more demo time retraining it. Secondary HF deployments and large scale experiments are deferred, not prerequisites for the owned-laptop demo. Preserve their reports as unfinished/deferred and do not claim them completed. Existing open-weight models are self-hosted, not represented as models trained by this project.
 - Distinguish quota-limited free deployment from scalability demonstrated on local/owned hardware. Do not load test public free services.
+
+## Current priority: usable hackathon solution
+
+- User explicitly redirected work away from production architecture toward solving the brief quickly. Read `planning/HACKATHON_RESET.md` first. Restore the current machine, then prioritize reliable text/PDF/audio understanding, translation, assessor view, similar ideas, local context and four comparison views.
+- Use Supabase as the one application database/auth/storage service. Local PostgreSQL/Docker are optional developer tests; do not require users to run an extra database. Do not add MySQL/Mongo or migrate working persistence merely because those tools are installed.
+- Retain useful implemented evidence/scoring/privacy/worker code. Do not rewrite the stack, add more worker platforms or expand documentation before the core demo works. Keep README short; advanced setup belongs in docs/SETUP.md.
 
 ## When implementing the application
 

@@ -1,5 +1,7 @@
 # Udyam Saathi — implementation plan
 
+> **Latest user direction (17 October 2026):** prioritize a working hackathon solution, not production completion gates. Read [HACKATHON_RESET.md](HACKATHON_RESET.md) first. Its demo order supersedes the older mandatory sequential release/deployment gates below; preserve unfinished work honestly. Supabase is the single application database; local PG/Docker are optional tests. Secondary HF deployment and large scale experiments are deferred.
+
 **Tata STRIVE: AI-Powered Business Idea Screening and Assessment**  
 **Execution:** Codex follows 29 tasks in the explicit deadline order; the historical event window was 30 hours. **Confirmed deadline: 18 October 2026, 06:00 Asia/Calcutta, deployed demo included.**
 **Status:** implementation authorized; consult TASK_STATUS.md for actual progress; no deployment verified.

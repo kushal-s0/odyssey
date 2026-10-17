@@ -1,5 +1,8 @@
 # Codex task status
 
+> **Current demo priorities:** [HACKATHON_RESET.md](HACKATHON_RESET.md) supersedes the old release order. This table preserves the engineering backlog and its unverified gates; its done count is not product-completion percentage. Secondary HF/large scale work is deferred while brief features are implemented.
+
+
 **Application state:** implementation started; no application/model deployed.
 **Budget:** zero paid API or hosting dependencies.  
 **Active application task:** T08. **Current scope:** full implementation, explanations/ and final T27 deployment walkthrough; local commits only.
@@ -49,7 +52,7 @@ The prior plan records an eligible Hugging Face account for free ZeroGPU. Actual
 
 ## Resume note
 
-Latest request: implement T09 → T09A → T12 → T08 in deadline order, one active task at a time, with local commits as kushal-s0 using the configured email. Preserve historical attribution and original inputs. Actual current branch is second; do not switch it. Earlier full-backlog authorization remains, but these four tasks are the current scope. Publication remains unapproved.
+User redirected work to the functional hackathon demo; read HACKATHON_RESET.md and SESSION_HANDOFF.md. Current branch second, current machine Kartik's RTX5050. New commits only as Kartik Verma <kartikverma2204number1@gmail.com>, confirmed in chat. Preserve historical attribution and original sources. Current model environment needs restoration; uploaded files are not PDF/audio processing. Prioritize actual assessor, modality, translation, similarity/context and comparison requirements; no extra production infrastructure. Publication unapproved.
 
 ## History
 

@@ -1,5 +1,7 @@
 # Ordered implementation tasks for Codex
 
+> **Latest user direction (17 October 2026):** prioritize a working hackathon solution, not production completion gates. Read [HACKATHON_RESET.md](HACKATHON_RESET.md) first. Its demo order supersedes the older mandatory sequential release/deployment gates below; preserve unfinished work honestly. Supabase is the single application database; local PG/Docker are optional tests. Secondary HF deployment and large scale experiments are deferred.
+
 **Executor: Codex. Budget: no paid APIs or purchased hosting.** T01 is starting; no tasks are complete. T09A and T23A add custom-model training and model deployment without renumbering existing tasks.
 
 Read [CODEX_EXECUTION_PLAN.md](CODEX_EXECUTION_PLAN.md), [FREE_MODEL_HOSTING_PLAN.md](FREE_MODEL_HOSTING_PLAN.md), [TASK_STATUS.md](TASK_STATUS.md) and [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).

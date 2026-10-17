@@ -1,5 +1,7 @@
 # Start here: implementation plan for Codex
 
+> **Latest user direction (17 October 2026):** prioritize a working hackathon solution, not production completion gates. Read [HACKATHON_RESET.md](HACKATHON_RESET.md) first. Its demo order supersedes the older mandatory sequential release/deployment gates below; preserve unfinished work honestly. Supabase is the single application database; local PG/Docker are optional tests. Secondary HF deployment and large scale experiments are deferred.
+
 This is a complete task-by-task execution plan for **Codex** to build Udyam Saathi, a scalable and deployable Tata STRIVE business-idea screening application. It replaces the earlier human team assignment plan.
 
 **Current state: implementation underway; consult TASK_STATUS.md and task reports.** No cloud deployment is verified. Read [SESSION_HANDOFF.md](SESSION_HANDOFF.md) first when changing models/sessions/accounts; the current user request authorizes full implementation and ongoing explanations/ documentation.
