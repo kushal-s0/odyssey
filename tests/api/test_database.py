@@ -55,7 +55,7 @@ def test_real_postgres_migrations_are_repeatable(database):
     with database.transaction() as c:
         for path in sorted((ROOT / "supabase/migrations").glob("*.sql")):
             c.execute(path.read_text())
-        assert c.execute("SELECT count(*) AS n FROM public.schema_migrations").fetchone()["n"] == 3
+        assert c.execute("SELECT count(*) AS n FROM public.schema_migrations").fetchone()["n"] == len(list((ROOT/'supabase/migrations').glob('*.sql')))
         assert c.execute("SELECT extversion FROM pg_extension WHERE extname='vector'").fetchone()
         assert c.execute("SELECT public FROM storage.buckets WHERE id='originals'").fetchone()["public"] is False
 

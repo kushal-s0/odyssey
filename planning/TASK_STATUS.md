@@ -13,13 +13,13 @@ Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FRE
 
 | ID | Task | Status | Report path (create during execution) | Blocker |
 |---|---|---|---|---|
-| T01 | Inspect dataset and prove free-runtime feasibility | blocked | `task-reports/T01.md` | Gated AI4Bharat access pending; CUDA/model inference and HF provisioning/guarded integration unverified |
+| T01 | Inspect dataset and prove free-runtime feasibility | blocked | `task-reports/T01.md` | Gated language/embedding inference, owned-worker integration and HF provisioning/access/quota unverified |
 | T02 | Scaffold application and local toolchain | done | `task-reports/T02.md` | None confirmed |
 | T03 | Define contracts, domain rules and rubric | done | `task-reports/T03.md` | None confirmed |
 | T04 | Implement database, durable stage leases and private storage | blocked | `task-reports/T04.md` | Local PG/RLS/fencing/recovery passed; hosted Supabase Free plan, connection and private-object operations unverified |
 | T05 | Implement authentication and authorization | blocked | `task-reports/T05.md` | Local signatures/access/UI passed; actual Supabase signing, identities and hosted login/refresh unverified |
 | T06 | Implement uploads and submission APIs | blocked | `task-reports/T06.md` | All 55 files verified through local API/PG/private disk; actual Supabase object upload/download/delete and retry recovery unverified |
-| T07 | Implement durable Postgres jobs and free-runtime dispatch | in_progress | `task-reports/T07.md` | None confirmed |
+| T07 | Implement durable Postgres jobs and free-runtime dispatch | in_progress | `task-reports/T07.md` | Partial service/migration verified; HTTP routes, executable worker, recovery and Gradio integration unfinished |
 | T08 | Build applicant submission and recording UI | pending | `task-reports/T08.md` | None confirmed |
 | T09 | Implement self-hosted extraction and Indic translation | pending | `task-reports/T09.md` | None confirmed |
 | T09A | Train and evaluate our answer-relevance model | pending | `task-reports/T09A.md` | None confirmed |
@@ -35,7 +35,7 @@ Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FRE
 | T19 | Implement reports and version history | pending | `task-reports/T19.md` | None confirmed |
 | T20 | Evaluate dataset and our model with real measurements | pending | `task-reports/T20.md` | Human review currently available only for English/Hindi; other language quality unvalidated |
 | T21 | Harden access, uploads and failure boundaries | pending | `task-reports/T21.md` | None confirmed |
-| T22 | Measure portable API and model scalability | pending | `task-reports/T22.md` | Local Docker engine unavailable during review; container scale checks not run |
+| T22 | Measure portable API and model scalability | pending | `task-reports/T22.md` | Docker verified locally at T04; required two-API/two-worker scale experiment not run |
 | T23 | Package zero-spend application deployment | pending | `task-reports/T23.md` | None confirmed |
 | T23A | Package and deploy versioned model runtimes | pending | `task-reports/T23A.md` | Required HF provisioning/model access unverified; publication approval absent |
 | T24 | Deploy and verify the full free hosted application | pending | `task-reports/T24.md` | Service projects/access not verified; publication approval absent |
@@ -45,7 +45,7 @@ Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FRE
 
 ## Prerequisite record
 
-The prior plan records an eligible Hugging Face account for free ZeroGPU. Actual Space provisioning, enqueue/auth behavior, quota attribution and gated model downloads remain unverified. Current preference is inference without expiring provider allowance, using the owned laptop if its smoke tests pass. GPU readout: RTX 5050 Laptop, 8151 MiB VRAM; system memory 24,841,998,336 bytes. This is not a model-fit benchmark. Docker engine was unavailable. English/Hindi human review are available; Marathi/Telugu/Bengali/Odia are not yet human-validated. Cloud account/project access, selected Free plans and all publication approvals remain unverified/absent. No paid alternative is authorized.
+The prior plan records an eligible Hugging Face account for free ZeroGPU. Actual Space provisioning, enqueue/auth behavior, quota attribution and gated model downloads remain unverified. Current preference is inference without expiring provider allowance, using the owned laptop if its smoke tests pass. GPU readout: RTX 5050 Laptop, 8151 MiB VRAM; system memory 24,841,998,336 bytes. Bounded CUDA/Qwen model fit has since been measured in T01; this does not verify the full pipeline. Docker was unavailable at review and was started/tested during T04. English/Hindi human review are available; Marathi/Telugu/Bengali/Odia are not yet human-validated. Cloud account/project access, selected Free plans and all publication approvals remain unverified/absent. No paid alternative is authorized.
 
 ## Resume note
 

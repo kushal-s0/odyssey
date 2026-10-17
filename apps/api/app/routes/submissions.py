@@ -11,6 +11,7 @@ from ..auth.access import ActorDep, DatabaseDep, submission_access
 from ..contracts.models import SubmissionAccepted, SubmissionCreate
 from ..contracts.uploads import SubmissionView
 from ..repositories.idempotency import begin_idempotent, finish_idempotent
+from ..worker.manifest import initial_stages
 
 router = APIRouter(prefix='/v1/submissions', tags=['submissions'])
 PIPELINE_VERSION = 'screening-v1'
@@ -70,8 +71,9 @@ def create(payload: SubmissionCreate, request: Request, actor: ActorDep, databas
         connection.execute('''INSERT INTO public.processing_jobs
             (id,submission_id,input_revision_id,pipeline_version,backend) VALUES(%s,%s,%s,%s,%s)''',
             (job, submission, revision, PIPELINE_VERSION, settings.model_runtime))
-        connection.execute('''INSERT INTO public.job_stages(job_id,stage_key,stage_order,input_hash)
-            VALUES(%s,%s,0,%s)''', (job, 'extract:'+kind, digest))
+        for order, stage_key in enumerate(initial_stages(kind)):
+            connection.execute('''INSERT INTO public.job_stages(job_id,stage_key,stage_order,input_hash)
+                VALUES(%s,%s,%s,%s)''', (job, stage_key, order, digest))
         result = SubmissionAccepted(submission_id=submission, revision_id=revision, job_id=job)
         finish_idempotent(connection, actor.id, 'submission', key, request_hash, result.model_dump(mode='json'))
         return result
