@@ -66,11 +66,11 @@ Resume from actual evidence and the exact next action, not a fresh rebuild.
 
 - Current scope: full implementation, explanations/ and final T27 deployment walkthrough; 29 total tasks.
 - Completed task: T02 local scaffold; see task-reports/T02.md. T01 remains blocked on gated/HF-specific and remaining language/model integration checks.
-- Active application task: none at this checkpoint; next T03 after T01 follow-up documentation.
+- Active application task: T03 contracts/rubric.
 - Last checks: five API tests, ruff/mypy, frontend ESLint/type/build, fresh API/npm lock restores and actual browser smoke passed at 1440/390 viewport widths. No configured private values or source archives in frontend bundle; API runtime lock excludes model frameworks.
 - Live local processes: API exec 64257 (port 8000, no reload); Vite exec 98957 (port 5173). Stop/restart owned API before checking new routes. No cloud deployment.
 - Model setup sessions 38311/41110/59081 completed. CUDA arithmetic passed. Pinned Qwen text first/warm inference passed JSON parsing (~8.6/7.4 sec); handwriting inference ran (~39.7 sec) but hit 192-token cap and has no reviewed quality reference. Public metrics are in evals/reports/feasibility; raw private output is .local/qwen-feasibility.private.json. Append these facts to T01 without claiming it complete.
-- Pending local changes for T01 follow-up: scripts/model_feasibility.py and evals/reports/feasibility/. No weights/private outputs belong in Git.
+- T01 CUDA/Qwen follow-up is documented in task-reports/T01.md, scripts/model_feasibility.py, evals/reports/feasibility/ and models/requirements-local.lock. No weights/private outputs belong in Git.
 - HF_TOKEN was still absent at the last safe presence check; user is configuring access. New cloud projects are not yet provisioned.
 - Pending approvals: external publication and public Nominatim opt-in only; implementation is authorized.
 - Next action: record T01's real CUDA/Qwen follow-up, then start T03 contracts/rubric and keep explanations/ current.

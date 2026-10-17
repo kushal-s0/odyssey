@@ -1,0 +1,15 @@
+{
+  "torch": "2.9.1+cu128",
+  "cuda_build": "12.8",
+  "device": "NVIDIA GeForce RTX 5050 Laptop GPU",
+  "compute_capability": [
+    12,
+    0
+  ],
+  "total_vram_bytes": 8546484224,
+  "peak_allocated_bytes": 9831936,
+  "operation": "512x512 float16 matrix multiplication",
+  "result": "pass",
+  "elapsed_seconds": 0.6317,
+  "scope": "CUDA operation only; not a model-fit or throughput benchmark."
+}

@@ -10,12 +10,14 @@ Preferred judging configuration: Cloudflare Pages Free static frontend, Render F
 |---|---|
 | Dataset inventory and media decode | PASS: 55 files, 109 PDF pages, all 13 recordings decoded; deterministic manifest |
 | Hardware | RTX 5050 Laptop GPU, 8151 MiB total VRAM; model fit remains unmeasured |
-| Isolated GPU environment | PyTorch 2.9.1 / torchvision 0.24.1 CUDA 12.8 installation started; see handoff for process status |
+| Isolated GPU environment | PASS: PyTorch 2.9.1+cu128 / torchvision 0.24.1+cu128; real CUDA matrix multiplication passed on compute capability 12.0 |
 | Qwen text/vision config access | PASS: actual config download at pinned revision in model-access manifest; inference is a separate gate |
 | MiniLM config access | PASS: actual pinned config download; no embedding inference yet |
 | IndicConformer / IndicTrans2 configs | BLOCKED: HTTP 401 GatedRepoError at initial probe; user is configuring read token and accepting conditions |
 | Two HF Spaces | NOT PROVISIONED: eligible-account claim is not deployment evidence; account/provisioning/quota and publication approval unresolved |
 | Owned-worker callback/recovery | NOT RUN: requires implementation; dataset success does not establish durable execution |
+
+Follow-up: pinned Qwen2B float16 actually ran on the laptop. First/warm synthetic text calls took 8.584/7.389 seconds, returned identical parseable JSON and used about 4.29 GB peak allocated VRAM. A private handwritten page took 39.671 seconds and about 4.34 GB peak allocated VRAM, but exhausted the 192-token output cap. This is successful bounded execution with a needs-review/truncation limitation, not validated handwriting quality. Initial load including uncached download took 376.098 seconds; this is not a pure cold-load benchmark. See evals/reports/feasibility/. The model calculated a derived revenue in the synthetic check; the released pipeline must separate extracted facts from deterministic calculations and require provenance.
 
 See `evals/manifests/model-access.json` for exact repository revisions/licenses and access scope. A config-download success is not a weights-download, model-quality or deployment result.
 

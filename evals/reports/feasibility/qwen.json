@@ -1,0 +1,52 @@
+{
+  "repo_id": "Qwen/Qwen3-VL-2B-Instruct",
+  "revision": "89644892e4d85e24eaac8bacfd4f463576704203",
+  "dtype": "float16",
+  "torch": "2.9.1+cu128",
+  "device": "NVIDIA GeForce RTX 5050 Laptop GPU",
+  "load_including_uncached_download_seconds": 376.098,
+  "max_new_tokens": 192,
+  "max_image_pixels": 262144,
+  "measurements": [
+    {
+      "case": "synthetic_text_first",
+      "seconds": 8.584,
+      "input_tokens": 89,
+      "output_tokens": 66,
+      "peak_vram_allocated_bytes": 4289689600,
+      "peak_vram_reserved_bytes": 4307550208,
+      "process_rss_bytes": 2195243008,
+      "output_sha256": "8614404e498472e9c8e7c0483fdcf715570a73e195d8cea9120910acbee48636",
+      "json_parseable": true,
+      "human_quality_validated": false,
+      "token_cap_reached": false
+    },
+    {
+      "case": "synthetic_text_warm",
+      "seconds": 7.389,
+      "input_tokens": 89,
+      "output_tokens": 66,
+      "peak_vram_allocated_bytes": 4289691136,
+      "peak_vram_reserved_bytes": 4307550208,
+      "process_rss_bytes": 2195251200,
+      "output_sha256": "8614404e498472e9c8e7c0483fdcf715570a73e195d8cea9120910acbee48636",
+      "json_parseable": true,
+      "human_quality_validated": false,
+      "token_cap_reached": false
+    },
+    {
+      "case": "private_handwritten_page",
+      "seconds": 39.671,
+      "input_tokens": 291,
+      "output_tokens": 192,
+      "peak_vram_allocated_bytes": 4343779840,
+      "peak_vram_reserved_bytes": 4389339136,
+      "process_rss_bytes": 2297188352,
+      "output_sha256": "337062874e6fb6f355b1562032fa18ba517c7d73e8fa00102fe8f6d6a46e4166",
+      "json_parseable": false,
+      "human_quality_validated": false,
+      "token_cap_reached": true
+    }
+  ],
+  "scope": "Local feasibility only; not deployment or a quality benchmark."
+}
