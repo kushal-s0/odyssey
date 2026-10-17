@@ -8,6 +8,7 @@ import { ZodError } from "zod";
 import multer from "multer";
 import { router } from "./routes.js";
 import { config } from "./config.js";
+import { ProviderError } from "./providers/gemini.js";
 export function createApp() {
   const app = express();
   app.disable("x-powered-by");
@@ -81,8 +82,10 @@ export function createApp() {
               ? 409
               : typeof error.status === "number"
                 ? error.status
-                : error.name === "ProviderError"
-                  ? 422
+                : error instanceof ProviderError
+                  ? error.retryable
+                    ? 503
+                    : 422
                   : 500;
       const message =
         error instanceof ZodError
@@ -91,7 +94,7 @@ export function createApp() {
               .join("; ")
           : error instanceof multer.MulterError
             ? `Upload rejected: ${error.message}`
-            : status < 500
+            : status < 500 || error instanceof ProviderError
               ? error.message
               : "The request could not be completed. Please retry or check service configuration.";
       if (status >= 500)
@@ -99,7 +102,27 @@ export function createApp() {
           "Request failed:",
           error instanceof Error ? error.message : "Unknown error",
         );
-      res.status(status).json({ error: message });
+      res.status(status).json({
+        error: message,
+        ...(error instanceof ZodError
+          ? {
+              fields: Object.fromEntries(
+                error.issues.map((issue) => [
+                  issue.path.join("."),
+                  issue.message,
+                ]),
+              ),
+            }
+          : {}),
+        ...(error instanceof ProviderError
+          ? {
+              retryable: error.retryable,
+              code: error.retryable
+                ? "PROVIDER_TEMPORARILY_UNAVAILABLE"
+                : "SOURCE_PROCESSING_FAILED",
+            }
+          : {}),
+      });
     },
   );
   return app;

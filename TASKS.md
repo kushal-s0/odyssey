@@ -1,6 +1,6 @@
 # Implementation tasks
 
-Updated: 17 October 2026. `[x]` implementation complete, `[-]` in progress, `[ ]` pending. Live account verification is tracked separately from implemented code.
+Updated: 18 October 2026. `[x]` implementation complete, `[-]` in progress, `[ ]` pending. Live account verification is tracked separately from implemented code.
 
 ## Foundation
 - [x] Scaffold the React/TypeScript and Express/TypeScript workspaces.
@@ -27,16 +27,16 @@ Updated: 17 October 2026. `[x]` implementation complete, `[-]` in progress, `[ ]
 - [x] Prepare dataset inventory/import and reviewed annotation workflow. All 55 source files extracted; import dry run passed.
 - [x] Create cloud notebook for grouped classifier training and evaluation.
 - [x] Build a separate remote inference service with model compatibility checks and real-metric display.
-- [ ] Execute cloud training and save measured results. Requires cloud session and labelled data.
-- [ ] Connect and verify deployed inference. Requires hosted endpoint.
+- [x] Execute cloud training and save measured results. User completed Colab training; returned files match the reviewed 48-row dataset and evaluation metadata.
+- [ ] Connect and verify deployed inference. Deployment is user-owned; do not start it.
 
 ## Delivery
 - [x] Add clearly labelled read-only examples for credential-free interface review.
 - [x] Verify scoring, evidence rejection, provider failure states, source access guards, origin checks, and read-only API behavior.
-- [x] Run TypeScript checks, 22 automated tests, production build, and four desktop/mobile browser tests.
+- [x] Run TypeScript checks, 25 automated tests, production build, and four desktop/mobile browser tests.
 - [x] Validate supplied formats: 42/42 PDFs opened (109 pages), 13/13 recordings decoded. Speech contents and translations are not yet verified.
 - [x] Document local setup, API keys, Atlas, training, and deployment; create ignored `.env` with generated local secrets.
-- [ ] Verify live Atlas and AI integrations. Requires service credentials.
+- [-] Verify live Atlas and AI integrations. Atlas, authentication, Gemini text/embeddings, and the approved 15-second Sarvam sample passed; four approved dataset PDF checks are running.
 - [ ] Deploy and run presentation checks. Requires deployment access.
 
 ## Next external steps
@@ -48,3 +48,72 @@ Updated: 17 October 2026. `[x]` implementation complete, `[-]` in progress, `[ ]
 5. Deploy the application and verify the live demo.
 
 Local UI screenshots: `.planning/screenshots/overview-desktop.png` and `.planning/screenshots/overview-mobile.png`. Live credentials were not present during implementation; no training, public deployment, or live provider results are claimed.
+
+## Connection checks ? 18 October 2026
+
+- Gemini API key accepted; configured generation and embedding models are listed as available.
+- Sarvam accepted a generated one-second silent WAV. Real participant speech was not uploaded or tested.
+- Atlas DNS resolved, but all three nodes reset the connection before authentication (`ECONNRESET`). Verify the project IP access list and network access before retrying.
+- Added `npm run check:connections` and `npm run check:pipeline`; neither reads or uploads participant content. The latter uses an artificial English tea-stall example.
+- Automatic approval review rejected the proposed participant-audio upload. Real dataset API tests require explicit approval before proceeding.
+
+### Verified follow-up checks ? 18 October 2026
+
+- User explicitly approved the 15-second participant-audio test. Exactly 15 seconds of a Hindi dataset sample was sent to Sarvam; a non-empty Hindi transcript was returned. Transcription accuracy is not yet manually verified. This approval does not extend to bulk dataset uploads.
+- A synthetic English idea completed hosted source extraction and seven-dimension assessment. Reduced Gemini 3+ reasoning to configurable LOW and converted provider timeouts into retriable failures.
+- Corrected the embedding request: nested settings returned 3,072 dimensions despite requesting 768; top-level options return the required 768. Verified the real application embedding function returns a normalized 768-dimensional vector. Updated cloud training code and notebook to match.
+- Added stage reporting for processing jobs. Server build and all 25 automated tests pass.
+- Atlas remains unverified: DNS resolves, but nodes return ECONNRESET before authentication. The user requested help locating the project IP access list; instructions provided. Await an Active current-IP entry before retesting.
+
+### Atlas network follow-up ? 18 October 2026
+
+- The user confirmed the current-IP entry is Active in the same Atlas project as Cluster0.
+- Retest still returns ECONNRESET before authentication. All three SRV records resolve, IPv4 TCP connections to port 27017 succeed, but TLS and forced TLS 1.2 handshakes reset. TLS to the already-configured Gemini endpoint works.
+- The user confirmed college/office Wi-Fi. Network filtering is a possible cause, not yet proven. Next controlled check: switch to a mobile hotspot and add that network?s current IP to the same Atlas access list before retesting.
+- A proposed public-IP lookup to ipify was rejected by automatic approval review and removed. The completed diagnostic contacted only Atlas nodes and the already-approved Gemini endpoint.
+- Atlas authentication and assessor sign-in remain unverified; application startup awaits the database connection check. No new participant content was uploaded in this follow-up.
+
+### Hotspot follow-up — 18 October 2026
+
+- On the mobile hotspot, Atlas DNS and TCP still succeed, but all three nodes reject default and TLS 1.2 handshakes with an internal TLS alert before authentication.
+- With explicit user approval, queried this machine's public IPv4 through ipify. Await comparison of the exact address with the Active Atlas project IP access entry.
+- Started the local frontend and API. The interface offers read-only examples while Atlas is unavailable; live sign-in and submissions remain blocked by the database connection.
+
+### Atlas connection verified — 18 October 2026
+
+- After the exact public IP was added to the Atlas access list, the configured URI connected and the database ping succeeded.
+- Restarted the development frontend and API; Atlas initialization and assessor bootstrap succeeded, and the processing worker started.
+- Verified through the frontend proxy: database health, assessor login, authenticated session, protected submissions list, and logout all returned HTTP 200. No credentials or session tokens were logged.
+- The live workspace currently contains zero submissions. Dataset import, broader language/format validation, and hosted classifier training remain pending.
+
+### Dataset checks and cloud-training guidance - 18 October 2026
+
+- User explicitly approved uploading four specified dataset PDFs to Gemini and storing them in Atlas: English Example 3, Hindi Scenario 2, Marathi Business Idea 6 changed questions/answers, and Telugu Scenario 1 accurate answers. This approval is limited to those four PDFs.
+- Uploaded those four files through the authenticated app API, with content hashes checked against the manifest. Background processing is running; source citation checks do not replace human translation review.
+- Queued a separately labelled invented text idea to verify missing-revenue handling, supported clarification, source retention, and version history.
+- Added `training/CLOUD_TRAINING_GUIDE.md` and linked it from the README. Reviewed training labels and a user-operated hosted Colab runtime remain necessary; no classifier has been trained or deployed.
+
+### Reviewed training data prepared - 18 October 2026
+
+- All four approved PDFs completed hosted processing. Their accepted values pass citation resolution and quoted-value checks; source PDFs downloaded from Atlas match the manifest hashes, support byte ranges, and reject unauthenticated access. Human transcription/translation verification remains pending.
+- The separate synthetic assessment withheld its deliberately missing revenue. Its clarification request returned HTTP 500; a complete live Evidence Repair Loop check remains pending and has not been claimed as passed.
+- Investigated the Colab minimum-data error: Atlas contained one relevant label from one business family, with no off-topic labels.
+- At the user's request, reviewed selected answers from five supplied English PDFs locally. Prepared `data/training/reviewed-answers.jsonl`: 48 answers, 38 relevant, 10 off-topic, across five conservative source families (four identified business types plus one unidentified off-topic form). Every selected original question/answer matches its cited PDF page, and every source hash matches the manifest.
+- These are assistant-reviewed labels, not independent expert ground truth. Off-topic examples cover only two source families. Excluded blank, overwritten, mixed-language and identifying fields; created no artificial answer pairs or duplicated training examples. Raw source PDFs were not uploaded in this preparation.
+- This prepared JSONL is separate from the app's one saved Atlas annotation. The app's export exports only its saved workspace labels. Source decisions and audit are under ignored `.planning/`; the prepared JSONL is ignored too.
+- Added explicit readiness counts to Model & training and a preflight cell before key entry in the self-contained Colab notebook. The notebook now reports exact shortfalls and rejects duplicate features before embedding calls.
+- The actual prepared file passes the notebook's preflight. All 28 application tests and seven Python validation-only tests pass, as do workspace TypeScript checks and the client production build. No model training or inference ran locally, and no trained artifact or metrics have been generated.
+- A live browser check confirmed that the new training-readiness notice matches the Atlas label counts after loading.
+
+### Standardized inputs and separate accounts - 18 October 2026
+
+- User explicitly took ownership of deployment and requested stronger input constraints, including separate entrepreneur accounts. No deployment was started. Deployment preparation introduced earlier in this turn was removed.
+- Added public entrepreneur registration and role-bearing cookie sessions. Public registration cannot choose an assessor role; the programme bootstrap account remains the assessor entry point.
+- Added server-assigned submission ownership and scoped record, original-file and clarification-source access. Entrepreneur accounts cannot use assessor review, verification, similarity, cohort or training endpoints.
+- Added a guided entrepreneur form using the same schemas as the server: required business description, bounded optional fields, INR normalization including Indic digits, unknown versus zero, financial consistency, price units and explicit research status. Kept free text, PDF and audio input with file/length constraints.
+- Standardized assessor reviews with explicit decisions, rationale, standard reasons, next actions, current source citations and source-review confirmation. Stale versions and unrelated evidence IDs are rejected.
+- Added role-aware navigation and account views. Entrepreneur accounts do not receive the assessor's cohort/training tools or similar-submission data.
+- Fixed ProviderError identification so hosted-model quota failures return an actionable retryable HTTP 503 instead of a generic HTTP 500.
+- Live Atlas checks verified two temporary entrepreneur accounts, account isolation, original-source isolation, assessor access, financial validation and persisted structured reviews. All temporary accounts/records were removed; no model calls were made by these checks.
+- Returned model files report macro-F1 0.6783, off-topic recall 0.40, full grouped evaluation coverage and zero flag coverage at threshold 0.75. Model remains advisory and hosted inference is not connected.
+- Final verification: 40 application regression tests, nine desktop/mobile browser tests, workspace type checks and the full production build passed. The guided mobile form was visually inspected. Existing assessor access remains functional and no real participant records were modified during the role checks.

@@ -40,6 +40,10 @@ import {
 import { useWorkspace } from "../workspace";
 import { api } from "../api";
 import {
+  assessorReviewSchema,
+  REVIEW_REASONS,
+} from "../../../shared/input-rules";
+import {
   Busy,
   Empty,
   FieldCard,
@@ -55,6 +59,7 @@ export default function Detail() {
   const { id } = useParams();
   const [search] = useSearchParams();
   const w = useWorkspace();
+  const entrepreneur = w.session?.user?.role === "entrepreneur";
   const [record, setRecord] = useState<Submission | null>(null),
     [error, setError] = useState(""),
     [tab, setTab] = useState("overview"),
@@ -97,6 +102,10 @@ export default function Detail() {
   }, [search]);
   useEffect(() => {
     if (!record?.assessment) return;
+    if (entrepreneur) {
+      setMatches([]);
+      return;
+    }
     if (record.example) {
       const terms = (s: Submission) =>
         new Set(
@@ -121,7 +130,7 @@ export default function Detail() {
       void api<{ matches: SimilarIdea[] }>(`/submissions/${record.id}/similar`)
         .then((r) => setMatches(r.matches))
         .catch(() => setMatches([]));
-  }, [record?.id, record?.assessment?.version, w.submissions]);
+  }, [record?.id, record?.assessment?.version, w.submissions, entrepreneur]);
   useEffect(() => {
     if (selected[0])
       document
@@ -200,14 +209,16 @@ export default function Detail() {
             <Printer size={15} />
             Export report
           </button>
-          <button
-            className="button primary"
-            onClick={() => setReview(true)}
-            disabled={!a || record.example}
-          >
-            <CheckCheck size={16} />
-            Add review
-          </button>
+          {!entrepreneur && (
+            <button
+              className="button primary"
+              onClick={() => setReview(true)}
+              disabled={!a || record.example}
+            >
+              <CheckCheck size={16} />
+              Add review
+            </button>
+          )}
         </div>
       </div>
       {record.example && (
@@ -314,12 +325,14 @@ export default function Detail() {
             >
               Assessment overview
             </button>
-            <button
-              className={tab === "context" ? "active" : ""}
-              onClick={() => setTab("context")}
-            >
-              Similar ideas & local context
-            </button>
+            {!entrepreneur && (
+              <button
+                className={tab === "context" ? "active" : ""}
+                onClick={() => setTab("context")}
+              >
+                Similar ideas & local context
+              </button>
+            )}
             <button
               className={tab === "history" ? "active" : ""}
               onClick={() => setTab("history")}
@@ -422,6 +435,31 @@ export default function Detail() {
                           {record.review.decision.replaceAll("_", " ")}
                         </span>
                         <p>{record.review.note}</p>
+                        {record.review.nextAction && (
+                          <p>
+                            <strong>Next action: </strong>
+                            {record.review.nextAction}
+                          </p>
+                        )}
+                        {record.review.reasonCodes?.length ? (
+                          <p className="hint">
+                            Reasons:{" "}
+                            {record.review.reasonCodes
+                              .map(
+                                (key) =>
+                                  REVIEW_REASONS.find(
+                                    ([value]) => value === key,
+                                  )?.[1] ?? key,
+                              )
+                              .join(" · ")}
+                          </p>
+                        ) : null}
+                        {record.review.evidenceIds?.length ? (
+                          <p className="hint">
+                            Supporting evidence:{" "}
+                            {record.review.evidenceIds.join(", ")}
+                          </p>
+                        ) : null}
                         <span className="hint">
                           Reviewed{" "}
                           {new Date(
@@ -560,7 +598,7 @@ export default function Detail() {
                       ))}
                     </div>
                   )}
-                  {!record.example && (
+                  {!record.example && !entrepreneur && (
                     <div className="source-verify">
                       <p>
                         Only confirm after comparing the transcript or
@@ -876,8 +914,8 @@ function RepairModal({
                 Your clarification
                 <textarea
                   required
-                  minLength={2}
-                  maxLength={10000}
+                  minLength={10}
+                  maxLength={2000}
                   rows={5}
                   value={answer}
                   onChange={(e) => setAnswer(e.target.value)}
@@ -934,27 +972,45 @@ function ReviewModal({
   onClose: () => void;
   onSaved: (s: Submission) => void;
 }) {
-  const [decision, setDecision] = useState("mentoring"),
+  const [decision, setDecision] = useState(""),
     [note, setNote] = useState(""),
     [pending, setPending] = useState(false),
     [error, setError] = useState("");
+  const [reasons, setReasons] = useState<string[]>([]);
+  const [evidence, setEvidence] = useState<string[]>([]);
+  const [nextAction, setNextAction] = useState("");
+  const [sourceReviewed, setSourceReviewed] = useState(false);
   return (
     <Modal title="Record assessor review" onClose={onClose}>
       <form
         className="modal-content"
         onSubmit={async (e) => {
           e.preventDefault();
+          setError("");
+          const parsed = assessorReviewSchema.safeParse({
+            decision,
+            note,
+            nextAction,
+            reasonCodes: reasons,
+            evidenceIds: evidence,
+            sourceReviewed,
+            version: record.assessment!.version,
+          });
+          if (!parsed.success) {
+            setError(
+              [
+                ...new Set(parsed.error.issues.map((issue) => issue.message)),
+              ].join(" "),
+            );
+            return;
+          }
           setPending(true);
           try {
             const result = await api<{ submission: Submission }>(
               `/submissions/${record.id}/review`,
               {
                 method: "POST",
-                body: JSON.stringify({
-                  decision,
-                  note,
-                  version: record.assessment!.version,
-                }),
+                body: JSON.stringify(parsed.data),
               },
             );
             onSaved(result.submission);
@@ -972,9 +1028,11 @@ function ReviewModal({
         <label>
           Recommended next step
           <select
+            required
             value={decision}
             onChange={(e) => setDecision(e.target.value)}
           >
+            <option value="">Select a next step</option>
             <option value="mentoring">Mentoring / skilling conversation</option>
             <option value="deeper_evaluation">Deeper evaluation</option>
             <option value="clarification">Further clarification</option>
@@ -982,16 +1040,87 @@ function ReviewModal({
           </select>
         </label>
         <label>
-          Review note
+          Review rationale
           <textarea
             rows={5}
             required
-            minLength={3}
-            maxLength={3000}
+            minLength={20}
+            maxLength={2000}
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="Explain the next step and any information that needs validation."
           />
+        </label>
+        <fieldset className="review-checklist">
+          <legend>Review reasons — choose 1 to 4</legend>
+          {REVIEW_REASONS.map(([key, label]) => (
+            <label key={key} className="check-line">
+              <input
+                type="checkbox"
+                checked={reasons.includes(key)}
+                disabled={!reasons.includes(key) && reasons.length >= 4}
+                onChange={(event) =>
+                  setReasons(
+                    event.target.checked
+                      ? [...reasons, key]
+                      : reasons.filter((value) => value !== key),
+                  )
+                }
+              />
+              {label}
+            </label>
+          ))}
+        </fieldset>
+        <label>
+          Next action{" "}
+          {decision === "reviewed" && (
+            <span className="optional">optional</span>
+          )}
+          <textarea
+            rows={3}
+            required={decision !== "reviewed"}
+            minLength={decision === "reviewed" ? undefined : 10}
+            maxLength={600}
+            value={nextAction}
+            onChange={(event) => setNextAction(event.target.value)}
+            placeholder="Describe who should do what next, and which information should be checked."
+          />
+        </label>
+        <fieldset className="review-checklist">
+          <legend>Supporting source evidence — choose 1 to 20</legend>
+          {record.assessment!.segments.map((segment) => (
+            <label key={segment.id} className="check-line">
+              <input
+                type="checkbox"
+                checked={evidence.includes(segment.id)}
+                disabled={
+                  !evidence.includes(segment.id) && evidence.length >= 20
+                }
+                onChange={(event) =>
+                  setEvidence(
+                    event.target.checked
+                      ? [...evidence, segment.id]
+                      : evidence.filter((value) => value !== segment.id),
+                  )
+                }
+              />
+              <span>
+                <strong>{segment.id}</strong>{" "}
+                {segment.englishText.slice(0, 180)}
+                {segment.englishText.length > 180 ? "…" : ""}
+              </span>
+            </label>
+          ))}
+        </fieldset>
+        <label className="check-line">
+          <input
+            type="checkbox"
+            checked={sourceReviewed}
+            onChange={(event) => setSourceReviewed(event.target.checked)}
+            required
+          />
+          I reviewed the original source and the evidence supporting this
+          recommendation.
         </label>
         {error && <Notice type="error">{error}</Notice>}
         <div className="modal-actions">

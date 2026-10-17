@@ -18,7 +18,9 @@
     "training:export": "tsx server/src/scripts/export-training.ts",
     "test:ui": "playwright test",
     "format": "prettier --write \"client/src/**/*.{ts,tsx,css}\" \"server/{src,test}/**/*.ts\" \"shared/**/*.ts\" \"model-service/{src,test}/**/*.ts\"",
-    "setup": "node scripts/init-env.mjs"
+    "setup": "node scripts/init-env.mjs",
+    "check:connections": "tsx server/src/scripts/check-connections.ts",
+    "check:pipeline": "tsx server/src/scripts/check-pipeline.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.64.1",

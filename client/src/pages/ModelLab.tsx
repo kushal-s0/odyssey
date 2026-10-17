@@ -14,6 +14,7 @@ import { PageIntro, Notice, Empty } from "../components";
 import { useWorkspace } from "../workspace";
 import { api, download } from "../api";
 import { FIELD_LABELS } from "../../../shared/types";
+import { trainingReadiness } from "../../../shared/training";
 export default function ModelLab() {
   const w = useWorkspace();
   const [annotations, setAnnotations] = useState<any[]>([]),
@@ -53,7 +54,7 @@ export default function ModelLab() {
       setRemoteModel(null);
     }
   }, [live]);
-  const groups = new Set(annotations.map((a) => a.groupId)).size;
+  const readiness = trainingReadiness(annotations);
   const modelAssessments = w.submissions
     .map((s) => s.assessment)
     .filter((a) => a?.classifier.status === "available");
@@ -117,23 +118,28 @@ export default function ModelLab() {
         </span>
       </div>
       <div className="model-stats">
-        <div>
-          <strong>{annotations.length}</strong>
-          <span>reviewed answer labels</span>
-        </div>
-        <div>
-          <strong>{groups}</strong>
-          <span>independent groups entered</span>
-        </div>
-        <div>
-          <strong>{annotations.filter((a) => a.label === 1).length}</strong>
-          <span>off-topic examples</span>
-        </div>
-        <div>
-          <strong>{modelAssessments.length}</strong>
-          <span>assessments using the model</span>
-        </div>
+        {readiness.checks.map((check) => (
+          <div key={check.label}>
+            <strong>
+              {check.current} / {check.required}
+            </strong>
+            <span>{check.label}</span>
+          </div>
+        ))}
       </div>
+      {live && (
+        <Notice>
+          {readiness.ready
+            ? "These saved labels meet the minimum count checks. Verify business families and inspect grouped evaluation in Colab before using the model."
+            : `These saved labels are not ready for training. Still needed: ${readiness.checks
+                .filter((check) => check.remaining > 0)
+                .map((check) => `${check.remaining} ${check.label}`)
+                .join(
+                  ", ",
+                )}. Exports from this screen contain only labels saved here.`}{" "}
+          Keep translations and revisions of the same business in one family.
+        </Notice>
+      )}
       {remoteModel?.ready && remoteModel.metrics && (
         <section className="panel model-evaluation">
           <div className="panel-heading">

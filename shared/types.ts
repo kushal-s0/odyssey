@@ -20,6 +20,12 @@ export const FIELD_KEYS = [
   "experience",
 ] as const;
 export type FieldKey = (typeof FIELD_KEYS)[number];
+export interface WorkspaceUser {
+  id: string;
+  name: string;
+  email: string;
+  role: "entrepreneur" | "assessor";
+}
 export const FIELD_LABELS: Record<FieldKey, string> = {
   businessName: "Business idea",
   trade: "Trade",
@@ -128,7 +134,17 @@ export interface Submission {
   originalText: string | null;
   assessment: Assessment | null;
   history: Assessment[];
-  review: { decision: string; note: string; reviewedAt: string } | null;
+  review: {
+    decision: string;
+    note: string;
+    reviewedAt: string;
+    nextAction?: string;
+    reasonCodes?: string[];
+    evidenceIds?: string[];
+    sourceReviewed?: boolean;
+    assessorId?: string;
+    assessmentVersion?: number;
+  } | null;
   error: string | null;
   example?: boolean;
 }
@@ -147,7 +163,7 @@ export interface Health {
   audioProvider: string;
 }
 export interface Session {
-  user: { id: string; name: string; email: string } | null;
+  user: WorkspaceUser | null;
   health: Health;
 }
 export interface SimilarIdea {

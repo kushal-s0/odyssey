@@ -12,6 +12,7 @@ export class ProviderError extends Error {
     public retryable = false,
   ) {
     super(message);
+    this.name = "ProviderError";
   }
 }
 const BASE = "https://generativelanguage.googleapis.com/v1beta";
@@ -24,27 +25,44 @@ async function generate(
     throw new ProviderError(
       "Set GEMINI_API_KEY to process submissions with the hosted document/translation model.",
     );
-  const response = await fetch(
-    `${BASE}/models/${encodeURIComponent(config.GEMINI_MODEL)}:generateContent`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": config.GEMINI_API_KEY,
-      },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: instruction }] },
-        contents: [{ role: "user", parts }],
-        generationConfig: {
-          temperature: 0,
-          responseMimeType: "application/json",
-          responseJsonSchema: schema,
-          maxOutputTokens: 18000,
+  let response: Response;
+  try {
+    response = await fetch(
+      `${BASE}/models/${encodeURIComponent(config.GEMINI_MODEL)}:generateContent`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": config.GEMINI_API_KEY,
         },
-      }),
-      signal: AbortSignal.timeout(150000),
-    },
-  );
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: instruction }] },
+          contents: [{ role: "user", parts }],
+          generationConfig: {
+            temperature: 0,
+            responseMimeType: "application/json",
+            responseJsonSchema: schema,
+            maxOutputTokens: 18000,
+            ...(/^gemini-[34]/.test(config.GEMINI_MODEL)
+              ? {
+                  thinkingConfig: {
+                    thinkingLevel: config.GEMINI_THINKING_LEVEL,
+                  },
+                }
+              : {}),
+          },
+        }),
+        signal: AbortSignal.timeout(150000),
+      },
+    );
+  } catch (error) {
+    throw new ProviderError(
+      error instanceof Error && error.name === "TimeoutError"
+        ? "The hosted model timed out. Processing can be retried."
+        : "The hosted model could not be reached. Check network access and retry.",
+      true,
+    );
+  }
   if (!response.ok)
     throw new ProviderError(
       `Hosted model returned ${response.status}. Check the configured model, API access, and quota.`,
@@ -343,7 +361,8 @@ export async function embed(
       body: JSON.stringify({
         model: `models/${config.GEMINI_EMBEDDING_MODEL}`,
         content: { parts: [{ text: text.slice(0, 7000) }] },
-        embedContentConfig: { taskType: task, outputDimensionality: 768 },
+        taskType: task,
+        outputDimensionality: 768,
       }),
       signal: AbortSignal.timeout(30000),
     },

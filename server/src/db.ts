@@ -24,11 +24,15 @@ const submissionSchema = new Schema(
     embedding: [Number],
     embeddingModel: String,
     sourceFamily: String,
+    ownerId: String,
+    submissionFormat: String,
+    structuredInput: Schema.Types.Mixed,
   },
   flexible,
 );
 submissionSchema.index({ createdAt: -1 });
 submissionSchema.index({ status: 1 });
+submissionSchema.index({ ownerId: 1, createdAt: -1 });
 export const SubmissionModel = mongoose.model("Submission", submissionSchema);
 export const CohortModel = mongoose.model(
   "Cohort",
@@ -47,7 +51,11 @@ export const UserModel = mongoose.model(
       email: { type: String, unique: true },
       name: String,
       passwordHash: String,
-      role: { type: String, default: "assessor" },
+      role: {
+        type: String,
+        enum: ["assessor", "entrepreneur"],
+        default: "assessor",
+      },
     },
     flexible,
   ),

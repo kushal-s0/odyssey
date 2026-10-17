@@ -19,7 +19,23 @@ import {
   saveFile,
   bucket,
 } from "./db.js";
-import { requireAssessor, sessionUser, login, digest } from "./auth.js";
+import {
+  requireAccount,
+  requireAssessor,
+  sessionUser,
+  login,
+  register,
+  digest,
+  submissionScope,
+} from "./auth.js";
+import {
+  submissionSchema,
+  serializeGuidedIdea,
+  assessorReviewSchema,
+  reviewEvidenceError,
+  LANGUAGE_CODES,
+  textInput,
+} from "../../shared/input-rules.js";
 import { examples, exampleCohorts } from "./examples.js";
 import { assess, cosine, fieldValue } from "./domain/assessment.js";
 import {
@@ -49,16 +65,6 @@ const upload = multer({
 const id = z
   .string()
   .refine((v) => mongoose.isValidObjectId(v), "Invalid record ID.");
-const bodySchema = z.object({
-  beneficiaryName: z.string().trim().min(2).max(100),
-  title: z.string().trim().min(3).max(150),
-  language: z
-    .enum(["auto", "en-IN", "hi-IN", "mr-IN", "te-IN", "bn-IN", "od-IN"])
-    .default("auto"),
-  inputType: z.enum(["text", "pdf", "audio"]),
-  originalText: z.string().trim().max(20000).optional(),
-  cohortId: z.string().optional(),
-});
 const writableRate = rateLimit({
   windowMs: 60000,
   limit: 15,
@@ -76,8 +82,27 @@ router.get("/session", async (req, res) =>
 );
 router.post(
   "/auth/login",
-  rateLimit({ windowMs: 15 * 60000, limit: 15 }),
+  rateLimit({
+    windowMs: 15 * 60000,
+    limit: 15,
+    message: {
+      error: "Too many sign-in attempts. Please try again later.",
+      code: "LOGIN_RATE_LIMITED",
+    },
+  }),
   login,
+);
+router.post(
+  "/auth/register",
+  rateLimit({
+    windowMs: 15 * 60000,
+    limit: 5,
+    message: {
+      error: "Too many account creation attempts. Please try again later.",
+      code: "REGISTRATION_RATE_LIMITED",
+    },
+  }),
+  register,
 );
 router.post("/auth/logout", async (req, res) => {
   if (databaseReady() && req.cookies?.strive_session)
@@ -92,8 +117,10 @@ router.get("/examples", (_req, res) =>
     ? res.json({ submissions: examples, cohorts: exampleCohorts })
     : res.status(404).json({ error: "Examples are disabled." }),
 );
-router.use(requireAssessor);
-router.get("/cohorts", async (_req, res) =>
+router.use(requireAccount);
+router.use("/training", requireAssessor);
+router.use("/locations", requireAssessor);
+router.get("/cohorts", requireAssessor, async (_req, res) =>
   res.json({
     cohorts: (await CohortModel.find().sort({ name: 1 }).lean()).map((c) => ({
       id: String(c._id),
@@ -102,7 +129,7 @@ router.get("/cohorts", async (_req, res) =>
     })),
   }),
 );
-router.post("/cohorts", async (req, res) => {
+router.post("/cohorts", requireAssessor, async (req, res) => {
   const name = z.string().trim().min(2).max(100).parse(req.body.name);
   const cohort = await CohortModel.create({ name, synthetic: false });
   res
@@ -110,7 +137,7 @@ router.post("/cohorts", async (req, res) => {
     .json({ id: String(cohort._id), name: cohort.name, synthetic: false });
 });
 router.get("/submissions", async (req, res) => {
-  const filter: Record<string, unknown> = {};
+  const filter: Record<string, unknown> = { ...submissionScope(req.actor!) };
   if (typeof req.query.cohort === "string" && req.query.cohort)
     filter.cohortId = id.parse(req.query.cohort);
   const records = await SubmissionModel.find(filter)
@@ -167,7 +194,17 @@ router.post(
   writableRate,
   upload.single("file"),
   async (req, res) => {
-    const data = bodySchema.parse(req.body);
+    const data = submissionSchema.parse(req.body);
+    if (data.submissionFormat === "guided" && data.structuredInput)
+      data.originalText = serializeGuidedIdea(data.title, data.structuredInput);
+    if (
+      req.actor!.role === "entrepreneur" &&
+      data.beneficiaryName !== req.actor!.name
+    )
+      throw Object.assign(
+        new Error("Submit under the name on your entrepreneur account."),
+        { status: 400 },
+      );
     if (
       data.inputType === "text" &&
       (!data.originalText || data.originalText.length < 20)
@@ -187,6 +224,11 @@ router.post(
       );
     let cohort: any = null;
     if (data.cohortId) {
+      if (req.actor!.role !== "assessor")
+        throw Object.assign(
+          new Error("Programme cohorts are assigned by an assessor."),
+          { status: 403 },
+        );
       cohort = await CohortModel.findById(id.parse(data.cohortId));
       if (!cohort)
         throw Object.assign(new Error("Cohort not found."), { status: 400 });
@@ -205,9 +247,13 @@ router.post(
     try {
       record = await SubmissionModel.create({
         ...data,
+        ownerId: req.actor!.id,
+        submissionFormat:
+          data.submissionFormat ??
+          (data.inputType === "text" ? "free_text" : "upload"),
         cohortId: cohort ? String(cohort._id) : null,
         cohortName: cohort?.name ?? null,
-        cohortSynthetic: false,
+        cohortSynthetic: !!cohort?.synthetic,
         fileId,
         fileName:
           req.file?.originalname.replace(/[\r\n\\/]/g, "_").slice(0, 180) ??
@@ -228,14 +274,17 @@ router.post(
     }
     await AuditModel.create({
       submissionId: record._id,
-      userId: req.assessor!.id,
+      userId: req.actor!.id,
       action: "submission.created",
     });
     res.status(202).json({ submission: serializeSubmission(record) });
   },
 );
 router.get("/submissions/:id", async (req, res) => {
-  const doc = await SubmissionModel.findById(id.parse(req.params.id));
+  const doc = await SubmissionModel.findOne({
+    _id: id.parse(req.params.id),
+    ...submissionScope(req.actor!),
+  });
   if (!doc) {
     res.status(404).json({ error: "Submission not found." });
     return;
@@ -243,7 +292,10 @@ router.get("/submissions/:id", async (req, res) => {
   res.json({ submission: serializeSubmission(doc) });
 });
 router.get("/submissions/:id/source", async (req, res) => {
-  const doc = await SubmissionModel.findById(id.parse(req.params.id));
+  const doc = await SubmissionModel.findOne({
+    _id: id.parse(req.params.id),
+    ...submissionScope(req.actor!),
+  });
   if (!doc?.fileId) {
     res.status(404).json({ error: "No uploaded source file." });
     return;
@@ -297,7 +349,11 @@ router.get("/submissions/:id/source", async (req, res) => {
 });
 router.post("/submissions/:id/retry", writableRate, async (req, res) => {
   const record = await SubmissionModel.findOneAndUpdate(
-    { _id: id.parse(req.params.id), status: "failed" },
+    {
+      _id: id.parse(req.params.id),
+      ...submissionScope(req.actor!),
+      status: "failed",
+    },
     { $set: { status: "queued", stage: "Waiting to retry", error: null } },
     { new: true },
   );
@@ -320,12 +376,16 @@ router.post(
     const parsed = z
       .object({
         field: z.enum(FIELD_KEYS),
-        answer: z.string().trim().max(10000).optional(),
-        language: z.string().max(30).default("auto"),
+        answer: textInput("Clarification", 10, 2000).optional(),
+        language: z.enum(LANGUAGE_CODES).default("auto"),
         version: z.coerce.number().int().min(1),
       })
+      .strict()
       .parse(req.body);
-    const record = await SubmissionModel.findById(id.parse(req.params.id));
+    const record = await SubmissionModel.findOne({
+      _id: id.parse(req.params.id),
+      ...submissionScope(req.actor!),
+    });
     if (!record?.assessment) {
       res
         .status(404)
@@ -333,6 +393,11 @@ router.post(
       return;
     }
     const current = record.assessment as Assessment;
+    if (req.file && parsed.answer !== undefined)
+      throw Object.assign(
+        new Error("Choose either a written clarification or a recording."),
+        { status: 400 },
+      );
     if (current.version !== parsed.version) {
       res.status(409).json({
         error:
@@ -340,6 +405,11 @@ router.post(
       });
       return;
     }
+    if (!current.questions.some((question) => question.field === parsed.field))
+      throw Object.assign(
+        new Error("Choose one of the current clarification questions."),
+        { status: 400 },
+      );
     if (!req.file && (!parsed.answer || parsed.answer.length < 2))
       throw Object.assign(new Error("Enter or record your clarification."), {
         status: 400,
@@ -433,7 +503,11 @@ router.post(
       /* English remains available. */
     }
     const updated = await SubmissionModel.findOneAndUpdate(
-      { _id: record._id, "assessment.version": parsed.version },
+      {
+        _id: record._id,
+        ...submissionScope(req.actor!),
+        "assessment.version": parsed.version,
+      },
       {
         $set: {
           assessment: next,
@@ -458,7 +532,7 @@ router.post(
     );
     await AuditModel.create({
       submissionId: record._id,
-      userId: req.assessor!.id,
+      userId: req.actor!.id,
       action: "assessment.clarified",
       details: {
         field: parsed.field,
@@ -474,6 +548,15 @@ router.post(
 router.get(
   "/submissions/:id/clarifications/:clarificationId/source",
   async (req, res) => {
+    if (
+      !(await SubmissionModel.exists({
+        _id: id.parse(req.params.id),
+        ...submissionScope(req.actor!),
+      }))
+    ) {
+      res.status(404).json({ error: "Submission not found." });
+      return;
+    }
     const source = await ClarificationModel.findOne({
       _id: id.parse(req.params.clarificationId),
       submissionId: id.parse(req.params.id),
@@ -497,7 +580,7 @@ router.get(
     res.on("close", () => stream.destroy());
   },
 );
-router.post("/submissions/:id/verify", async (req, res) => {
+router.post("/submissions/:id/verify", requireAssessor, async (req, res) => {
   const parsed = z
     .object({
       segmentIds: z.array(z.string()).min(1).max(150),
@@ -546,32 +629,38 @@ router.post("/submissions/:id/verify", async (req, res) => {
   }
   await AuditModel.create({
     submissionId: record._id,
-    userId: req.assessor!.id,
+    userId: req.actor!.id,
     action: "evidence.verified",
     details: { segmentIds: parsed.segmentIds },
   });
   res.json({ submission: serializeSubmission(updated) });
 });
-router.post("/submissions/:id/review", async (req, res) => {
-  const data = z
-    .object({
-      decision: z.enum([
-        "deeper_evaluation",
-        "mentoring",
-        "clarification",
-        "reviewed",
-      ]),
-      note: z.string().trim().min(3).max(3000),
-      version: z.number().int(),
-    })
-    .parse(req.body);
+router.post("/submissions/:id/review", requireAssessor, async (req, res) => {
+  const data = assessorReviewSchema.parse(req.body);
+  const previous = await SubmissionModel.findById(id.parse(req.params.id));
+  if (!previous?.assessment) {
+    res.status(404).json({ error: "Assessment not found." });
+    return;
+  }
+  const evidenceError = reviewEvidenceError(
+    data,
+    previous.assessment as Assessment,
+  );
+  if (evidenceError) {
+    res
+      .status(data.version !== previous.assessment.version ? 409 : 400)
+      .json({ error: evidenceError });
+    return;
+  }
   const record = await SubmissionModel.findOneAndUpdate(
     { _id: id.parse(req.params.id), "assessment.version": data.version },
     {
       $set: {
         review: {
-          decision: data.decision,
-          note: data.note,
+          ...data,
+          assessorId: req.actor!.id,
+          assessmentVersion: data.version,
+          reviewSchemaVersion: "assessor-review-v1",
           reviewedAt: new Date().toISOString(),
         },
       },
@@ -584,7 +673,7 @@ router.post("/submissions/:id/review", async (req, res) => {
   }
   await AuditModel.create({
     submissionId: record._id,
-    userId: req.assessor!.id,
+    userId: req.actor!.id,
     action: "assessment.reviewed",
     details: data,
   });
@@ -611,7 +700,7 @@ export function keywordSimilarity(a: Submission, b: Submission) {
     common,
   };
 }
-router.get("/submissions/:id/similar", async (req, res) => {
+router.get("/submissions/:id/similar", requireAssessor, async (req, res) => {
   const record = await SubmissionModel.findById(id.parse(req.params.id)).lean();
   if (!record) {
     res.status(404).json({ error: "Submission not found." });
@@ -742,7 +831,7 @@ router.post("/training/annotations", async (req, res) => {
         question: FIELD_LABELS[input.field],
         answer: f?.value ?? source,
         language: a.language,
-        reviewer: req.assessor!.id,
+        reviewer: req.actor!.id,
       },
     },
     { upsert: true, new: true },

@@ -15,3 +15,7 @@ model-service/artifacts/*.json
 __pycache__/
 .venv/
 coverage/
+/model.json
+/evaluation.json
+/parity-vectors.json
+/reviewed-answers.jsonl

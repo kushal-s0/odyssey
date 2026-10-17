@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { useWorkspace } from "./workspace";
 import { api } from "./api";
-import { Busy, Notice } from "./components";
+import { Busy, Notice, Empty } from "./components";
 const links = [
   { to: "/", label: "Overview", icon: LayoutDashboard },
   { to: "/submissions", label: "All submissions", icon: Inbox },
@@ -38,6 +38,13 @@ export default function App() {
   const w = useWorkspace(),
     [menu, setMenu] = useState(false);
   const location = useLocation();
+  const entrepreneur = w.session?.user?.role === "entrepreneur";
+  const restricted =
+    entrepreneur &&
+    ["/model", "/comparisons"].some(
+      (path) =>
+        location.pathname === path || location.pathname.startsWith(path + "/"),
+    );
   const current = links.find((l) =>
     l.to === "/"
       ? location.pathname === "/"
@@ -75,23 +82,32 @@ export default function App() {
         </div>
         <div className="nav-caption">WORKSPACE</div>
         <nav>
-          {links.map(({ to, label, icon: Icon }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={to === "/"}
-              onClick={() => setMenu(false)}
-              className={({ isActive }) =>
-                `nav-item ${isActive ? "active" : ""}`
-              }
-            >
-              <Icon size={18} />
-              <span>{label}</span>
-              {to === "/submissions" && (
-                <span className="nav-count">{w.submissions.length}</span>
-              )}
-            </NavLink>
-          ))}
+          {links
+            .filter(
+              (link) =>
+                !entrepreneur || !["/model", "/comparisons"].includes(link.to),
+            )
+            .map(({ to, label, icon: Icon }) => (
+              <NavLink
+                key={to}
+                to={to}
+                end={to === "/"}
+                onClick={() => setMenu(false)}
+                className={({ isActive }) =>
+                  `nav-item ${isActive ? "active" : ""}`
+                }
+              >
+                <Icon size={18} />
+                <span>
+                  {entrepreneur && to === "/submissions"
+                    ? "My submissions"
+                    : label}
+                </span>
+                {to === "/submissions" && (
+                  <span className="nav-count">{w.submissions.length}</span>
+                )}
+              </NavLink>
+            ))}
         </nav>
         <div className="sidebar-bottom">
           <div className="evidence-note">
@@ -112,11 +128,17 @@ export default function App() {
             Workspace settings
           </NavLink>
           <div className="user-block">
-            <span className="user-avatar">{w.session?.user ? "PA" : "EX"}</span>
+            <span className="user-avatar">
+              {w.session?.user ? (entrepreneur ? "EN" : "AS") : "EX"}
+            </span>
             <span>
               <strong>{w.session?.user?.name ?? "Example workspace"}</strong>
               <small>
-                {w.session?.user ? "Assessor access" : "Read-only preview"}
+                {w.session?.user
+                  ? entrepreneur
+                    ? "Entrepreneur access"
+                    : "Assessor access"
+                  : "Read-only preview"}
               </small>
             </span>
             {w.session?.user && (
@@ -179,7 +201,21 @@ export default function App() {
               </button>
             </Notice>
           )}
-          {w.loading ? <Busy /> : <Outlet />}
+          {w.loading ? (
+            <Busy />
+          ) : restricted ? (
+            <Empty
+              title="Assessor access required"
+              description="Your entrepreneur account can access your own submissions and clarification requests."
+              action={
+                <Link to="/submissions" className="button primary">
+                  My submissions
+                </Link>
+              }
+            />
+          ) : (
+            <Outlet />
+          )}
         </main>
         <footer className="app-footer">
           <span>Built for better first conversations.</span>

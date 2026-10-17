@@ -1,4 +1,4 @@
-import { useState, useRef, type FormEvent } from "react";
+import { useState, useRef, useEffect, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   AlignLeft,
@@ -16,6 +16,8 @@ import { PageIntro, Notice, Recorder } from "../components";
 import { useWorkspace } from "../workspace";
 import { api } from "../api";
 import { LANGUAGES, type Submission } from "../../../shared/types";
+import { submissionSchema } from "../../../shared/input-rules";
+import GuidedIdeaInputs, { EMPTY_GUIDED_INPUT } from "../GuidedIdeaInputs";
 export default function Submit() {
   const w = useWorkspace(),
     navigate = useNavigate();
@@ -30,11 +32,32 @@ export default function Submit() {
     [error, setError] = useState(""),
     [pending, setPending] = useState(false),
     [drag, setDrag] = useState(false);
+  const [writeMode, setWriteMode] = useState<"guided" | "free_text">("guided");
+  const [guided, setGuided] = useState({ ...EMPTY_GUIDED_INPUT });
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const entrepreneur = w.session?.user?.role === "entrepreneur";
+  useEffect(() => {
+    if (entrepreneur && w.session?.user) setName(w.session.user.name);
+  }, [entrepreneur, w.session?.user?.name]);
   const fileRef = useRef<HTMLInputElement>(null);
   const available = w.session?.health.database && w.session?.user;
   const max = w.session?.health.maxUploadMb ?? 10;
   function chooseFile(selected: File | null) {
     setError("");
+    if (selected && selected.size === 0) {
+      setError("Choose a file with content.");
+      return;
+    }
+    const extensions =
+      type === "pdf" ? /\.pdf$/i : /\.(mp4|m4a|ogg|mp3|wav|webm|flac)$/i;
+    if (selected && !extensions.test(selected.name)) {
+      setError(
+        type === "pdf"
+          ? "Choose a PDF document."
+          : "Choose an MP4, M4A, OGG, MP3, WAV, WebM or FLAC recording.",
+      );
+      return;
+    }
     if (selected && selected.size > max * 1024 * 1024) {
       setError(`Choose a file smaller than ${max} MB.`);
       return;
@@ -54,15 +77,52 @@ export default function Submit() {
       setError("Please add a PDF or recording.");
       return;
     }
+    const result = submissionSchema.safeParse({
+      beneficiaryName: name,
+      title,
+      language,
+      inputType: type,
+      submissionFormat: type === "text" ? writeMode : "upload",
+      ...(cohort && !entrepreneur ? { cohortId: cohort } : {}),
+      ...(type === "text"
+        ? writeMode === "guided"
+          ? { structuredInput: guided }
+          : { originalText: text }
+        : {}),
+    });
+    if (!result.success) {
+      setFieldErrors(
+        Object.fromEntries(
+          result.error.issues.map((issue) => [
+            issue.path.join(".").replace(/^structuredInput\./, ""),
+            issue.message,
+          ]),
+        ),
+      );
+      setError(
+        [...new Set(result.error.issues.map((issue) => issue.message))].join(
+          " ",
+        ),
+      );
+      return;
+    }
+    setFieldErrors({});
     setPending(true);
     try {
       const data = new FormData();
-      data.set("beneficiaryName", name);
-      data.set("title", title);
-      data.set("language", language);
+      data.set("beneficiaryName", result.data.beneficiaryName);
+      data.set("title", result.data.title);
+      data.set("language", result.data.language);
       data.set("inputType", type);
-      if (cohort) data.set("cohortId", cohort);
-      if (type === "text") data.set("originalText", text);
+      data.set("submissionFormat", type === "text" ? writeMode : "upload");
+      if (cohort && !entrepreneur) data.set("cohortId", cohort);
+      if (type === "text" && writeMode === "guided")
+        data.set(
+          "structuredInput",
+          JSON.stringify(result.data.structuredInput),
+        );
+      else if (type === "text")
+        data.set("originalText", result.data.originalText!);
       else data.set("file", file!);
       const response = await api<{ submission: Submission }>("/submissions", {
         method: "POST",
@@ -106,13 +166,14 @@ export default function Submit() {
             </div>
             <div className="form-grid">
               <label>
-                Beneficiary name
+                Entrepreneur name
                 <input
                   required
                   minLength={2}
                   maxLength={100}
                   placeholder="Full name"
                   value={name}
+                  readOnly={entrepreneur}
                   onChange={(e) => setName(e.target.value)}
                 />
               </label>
@@ -140,21 +201,23 @@ export default function Submit() {
                   ))}
                 </select>
               </label>
-              <label>
-                Programme cohort <span className="optional">optional</span>
-                <select
-                  value={cohort}
-                  onChange={(e) => setCohort(e.target.value)}
-                >
-                  <option value="">Unassigned</option>
-                  {w.mode === "live" &&
-                    w.cohorts.map((c) => (
-                      <option value={c.id} key={c.id}>
-                        {c.name}
-                      </option>
-                    ))}
-                </select>
-              </label>
+              {!entrepreneur && (
+                <label>
+                  Programme cohort <span className="optional">optional</span>
+                  <select
+                    value={cohort}
+                    onChange={(e) => setCohort(e.target.value)}
+                  >
+                    <option value="">Unassigned</option>
+                    {w.mode === "live" &&
+                      w.cohorts.map((c) => (
+                        <option value={c.id} key={c.id}>
+                          {c.name}
+                        </option>
+                      ))}
+                  </select>
+                </label>
+              )}
             </div>
           </div>
           <div className="form-section">
@@ -188,23 +251,57 @@ export default function Submit() {
             </div>
             {type === "text" ? (
               <>
-                <label className="text-input-label" htmlFor="idea-text">
-                  Your idea, in your own words
-                </label>
-                <textarea
-                  id="idea-text"
-                  className="idea-textarea"
-                  required
-                  minLength={20}
-                  maxLength={20000}
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                  placeholder="What would your business offer? Who are your customers? Where would it operate? Share what you know about costs, prices, suppliers, and competition. It’s okay if you don’t have every answer yet."
-                />
-                <div className="textarea-foot">
-                  <span>You can write in any of the supported languages.</span>
-                  <span>{text.length.toLocaleString()} / 20,000</span>
+                <div className="segmented-control">
+                  <button
+                    type="button"
+                    className={writeMode === "guided" ? "active" : ""}
+                    onClick={() => {
+                      setWriteMode("guided");
+                      setError("");
+                    }}
+                  >
+                    Guided form
+                  </button>
+                  <button
+                    type="button"
+                    className={writeMode === "free_text" ? "active" : ""}
+                    onClick={() => {
+                      setWriteMode("free_text");
+                      setError("");
+                    }}
+                  >
+                    Free text
+                  </button>
                 </div>
+                {writeMode === "guided" ? (
+                  <GuidedIdeaInputs
+                    value={guided}
+                    onChange={setGuided}
+                    errors={fieldErrors}
+                  />
+                ) : (
+                  <>
+                    <label className="text-input-label" htmlFor="idea-text">
+                      Your idea, in your own words
+                    </label>
+                    <textarea
+                      id="idea-text"
+                      className="idea-textarea"
+                      required
+                      minLength={20}
+                      maxLength={20000}
+                      value={text}
+                      onChange={(e) => setText(e.target.value)}
+                      placeholder="What would your business offer? Who are your customers? Where would it operate? Share what you know about costs, prices, suppliers, and competition. It’s okay if you don’t have every answer yet."
+                    />
+                    <div className="textarea-foot">
+                      <span>
+                        You can write in any of the supported languages.
+                      </span>
+                      <span>{text.length.toLocaleString()} / 20,000</span>
+                    </div>
+                  </>
+                )}
               </>
             ) : (
               <>
@@ -245,6 +342,10 @@ export default function Submit() {
                     onDrop={(e) => {
                       e.preventDefault();
                       setDrag(false);
+                      if (e.dataTransfer.files.length !== 1) {
+                        setError("Choose one source file per submission.");
+                        return;
+                      }
                       chooseFile(e.dataTransfer.files[0] ?? null);
                     }}
                   >
@@ -287,7 +388,7 @@ export default function Submit() {
                         <span className="hint">
                           {type === "pdf"
                             ? `PDF · up to 25 pages · ${max} MB`
-                            : `MP4, M4A, OGG, MP3, WAV or WebM · ${max} MB · up to 20 minutes`}
+                            : `MP4, M4A, OGG, MP3, WAV, WebM or FLAC · ${max} MB · up to 20 minutes`}
                         </span>
                       </>
                     )}

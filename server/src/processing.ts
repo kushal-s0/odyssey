@@ -20,6 +20,7 @@ export async function buildAssessment(input: {
   kind: "text" | "pdf" | "audio";
   language: string;
   version?: number;
+  onStage?: (stage: string) => void | Promise<void>;
 }): Promise<{ assessment: Assessment; embedding: number[] | null }> {
   let pageCount: number | undefined;
   if (input.kind === "pdf") {
@@ -43,13 +44,16 @@ export async function buildAssessment(input: {
     input.kind === "audio" && config.AUDIO_PROVIDER === "sarvam"
       ? await transcribe(input.buffer!, input.language)
       : undefined;
+  await input.onStage?.("Reading and translating source evidence");
   const source = await readSource({
     ...input,
     buffer: audioSegments ? undefined : input.buffer,
     pageCount,
     audioSegments,
   });
+  await input.onStage?.("Extracting business facts");
   const fields = await extractFields(source.segments);
+  await input.onStage?.("Validating evidence and assessment");
   const assessment = assess({
     fields,
     segments: source.segments,
@@ -71,6 +75,7 @@ export async function buildAssessment(input: {
       "Clarification questions could not be translated. English questions are available.",
     );
   }
+  await input.onStage?.("Checking response relevance");
   await applyClassifier(assessment);
   let embedding: number[] | null = null;
   const content = [
@@ -85,6 +90,7 @@ export async function buildAssessment(input: {
     .join("\n");
   if (content)
     try {
+      await input.onStage?.("Finding related ideas");
       embedding = await embed(content);
     } catch {
       assessment.warnings.push(
@@ -211,6 +217,12 @@ async function processJob(job: any, token: string) {
       mime: submission.fileMime ?? undefined,
       kind: submission.inputType as any,
       language: submission.language ?? "auto",
+      onStage: async (stage) => {
+        await SubmissionModel.updateOne(
+          { _id: submission._id, status: "processing" },
+          { $set: { stage } },
+        );
+      },
     });
     const lease = await JobModel.exists({
       _id: job._id,

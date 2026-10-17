@@ -200,3 +200,5 @@ Do not assume a new Hugging Face CPU Space is universally free to create: curren
 No paid resource will be purchased as part of accepting this plan. If free allowances cannot support the required demo, surface the measured limitation and concrete low-cost option before enabling billing.
 
 Implementation was authorized in the next instruction. The design decisions remain the narrow cloud-trained relevance model, evidence-based assessment, the Evidence Repair Loop, and the required external service access. Execution status is tracked in TASKS.md.
+
+**Scope update — 18 October 2026:** The user requested standardized entrepreneur and assessor inputs and explicitly added separate entrepreneur accounts. Entrepreneur registration now creates an account with access limited to its own submissions and clarification sources. Assessors retain programme-wide review, verification, cohort, similarity and training permissions. Shared validation enforces the guided input and structured review contracts documented in `INPUT_STANDARDS.md`. The user took responsibility for deployment; no deployment should be started by this workflow.

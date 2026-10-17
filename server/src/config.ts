@@ -26,6 +26,7 @@ export const config = z
     ASSESSOR_PASSWORD: optional,
     GEMINI_API_KEY: optional,
     GEMINI_MODEL: z.string().default("gemini-3.8-flash"),
+    GEMINI_THINKING_LEVEL: z.enum(["LOW", "MEDIUM", "HIGH"]).default("LOW"),
     GEMINI_EMBEDDING_MODEL: z.string().default("gemini-embedding-001"),
     SARVAM_API_KEY: optional,
     SARVAM_MODEL: z.string().default("saaras:v4"),

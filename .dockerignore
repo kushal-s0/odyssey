@@ -9,3 +9,7 @@ AI solution for business solutions
 data/extracted
 data/training
 **/dist
+model.json
+evaluation.json
+parity-vectors.json
+reviewed-answers.jsonl

@@ -39,11 +39,19 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     try {
       const current = await api<Session>("/session");
       setSession(current);
-      const selected = mode === "live" && current.user ? "live" : "examples";
+      const selected =
+        current.user &&
+        (mode === "live" || current.user.role === "entrepreneur")
+          ? "live"
+          : "examples";
+      if (current.user?.role === "entrepreneur" && mode !== "live")
+        setMode("live");
       if (selected === "live") {
         const [records, groups] = await Promise.all([
           api<{ submissions: Submission[] }>("/submissions"),
-          api<{ cohorts: Cohort[] }>("/cohorts"),
+          current.user?.role === "assessor"
+            ? api<{ cohorts: Cohort[] }>("/cohorts")
+            : Promise.resolve({ cohorts: [] }),
         ]);
         setSubmissions(records.submissions);
         setCohorts(groups.cohorts);

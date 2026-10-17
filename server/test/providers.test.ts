@@ -1,12 +1,21 @@
 import { afterEach, test } from "node:test";
 import assert from "node:assert/strict";
 import { config } from "../src/config.js";
-import { readSource, extractFields } from "../src/providers/gemini.js";
+import {
+  readSource,
+  extractFields,
+  embed,
+  ProviderError,
+} from "../src/providers/gemini.js";
 const originalFetch = globalThis.fetch,
-  originalKey = config.GEMINI_API_KEY;
+  originalKey = config.GEMINI_API_KEY,
+  originalModel = config.GEMINI_MODEL,
+  originalThinking = config.GEMINI_THINKING_LEVEL;
 afterEach(() => {
   globalThis.fetch = originalFetch;
   config.GEMINI_API_KEY = originalKey;
+  config.GEMINI_MODEL = originalModel;
+  config.GEMINI_THINKING_LEVEL = originalThinking;
 });
 function respond(data: unknown, finishReason = "STOP") {
   config.GEMINI_API_KEY = "unit-test-only-key";
@@ -120,4 +129,59 @@ test("hosted extraction validates its output schema", async () => {
     ],
   });
   await assert.rejects(() => extractFields([]));
+});
+test("model timeouts are retriable provider failures", async () => {
+  config.GEMINI_API_KEY = "unit-test-only-key";
+  globalThis.fetch = async () => {
+    throw new DOMException("Request timed out", "TimeoutError");
+  };
+  await assert.rejects(
+    () =>
+      readSource({
+        text: "Artificial test idea.",
+        kind: "text",
+        language: "en-IN",
+      }),
+    (error: unknown) =>
+      error instanceof ProviderError &&
+      error.retryable &&
+      error.message.includes("timed out"),
+  );
+});
+test("Gemini 3 structured extraction uses the configured thinking level", async () => {
+  respond({
+    language: "English",
+    segments: [segment("Artificial test idea.")],
+  });
+  const respondFetch = globalThis.fetch;
+  let body: any;
+  globalThis.fetch = async (input, options) => {
+    body = JSON.parse(String(options?.body));
+    return respondFetch(input, options);
+  };
+  config.GEMINI_MODEL = "gemini-3.8-flash";
+  config.GEMINI_THINKING_LEVEL = "LOW";
+  await readSource({
+    text: "Artificial test idea.",
+    kind: "text",
+    language: "en-IN",
+  });
+  assert.equal(body.generationConfig.thinkingConfig.thinkingLevel, "LOW");
+});
+test("embedding options are top-level and produce normalized 768-dimension features", async () => {
+  config.GEMINI_API_KEY = "unit-test-only-key";
+  let body: any;
+  globalThis.fetch = async (_input, options) => {
+    body = JSON.parse(String(options?.body));
+    return new Response(
+      JSON.stringify({ embedding: { values: Array(768).fill(1) } }),
+      { status: 200 },
+    );
+  };
+  const result = await embed("Artificial test idea.", "CLASSIFICATION");
+  assert.equal(body.outputDimensionality, 768);
+  assert.equal(body.taskType, "CLASSIFICATION");
+  assert.equal(body.embedContentConfig, undefined);
+  assert.equal(result.length, 768);
+  assert.ok(Math.abs(result.reduce((n, v) => n + v * v, 0) - 1) < 1e-10);
 });
