@@ -33,3 +33,5 @@ This repository contains the uploaded Tata STRIVE problem statement/datasets and
 
 - Maintain `explanations/` with code/module guides, data flow, design choices, limitations and committee questions as each task progresses. Preserve required licenses and source provenance for external models/data/resources; do not conceal third-party work or make unsupported originality claims.
 - Finish with T27: detailed step-by-step deployment instructions for the actual free configuration, including prerequisites, secret setup, build/deploy, owned-worker startup, verification, recovery and troubleshooting.
+
+- Latest credential preference: prepare named placeholders in ignored root and frontend .env.local files. Kartik will fill values after implementation. Do not repeat credential requests during the build; continue local/independent checks and record hosted/gated verification blockers honestly. Preserve existing filled values.

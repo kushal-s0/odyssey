@@ -1,8 +1,9 @@
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal
+from urllib.parse import urlsplit
 
-from pydantic import Field, SecretStr, model_validator
+from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 _parents = Path(__file__).resolve().parents
@@ -41,10 +42,23 @@ class Settings(BaseSettings):
     stage_capability_signing_key: SecretStr | None = None
     worker_credential: SecretStr | None = None
 
+    @field_validator('allow_paid_services', mode='before')
+    @classmethod
+    def parse_paid_disabled(cls, value: object) -> object:
+        return False if isinstance(value, str) and value.lower() == 'false' else value
+
     @model_validator(mode="after")
     def production_requirements(self) -> "Settings":
         if self.database_pool_min > self.database_pool_max:
             raise ValueError("Database pool minimum cannot exceed its maximum")
+        for value in (self.auth_issuer, self.auth_jwks_url, self.supabase_url):
+            if value:
+                url = urlsplit(value)
+                if url.username or url.password or url.query or url.fragment or not url.hostname:
+                    raise ValueError("Authentication URLs must be absolute and contain no credentials or query")
+                if url.scheme != "https" and not (self.app_env != "production" and
+                        url.scheme == "http" and url.hostname in {"localhost", "127.0.0.1"}):
+                    raise ValueError("Authentication URLs require HTTPS, except local development")
         if self.app_env == "production":
             missing = [key for key in ("database_url", "supabase_url", "supabase_service_role_key",
                                        "auth_issuer", "auth_jwks_url", "worker_credential",

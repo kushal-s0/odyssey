@@ -18,6 +18,8 @@ from starlette.concurrency import run_in_threadpool
 from .config import Settings, get_settings
 from .contracts.schema import build_openapi
 from .db.pool import Database
+from .auth.jwt import TokenVerifier
+from .routes.auth import router as auth_router
 
 logger = logging.getLogger("udyam.api")
 
@@ -47,6 +49,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     application = FastAPI(title="Udyam Saathi API", version=config.app_version,
                           docs_url="/docs" if config.app_env != "production" else None, lifespan=lifespan)
     application.state.settings = config
+    application.state.token_verifier = TokenVerifier(config)
+    application.include_router(auth_router)
     application.add_middleware(CORSMiddleware, allow_origins=config.cors_origins,
                                allow_credentials=False, allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
                                allow_headers=["Authorization", "Content-Type", "Idempotency-Key", "X-Request-ID"])

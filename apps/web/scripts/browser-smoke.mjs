@@ -13,6 +13,12 @@ try {
     page.on('pageerror', error => errors.push(error.name))
     const response = await page.goto(process.env.PREVIEW_URL || 'http://127.0.0.1:5173/', { waitUntil: 'networkidle' })
     await page.getByRole('heading', { name: /See the potential/ }).waitFor()
+    await page.getByRole('button', { name: 'Sign in', exact: true }).click()
+    await page.getByRole('dialog').waitFor()
+    await page.getByRole('heading', { name: 'Welcome back.' }).waitFor()
+    await page.screenshot({ path: resolve(output, `${label}-sign-in.png`), fullPage: true })
+    await page.getByRole('button', { name: 'Close sign in' }).click()
+    await page.getByRole('dialog').waitFor({ state: 'hidden' })
     const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, content: document.documentElement.scrollWidth }))
     await page.screenshot({ path: resolve(output, `${label}.png`), fullPage: true })
     if (response?.status() !== 200 || errors.length || dimensions.content > dimensions.viewport) {

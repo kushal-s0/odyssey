@@ -2,7 +2,7 @@
 
 **Application state:** implementation started; no application/model deployed.
 **Budget:** zero paid API or hosting dependencies.  
-**Active application task:** none. **Current scope:** full implementation, explanations/ and final T27 deployment walkthrough; local commits only.
+**Active application task:** T06. **Current scope:** full implementation, explanations/ and final T27 deployment walkthrough; local commits only.
 **Last update:** 2026-10-17, Asia/Calcutta. **Progress:** 2 / 29 tasks done.
 
 **Deadline:** 2026-10-18 06:00 Asia/Calcutta, working deployed demo included. Read [SESSION_HANDOFF.md](SESSION_HANDOFF.md), [HACKATHON_DELIVERY_PLAN.md](HACKATHON_DELIVERY_PLAN.md) and [PROJECT_REVIEW.md](PROJECT_REVIEW.md). Prefer verified laptop inference; English/Hindi human review only. Implementation is authorized by the latest user request; publication remains unapproved.
@@ -17,8 +17,8 @@ Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FRE
 | T02 | Scaffold application and local toolchain | done | `task-reports/T02.md` | None confirmed |
 | T03 | Define contracts, domain rules and rubric | done | `task-reports/T03.md` | None confirmed |
 | T04 | Implement database, durable stage leases and private storage | blocked | `task-reports/T04.md` | Local PG/RLS/fencing/recovery passed; hosted Supabase Free plan, connection and private-object operations unverified |
-| T05 | Implement authentication and authorization | pending | `task-reports/T05.md` | None confirmed |
-| T06 | Implement uploads and submission APIs | pending | `task-reports/T06.md` | None confirmed |
+| T05 | Implement authentication and authorization | blocked | `task-reports/T05.md` | Local signatures/access/UI passed; actual Supabase signing, identities and hosted login/refresh unverified |
+| T06 | Implement uploads and submission APIs | in_progress | `task-reports/T06.md` | None confirmed |
 | T07 | Implement durable Postgres jobs and free-runtime dispatch | pending | `task-reports/T07.md` | None confirmed |
 | T08 | Build applicant submission and recording UI | pending | `task-reports/T08.md` | None confirmed |
 | T09 | Implement self-hosted extraction and Indic translation | pending | `task-reports/T09.md` | None confirmed |

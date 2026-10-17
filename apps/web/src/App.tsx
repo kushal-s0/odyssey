@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
 import { ArrowUpRight, AudioLines, FileText, Leaf, ShieldCheck, Sprout } from 'lucide-react'
+import { AccountMenu } from './auth/AccountMenu'
+import { useAuth } from './auth/AuthProvider'
 
 type Health = 'checking' | 'connected' | 'unavailable' | 'unconfigured'
 const apiBase = import.meta.env.VITE_API_BASE_URL as string | undefined
 
 export default function App() {
+  const auth = useAuth()
   const [health, setHealth] = useState<Health>(apiBase ? 'checking' : 'unconfigured')
   useEffect(() => {
     if (!apiBase) return
@@ -21,8 +24,10 @@ export default function App() {
       <a className="brand" href="/" aria-label="Udyam Saathi home"><span className="brand-mark"><Sprout size={25} /></span><span>udyam<span className="brand-light">saathi</span><small>IDEAS INTO LIVELIHOODS</small></span></a>
       <span className="topbar-label">Entrepreneurship assessment workspace</span>
       <span className="status-chip"><span className={`status-dot ${health === 'connected' ? 'online' : ''}`} />{health === 'connected' ? 'API connected' : health === 'checking' ? 'Checking connection' : 'Local development'}</span>
+      <AccountMenu />
     </header>
     <main id="main" className="welcome">
+      {auth.message && !auth.actor && <p className="auth-banner" role="status">{auth.message}</p>}
       <div className="eyebrow"><span /> EVERY LIVELIHOOD STARTS WITH AN IDEA</div>
       <div className="welcome-grid">
         <div><h1>See the potential.<br /><em>Understand the story.</em></h1><p className="intro">A thoughtful first step for every business idea. Understand submissions in the entrepreneur’s own words, follow the evidence, and make room for the next useful question.</p>

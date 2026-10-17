@@ -10,9 +10,11 @@
     "lint": "eslint src",
     "preview": "vite preview --host 127.0.0.1",
     "test:smoke": "node scripts/browser-smoke.mjs",
+    "test:auth": "node scripts/browser-auth.mjs",
     "generate:types": "openapi-typescript openapi.json -o src/api/generated/schema.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "2.118.0",
     "lucide-react": "0.468.0",
     "react": "19.2.0",
     "react-dom": "19.2.0"
