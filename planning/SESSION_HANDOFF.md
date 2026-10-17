@@ -64,19 +64,60 @@ Resume from actual evidence and the exact next action, not a fresh rebuild.
 
 ## Rolling checkpoint (authoritative current resume state)
 
-- Latest user request: commit current code locally, document all startup requirements/configuration/progress in README and generate a paste-ready next-agent prompt before session limits. Full implementation remains authorized, but this is a partial checkpoint; remaining backlog is not complete.
-- Read [NEXT_AGENT_PROMPT.md](NEXT_AGENT_PROMPT.md) for the full pasteable continuation instruction. README now contains current preview, environment/API-key table, local DB startup, judging account setup and check commands.
-- Current branch main; verify actual HEAD/log for the latest checkpoint commit. Earlier commits: 93d5786 authentication, e492712 uploads/submissions, 59839c5 shared test-fixture cleanup. All were checked as Kartik for both author/committer, no trailers. No push or remote deployment.
-- Completed tracker tasks remain T02/T03. T01/T04/T05/T06 have local verified capabilities but specific hosted/gated prerequisites remain blocked. T07 is in_progress; see task-reports/T07.md. Its unfinished code is not only an external credential blocker.
-- T07 code: app/contracts/worker.py; app/worker/{manifest,capabilities}.py; app/services/jobs.py; fourth SQL migration 202610170004_worker_runtime.sql; four-stage creation in routes/submissions.py; tests/api/test_worker_service.py. Compatible claims recover a lost response for the same worker without consuming a second attempt. DB service checks stage generations and duplicate outputs. Expected-artifact manifest is not deployed-model evidence.
-- Fourth migration applied and replayed locally. Never modify applied migrations; add a new version if needed. Tests dynamically count migrations. Service-only worker_runtimes table has RLS/no browser grants.
-- T07 STILL MISSING: routes/internal_jobs.py and routes/jobs.py; HTTP auth/input/source/capability renewal/checkpoint/publish/failure; job progress/cancel/resume; startup/activity reconcile wiring; executable native outbound worker; Gradio adapter/event recording; real HTTP process termination/restart recovery; actual HF checks. No executable worker startup command exists. Final official screening completion refuses success without an assessment row: T12 must validate and persist the final assessment atomically.
-- Next action: inspect Jobs service and new contracts, wire restricted worker/user job endpoints, then build the outbound worker and actual process-recovery checks. Do not call synthetic service probes model inference or T07 completion. After that follow the explicit deadline order through T27.
-- Last standalone new checks: 4 worker-service tests passed; ruff over app/tests passed; strict mypy passed 33 source files; fourth migration replay passed. Final full regression: 90 passed/no skips in 61.11 seconds; one existing AnyIO/Starlette deprecation. Last frontend types/lint/build passed T06; no T07 browser code change. Regenerate OpenAPI/types after adding actual worker/job routes.
-- T06: actual 55-file API/PG/explicit-disk roundtrip passed; byte-identical authorized downloads; 42 PDFs/109 pages/four 11-page scans/13 recordings; original archive hashes unchanged. Synthetic WebM/WAV/MP3 and input rejection/ownership/idempotency/transaction rollback/cancellation/cleanup passed. T06 baseline full suite 86 passed/no skips. Supabase object operations remain unverified. T05 crypto/access/browser fixtures passed; hosted Auth remains unverified.
-- Tests use tests/api/conftest.py to create a fresh ignored .local/pytest-runs/GUID temp directory. The local PostgreSQL fixture is shared there. Source test data is private; corpus tests emit metadata only. Existing AnyIO/Starlette test-client deprecation remains to triage in hardening.
-- Local resources last started: old API exec 64257 at 127.0.0.1:8000 (NO reload, stale imports); normal Vite exec 6702 at 127.0.0.1:5173; Docker infra-postgres-1 on loopback 55432, durable infra_udyam-test-pg volume. Check actual processes: sessions may not survive another account/client. Restart only owned processes. No temporary synthetic-auth preview remains.
-- Local database DSN/password: ignored .local/test-database-url and .local/postgres.env; never print values. Tests use an explicit local disk adapter; production forbids local storage. Root .env.local and apps/web/.env.local contain named blank placeholders; user will fill AFTER implementation. Preserve supplied values; do not ask again during build.
-- Model environment .venv-model and ignored .cache/huggingface/hub contain pinned GPU dependencies and Qwen weights. CUDA arithmetic passed. Qwen text first/warm ~8.6/7.4 seconds, ~4.29 GB peak VRAM; handwriting ~39.7 seconds, ~4.34 GB, hit 192-token cap and is not quality-validated. Raw output/image are private .local files; public metadata is evals/reports/feasibility/. Gated AI4Bharat downloads, MiniLM inference, full language evaluation and HF provisioning remain unverified.
-- API venv now has pypdf 6.21.1 / av 16.0.1 for upload validation; historical T01 inventory used pypdf 6.1.1. Model/inspection locks have distinct purposes; do not blindly install the Windows CUDA lock into API/Linux runtimes.
-- Pending approvals: external publication and informed public-Nominatim opt-in. No paid service or publication is authorized. Preserve licenses/provenance, original archives and all prior user changes.
+- Updated 17 October 2026, 18:17 Asia/Calcutta. Latest user request:
+  resume unfinished T07 from saved state, preserve credentials/work, commit
+  locally without co-authors, no publication. Full earlier authorization remains.
+- Current workspace is `C:\Users\Kushal\Documents\kushal soni\college folder\odyssey`;
+  old Kartik desktop paths/processes/cache references above are historical.
+  Origin remains `https://github.com/kushal-s0/odyssey.git`, branch `main`.
+- T07 local runtime is implemented and verified. Tracker state is `blocked`
+  solely for required live HF enqueue/auth/quota/sleep/runtime compatibility.
+  No task marked done without those gates. T02/T03 remain the two done tasks.
+  No T09 implementation began; next independent work is T09 under the explicit
+  owned-worker allowance, retaining outstanding HF/Supabase/model gates.
+- New worker/job routes, source hash checks, capability renewal, invocation
+  exclusion, shared capacity, cancel/resume, startup/activity reconciliation,
+  native sessions and Gradio adapter/CPU wrapper are documented in
+  `docs/WORKER_OPERATIONS.md`. Fifth migration applied/replayed; never edit it.
+- Executable exists: `.venv/Scripts/python.exe -B -m app.worker --help`.
+  `--probe` is synthetic only and cannot claim screening jobs. Real handlers
+  remain T09–T12. Final screening success still requires an assessment row;
+  T12 must implement validated atomic persistence. No model inference in T07.
+- Actual native PG/loopback HTTP/subprocess tests prove checkpoint recovery after
+  worker termination/API restart, fencing, duplicate/lost publication responses,
+  authorization/source integrity, timeout and capacity. Simulated Gradio HTTP
+  proves adapter behavior only, not live HF integration or quota.
+- Last full regression: 110 passed/no skips in 34.20 seconds. Focused worker
+  checks: 24 passed in 7.83 seconds. Ruff passed; strict mypy 40 files passed.
+  Schema/types regenerated after offline endpoint. Frontend types/lint/build
+  passed; final regeneration was checked again before commit. Existing AnyIO
+  deprecation and npm's one high advisory remain T21 triage items.
+- This machine initially lacked .venv, frontend dependencies, Docker, local PG,
+  .venv-model and the previous model cache. Recreated API/frontend dependencies
+  and private portable PostgreSQL 16.15 with local pgvector 0.8.1. See sources
+  record for licenses and MinGW compatibility shim/large-code-model adaptation.
+  First native build/load failures were repaired before migrations/tests.
+  This native test build is not a release/deployment artifact.
+- Local PostgreSQL remains running on `127.0.0.1:55432`. Native data is ignored
+  `.local/native-postgres-data`; credentials are `.local/test-database-url` and
+  `.local/postgres.env` (never print). No Docker container/volume exists here.
+  Start if stopped (root PowerShell, may need sandbox escalation):
+  `& '.local/native-postgres/pgsql/bin/pg_ctl.exe' -D '.local/native-postgres-data' -l '.local/native-postgres.log' -o '-h 127.0.0.1 -p 55432' start`
+  Stop only this owned server when desired:
+  `& '.local/native-postgres/pgsql/bin/pg_ctl.exe' -D '.local/native-postgres-data' -m fast stop`
+  Do not run Docker on the occupied port or delete data. Reuse the private DSN.
+- Temporary test API/worker processes are stopped; no preview/API daemon was
+  started. Earlier exec sessions in this file no longer identify live processes.
+- Existing `.env` and original archives were untouched. Missing ignored
+  `.env.local`, `apps/web/.env.local` and `.env.worker.local` were prepared from
+  templates only when absent. API reads `.env.local`; worker reads its dedicated
+  `.env.worker.local`. Preserve filled values; no credentials were printed.
+- Pre-existing tracked `.tools/t01` deletions/inaccessible paths belong to the starting worktree;
+  preserved and excluded from the T07 commit. Do not indiscriminately git add.
+- Repository config currently identifies Kushal; new commits must explicitly set
+  BOTH Kartik identities and verify them. No co-author/sign-off/AI trailers.
+  Inspect actual latest log for the commit; do not invent a self-referencing hash.
+- No push, PR, remote upload, deployment/publication or paid service occurred.
+  Pending external prerequisites remain private configuration, model access,
+  owned Space provisioning and publication approval; no repeated credential
+  requests. Public Nominatim remains disabled. Human review English/Hindi only.

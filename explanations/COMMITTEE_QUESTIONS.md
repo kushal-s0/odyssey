@@ -35,3 +35,21 @@ Only resources with suitable permissions should be incorporated. Model manifests
 ## Can an applicant make themselves an assessor?
 
 The API ignores user-editable role metadata. It verifies the signed session and reads roles/cohort assignments from trusted database tables. Local tests cover two applicants and two assigned assessors across separate cohorts, including forged metadata and denied cross-cohort access. Live Supabase account checks remain pending private configuration. See [authentication guide](05-authentication-and-access.md).
+
+## What if the laptop or a model runtime stops?
+
+Inputs, checkpoints and completed outputs live in PostgreSQL. Local checks kill
+an actual outbound worker, restart the API and recover its checkpoint with a
+higher lease generation; the stale worker cannot publish. Duplicate publication
+returns the existing result. Sessions/backoff are bounded and offline/quota
+states remain visible. These are orchestration checks with synthetic handlers,
+not completed model inference or live HF quota evidence. See [T07](../planning/task-reports/T07.md).
+
+## Does the model process hold the database password?
+
+No. The parent runner uses restricted HTTPS capabilities for one stage; its
+model child receives source data and metadata without database/service/signing
+keys, bootstrap credentials or API capabilities. Authorization and a durable
+execution guard precede model import. Local tests cover this separation and
+denied access before model startup. Hosted Space compatibility still needs a
+separate actual deployment check.

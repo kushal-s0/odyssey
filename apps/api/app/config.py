@@ -43,6 +43,23 @@ class Settings(BaseSettings):
     lease_seconds: int = Field(default=180, ge=30, le=900)
     stage_capability_signing_key: SecretStr | None = None
     worker_credential: SecretStr | None = None
+    text_document_space_url: str | None = None
+    speech_translation_space_url: str | None = None
+    hf_token: SecretStr | None = None
+
+    @field_validator('text_document_space_url', 'speech_translation_space_url', mode='before')
+    @classmethod
+    def owned_space_origin(cls, value: object) -> object:
+        if value is None or value == '':
+            return None
+        if not isinstance(value, str):
+            raise ValueError('Space URL must be an owned HTTPS hf.space origin')
+        parsed = urlsplit(value)
+        if (parsed.scheme != 'https' or not parsed.hostname or not parsed.hostname.endswith('.hf.space') or
+                parsed.username or parsed.password or parsed.port or parsed.path not in {'', '/'} or
+                parsed.query or parsed.fragment):
+            raise ValueError('Space URL must be an owned HTTPS hf.space origin')
+        return value.rstrip('/')
 
     @field_validator('allow_paid_services', mode='before')
     @classmethod

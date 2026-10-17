@@ -22,6 +22,10 @@ from .auth.jwt import TokenVerifier
 from .routes.auth import router as auth_router
 from .routes.uploads import router as uploads_router
 from .routes.submissions import router as submissions_router
+from .routes.jobs import router as jobs_router
+from .routes.internal_jobs import router as internal_jobs_router
+from .services.jobs import Jobs
+from .worker.gradio import activity
 from .services.storage import StorageUnavailable
 
 logger = logging.getLogger("udyam.api")
@@ -39,8 +43,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             try:
                 await run_in_threadpool(database.open)
                 instance.state.database = database
+                await run_in_threadpool(activity, Jobs(database, config))
             except Exception as error:
                 logger.error("database_startup_failed error_type=%s", type(error).__name__)
+                instance.state.database = None
                 database.close()
                 database = None
         try:
@@ -56,6 +62,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     application.include_router(auth_router)
     application.include_router(uploads_router)
     application.include_router(submissions_router)
+    application.include_router(jobs_router)
+    application.include_router(internal_jobs_router)
     application.add_middleware(CORSMiddleware, allow_origins=config.cors_origins,
                                allow_credentials=False, allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
                                allow_headers=["Authorization", "Content-Type", "Idempotency-Key", "X-Request-ID"])

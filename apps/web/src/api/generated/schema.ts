@@ -124,6 +124,244 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/jobs/{job_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Detail */
+        get: operations["detail_v1_jobs__job_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/jobs/{job_id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel */
+        post: operations["cancel_v1_jobs__job_id__cancel_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/jobs/{job_id}/resume": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Resume */
+        post: operations["resume_v1_jobs__job_id__resume_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/worker/claim": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Claim */
+        post: operations["claim_internal_worker_claim_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/worker/offline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Offline */
+        post: operations["offline_internal_worker_offline_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/worker/dispatch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Dispatch */
+        post: operations["dispatch_internal_worker_dispatch_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/worker/{stage_id}/begin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Begin */
+        post: operations["begin_internal_worker__stage_id__begin_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/worker/{stage_id}/input": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Stage Input */
+        get: operations["stage_input_internal_worker__stage_id__input_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/worker/{stage_id}/source": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Source Access */
+        post: operations["source_access_internal_worker__stage_id__source_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/worker/{stage_id}/source/content": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Source Content */
+        get: operations["source_content_internal_worker__stage_id__source_content_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/worker/{stage_id}/heartbeat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Heartbeat */
+        post: operations["heartbeat_internal_worker__stage_id__heartbeat_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/worker/{stage_id}/checkpoint": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Checkpoint */
+        post: operations["checkpoint_internal_worker__stage_id__checkpoint_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/worker/{stage_id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish */
+        post: operations["publish_internal_worker__stage_id__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/worker/{stage_id}/failure": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Failure */
+        post: operations["failure_internal_worker__stage_id__failure_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health/live": {
         parameters: {
             query?: never;
@@ -179,6 +417,15 @@ export interface components {
             /** Cohorts */
             cohorts: components["schemas"]["CohortAccess"][];
         };
+        /** ClaimResponse */
+        ClaimResponse: {
+            claim: components["schemas"]["StageWork"] | null;
+            /**
+             * Retry After Seconds
+             * @default 10
+             */
+            retry_after_seconds: number;
+        };
         /** CohortAccess */
         CohortAccess: {
             /**
@@ -194,10 +441,74 @@ export interface components {
              */
             role: "applicant" | "assessor";
         };
+        /** ErrorEnvelope */
+        ErrorEnvelope: {
+            /** Code */
+            code: string;
+            /** Message */
+            message: string;
+            /** Retryable */
+            retryable: boolean;
+            /**
+             * Request Id
+             * Format: uuid
+             */
+            request_id: string;
+        };
+        /** ExecutionAccepted */
+        ExecutionAccepted: {
+            /**
+             * Accepted
+             * @default true
+             * @constant
+             */
+            accepted: true;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** JobResume */
+        JobResume: {
+            /**
+             * Expected Revision Id
+             * Format: uuid
+             */
+            expected_revision_id: string;
+        };
+        /**
+         * JobStatus
+         * @enum {string}
+         */
+        JobStatus: "queued" | "extracting" | "translating" | "structuring" | "assessing" | "enriching" | "completed" | "partial" | "needs_review" | "waiting_for_worker" | "waiting_for_runtime" | "quota_exhausted" | "failed" | "cancelled";
+        /** JobView */
+        JobView: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Submission Id
+             * Format: uuid
+             */
+            submission_id: string;
+            status: components["schemas"]["JobStatus"];
+            /**
+             * Backend
+             * @enum {string}
+             */
+            backend: "owned_worker" | "hf_zerogpu";
+            /** Completed Stages */
+            completed_stages: number;
+            /** Total Stages */
+            total_stages: number;
+            /** Attempt */
+            attempt: number;
+            error?: components["schemas"]["ErrorEnvelope"] | null;
+            /** Retry After Seconds */
+            retry_after_seconds?: number | null;
         };
         /** Location */
         Location: {
@@ -226,6 +537,157 @@ export interface components {
              * @default false
              */
             applicant_confirmed: boolean;
+        };
+        /** SourceAccess */
+        SourceAccess: {
+            /** Path */
+            path: string;
+            /** Sha256 */
+            sha256: string;
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+        };
+        /** StageBegin */
+        StageBegin: {
+            /**
+             * Execution Id
+             * Format: uuid
+             */
+            execution_id: string;
+        };
+        /** StageCheckpoint */
+        StageCheckpoint: {
+            /** Payload */
+            payload: {
+                [key: string]: unknown;
+            };
+        };
+        /** StageFailure */
+        StageFailure: {
+            /**
+             * Code
+             * @enum {string}
+             */
+            code: "runtime_unavailable" | "quota_exhausted" | "invalid_output" | "model_access_denied" | "stage_timeout" | "needs_review" | "model_unhealthy";
+            /**
+             * Retry After Seconds
+             * @default 30
+             */
+            retry_after_seconds: number;
+        };
+        /** StageInput */
+        StageInput: {
+            /**
+             * Submission Id
+             * Format: uuid
+             */
+            submission_id: string;
+            /**
+             * Input Revision Id
+             * Format: uuid
+             */
+            input_revision_id: string;
+            /**
+             * Input Kind
+             * @enum {string}
+             */
+            input_kind: "text" | "pdf" | "audio";
+            /** Source Hash */
+            source_hash: string;
+            /** Source Text */
+            source_text: string | null;
+            /**
+             * Preferred Language
+             * @enum {string}
+             */
+            preferred_language: "en" | "hi" | "mr" | "te" | "bn" | "or" | "und";
+            /** Attachment Id */
+            attachment_id: string | null;
+            /** Media Type */
+            media_type: string | null;
+            /** Bytes */
+            bytes: number | null;
+            /** Pages */
+            pages: number | null;
+            /** Duration Seconds */
+            duration_seconds: number | null;
+            /** Previous Outputs */
+            previous_outputs: {
+                [key: string]: {
+                    [key: string]: unknown;
+                };
+            };
+            /** Checkpoint */
+            checkpoint?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /** StagePublish */
+        StagePublish: {
+            /** Model Manifest Hash */
+            model_manifest_hash: string;
+            /**
+             * Schema Version
+             * @default 1
+             * @constant
+             */
+            schema_version: "1";
+            /** Payload */
+            payload: {
+                [key: string]: unknown;
+            };
+        };
+        /** StageReceipt */
+        StageReceipt: {
+            /** Published */
+            published: boolean;
+            /** Status */
+            status: string;
+        };
+        /** StageWork */
+        StageWork: {
+            /**
+             * Job Id
+             * Format: uuid
+             */
+            job_id: string;
+            /**
+             * Stage Id
+             * Format: uuid
+             */
+            stage_id: string;
+            /** Lease Generation */
+            lease_generation: number;
+            /**
+             * Lease Expires At
+             * Format: date-time
+             */
+            lease_expires_at: string;
+            /** Capability */
+            capability: string;
+            /**
+             * Input Revision Id
+             * Format: uuid
+             */
+            input_revision_id: string;
+            /** Pipeline Version */
+            pipeline_version: string;
+            /** Input Hash */
+            input_hash: string;
+            /** Stage Key */
+            stage_key: string;
+            /** Model Manifest Hash */
+            model_manifest_hash: string;
+            /** Worker Id */
+            worker_id: string;
+            /**
+             * Backend
+             * @enum {string}
+             */
+            backend: "owned_worker" | "hf_zerogpu";
         };
         /** SubmissionAccepted */
         SubmissionAccepted: {
@@ -371,6 +833,15 @@ export interface components {
             msg: string;
             /** Error Type */
             type: string;
+        };
+        /** WorkerRequest */
+        WorkerRequest: {
+            /** Worker Id */
+            worker_id: string;
+            /** Supported Stages */
+            supported_stages: string[];
+            /** Manifest Hash */
+            manifest_hash: string;
         };
         /** AdditionalFact */
         AdditionalFact: {
@@ -589,20 +1060,6 @@ export interface components {
              */
             basis: "self_reported" | "reviewer_verified" | "mixed" | "insufficient";
         };
-        /** ErrorEnvelope */
-        ErrorEnvelope: {
-            /** Code */
-            code: string;
-            /** Message */
-            message: string;
-            /** Retryable */
-            retryable: boolean;
-            /**
-             * Request Id
-             * Format: uuid
-             */
-            request_id: string;
-        };
         /** EvidenceField[Location] */
         EvidenceField_Location_: {
             /** @default null */
@@ -697,43 +1154,6 @@ export interface components {
          * @enum {string}
          */
         FieldStatus: "present" | "missing" | "irrelevant" | "ambiguous" | "unreadable";
-        /**
-         * JobStatus
-         * @enum {string}
-         */
-        JobStatus: "queued" | "extracting" | "translating" | "structuring" | "assessing" | "enriching" | "completed" | "partial" | "needs_review" | "waiting_for_worker" | "waiting_for_runtime" | "quota_exhausted" | "failed" | "cancelled";
-        /** JobView */
-        JobView: {
-            /**
-             * Id
-             * Format: uuid
-             */
-            id: string;
-            /**
-             * Submission Id
-             * Format: uuid
-             */
-            submission_id: string;
-            status: components["schemas"]["JobStatus"];
-            /**
-             * Backend
-             * @enum {string}
-             */
-            backend: "owned_worker" | "hf_zerogpu";
-            /** Completed Stages */
-            completed_stages: number;
-            /** Total Stages */
-            total_stages: number;
-            /** Attempt */
-            attempt: number;
-            /** @default null */
-            error: components["schemas"]["ErrorEnvelope"] | null;
-            /**
-             * Retry After Seconds
-             * @default null
-             */
-            retry_after_seconds: number | null;
-        };
         /** LanguageResult */
         LanguageResult: {
             /**
@@ -1206,6 +1626,449 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["SubmissionView"];
                 };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    detail_v1_jobs__job_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                job_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cancel_v1_jobs__job_id__cancel_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                job_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    resume_v1_jobs__job_id__resume_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                job_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["JobResume"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    claim_internal_worker_claim_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkerRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClaimResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    offline_internal_worker_offline_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkerRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dispatch_internal_worker_dispatch_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    begin_internal_worker__stage_id__begin_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                stage_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StageBegin"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExecutionAccepted"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    stage_input_internal_worker__stage_id__input_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                stage_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StageInput"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    source_access_internal_worker__stage_id__source_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                stage_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SourceAccess"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    source_content_internal_worker__stage_id__source_content_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                stage_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    heartbeat_internal_worker__stage_id__heartbeat_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                stage_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StageWork"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    checkpoint_internal_worker__stage_id__checkpoint_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                stage_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StageCheckpoint"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_internal_worker__stage_id__publish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                stage_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StagePublish"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StageReceipt"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    failure_internal_worker__stage_id__failure_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                stage_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StageFailure"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Validation Error */
             422: {

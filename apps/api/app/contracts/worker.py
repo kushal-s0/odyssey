@@ -38,6 +38,26 @@ class StageInput(Contract):
     pages: int | None
     duration_seconds: float | None
     previous_outputs: dict[str, dict[str, Any]]
+    checkpoint: dict[str, Any] | None = None
+
+
+class StageBegin(Contract):
+    execution_id: UUID
+
+
+class ExecutionAccepted(Contract):
+    accepted: Literal[True] = True
+
+
+class SourceAccess(Contract):
+    # Relative API path; requires the current capability, never a public object URL.
+    path: str
+    sha256: str
+    expires_at: datetime
+
+
+class JobResume(Contract):
+    expected_revision_id: UUID
 
 
 class StagePublish(Contract):

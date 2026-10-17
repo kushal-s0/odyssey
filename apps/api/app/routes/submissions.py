@@ -12,6 +12,8 @@ from ..contracts.models import SubmissionAccepted, SubmissionCreate
 from ..contracts.uploads import SubmissionView
 from ..repositories.idempotency import begin_idempotent, finish_idempotent
 from ..worker.manifest import initial_stages
+from ..services.jobs import Jobs
+from ..worker.gradio import activity
 
 router = APIRouter(prefix='/v1/submissions', tags=['submissions'])
 PIPELINE_VERSION = 'screening-v1'
@@ -28,6 +30,7 @@ def create(payload: SubmissionCreate, request: Request, actor: ActorDep, databas
     if actor.role not in {'applicant', 'admin'}:
         raise HTTPException(403, 'An applicant account is required to submit an idea')
     settings = request.app.state.settings
+    Jobs(database, settings).reconcile()
     with database.transaction() as connection:
         key, request_hash, existing = begin_idempotent(connection, actor.id, 'submission', idempotency_key,
                                                       payload.model_dump(mode='json'))
@@ -76,7 +79,8 @@ def create(payload: SubmissionCreate, request: Request, actor: ActorDep, databas
                 VALUES(%s,%s,%s,%s)''', (job, stage_key, order, digest))
         result = SubmissionAccepted(submission_id=submission, revision_id=revision, job_id=job)
         finish_idempotent(connection, actor.id, 'submission', key, request_hash, result.model_dump(mode='json'))
-        return result
+    activity(Jobs(database, settings))
+    return result
 
 
 @router.get('', response_model=list[SubmissionView])

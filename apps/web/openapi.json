@@ -392,6 +392,681 @@
         }
       }
     },
+    "/v1/jobs/{job_id}": {
+      "get": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "Detail",
+        "operationId": "detail_v1_jobs__job_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/jobs/{job_id}/cancel": {
+      "post": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "Cancel",
+        "operationId": "cancel_v1_jobs__job_id__cancel_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/jobs/{job_id}/resume": {
+      "post": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "Resume",
+        "operationId": "resume_v1_jobs__job_id__resume_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobResume"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/worker/claim": {
+      "post": {
+        "tags": [
+          "restricted worker"
+        ],
+        "summary": "Claim",
+        "operationId": "claim_internal_worker_claim_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkerRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/internal/worker/offline": {
+      "post": {
+        "tags": [
+          "restricted worker"
+        ],
+        "summary": "Offline",
+        "operationId": "offline_internal_worker_offline_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkerRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/internal/worker/dispatch": {
+      "post": {
+        "tags": [
+          "restricted worker"
+        ],
+        "summary": "Dispatch",
+        "operationId": "dispatch_internal_worker_dispatch_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Dispatch Internal Worker Dispatch Post"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/internal/worker/{stage_id}/begin": {
+      "post": {
+        "tags": [
+          "restricted worker"
+        ],
+        "summary": "Begin",
+        "operationId": "begin_internal_worker__stage_id__begin_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "stage_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Stage Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StageBegin"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecutionAccepted"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/worker/{stage_id}/input": {
+      "get": {
+        "tags": [
+          "restricted worker"
+        ],
+        "summary": "Stage Input",
+        "operationId": "stage_input_internal_worker__stage_id__input_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "stage_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Stage Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StageInput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/worker/{stage_id}/source": {
+      "post": {
+        "tags": [
+          "restricted worker"
+        ],
+        "summary": "Source Access",
+        "operationId": "source_access_internal_worker__stage_id__source_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "stage_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Stage Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SourceAccess"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/worker/{stage_id}/source/content": {
+      "get": {
+        "tags": [
+          "restricted worker"
+        ],
+        "summary": "Source Content",
+        "operationId": "source_content_internal_worker__stage_id__source_content_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "stage_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Stage Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/worker/{stage_id}/heartbeat": {
+      "post": {
+        "tags": [
+          "restricted worker"
+        ],
+        "summary": "Heartbeat",
+        "operationId": "heartbeat_internal_worker__stage_id__heartbeat_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "stage_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Stage Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StageWork"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/worker/{stage_id}/checkpoint": {
+      "post": {
+        "tags": [
+          "restricted worker"
+        ],
+        "summary": "Checkpoint",
+        "operationId": "checkpoint_internal_worker__stage_id__checkpoint_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "stage_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Stage Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StageCheckpoint"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/worker/{stage_id}/publish": {
+      "post": {
+        "tags": [
+          "restricted worker"
+        ],
+        "summary": "Publish",
+        "operationId": "publish_internal_worker__stage_id__publish_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "stage_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Stage Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StagePublish"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StageReceipt"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/worker/{stage_id}/failure": {
+      "post": {
+        "tags": [
+          "restricted worker"
+        ],
+        "summary": "Failure",
+        "operationId": "failure_internal_worker__stage_id__failure_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "stage_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Stage Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StageFailure"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health/live": {
       "get": {
         "tags": [
@@ -483,6 +1158,31 @@
         ],
         "title": "ActorView"
       },
+      "ClaimResponse": {
+        "properties": {
+          "claim": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/StageWork"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "retry_after_seconds": {
+            "type": "integer",
+            "title": "Retry After Seconds",
+            "default": 10
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "claim"
+        ],
+        "title": "ClaimResponse"
+      },
       "CohortAccess": {
         "properties": {
           "id": {
@@ -512,6 +1212,49 @@
         ],
         "title": "CohortAccess"
       },
+      "ErrorEnvelope": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "retryable": {
+            "type": "boolean",
+            "title": "Retryable"
+          },
+          "request_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Request Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "retryable",
+          "request_id"
+        ],
+        "title": "ErrorEnvelope"
+      },
+      "ExecutionAccepted": {
+        "properties": {
+          "accepted": {
+            "type": "boolean",
+            "const": true,
+            "title": "Accepted",
+            "default": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "ExecutionAccepted"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -524,6 +1267,115 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "JobResume": {
+        "properties": {
+          "expected_revision_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Expected Revision Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expected_revision_id"
+        ],
+        "title": "JobResume"
+      },
+      "JobStatus": {
+        "type": "string",
+        "enum": [
+          "queued",
+          "extracting",
+          "translating",
+          "structuring",
+          "assessing",
+          "enriching",
+          "completed",
+          "partial",
+          "needs_review",
+          "waiting_for_worker",
+          "waiting_for_runtime",
+          "quota_exhausted",
+          "failed",
+          "cancelled"
+        ],
+        "title": "JobStatus"
+      },
+      "JobView": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "submission_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Submission Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobStatus"
+          },
+          "backend": {
+            "type": "string",
+            "enum": [
+              "owned_worker",
+              "hf_zerogpu"
+            ],
+            "title": "Backend"
+          },
+          "completed_stages": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Completed Stages"
+          },
+          "total_stages": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Total Stages"
+          },
+          "attempt": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Attempt"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ErrorEnvelope"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "retry_after_seconds": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retry After Seconds"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "submission_id",
+          "status",
+          "backend",
+          "completed_stages",
+          "total_stages",
+          "attempt"
+        ],
+        "title": "JobView"
       },
       "Location": {
         "properties": {
@@ -634,6 +1486,361 @@
         "additionalProperties": false,
         "type": "object",
         "title": "Location"
+      },
+      "SourceAccess": {
+        "properties": {
+          "path": {
+            "type": "string",
+            "title": "Path"
+          },
+          "sha256": {
+            "type": "string",
+            "title": "Sha256"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "path",
+          "sha256",
+          "expires_at"
+        ],
+        "title": "SourceAccess"
+      },
+      "StageBegin": {
+        "properties": {
+          "execution_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Execution Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "execution_id"
+        ],
+        "title": "StageBegin"
+      },
+      "StageCheckpoint": {
+        "properties": {
+          "payload": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Payload"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "payload"
+        ],
+        "title": "StageCheckpoint"
+      },
+      "StageFailure": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "runtime_unavailable",
+              "quota_exhausted",
+              "invalid_output",
+              "model_access_denied",
+              "stage_timeout",
+              "needs_review",
+              "model_unhealthy"
+            ],
+            "title": "Code"
+          },
+          "retry_after_seconds": {
+            "type": "integer",
+            "maximum": 86400.0,
+            "minimum": 5.0,
+            "title": "Retry After Seconds",
+            "default": 30
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "title": "StageFailure"
+      },
+      "StageInput": {
+        "properties": {
+          "submission_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Submission Id"
+          },
+          "input_revision_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Input Revision Id"
+          },
+          "input_kind": {
+            "type": "string",
+            "enum": [
+              "text",
+              "pdf",
+              "audio"
+            ],
+            "title": "Input Kind"
+          },
+          "source_hash": {
+            "type": "string",
+            "title": "Source Hash"
+          },
+          "source_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Text"
+          },
+          "preferred_language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "hi",
+              "mr",
+              "te",
+              "bn",
+              "or",
+              "und"
+            ],
+            "title": "Preferred Language"
+          },
+          "attachment_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attachment Id"
+          },
+          "media_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Media Type"
+          },
+          "bytes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bytes"
+          },
+          "pages": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pages"
+          },
+          "duration_seconds": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Seconds"
+          },
+          "previous_outputs": {
+            "additionalProperties": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "object",
+            "title": "Previous Outputs"
+          },
+          "checkpoint": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Checkpoint"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "submission_id",
+          "input_revision_id",
+          "input_kind",
+          "source_hash",
+          "source_text",
+          "preferred_language",
+          "attachment_id",
+          "media_type",
+          "bytes",
+          "pages",
+          "duration_seconds",
+          "previous_outputs"
+        ],
+        "title": "StageInput"
+      },
+      "StagePublish": {
+        "properties": {
+          "model_manifest_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Model Manifest Hash"
+          },
+          "schema_version": {
+            "type": "string",
+            "const": "1",
+            "title": "Schema Version",
+            "default": "1"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Payload"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "model_manifest_hash",
+          "payload"
+        ],
+        "title": "StagePublish"
+      },
+      "StageReceipt": {
+        "properties": {
+          "published": {
+            "type": "boolean",
+            "title": "Published"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "published",
+          "status"
+        ],
+        "title": "StageReceipt"
+      },
+      "StageWork": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Job Id"
+          },
+          "stage_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Stage Id"
+          },
+          "lease_generation": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Lease Generation"
+          },
+          "lease_expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Lease Expires At"
+          },
+          "capability": {
+            "type": "string",
+            "minLength": 16,
+            "title": "Capability"
+          },
+          "input_revision_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Input Revision Id"
+          },
+          "pipeline_version": {
+            "type": "string",
+            "title": "Pipeline Version"
+          },
+          "input_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Input Hash"
+          },
+          "stage_key": {
+            "type": "string",
+            "title": "Stage Key"
+          },
+          "model_manifest_hash": {
+            "type": "string",
+            "title": "Model Manifest Hash"
+          },
+          "worker_id": {
+            "type": "string",
+            "title": "Worker Id"
+          },
+          "backend": {
+            "type": "string",
+            "enum": [
+              "owned_worker",
+              "hf_zerogpu"
+            ],
+            "title": "Backend"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "job_id",
+          "stage_id",
+          "lease_generation",
+          "lease_expires_at",
+          "capability",
+          "input_revision_id",
+          "pipeline_version",
+          "input_hash",
+          "stage_key",
+          "model_manifest_hash",
+          "worker_id",
+          "backend"
+        ],
+        "title": "StageWork"
       },
       "SubmissionAccepted": {
         "properties": {
@@ -1003,6 +2210,39 @@
           "type"
         ],
         "title": "ValidationError"
+      },
+      "WorkerRequest": {
+        "properties": {
+          "worker_id": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 3,
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "title": "Worker Id"
+          },
+          "supported_stages": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 64,
+            "minItems": 1,
+            "title": "Supported Stages"
+          },
+          "manifest_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Manifest Hash"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "worker_id",
+          "supported_stages",
+          "manifest_hash"
+        ],
+        "title": "WorkerRequest"
       },
       "AdditionalFact": {
         "additionalProperties": false,
@@ -1594,36 +2834,6 @@
         "title": "DomainRating",
         "type": "object"
       },
-      "ErrorEnvelope": {
-        "additionalProperties": false,
-        "properties": {
-          "code": {
-            "title": "Code",
-            "type": "string"
-          },
-          "message": {
-            "title": "Message",
-            "type": "string"
-          },
-          "retryable": {
-            "title": "Retryable",
-            "type": "boolean"
-          },
-          "request_id": {
-            "format": "uuid",
-            "title": "Request Id",
-            "type": "string"
-          }
-        },
-        "required": [
-          "code",
-          "message",
-          "retryable",
-          "request_id"
-        ],
-        "title": "ErrorEnvelope",
-        "type": "object"
-      },
       "EvidenceField_Location_": {
         "additionalProperties": false,
         "properties": {
@@ -1900,102 +3110,6 @@
         ],
         "title": "FieldStatus",
         "type": "string"
-      },
-      "JobStatus": {
-        "enum": [
-          "queued",
-          "extracting",
-          "translating",
-          "structuring",
-          "assessing",
-          "enriching",
-          "completed",
-          "partial",
-          "needs_review",
-          "waiting_for_worker",
-          "waiting_for_runtime",
-          "quota_exhausted",
-          "failed",
-          "cancelled"
-        ],
-        "title": "JobStatus",
-        "type": "string"
-      },
-      "JobView": {
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "format": "uuid",
-            "title": "Id",
-            "type": "string"
-          },
-          "submission_id": {
-            "format": "uuid",
-            "title": "Submission Id",
-            "type": "string"
-          },
-          "status": {
-            "$ref": "#/components/schemas/JobStatus"
-          },
-          "backend": {
-            "enum": [
-              "owned_worker",
-              "hf_zerogpu"
-            ],
-            "title": "Backend",
-            "type": "string"
-          },
-          "completed_stages": {
-            "minimum": 0,
-            "title": "Completed Stages",
-            "type": "integer"
-          },
-          "total_stages": {
-            "exclusiveMinimum": 0,
-            "title": "Total Stages",
-            "type": "integer"
-          },
-          "attempt": {
-            "minimum": 0,
-            "title": "Attempt",
-            "type": "integer"
-          },
-          "error": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/ErrorEnvelope"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null
-          },
-          "retry_after_seconds": {
-            "anyOf": [
-              {
-                "minimum": 0,
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Retry After Seconds"
-          }
-        },
-        "required": [
-          "id",
-          "submission_id",
-          "status",
-          "backend",
-          "completed_stages",
-          "total_stages",
-          "attempt"
-        ],
-        "title": "JobView",
-        "type": "object"
       },
       "LanguageResult": {
         "additionalProperties": false,

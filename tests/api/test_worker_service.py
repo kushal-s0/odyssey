@@ -100,3 +100,12 @@ def test_wrong_manifest_is_rejected_before_claim(database):
         with pytest.raises(HTTPException) as denied:
             instance.claim(request)
         assert denied.value.status_code == 409
+
+
+def test_shared_capacity_limits_new_claims_but_allows_lost_response_replay(database):
+    with seeded(database), seeded(database), service(database) as (instance,worker):
+        owner=worker()
+        first=instance.claim(owner)
+        assert first
+        assert instance.claim(worker()) is None
+        assert instance.claim(owner).stage_id==first.stage_id

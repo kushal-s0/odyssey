@@ -2,7 +2,7 @@
 
 Evidence-linked first-level screening of business ideas submitted as text, documents or recordings. The intended workflow preserves original evidence, structures business facts, explains ratings and supports assessor review.
 
-**Implementation is in progress. There is no deployed application or complete submission-to-assessment flow yet.** The frontend preview, authenticated API foundation, private uploads and local database checks work. Worker execution and model integration are the next development steps.
+**Implementation is in progress. There is no deployed application or complete submission-to-assessment flow yet.** The frontend preview, authenticated API foundation, private uploads and outbound worker orchestration work locally. Model handlers and live hosted checks remain unfinished.
 
 ## See progress and continue development
 
@@ -16,7 +16,7 @@ Evidence-linked first-level screening of business ideas submitted as text, docum
 | [Committee questions](explanations/COMMITTEE_QUESTIONS.md) | Evidence-backed answers for judging |
 | [Implementation tasks](planning/IMPLEMENTATION_TASKS.md) | Full backlog and acceptance criteria |
 
-Current checkpoint: T02/T03 done; T01/T04/T05/T06 have verified local capabilities but external checks remain blocked. **T07 is partially implemented**: durable stage service/capability primitives exist; worker HTTP routes, the executable worker and real process-recovery checks still need implementation. The current browser is a workspace preview with account controls, not a finished applicant/assessor application. Subsequent tasks remain in the tracker.
+Current checkpoint: T02/T03 done; T01/T04/T05/T06 have verified local capabilities but external checks remain blocked. **T07's local runtime is verified**: restricted worker HTTP, native sessions, durable checkpoint recovery after process termination/API restart, scoped job controls and a bounded Gradio adapter are implemented. Live HF enqueue/auth/quota remain blocked; simulated Gradio responses are not live integration. The browser is still a workspace preview. See [worker operations](docs/WORKER_OPERATIONS.md) and the tracker for remaining tasks.
 
 ## Requirements
 
@@ -59,7 +59,7 @@ Do not disable certificate verification to resolve a network/certificate issue.
 
 ## 2. Prepare configuration without overwriting values
 
-Ignored placeholder files already exist in the current workspace. On a fresh private checkout, copy the templates only when the destination is absent:
+Ignored placeholder files are prepared in this workspace. On a fresh private checkout, copy templates only when the destination is absent:
 
 ```powershell
 if (!(Test-Path .env.local)) { Copy-Item .env.example .env.local }
@@ -85,9 +85,10 @@ Fill values privately when ready. Never send secrets in chat, commit them, paste
 | `PRIVATE_UPLOAD_BUCKET` | `originals`; migrations create/configure it as private |
 | `STORAGE_BACKEND` | `supabase` normally. Explicit `local` is development/test only; production rejects it |
 | `MODEL_RUNTIME` | `owned_worker` preferred; `hf_zerogpu` is a separate quota-limited deployment target still to verify |
-| `WORKER_CREDENTIAL` | Generate a long random private service credential for future restricted claim operations; worker HTTP integration is unfinished |
+| `WORKER_CREDENTIAL` | Random private credential of at least 32 characters for restricted worker claims; same value in worker-only configuration |
 | `STAGE_CAPABILITY_SIGNING_KEY` | Separate random secret, at least 32 characters, for short-lived stage capabilities; do not reuse the worker credential |
 | `HF_TOKEN` | Hugging Face read token; accept IndicConformer/IndicTrans2 access conditions using the same account |
+| `TEXT_DOCUMENT_SPACE_URL`, `SPEECH_TRANSLATION_SPACE_URL` | Optional owned HTTPS `*.hf.space` origins, used only when explicitly selecting `hf_zerogpu`; live checks pending |
 | `ALLOW_PAID_SERVICES` | Keep `false`; paid fallback is forbidden |
 | `ENABLE_PUBLIC_NOMINATIM` | Keep `false`; public geocoding needs explicit policy-informed opt-in |
 
@@ -97,7 +98,7 @@ For each worker secret, run the following locally and copy the result privately 
 .venv/Scripts/python.exe -c "import secrets; print(secrets.token_urlsafe(48))"
 ```
 
-These random local secrets are not purchased API keys. The eventual model worker must receive only its restricted configuration, not the database URL or Supabase service key. A separate worker startup/configuration guide is still pending T07/T23A.
+These random local secrets are not purchased API keys. The worker receives only restricted configuration, never database/service/signing keys. See [worker startup, stop and recovery](docs/WORKER_OPERATIONS.md). The synthetic probe proves orchestration; actual model-handler startup remains T09–T12/T23A. Existing `.env` is preserved; the API reads `.env.local` and the runner reads `.env.worker.local`.
 
 ### `apps/web/.env.local`: browser-public settings only
 
@@ -145,6 +146,13 @@ docker compose --env-file .local/postgres.env -f infra/compose.test.yaml up -d -
 
 The database uses port **55432**, container `infra-postgres-1` and durable named volume `infra_udyam-test-pg`. The password is in ignored `.local/postgres.env`; the test URL is in ignored `.local/test-database-url`. Do not share either file. Keep the volume to preserve local database state.
 
+This migrated workspace currently uses portable PostgreSQL **16.15** with locally
+built pgvector **0.8.1**, bound to `127.0.0.1:55432`, because Docker is absent.
+Its private data/binaries are under ignored `.local/native-postgres*`. This is
+local test infrastructure, not a Supabase deployment or a portable release
+artifact. Do not start Docker on the same port while it runs. The handoff records
+the current native start/stop commands and build caveats.
+
 To run the API against that database with explicit local private disk storage, set these only in its PowerShell terminal before the startup command:
 
 ```powershell
@@ -190,6 +198,12 @@ npm run test:smoke
 The browser smoke check needs the preview running on port 5173 and an installed Microsoft Edge browser. `npm run test:auth` is a separate **synthetic HTTP-fixture** check requiring the setup documented in T05's report; it is not a real Supabase login test. API schema updates use root `scripts/export_openapi.py`, then frontend `npm run generate:types`.
 
 Actual local results and limitations live in the [task reports](planning/task-reports/), including private-data handling and existing dependency warnings. CUDA/model probes use the separate `.venv-model`; do not install its Windows/CUDA lock into the API environment. See T01's report and the feasibility guide before rerunning a model download/inference.
+
+Latest API regression: **110 passed, no skips** against the portable local
+PostgreSQL database. The 24 focused worker checks include actual subprocess/HTTP
+recovery and simulated Gradio transport. This does not establish model quality
+or hosted service access. Historical model caches/`.venv-model` from the earlier
+machine are absent here and must be verified/reprovisioned before model work.
 
 ## Deployment and operations still to finish
 
