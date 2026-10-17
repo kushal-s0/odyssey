@@ -1,0 +1,350 @@
+{
+  "environment": "local_postgres_explicit_private_disk_adapter",
+  "hosted_storage_verified": false,
+  "files": 55,
+  "formats": {
+    "mp4": 11,
+    "ogg": 2,
+    "pdf": 42
+  },
+  "pdf_pages": 109,
+  "eleven_page_scans": 4,
+  "archive_hashes_unchanged": true,
+  "all_authorized_downloads_byte_identical": true,
+  "parser_versions": {
+    "pypdf": "6.21.1",
+    "av": "16.0.1"
+  },
+  "records": [
+    {
+      "sha256": "0793a0df377ed4e7124e102e16eebeefa89ea6cea6fe906cd5adcae0f97ff424",
+      "format": "mp4",
+      "pages": null,
+      "intact": true
+    },
+    {
+      "sha256": "08a0c12665f8487c48453c69991198ebdae1f2879dcee34e624a1e7667844b93",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "0e1e7bd2acca19f08a88c977dae5188afa045abe2e8117aadbd04e43cf86dcab",
+      "format": "mp4",
+      "pages": null,
+      "intact": true
+    },
+    {
+      "sha256": "0fbc4ab3c0c94b07463095dd2a4ff5d138c0959664170fab04870d258b5a8555",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "129e1559c941548dce0c65b4badfa55ef45ec59439ecd501c0ecd1a0cc99a601",
+      "format": "pdf",
+      "pages": 1,
+      "intact": true
+    },
+    {
+      "sha256": "14234869061d1192e7e73f7f43b55ba4fc3acb0eda17df3cb03835904b49879d",
+      "format": "pdf",
+      "pages": 1,
+      "intact": true
+    },
+    {
+      "sha256": "143f6cca71fdac18e3c9d8183a3277f3a54d52ca6f113b3df14df5d75c36423a",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "1591d633bbdcedecae0849ccaeaf5a89ef2984035cae2937d6d0b0fd75d8ed01",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "1883d65a6e9d1ee5b7322110f0f6a9fb25cfbd63b134fc694599df3799afaf17",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "1f2abd4ee9040655bbd956ddf7c9f0d7a1fdcb6424652a94177d9c21d9027575",
+      "format": "pdf",
+      "pages": 1,
+      "intact": true
+    },
+    {
+      "sha256": "2423933de6ded408d77dbb433653d745d0c57aacfba6001a9e4313af65bbf0ba",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "2838eeb79258714cdb1a8bf4ac05aa03e0ae170e30e2095148daaa94fb83144b",
+      "format": "pdf",
+      "pages": 1,
+      "intact": true
+    },
+    {
+      "sha256": "2917e9ff6fa3072df7bdd171d094e99704782b629045b88fa9d08e2c894cff12",
+      "format": "mp4",
+      "pages": null,
+      "intact": true
+    },
+    {
+      "sha256": "292e2bf95ee846358922e085aada493dcfbd7af89783fd47d4b04408daf89ad1",
+      "format": "pdf",
+      "pages": 1,
+      "intact": true
+    },
+    {
+      "sha256": "29c6180d5591265847525d6c2dc71d3b3c8b67ee6e8c8498d66255ec666c2448",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "32bc10ecbcf0624af82c66a050ea31719197aec8666a31cf9ea420351db97a17",
+      "format": "pdf",
+      "pages": 1,
+      "intact": true
+    },
+    {
+      "sha256": "4532a8c9aa4b178b1ba2a2f489f9849c2133b7526b7e6c66837cb7eeae01b2ec",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "4c44b6cc0d75b3d5c044c1a1f23032347a85c368e8b5e433b8fb5433d8bbcad2",
+      "format": "pdf",
+      "pages": 11,
+      "intact": true
+    },
+    {
+      "sha256": "4c8119e3bc014c25cd605c4549bc40b71b56b99615ca9cdcf7ef6da158d7398e",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "5231d1feafeab9eeb69c7c6208924b40082af337d13041f2725d717f45ade6fd",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "58a278e62f1e890a3ec0631daeec3c23aed6939e54b6721fa667d94b3ad8a1e1",
+      "format": "pdf",
+      "pages": 11,
+      "intact": true
+    },
+    {
+      "sha256": "677447bab69394bc93a051516d73f82964c964c53bcd9d55489668392f1b09de",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "6ce3462a6ca5e4c3ac32826015d9f1a50e061a70fbd24504d9cdd34976c7979e",
+      "format": "pdf",
+      "pages": 1,
+      "intact": true
+    },
+    {
+      "sha256": "6d65f8a377c6974970db42d2be059a4cc4db7727efbf223c6c66762dc1ebba15",
+      "format": "pdf",
+      "pages": 1,
+      "intact": true
+    },
+    {
+      "sha256": "6da8e248ec2375a6c493b922bff62d6922dba1465454eff9ae27e3c659077b6c",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "6e7b0a6faa3a575c84aa3609557ee77da32afab0f1309e76270c11fbcb55ce08",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "700f69efb2997a9bd3757a4c725e653b99f529d4fba1d68c85aced8871ecef79",
+      "format": "pdf",
+      "pages": 1,
+      "intact": true
+    },
+    {
+      "sha256": "71305e381d61c40bd4a86a4c3e5f7b8d9504f81bf9586975f50438145378e09b",
+      "format": "mp4",
+      "pages": null,
+      "intact": true
+    },
+    {
+      "sha256": "7418927bbc0c20e800f5861bf55996c5863a5677c16bc916b859680b45eb50b5",
+      "format": "mp4",
+      "pages": null,
+      "intact": true
+    },
+    {
+      "sha256": "7b57f798b3dede1f0820f9cc2714f11c1771cad373e88e2e41b48afa0ac449cc",
+      "format": "pdf",
+      "pages": 1,
+      "intact": true
+    },
+    {
+      "sha256": "7ce548f6bd308bdc325225368d8f0d10f36090e0623e559b32237b33e9c44f37",
+      "format": "pdf",
+      "pages": 1,
+      "intact": true
+    },
+    {
+      "sha256": "7f5965219c49288d4b00467937bf249f6934c4b5543180adbbe3d75b7a38e94e",
+      "format": "pdf",
+      "pages": 3,
+      "intact": true
+    },
+    {
+      "sha256": "805be25e41481eaf92a2b0e9af5fbfed6cb9fd85036bda8c7ae8d3a7e53ddbb5",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "81c1f7077df0db21c0a768f272647069c6e43fb2206bb935c63c825da43939e7",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "891116f2ff2ed91122623e94f569075530d77fda7c8d20408085bade9931eefd",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "92c9d8dc1c43e5466259502ed7e52bd3ec536b0601f52a220dae150ba94e4269",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "976cc12ce02b44465968ccee722e1025a89aa69064c705f0f02eae6b5e5d1263",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "9a131e0ed594eb9183fc36dcb8ad3016ba6501d8a5b38ce28f7aa675208a2b86",
+      "format": "mp4",
+      "pages": null,
+      "intact": true
+    },
+    {
+      "sha256": "9dc51c79d8867e2a718d0a6ce3701ef3f1df10a33917a2c4ff173c8a099ac0d9",
+      "format": "mp4",
+      "pages": null,
+      "intact": true
+    },
+    {
+      "sha256": "9fb7b3e91720d2e57dc9fb2fb705887afa9fbf511a3e623a36b9ecb70da84c74",
+      "format": "pdf",
+      "pages": 11,
+      "intact": true
+    },
+    {
+      "sha256": "a579962806b841466e8b6634017432db38ad93a152d0ef18f69206badef0ae17",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "a59859c64a6bbff8e7e921bbe630cb08f323b8361f074398551f0f7c4fac3957",
+      "format": "mp4",
+      "pages": null,
+      "intact": true
+    },
+    {
+      "sha256": "ada1eab8d8622cbd7e3d10efe70a3ac15b9a993ad03fd08c8ab9fa5085f96a26",
+      "format": "pdf",
+      "pages": 11,
+      "intact": true
+    },
+    {
+      "sha256": "b266327f3235fb7530e66348766b349c824b2eb7dbea0100c24978f1002df614",
+      "format": "pdf",
+      "pages": 1,
+      "intact": true
+    },
+    {
+      "sha256": "b97d8e7119009338c75a8f2a70823f2c5a2301f274058accfdf705cdfe6a81f0",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "ba78ceb53eafb4929335858e841eb73005504a102ff5b2df8a222d1bf3ea58ab",
+      "format": "mp4",
+      "pages": null,
+      "intact": true
+    },
+    {
+      "sha256": "c51c3f274d11c5689b5e347a5047ef4c6b32b7a8c13fe6ebd1631c0b0d5bf5b6",
+      "format": "ogg",
+      "pages": null,
+      "intact": true
+    },
+    {
+      "sha256": "c7896b598bb5bfbfaf326d46bf7ad84bae0ae2c6b7f2a5348559cb6d99be529d",
+      "format": "ogg",
+      "pages": null,
+      "intact": true
+    },
+    {
+      "sha256": "cfc566b3dc0488ffe3fe09c8d9f07ffd58736c21bc1106833c5c75a8ac12d9dc",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "d2bbec6050aef76531f4ed1be1556c976068bf25c974ff5cfbc6af48bc723710",
+      "format": "mp4",
+      "pages": null,
+      "intact": true
+    },
+    {
+      "sha256": "dd4ff6d4471b743a5b8ae5d199cb29b03d8f29a3ab22f225b3748536c7189069",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "de353e3d0df4b85cc83e50318d2de670e5d87022032637573d1b9c0cc9f6052c",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "e88005fdf326f7409598bd28d7a957741f144848464425c9ecad4dbd4ab30ec6",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "eb68fc97280a4a2d62bed58bcafc28721bfc566f8e87c118ba1467cf33dafebe",
+      "format": "pdf",
+      "pages": 2,
+      "intact": true
+    },
+    {
+      "sha256": "f911cf84bd0a930625df4c86d2762b3d65d2785537176d45c014f805d8dc3355",
+      "format": "mp4",
+      "pages": null,
+      "intact": true
+    }
+  ]
+}

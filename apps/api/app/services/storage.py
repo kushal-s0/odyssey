@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 from urllib.parse import quote, urlsplit
+from pathlib import Path
+from typing import Protocol
+import hashlib
 
 import httpx
 
@@ -9,6 +12,60 @@ from ..config import Settings
 
 class StorageUnavailable(RuntimeError):
     pass
+
+
+class Storage(Protocol):
+    def upload_file(self, object_path: str, source: Path, media_type: str) -> None: ...
+    def download(self, object_path: str, max_bytes: int = 25 * 1024 * 1024) -> bytes: ...
+    def delete(self, object_paths: list[str]) -> None: ...
+
+
+class LocalPrivateStorage:
+    """Explicit development/test adapter; forbidden by production Settings."""
+
+    def __init__(self, root: Path) -> None:
+        self.root = root.resolve()
+        self.root.mkdir(parents=True, exist_ok=True)
+
+    def path(self, object_path: str) -> Path:
+        path = (self.root / object_path).resolve()
+        if not path.is_relative_to(self.root) or path == self.root:
+            raise ValueError('Invalid private object path')
+        return path
+
+    def upload_file(self, object_path: str, source: Path, media_type: str) -> None:
+        target = self.path(object_path)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            with target.open('xb') as output, source.open('rb') as input_file:
+                for chunk in iter(lambda: input_file.read(65536), b''):
+                    output.write(chunk)
+        except FileExistsError:
+            if hashlib.sha256(target.read_bytes()).digest() != hashlib.sha256(source.read_bytes()).digest():
+                raise StorageUnavailable('Existing private object differs') from None
+        except OSError:
+            target.unlink(missing_ok=True)
+            raise StorageUnavailable('Private upload could not be stored') from None
+
+    def download(self, object_path: str, max_bytes: int = 25 * 1024 * 1024) -> bytes:
+        try:
+            with self.path(object_path).open('rb') as source:
+                content = source.read(max_bytes + 1)
+            if len(content) > max_bytes:
+                raise StorageUnavailable('Private source exceeds the processing limit')
+            return content
+        except OSError:
+            raise StorageUnavailable('Private source is unavailable') from None
+
+    def delete(self, object_paths: list[str]) -> None:
+        for object_path in object_paths:
+            self.path(object_path).unlink(missing_ok=True)
+
+
+def configured_storage(settings: Settings) -> Storage:
+    if settings.storage_backend == 'local' and settings.app_env != 'production':
+        return LocalPrivateStorage(settings.local_storage_dir)
+    return PrivateStorage(settings)
 
 
 class PrivateStorage:
@@ -45,6 +102,18 @@ class PrivateStorage:
                 headers={**self.headers, "Content-Type": media_type, "x-upsert": "false"}, content=content)
         if response.status_code not in {200, 201}:
             raise StorageUnavailable("Private upload could not be stored")
+
+    def upload_file(self, object_path: str, source: Path, media_type: str) -> None:
+        with source.open('rb') as content, httpx.Client(timeout=60, follow_redirects=False) as client:
+            response = client.post(f'{self.origin}/storage/v1/object/{self.path(object_path)}',
+                headers={**self.headers, 'Content-Type': media_type, 'x-upsert': 'false',
+                         'Content-Length': str(source.stat().st_size)}, content=content)
+        if response.status_code in {400, 409}:
+            existing = self.download(object_path, source.stat().st_size)
+            if hashlib.sha256(existing).digest() == hashlib.sha256(source.read_bytes()).digest():
+                return
+        if response.status_code not in {200, 201}:
+            raise StorageUnavailable('Private upload could not be stored')
 
     def download(self, object_path: str, max_bytes: int = 25 * 1024 * 1024) -> bytes:
         with httpx.Client(timeout=60, follow_redirects=False) as client:

@@ -20,6 +20,9 @@ from .contracts.schema import build_openapi
 from .db.pool import Database
 from .auth.jwt import TokenVerifier
 from .routes.auth import router as auth_router
+from .routes.uploads import router as uploads_router
+from .routes.submissions import router as submissions_router
+from .services.storage import StorageUnavailable
 
 logger = logging.getLogger("udyam.api")
 
@@ -51,8 +54,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     application.state.settings = config
     application.state.token_verifier = TokenVerifier(config)
     application.include_router(auth_router)
+    application.include_router(uploads_router)
+    application.include_router(submissions_router)
     application.add_middleware(CORSMiddleware, allow_origins=config.cors_origins,
-                               allow_credentials=False, allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
+                               allow_credentials=False, allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
                                allow_headers=["Authorization", "Content-Type", "Idempotency-Key", "X-Request-ID"])
 
     @application.middleware("http")
@@ -81,6 +86,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @application.exception_handler(RequestValidationError)
     async def validation_error(request: Request, exc: RequestValidationError) -> JSONResponse:
         return failure(request, 422, "invalid_request", "Check the request fields and supported input limits")
+
+    @application.exception_handler(StorageUnavailable)
+    async def storage_error(request: Request, exc: StorageUnavailable) -> JSONResponse:
+        return failure(request, 503, 'storage_unavailable', 'Private file storage is unavailable; retry shortly', True)
 
     @application.exception_handler(Exception)
     async def unexpected_error(request: Request, exc: Exception) -> JSONResponse:

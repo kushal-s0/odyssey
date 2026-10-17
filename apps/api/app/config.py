@@ -27,6 +27,8 @@ class Settings(BaseSettings):
     auth_audience: str = "authenticated"
     auth_jwks_url: str | None = None
     private_upload_bucket: str = "originals"
+    storage_backend: Literal['supabase', 'local'] = 'supabase'
+    local_storage_dir: Path = ROOT / '.local/private-storage'
     model_runtime: Literal["owned_worker", "hf_zerogpu"] = "owned_worker"
     allow_paid_services: Literal[False] = False
     enable_public_nominatim: bool = False
@@ -60,6 +62,8 @@ class Settings(BaseSettings):
                         url.scheme == "http" and url.hostname in {"localhost", "127.0.0.1"}):
                     raise ValueError("Authentication URLs require HTTPS, except local development")
         if self.app_env == "production":
+            if self.storage_backend != 'supabase':
+                raise ValueError('Production requires durable private Supabase storage')
             missing = [key for key in ("database_url", "supabase_url", "supabase_service_role_key",
                                        "auth_issuer", "auth_jwks_url", "worker_credential",
                                        "stage_capability_signing_key")

@@ -31,7 +31,7 @@ English/Hindi human review is available, but availability alone is not completed
 ## What public resources are used?
 
 Only resources with suitable permissions should be incorporated. Model manifests, dependency lockfiles and source records preserve provenance and licenses. Public or synthetic additions are separated from the organizer corpus and held-out real evaluation; they are not presented as independently collected beneficiary data.
-# Can an applicant make themselves an assessor?
+
+## Can an applicant make themselves an assessor?
 
 The API ignores user-editable role metadata. It verifies the signed session and reads roles/cohort assignments from trusted database tables. Local tests cover two applicants and two assigned assessors across separate cohorts, including forged metadata and denied cross-cohort access. Live Supabase account checks remain pending private configuration. See [authentication guide](05-authentication-and-access.md).
-

@@ -6,6 +6,8 @@ anyio==4.15.1
     # via
     #   httpx
     #   starlette
+av==16.0.1
+    # via udyam-api (apps/api/pyproject.toml)
 certifi==2026.7.22
     # via
     #   httpcore
@@ -64,6 +66,8 @@ pydantic-settings==2.11.0
 pygments==2.21.0
     # via pytest
 pyjwt==2.15.1
+    # via udyam-api (apps/api/pyproject.toml)
+pypdf==6.21.1
     # via udyam-api (apps/api/pyproject.toml)
 pytest==8.4.2
     # via udyam-api (apps/api/pyproject.toml)
