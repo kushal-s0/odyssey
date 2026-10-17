@@ -13,6 +13,7 @@ __pycache__/
 node_modules/
 dist/
 coverage/
+*.tsbuildinfo
 playwright-report/
 test-results/
 *.log

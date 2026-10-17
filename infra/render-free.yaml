@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: udyam-saathi-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./infra/Dockerfile.api
+    dockerContext: .
+    healthCheckPath: /health/live
+    autoDeploy: false
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: ALLOW_PAID_SERVICES
+        value: "false"
+      - key: MODEL_RUNTIME
+        value: owned_worker
+# Production secrets/configuration must be supplied privately before startup.
+# This manifest has not been deployed; no paid worker/add-on is included.

@@ -6,7 +6,7 @@ Updated: 17 October 2026, Asia/Calcutta. This file records repository state, not
 
 **Authorized now:** implement the full backlog step by step, maintain explanations/ and committee Q&A, add final T27 deployment instructions and commit locally as Kartik. No push/publication is authorized.
 
-Next action: execute T01 inventory and laptop/model feasibility checks; document actual access blockers and continue explicitly independent tasks. Current branch is `main` (changed by the user since the review); preserve it.
+Next action: read the rolling checkpoint and latest task report below. Current branch is `main` (changed by the user since the review); preserve it.
 
 ## User decisions that persist
 
@@ -22,7 +22,7 @@ Next action: execute T01 inventory and laptop/model feasibility checks; document
 - Workspace: `C:\Users\karti\Desktop\All Desktop Apps\odyssey`.
 - Origin: `https://github.com/kushal-s0/odyssey.git`; branch at review: `master`; current branch: `main`. Verify these again; do not force-checkout if Kartik changed them.
 - Pre-review HEAD: `d2fb9a7` (historical author/committer kushal-s0; preserve). Local Git identity was already configured as Kartik with the email above. Use `git log -1` for the latest planning commit; do not embed a self-referencing guessed hash here.
-- Application implementation: no scaffold, no task reports other than `TEMPLATE.md`, no trained artifacts or recorded deployment. **0/29 tasks done.** Prior T01 `in_progress` was a stale scope marker with no implementation report; this review reconciles it to pending rather than claiming completion.
+- Initial review state had no application scaffold/reports. Current state: T02 scaffold completed; T01 partial report and actual model feasibility evidence exist. Use TASK_STATUS.md for the live count, not historical planning snapshots. No cloud deployment or trained classifier is verified.
 - Original sources: organizer PDF plus three ZIP archives; preserve intact. Independent read-only audit confirmed 55 submissions, 42 PDFs/109 pages, four 11-page scans and 13 recordings. See [PROJECT_REVIEW.md](PROJECT_REVIEW.md). Audit observations are not completion of T01's script/live acceptance checks.
 - Hardware: RTX 5050 Laptop GPU, 8151 MiB VRAM, driver 592.82; system memory 24,841,998,336 bytes. CUDA/framework/model compatibility, latency, model fit and sustained uptime unverified. Docker engine was not available. No model inference ran.
 - Original datasets and `.tools/` are already tracked. Do not use `git add .` indiscriminately or assume `.gitignore` removes tracked data. Prepare sanitized build/publication inputs without rewriting history.
@@ -64,10 +64,13 @@ Resume from actual evidence and the exact next action, not a fresh rebuild.
 
 ## Rolling checkpoint (replace as real work progresses)
 
-- Current scope: full implementation, explanations/ and T27 deployment walkthrough.
-- Active application task: none at T01 blocked checkpoint; next T02 under the explicit independent local-scaffold allowance.
-- Last verification: inline Python documentation checks passed for 28 unique task IDs, dependency order, index/CSV agreement, pending statuses and report paths; 53 relative Markdown links resolved. `git diff --check` passed after whitespace repair. Source archives/inventory and .tools have no intentional changes. No task acceptance check is claimed by these documentation checks.
-- Checks: T01 inventory ran twice identically; all 13 recordings decoded (2250.366 seconds), 55 files/109 pages/four scans verified. Qwen/MiniLM config downloads passed; three gated configs returned HTTP 401. No application exists yet.
-- Active setup process: isolated CUDA PyTorch installer, exec session 38311; poll/check before another .venv-model installer. No deployment.
-- Pending approvals: publication remains unauthorized; public Nominatim opt-in unresolved.
-- Next action: read planning/task-reports/T01.md, begin T02 local scaffold, poll installer 38311, then run .venv-model/Scripts/python.exe -B scripts/check_cuda.py if installation succeeds. Re-probe gated access only after local HF_TOKEN configuration changes.
+- Current scope: full implementation, explanations/ and final T27 deployment walkthrough; 29 total tasks.
+- Completed task: T02 local scaffold; see task-reports/T02.md. T01 remains blocked on gated/HF-specific and remaining language/model integration checks.
+- Active application task: none at this checkpoint; next T03 after T01 follow-up documentation.
+- Last checks: five API tests, ruff/mypy, frontend ESLint/type/build, fresh API/npm lock restores and actual browser smoke passed at 1440/390 viewport widths. No configured private values or source archives in frontend bundle; API runtime lock excludes model frameworks.
+- Live local processes: API exec 64257 (port 8000, no reload); Vite exec 98957 (port 5173). Stop/restart owned API before checking new routes. No cloud deployment.
+- Model setup sessions 38311/41110/59081 completed. CUDA arithmetic passed. Pinned Qwen text first/warm inference passed JSON parsing (~8.6/7.4 sec); handwriting inference ran (~39.7 sec) but hit 192-token cap and has no reviewed quality reference. Public metrics are in evals/reports/feasibility; raw private output is .local/qwen-feasibility.private.json. Append these facts to T01 without claiming it complete.
+- Pending local changes for T01 follow-up: scripts/model_feasibility.py and evals/reports/feasibility/. No weights/private outputs belong in Git.
+- HF_TOKEN was still absent at the last safe presence check; user is configuring access. New cloud projects are not yet provisioned.
+- Pending approvals: external publication and public Nominatim opt-in only; implementation is authorized.
+- Next action: record T01's real CUDA/Qwen follow-up, then start T03 contracts/rubric and keep explanations/ current.

@@ -2,7 +2,7 @@
 
 **Project:** Udyam Saathi — Tata STRIVE business-idea screening.  
 **Executor:** Codex. This replaces the earlier assignment of tasks to three human builders.  
-**Current state:** full implementation authorized; T01 is starting. No application task has passed acceptance yet. Maintain explanations/ with module/functionality guides and committee questions.
+**Current state:** full implementation authorized; TASK_STATUS.md and task reports are authoritative for live progress. Maintain explanations/ with module/functionality guides and committee questions.
 
 **Confirmed delivery deadline:** 18 October 2026, 06:00 Asia/Calcutta, including a deployed demo. Read [deadline checkpoints](HACKATHON_DELIVERY_PLAN.md) and [session handoff](SESSION_HANDOFF.md) first. The user has authorized full implementation; remote publication still requires explicit approval.
 

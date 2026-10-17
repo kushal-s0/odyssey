@@ -3,7 +3,7 @@
 **Application state:** implementation started; no application/model deployed.
 **Budget:** zero paid API or hosting dependencies.  
 **Active application task:** none. **Current scope:** full implementation, explanations/ and final T27 deployment walkthrough; local commits only.
-**Last update:** 2026-10-17, Asia/Calcutta. **Progress:** 0 / 29 tasks done.
+**Last update:** 2026-10-17, Asia/Calcutta. **Progress:** 1 / 29 tasks done.
 
 **Deadline:** 2026-10-18 06:00 Asia/Calcutta, working deployed demo included. Read [SESSION_HANDOFF.md](SESSION_HANDOFF.md), [HACKATHON_DELIVERY_PLAN.md](HACKATHON_DELIVERY_PLAN.md) and [PROJECT_REVIEW.md](PROJECT_REVIEW.md). Prefer verified laptop inference; English/Hindi human review only. Implementation is authorized by the latest user request; publication remains unapproved.
 
@@ -14,7 +14,7 @@ Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FRE
 | ID | Task | Status | Report path (create during execution) | Blocker |
 |---|---|---|---|---|
 | T01 | Inspect dataset and prove free-runtime feasibility | blocked | `task-reports/T01.md` | Gated AI4Bharat access pending; CUDA/model inference and HF provisioning/guarded integration unverified |
-| T02 | Scaffold application and local toolchain | pending | `task-reports/T02.md` | None confirmed |
+| T02 | Scaffold application and local toolchain | done | `task-reports/T02.md` | None confirmed |
 | T03 | Define contracts, domain rules and rubric | pending | `task-reports/T03.md` | None confirmed |
 | T04 | Implement database, durable stage leases and private storage | pending | `task-reports/T04.md` | None confirmed |
 | T05 | Implement authentication and authorization | pending | `task-reports/T05.md` | None confirmed |
