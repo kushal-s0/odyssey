@@ -9,6 +9,7 @@
 | [MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) | Candidate frozen English embeddings | Apache-2.0; respect input truncation; not project-trained |
 | PyAV / FFmpeg | Local media stream inspection/decoding | PyAV BSD; bundled FFmpeg build has its own license/configuration; retain applicable distribution notices |
 | pypdf | Local PDF inspection | BSD-3-Clause; text extraction is not proof of handwriting recognition |
+| [py3langid 0.3.0](https://github.com/adbar/py3langid) | Local language identification with explicit declared-language fallback | BSD-3-Clause fork of langid.py; packaged detector scores are not calibrated quality confidence; no script-only Hindi/Marathi inference |
 
 No additional public dataset has been incorporated yet. If added, record URL, publisher, retrieval date/version/hash, license, transformations, allowed redistribution, personal-data handling and evaluation split. Keep synthetic or machine-labeled examples distinct from human-reviewed real evaluation. Do not conceal third-party resources or make unsupported originality claims.
 

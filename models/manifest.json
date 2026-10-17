@@ -1,0 +1,72 @@
+{
+  "schema_version": "1",
+  "manifest_hash": "9e526e675a02e174d77e75c26340140e1380305c134677a704e25cc9009e70db",
+  "pipeline": "screening-v1",
+  "protocol": "stage-v1",
+  "preprocessing": "text-evidence-v1",
+  "rubric": "rubric-v1",
+  "language_detector": {
+    "id": "py3langid-0.3.0",
+    "license": "BSD-3-Clause",
+    "provenance": "pretrained third-party detector"
+  },
+  "artifacts": [
+    {
+      "task": "qwen",
+      "id": "Qwen/Qwen3-VL-2B-Instruct",
+      "revision": "89644892e4d85e24eaac8bacfd4f463576704203",
+      "license": "Apache-2.0",
+      "provenance": "third-party pretrained open weights",
+      "owned_framework": "PyTorch/Transformers",
+      "readiness": "see measured reports; not a deployment claim"
+    },
+    {
+      "task": "asr",
+      "id": "ai4bharat/indic-conformer-600m-multilingual",
+      "revision": "2a77d305038dfc502fd9464e7d028b90381976cb",
+      "license": "MIT",
+      "provenance": "third-party pretrained open weights",
+      "owned_framework": "PyTorch/Transformers",
+      "readiness": "see measured reports; not a deployment claim"
+    },
+    {
+      "task": "indic_en",
+      "id": "ai4bharat/indictrans2-indic-en-dist-200M",
+      "revision": "d66a2122ad6d28184f3dc3797b652bd80ae3f65f",
+      "license": "MIT",
+      "provenance": "third-party pretrained open weights",
+      "owned_framework": "PyTorch/Transformers",
+      "readiness": "see measured reports; not a deployment claim"
+    },
+    {
+      "task": "en_indic",
+      "id": "ai4bharat/indictrans2-en-indic-dist-200M",
+      "revision": "2cfd0a20057756d756bf3e53528f492afc52f91a",
+      "license": "MIT",
+      "provenance": "third-party pretrained open weights",
+      "owned_framework": "PyTorch/Transformers",
+      "readiness": "see measured reports; not a deployment claim"
+    },
+    {
+      "task": "embedding",
+      "id": "sentence-transformers/all-MiniLM-L6-v2",
+      "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+      "license": "Apache-2.0",
+      "provenance": "third-party pretrained open weights",
+      "owned_framework": "PyTorch/Transformers",
+      "readiness": "see measured reports; not a deployment claim"
+    }
+  ],
+  "owned_text_limits": {
+    "concurrency": 1,
+    "context_tokens": 4096,
+    "output_tokens": 640,
+    "segment_characters": 1200,
+    "batch_characters": 2400,
+    "format_repair_attempts": 1
+  },
+  "promotion": {
+    "relevance": "not trained yet; advisory baseline only"
+  },
+  "deployment": "not deployed; expected artifacts only"
+}

@@ -8,6 +8,9 @@ from app.auth.access import ActorView, require_actor
 from app.config import Settings
 from app.main import create_app
 from app.worker.manifest import MANIFEST_HASH
+from app.pipeline.normalize import normalize_text
+from app.contracts.models import LanguageResult
+from uuid import UUID
 from test_database import ROOT, seeded
 from test_submissions import init_upload, pdf, submit, workspace
 
@@ -66,7 +69,9 @@ def test_worker_auth_stage_scope_renewal_and_duplicate_execution(database, tmp_p
         checkpoint = {'payload':{'page':1}}
         assert client.post(stage_url(first,'checkpoint'), headers=headers(first), json=checkpoint).status_code == 204
         assert client.get(stage_url(first,'input'), headers=headers(first)).json()['checkpoint'] == {'page':1}
-        output = {'model_manifest_hash':MANIFEST_HASH,'payload':{'probe':'not-inference'}}
+        normalized=normalize_text('A synthetic tea business.',UUID(created['submission_id']),UUID(created['revision_id']),
+                                  'en',lambda text,preferred: LanguageResult(code='en',provenance='declared'))
+        output = {'model_manifest_hash':MANIFEST_HASH,'payload':normalized.model_dump(mode='json')}
         assert client.post(stage_url(first,'publish'), headers=headers(first), json=output).json()['published']
         assert not client.post(stage_url(first,'publish'), headers=headers(first), json=output).json()['published']
         progress = client.get('/v1/jobs/'+created['job_id']).json()

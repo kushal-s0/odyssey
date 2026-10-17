@@ -4,9 +4,37 @@ Updated: 17 October 2026, Asia/Calcutta. This file records repository state, not
 
 ## Current instruction and next action
 
-**Authorized now:** implement the full backlog step by step, maintain explanations/ and committee Q&A, add final T27 deployment instructions and commit locally as Kartik. No push/publication is authorized.
+**Latest override, 17 October 2026:** the user requested the next four deadline-order
+tasks, T09 → T09A → T12 → T08, with local commits as
+`kushal-s0 <kushal.soni@somaiya.edu>` for BOTH author and committer. This supersedes
+the earlier Kartik-only identity below; historical commits must remain unchanged.
+Actual current branch is `second`; preserve it. Publication remains unapproved.
+T09 is active. Its local parser/API persistence checks pass; actual inference
+is pending isolated model environment/weight downloads on this machine's
+RTX 3050 6 GB, which differs from the older RTX 5050 evidence. IndicTrans2
+access checks returned HTTP 401; no paid/hosted fallback is authorized.
 
-Next action: read the rolling checkpoint and latest task report below. Current branch is `main` (changed by the user since the review); preserve it.
+Running provisioning operations at this checkpoint: resumable official CUDA
+wheel and Qwen weight downloads in ignored `.local/range-downloads`, with final
+upstream SHA-256 required. Earlier full downloads stalled/truncated; no failed
+checksum was bypassed. Existing HF token is read in memory only. Automatic
+approval review rejected copying it into extra files; that mutation was removed
+and in-memory access checks were approved. No credentials were changed/copied.
+Read the latest T09 report before resuming; the older T07 checkpoint remains below.
+
+Current T09 partial checks: full API suite 122 passed/no skips in 44.75 seconds;
+strict mypy 47 files passed. Native range-download sessions 45461 (CUDA wheel)
+and 12498 (Qwen weights) are current, not the old interrupted full-download
+sessions. Their ignored scripts `.local/download_ranges.py torch` / `qwen`
+resume already complete chunks and require upstream checksums. Do not treat a
+partial cache file as ready. Next: install the verified local wheel, install
+`models/requirements-text.txt` plus the API package in `.venv-model`, complete
+model cache provisioning, then run `scripts/verify_owned_text.py` before reporting
+actual inference. Public artifact metadata is safe; never print private tokens.
+
+**Authorized now:** implement the requested next four tasks, maintain explanations/ and committee Q&A, and commit locally using the latest identity above. No push/publication is authorized.
+
+Next action: read the rolling checkpoint and latest task report. Current branch is `second` (changed by the user since T07); preserve it.
 
 ## User decisions that persist
 

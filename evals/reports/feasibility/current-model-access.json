@@ -1,0 +1,30 @@
+{
+  "measured_at": "2026-10-17T13:46:31.468319+00:00",
+  "scope": "Access only; not inference/deployment",
+  "models": [
+    {
+      "artifact": "qwen",
+      "repo_id": "Qwen/Qwen3-VL-2B-Instruct",
+      "revision": "89644892e4d85e24eaac8bacfd4f463576704203",
+      "http_status": 200
+    },
+    {
+      "artifact": "indic_en",
+      "repo_id": "ai4bharat/indictrans2-indic-en-dist-200M",
+      "revision": "d66a2122ad6d28184f3dc3797b652bd80ae3f65f",
+      "http_status": 401
+    },
+    {
+      "artifact": "en_indic",
+      "repo_id": "ai4bharat/indictrans2-en-indic-dist-200M",
+      "revision": "2cfd0a20057756d756bf3e53528f492afc52f91a",
+      "http_status": 401
+    },
+    {
+      "artifact": "embedding",
+      "repo_id": "sentence-transformers/all-MiniLM-L6-v2",
+      "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+      "http_status": 200
+    }
+  ]
+}

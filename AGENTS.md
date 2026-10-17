@@ -2,7 +2,7 @@
 
 ## Identity, publication and continuation
 
-- Every new commit must have both author and committer `Kartik Verma <kartikverma2204number1@gmail.com>`. Verify both after committing. No co-author, sign-off or AI-attribution trailers. Preserve historical attribution.
+- Latest user override (17 October 2026): every new commit must have both author and committer `kushal-s0 <kushal.soni@somaiya.edu>`, matching the configured Git identity. Verify both after committing. No co-author, sign-off or AI-attribution trailers. Preserve historical attribution. This supersedes the earlier Kartik-only identity requirement.
 - Keep commits local. Never push any branch, create a pull request, upload source to a model host, or publish/deploy changes without Kartik's explicit approval for that publication. Prepare reviewable artifacts first.
 - Confirm repository remote, branch and working tree before work. This project currently uses `https://github.com/kushal-s0/odyssey.git`, branch `main`; do not confuse it with the portfolio repository.
 - Read `planning/SESSION_HANDOFF.md` and `planning/HACKATHON_DELIVERY_PLAN.md` before resuming. A new session/model/account must inspect actual state and reuse verified work; chat history is not the continuation record.

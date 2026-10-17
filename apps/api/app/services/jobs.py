@@ -19,6 +19,7 @@ from ..repositories.idempotency import canonical_hash
 from ..worker.capabilities import Capabilities
 from ..worker.manifest import MANIFEST_HASH
 from .storage import configured_storage
+from ..pipeline.persistence import persist_text_stage
 
 
 class Jobs:
@@ -193,6 +194,7 @@ class Jobs:
                 if not previous or previous['output_hash'] != digest or previous['model_manifest_hash'] != output.model_manifest_hash:
                     raise HTTPException(409, 'Conflicting duplicate stage publication')
                 return {'published':False, 'status':job['status']}
+            persist_text_stage(c,stage,job,output.payload)
             c.execute('SELECT public.publish_stage(%s,%s,%s,%s,%s,%s,%s)',
                 (stage['id'], claims['sub'], claims['generation'], digest, output.model_manifest_hash,
                  output.schema_version, Jsonb(output.payload)))
