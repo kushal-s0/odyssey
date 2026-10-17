@@ -1,0 +1,2 @@
+import {defineConfig} from '@playwright/test';
+export default defineConfig({testDir:'./tests/ui',timeout:30000,fullyParallel:false,workers:1,reporter:'list',outputDir:'.planning/browser-results',use:{baseURL:process.env.PLAYWRIGHT_BASE_URL??'http://127.0.0.1:4000',channel:process.env.PW_BROWSER_CHANNEL??(process.platform==='win32'?'msedge':undefined),headless:true,viewport:{width:1440,height:1000},trace:'retain-on-failure'}});

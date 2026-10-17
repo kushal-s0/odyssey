@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: strive-screening
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: APP_URL
+        sync: false
+      - key: MONGODB_URI
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: ASSESSOR_EMAIL
+        sync: false
+      - key: ASSESSOR_PASSWORD
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.8-flash
+      - key: SARVAM_API_KEY
+        sync: false
+      - key: ENABLE_EXAMPLES
+        value: "true"
+# The remote classifier is deployed separately after actual cloud training.
+# See README: remote model service. No untrained model is presented as trained.
