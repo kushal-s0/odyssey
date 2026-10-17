@@ -1,12 +1,12 @@
 # Ordered implementation tasks for Codex
 
-**Executor: Codex. Budget: no paid APIs or purchased hosting.** All 28 tasks are pending. T09A and T23A add custom-model training and model deployment without renumbering existing tasks.
+**Executor: Codex. Budget: no paid APIs or purchased hosting.** T01 is starting; no tasks are complete. T09A and T23A add custom-model training and model deployment without renumbering existing tasks.
 
 Read [CODEX_EXECUTION_PLAN.md](CODEX_EXECUTION_PLAN.md), [FREE_MODEL_HOSTING_PLAN.md](FREE_MODEL_HOSTING_PLAN.md), [TASK_STATUS.md](TASK_STATUS.md) and [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 
 Use the explicit deadline order in [HACKATHON_DELIVERY_PLAN.md](HACKATHON_DELIVERY_PLAN.md): T09/T09A/T12 precede T08; the index below is an ID lookup, not the execution order. Dependencies and its independent-work allowance govern work around recorded blockers. Every task requires implementation, actual acceptance checks, its own report using [TEMPLATE.md](task-reports/TEMPLATE.md), then tracker/CSV and SESSION_HANDOFF.md updates. No paid fallback, mock-as-live result or fabricated completion. T09A may conclude with a justified experimental-model rejection and a validated baseline; do not mislabel this as a successful trained-model deployment.
 
-Deadline: **18 October 2026, 06:00 Asia/Calcutta**, deployed demo included. Prefer a measured owned-laptop worker for judging; retain free HF runtime deployment as its own target. Prepare an approved preview early without claiming final deployment tasks passed. Current scope is documentation revision only; implementation/publication still need the corresponding user instruction.
+Deadline: **18 October 2026, 06:00 Asia/Calcutta**, deployed demo included. Prefer a measured owned-laptop worker for judging; retain free HF runtime deployment as its own target. Prepare an approved preview early without claiming final deployment tasks passed. Full implementation is authorized; publication still requires explicit approval. Maintain explanations/ alongside each task. T27 is the requested final deployment walkthrough.
 
 ## Task index
 
@@ -40,6 +40,7 @@ Deadline: **18 October 2026, 06:00 Asia/Calcutta**, deployed demo included. Pref
 | T24 | Deploy and verify the full free hosted application | T20, T22, T23, T23A | `task-reports/T24.md` |
 | T25 | Run deployed acceptance and recovery checks | T24 | `task-reports/T25.md` |
 | T26 | Write final implementation and readiness handover | T25 | `task-reports/T26.md` |
+| T27 | Write detailed free-deployment walkthrough | T26 | `task-reports/T27.md` |
 
 ## T01 - Inspect dataset and prove free-runtime feasibility
 
@@ -517,3 +518,19 @@ Every done task has substantive report/passed evidence; blocked work stays visib
 
 **Required final action:** write `planning/task-reports/T26.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
+
+## T27 - Write detailed free-deployment walkthrough
+
+**Dependencies:** T26.
+
+**Primary files:** `docs/DEPLOYMENT_GUIDE.md`, `explanations/DEPLOYMENT_QA.md`.
+
+**Implement:**
+
+Write an in-depth, numbered walkthrough for the actual free configuration: architecture and cost boundaries, accounts/Free-plan selection, local tool versions, model access/licenses, private secret setup, database migrations/policies, demo accounts, frontend/API packaging and approved deployment, native laptop worker start/stop/resume, model versions, HTTPS/CORS/auth checks, input-format verification, quota/backup/rollback/recovery, troubleshooting and demo preparation. Include exact existing commands and expected outcomes, Windows instructions and clearly distinguished optional HF deployment. Document sanitized artifact contents without publishing repository/private source data. Retain provenance and attribution.
+
+**Acceptance checks:**
+
+Every command references an existing file/tool and tested configuration; a clean-start rehearsal is recorded where possible. Actual verified steps, account/publication blockers and untested alternatives are distinguished. A new session can follow the guide without this chat. No secrets or invented deployment URL/results are included; publication requires explicit approval.
+
+**Required final action:** write `planning/task-reports/T27.md`, synchronize tracker/CSV/handoff and verify local commit identity.

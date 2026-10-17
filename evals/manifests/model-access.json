@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "token_configured": false,
+  "scope": "Model metadata/config download only; no inference or Space provisioning.",
+  "models": [
+    {
+      "task": "text_vision",
+      "repo_id": "Qwen/Qwen3-VL-2B-Instruct",
+      "status": "config_download_verified",
+      "revision": "89644892e4d85e24eaac8bacfd4f463576704203",
+      "gated": false,
+      "license": "apache-2.0"
+    },
+    {
+      "task": "speech",
+      "repo_id": "ai4bharat/indic-conformer-600m-multilingual",
+      "status": "blocked",
+      "revision": "2a77d305038dfc502fd9464e7d028b90381976cb",
+      "gated": true,
+      "license": "mit",
+      "error_type": "GatedRepoError",
+      "http_status": 401
+    },
+    {
+      "task": "indic_to_english",
+      "repo_id": "ai4bharat/indictrans2-indic-en-dist-200M",
+      "status": "blocked",
+      "revision": "d66a2122ad6d28184f3dc3797b652bd80ae3f65f",
+      "gated": true,
+      "license": "mit",
+      "error_type": "GatedRepoError",
+      "http_status": 401
+    },
+    {
+      "task": "english_to_indic",
+      "repo_id": "ai4bharat/indictrans2-en-indic-dist-200M",
+      "status": "blocked",
+      "revision": "2cfd0a20057756d756bf3e53528f492afc52f91a",
+      "gated": true,
+      "license": "mit",
+      "error_type": "GatedRepoError",
+      "http_status": 401
+    },
+    {
+      "task": "embeddings",
+      "repo_id": "sentence-transformers/all-MiniLM-L6-v2",
+      "status": "config_download_verified",
+      "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+      "gated": false,
+      "license": "apache-2.0"
+    }
+  ],
+  "hf_spaces": {
+    "status": "not_provisioned",
+    "publication_approved": false
+  }
+}

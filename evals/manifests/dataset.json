@@ -1,0 +1,1864 @@
+{
+  "schema_version": 1,
+  "source": "private_organizer_archives",
+  "license": "No redistribution permission established; originals remain private.",
+  "family_policy": "Hints only; merge by reviewed business family before any split.",
+  "extractors": {
+    "pypdf": "6.1.1",
+    "av": "16.0.1"
+  },
+  "archives": [
+    {
+      "id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 4626011
+    },
+    {
+      "id": "c400ae3d42b6c86cea7f68ca42bad153451469353a7cd6b5592cd411b97ffb72",
+      "bytes": 29786246
+    },
+    {
+      "id": "d8782c79418a5d47df19a09bcbce6e18f8bd2d0235769060441d97318cb7966b",
+      "bytes": 13801784
+    }
+  ],
+  "summary": {
+    "files": 55,
+    "by_format": {
+      "mp4": 11,
+      "ogg": 2,
+      "pdf": 42
+    },
+    "by_declared_language": {
+      "bn": 2,
+      "en": 11,
+      "hi": 11,
+      "mr": 11,
+      "or": 5,
+      "te": 15
+    },
+    "pdf_pages": 109,
+    "scan_candidates": 4,
+    "decoded_audio": 13,
+    "audio_seconds": 2250.366,
+    "errors": 0
+  },
+  "records": [
+    {
+      "id": "0793a0df377ed4e7124e102e16eebeefa89ea6cea6fe906cd5adcae0f97ff424",
+      "archive_id": "c400ae3d42b6c86cea7f68ca42bad153451469353a7cd6b5592cd411b97ffb72",
+      "bytes": 3739467,
+      "format": "mp4",
+      "declared_folder_language": "or",
+      "language_validated": false,
+      "family_hint": "audio-unreviewed",
+      "family_reviewed": false,
+      "container": "mov,mp4,m4a,3gp,3g2,mj2",
+      "audio_streams": 1,
+      "video_streams": 0,
+      "codec": "aac",
+      "sample_rate": 48000,
+      "channels": 1,
+      "duration_seconds": 229.138,
+      "decoded": true,
+      "decoded_frames": 10741,
+      "decoded_seconds": 229.141,
+      "inspection": "ok"
+    },
+    {
+      "id": "08a0c12665f8487c48453c69991198ebdae1f2879dcee34e624a1e7667844b93",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 230776,
+      "format": "pdf",
+      "declared_folder_language": "hi",
+      "language_validated": false,
+      "family_hint": "parallel-form-scenario-3",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 1254,
+          "text_sha256": "009a5cffe1378cc14073e7b73d0c466a5d9cdd93bb3cbfc7bb94a79d2301b3ed",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        },
+        {
+          "page": 2,
+          "text_characters": 752,
+          "text_sha256": "3f3b6abe0f25881161e27dec8cdb3768f91d2c93347ee5b961641b8cdbef5794",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        }
+      ],
+      "text_characters": 2006,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "0e1e7bd2acca19f08a88c977dae5188afa045abe2e8117aadbd04e43cf86dcab",
+      "archive_id": "c400ae3d42b6c86cea7f68ca42bad153451469353a7cd6b5592cd411b97ffb72",
+      "bytes": 2275854,
+      "format": "mp4",
+      "declared_folder_language": "te",
+      "language_validated": false,
+      "family_hint": "audio-unreviewed",
+      "family_reviewed": false,
+      "container": "mov,mp4,m4a,3gp,3g2,mj2",
+      "audio_streams": 1,
+      "video_streams": 0,
+      "codec": "aac",
+      "sample_rate": 48000,
+      "channels": 2,
+      "duration_seconds": 140.352,
+      "decoded": true,
+      "decoded_frames": 6579,
+      "decoded_seconds": 140.352,
+      "inspection": "ok"
+    },
+    {
+      "id": "0fbc4ab3c0c94b07463095dd2a4ff5d138c0959664170fab04870d258b5a8555",
+      "archive_id": "d8782c79418a5d47df19a09bcbce6e18f8bd2d0235769060441d97318cb7966b",
+      "bytes": 26781,
+      "format": "pdf",
+      "declared_folder_language": "te",
+      "language_validated": false,
+      "family_hint": "parallel-pdf-scenario-4",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 841,
+          "text_sha256": "c4ad5788775bd141421cd3cc88dbc688d97dedd0a48e5efda4f76b126474ec6b",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        },
+        {
+          "page": 2,
+          "text_characters": 1237,
+          "text_sha256": "df32ea9d60250a51db889714f123780f1bf5daf62a43000cbd90ab56f2dd7ef7",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        }
+      ],
+      "text_characters": 2078,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "129e1559c941548dce0c65b4badfa55ef45ec59439ecd501c0ecd1a0cc99a601",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 370888,
+      "format": "pdf",
+      "declared_folder_language": "mr",
+      "language_validated": false,
+      "family_hint": "unreviewed-26399429e023",
+      "family_reviewed": false,
+      "pages": 1,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 1389,
+          "text_sha256": "7cf721c404ad4800c0743aed9e55c206e013d391c7836f60abecd851fdb5ea12",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        }
+      ],
+      "text_characters": 1389,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "14234869061d1192e7e73f7f43b55ba4fc3acb0eda17df3cb03835904b49879d",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 293887,
+      "format": "pdf",
+      "declared_folder_language": "hi",
+      "language_validated": false,
+      "family_hint": "parallel-form-scenario-5",
+      "family_reviewed": false,
+      "pages": 1,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 2187,
+          "text_sha256": "1771c61ae722791ab143909934045244ebae2e39f00e1ddca6ac3aa83fb7609a",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        }
+      ],
+      "text_characters": 2187,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "143f6cca71fdac18e3c9d8183a3277f3a54d52ca6f113b3df14df5d75c36423a",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 42442,
+      "format": "pdf",
+      "declared_folder_language": "en",
+      "language_validated": false,
+      "family_hint": "form-english-tea-variants",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 1469,
+          "text_sha256": "1abb7016783f71e95e1d5a90dad74cfacefa302abea0a008af2ac21fd930c0ef",
+          "has_null_or_replacement": true,
+          "width_points": 595.2756,
+          "height_points": 841.8898
+        },
+        {
+          "page": 2,
+          "text_characters": 764,
+          "text_sha256": "9c4cbd210c2605b602b54fe7f39cade6fd9c13b1c025afc0e030c1fd5cc4961d",
+          "has_null_or_replacement": false,
+          "width_points": 595.2756,
+          "height_points": 841.8898
+        }
+      ],
+      "text_characters": 2233,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "1591d633bbdcedecae0849ccaeaf5a89ef2984035cae2937d6d0b0fd75d8ed01",
+      "archive_id": "d8782c79418a5d47df19a09bcbce6e18f8bd2d0235769060441d97318cb7966b",
+      "bytes": 42970,
+      "format": "pdf",
+      "declared_folder_language": "te",
+      "language_validated": false,
+      "family_hint": "parallel-pdf-scenario-5",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 748,
+          "text_sha256": "d4a8f55352d80018948ca0eb2d3053de06b71f133b0a7edc3c4ec176f742a5f7",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        },
+        {
+          "page": 2,
+          "text_characters": 966,
+          "text_sha256": "2a4db8c15d176528c2bc49f3bf81007dbee75d7d912601ddb5442f1f23973173",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        }
+      ],
+      "text_characters": 1714,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "1883d65a6e9d1ee5b7322110f0f6a9fb25cfbd63b134fc694599df3799afaf17",
+      "archive_id": "d8782c79418a5d47df19a09bcbce6e18f8bd2d0235769060441d97318cb7966b",
+      "bytes": 18333,
+      "format": "pdf",
+      "declared_folder_language": "mr",
+      "language_validated": false,
+      "family_hint": "parallel-pdf-scenario-2",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 597,
+          "text_sha256": "d408014a09f02082d4e495277535b22dc3ec7a9414ef412a1df6093867bef95f",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        },
+        {
+          "page": 2,
+          "text_characters": 735,
+          "text_sha256": "72229668e68b08498261c39f5845592ef77a93e4c858ebfc6197e06491d1a974",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        }
+      ],
+      "text_characters": 1332,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "1f2abd4ee9040655bbd956ddf7c9f0d7a1fdcb6424652a94177d9c21d9027575",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 265885,
+      "format": "pdf",
+      "declared_folder_language": "te",
+      "language_validated": false,
+      "family_hint": "parallel-form-scenario-4",
+      "family_reviewed": false,
+      "pages": 1,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 1189,
+          "text_sha256": "7c5fef4724041886dba02cd330c63db8087147609bc3d45585b3a2219f1e6e34",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        }
+      ],
+      "text_characters": 1189,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "2423933de6ded408d77dbb433653d745d0c57aacfba6001a9e4313af65bbf0ba",
+      "archive_id": "d8782c79418a5d47df19a09bcbce6e18f8bd2d0235769060441d97318cb7966b",
+      "bytes": 20363,
+      "format": "pdf",
+      "declared_folder_language": "mr",
+      "language_validated": false,
+      "family_hint": "parallel-pdf-scenario-3",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 686,
+          "text_sha256": "de0169168db9c4e03e512cfa2ba198677831f676ce4b15b7ad30870ddfc882f7",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        },
+        {
+          "page": 2,
+          "text_characters": 1072,
+          "text_sha256": "58d858583dfd3339aeef780bae90d53b7ac6a02ec859a0f06a1223791d062499",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        }
+      ],
+      "text_characters": 1758,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "2838eeb79258714cdb1a8bf4ac05aa03e0ae170e30e2095148daaa94fb83144b",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 299367,
+      "format": "pdf",
+      "declared_folder_language": "mr",
+      "language_validated": false,
+      "family_hint": "unreviewed-82573db6ca20",
+      "family_reviewed": false,
+      "pages": 1,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 1730,
+          "text_sha256": "db5f8d8205bbc0acd814e7695cae1b2d2814f09b5ce159660b583ee2cbb7aba2",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        }
+      ],
+      "text_characters": 1730,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "2917e9ff6fa3072df7bdd171d094e99704782b629045b88fa9d08e2c894cff12",
+      "archive_id": "c400ae3d42b6c86cea7f68ca42bad153451469353a7cd6b5592cd411b97ffb72",
+      "bytes": 5721343,
+      "format": "mp4",
+      "declared_folder_language": "or",
+      "language_validated": false,
+      "family_hint": "audio-unreviewed",
+      "family_reviewed": false,
+      "container": "mov,mp4,m4a,3gp,3g2,mj2",
+      "audio_streams": 1,
+      "video_streams": 0,
+      "codec": "aac",
+      "sample_rate": 48000,
+      "channels": 2,
+      "duration_seconds": 353.173,
+      "decoded": true,
+      "decoded_frames": 16555,
+      "decoded_seconds": 353.173,
+      "inspection": "ok"
+    },
+    {
+      "id": "292e2bf95ee846358922e085aada493dcfbd7af89783fd47d4b04408daf89ad1",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 293042,
+      "format": "pdf",
+      "declared_folder_language": "te",
+      "language_validated": false,
+      "family_hint": "parallel-form-scenario-3",
+      "family_reviewed": false,
+      "pages": 1,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 1467,
+          "text_sha256": "c9d4ac3a29d0dc238cd98a528fdb7541796f5b692b1e7705dde0f667aafe1e49",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        }
+      ],
+      "text_characters": 1467,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "29c6180d5591265847525d6c2dc71d3b3c8b67ee6e8c8498d66255ec666c2448",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 29990,
+      "format": "pdf",
+      "declared_folder_language": "en",
+      "language_validated": false,
+      "family_hint": "form-english-1",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 1567,
+          "text_sha256": "3f7030fcfd93b59a53d6439c9113770b66921ce54905cb7597e52ab20359c7e8",
+          "has_null_or_replacement": false,
+          "width_points": 595.2756,
+          "height_points": 841.8898
+        },
+        {
+          "page": 2,
+          "text_characters": 753,
+          "text_sha256": "dd81650e15ee9b33ef5739d66340945c6475f0082f126dbc45d5c0204232b5f3",
+          "has_null_or_replacement": false,
+          "width_points": 595.2756,
+          "height_points": 841.8898
+        }
+      ],
+      "text_characters": 2320,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "32bc10ecbcf0624af82c66a050ea31719197aec8666a31cf9ea420351db97a17",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 271940,
+      "format": "pdf",
+      "declared_folder_language": "te",
+      "language_validated": false,
+      "family_hint": "parallel-form-scenario-2",
+      "family_reviewed": false,
+      "pages": 1,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 1363,
+          "text_sha256": "5dc9796520a63f4f10cb9c7001419a3eb9792fc7d882195a08834a182126826c",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        }
+      ],
+      "text_characters": 1363,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "4532a8c9aa4b178b1ba2a2f489f9849c2133b7526b7e6c66837cb7eeae01b2ec",
+      "archive_id": "d8782c79418a5d47df19a09bcbce6e18f8bd2d0235769060441d97318cb7966b",
+      "bytes": 21734,
+      "format": "pdf",
+      "declared_folder_language": "en",
+      "language_validated": false,
+      "family_hint": "parallel-pdf-scenario-5",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 736,
+          "text_sha256": "fb97801e8afec6496ca14cde04e4af206120a2adc114359600ec13c26f810e61",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        },
+        {
+          "page": 2,
+          "text_characters": 941,
+          "text_sha256": "b383012476815d775ca9aa6f5425147f8e5284d817f2afb760a4f49131e3028c",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        }
+      ],
+      "text_characters": 1677,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "4c44b6cc0d75b3d5c044c1a1f23032347a85c368e8b5e433b8fb5433d8bbcad2",
+      "archive_id": "d8782c79418a5d47df19a09bcbce6e18f8bd2d0235769060441d97318cb7966b",
+      "bytes": 3286319,
+      "format": "pdf",
+      "declared_folder_language": "hi",
+      "language_validated": false,
+      "family_hint": "unreviewed-d0a2e683742b",
+      "family_reviewed": false,
+      "pages": 11,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 2,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 3,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 4,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 5,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 6,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 7,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 8,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 9,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 10,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 11,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        }
+      ],
+      "text_characters": 0,
+      "scan_candidate": true,
+      "inspection": "ok"
+    },
+    {
+      "id": "4c8119e3bc014c25cd605c4549bc40b71b56b99615ca9cdcf7ef6da158d7398e",
+      "archive_id": "d8782c79418a5d47df19a09bcbce6e18f8bd2d0235769060441d97318cb7966b",
+      "bytes": 13929,
+      "format": "pdf",
+      "declared_folder_language": "en",
+      "language_validated": false,
+      "family_hint": "parallel-pdf-scenario-2",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 600,
+          "text_sha256": "9d42ae627321e7fcd8351dced9bbb122448dfad9654732e0cc3d7915689b14a8",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        },
+        {
+          "page": 2,
+          "text_characters": 730,
+          "text_sha256": "3a2a8f0ad646d33022dcac76c846b63a16ae31d05e9eedc287a5b789332f4f92",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        }
+      ],
+      "text_characters": 1330,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "5231d1feafeab9eeb69c7c6208924b40082af337d13041f2725d717f45ade6fd",
+      "archive_id": "d8782c79418a5d47df19a09bcbce6e18f8bd2d0235769060441d97318cb7966b",
+      "bytes": 14414,
+      "format": "pdf",
+      "declared_folder_language": "en",
+      "language_validated": false,
+      "family_hint": "parallel-pdf-scenario-3",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 715,
+          "text_sha256": "71a2ea468063d0971362cd0638b900a9d620c1a9389fbc26038fecb9188dc829",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        },
+        {
+          "page": 2,
+          "text_characters": 1090,
+          "text_sha256": "7f91a0515ceb8028140521fc58c5f678bc3a99646b33256737b62f3fbf7a79e2",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        }
+      ],
+      "text_characters": 1805,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "58a278e62f1e890a3ec0631daeec3c23aed6939e54b6721fa667d94b3ad8a1e1",
+      "archive_id": "d8782c79418a5d47df19a09bcbce6e18f8bd2d0235769060441d97318cb7966b",
+      "bytes": 3985231,
+      "format": "pdf",
+      "declared_folder_language": "hi",
+      "language_validated": false,
+      "family_hint": "unreviewed-8fc585cb3eef",
+      "family_reviewed": false,
+      "pages": 11,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 2,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 3,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 4,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 5,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 6,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 7,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 8,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 9,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 10,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 11,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        }
+      ],
+      "text_characters": 0,
+      "scan_candidate": true,
+      "inspection": "ok"
+    },
+    {
+      "id": "677447bab69394bc93a051516d73f82964c964c53bcd9d55489668392f1b09de",
+      "archive_id": "d8782c79418a5d47df19a09bcbce6e18f8bd2d0235769060441d97318cb7966b",
+      "bytes": 22977,
+      "format": "pdf",
+      "declared_folder_language": "te",
+      "language_validated": false,
+      "family_hint": "parallel-pdf-scenario-2",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 610,
+          "text_sha256": "e69e090b041ea219656774e2cf5205f681a7ca3e2e0e7693c6595a4d5b2b05f5",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        },
+        {
+          "page": 2,
+          "text_characters": 744,
+          "text_sha256": "cd2c9764bf3eb1fd007f2bc38d196b458027fda8f1ed156748c82e59b633280d",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        }
+      ],
+      "text_characters": 1354,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "6ce3462a6ca5e4c3ac32826015d9f1a50e061a70fbd24504d9cdd34976c7979e",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 317273,
+      "format": "pdf",
+      "declared_folder_language": "mr",
+      "language_validated": false,
+      "family_hint": "unreviewed-e6d2980812d1",
+      "family_reviewed": false,
+      "pages": 1,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 1549,
+          "text_sha256": "0b81ca00584582d2b719958b7f646381b889a13e60e223554b631c14cfd13362",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        }
+      ],
+      "text_characters": 1549,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "6d65f8a377c6974970db42d2be059a4cc4db7727efbf223c6c66762dc1ebba15",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 400378,
+      "format": "pdf",
+      "declared_folder_language": "mr",
+      "language_validated": false,
+      "family_hint": "unreviewed-1c74b09d676c",
+      "family_reviewed": false,
+      "pages": 1,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 1844,
+          "text_sha256": "0cba66a8312d950b206a5391e0942aab7d17cc7b0b977df64f14df4e3fbb6cac",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        }
+      ],
+      "text_characters": 1844,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "6da8e248ec2375a6c493b922bff62d6922dba1465454eff9ae27e3c659077b6c",
+      "archive_id": "d8782c79418a5d47df19a09bcbce6e18f8bd2d0235769060441d97318cb7966b",
+      "bytes": 15327,
+      "format": "pdf",
+      "declared_folder_language": "en",
+      "language_validated": false,
+      "family_hint": "parallel-pdf-scenario-1",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 892,
+          "text_sha256": "4d759694af1453bbb16ad50314499aca7d7d8583ec4128c8077ac804b765cd3c",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        },
+        {
+          "page": 2,
+          "text_characters": 1390,
+          "text_sha256": "41e31bd73f924ef113dc3a5e38835b742a73ed4d6e68635672caf441bd496491",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        }
+      ],
+      "text_characters": 2282,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "6e7b0a6faa3a575c84aa3609557ee77da32afab0f1309e76270c11fbcb55ce08",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 232152,
+      "format": "pdf",
+      "declared_folder_language": "hi",
+      "language_validated": false,
+      "family_hint": "parallel-form-scenario-4",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 1351,
+          "text_sha256": "79ebc3a4fce0120f162b7aa34198fc72aaa81968b670dd4c8153ab1928397bd2",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        },
+        {
+          "page": 2,
+          "text_characters": 755,
+          "text_sha256": "f68c38b242d899f014ca877aa70473ae518c1a6bd45e4f267df08eb1f8fe0c0f",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        }
+      ],
+      "text_characters": 2106,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "700f69efb2997a9bd3757a4c725e653b99f529d4fba1d68c85aced8871ecef79",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 324619,
+      "format": "pdf",
+      "declared_folder_language": "mr",
+      "language_validated": false,
+      "family_hint": "unreviewed-761fd959c971",
+      "family_reviewed": false,
+      "pages": 1,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 1830,
+          "text_sha256": "169dc27e3d9383034c5bec3a9c58556d56d98d1ceff94cd689d70b59fca29570",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        }
+      ],
+      "text_characters": 1830,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "71305e381d61c40bd4a86a4c3e5f7b8d9504f81bf9586975f50438145378e09b",
+      "archive_id": "c400ae3d42b6c86cea7f68ca42bad153451469353a7cd6b5592cd411b97ffb72",
+      "bytes": 1967543,
+      "format": "mp4",
+      "declared_folder_language": "te",
+      "language_validated": false,
+      "family_hint": "audio-unreviewed",
+      "family_reviewed": false,
+      "container": "mov,mp4,m4a,3gp,3g2,mj2",
+      "audio_streams": 1,
+      "video_streams": 0,
+      "codec": "aac",
+      "sample_rate": 48000,
+      "channels": 2,
+      "duration_seconds": 121.301,
+      "decoded": true,
+      "decoded_frames": 5686,
+      "decoded_seconds": 121.301,
+      "inspection": "ok"
+    },
+    {
+      "id": "7418927bbc0c20e800f5861bf55996c5863a5677c16bc916b859680b45eb50b5",
+      "archive_id": "c400ae3d42b6c86cea7f68ca42bad153451469353a7cd6b5592cd411b97ffb72",
+      "bytes": 2098612,
+      "format": "mp4",
+      "declared_folder_language": "or",
+      "language_validated": false,
+      "family_hint": "audio-unreviewed",
+      "family_reviewed": false,
+      "container": "mov,mp4,m4a,3gp,3g2,mj2",
+      "audio_streams": 1,
+      "video_streams": 0,
+      "codec": "aac",
+      "sample_rate": 48000,
+      "channels": 1,
+      "duration_seconds": 128.553,
+      "decoded": true,
+      "decoded_frames": 6026,
+      "decoded_seconds": 128.555,
+      "inspection": "ok"
+    },
+    {
+      "id": "7b57f798b3dede1f0820f9cc2714f11c1771cad373e88e2e41b48afa0ac449cc",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 325612,
+      "format": "pdf",
+      "declared_folder_language": "mr",
+      "language_validated": false,
+      "family_hint": "unreviewed-a080f96b8836",
+      "family_reviewed": false,
+      "pages": 1,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 2183,
+          "text_sha256": "43e1810deae69f92ee751b067599771aee82d5272fcf7563d695c228ae068232",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        }
+      ],
+      "text_characters": 2183,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "7ce548f6bd308bdc325225368d8f0d10f36090e0623e559b32237b33e9c44f37",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 268538,
+      "format": "pdf",
+      "declared_folder_language": "te",
+      "language_validated": false,
+      "family_hint": "parallel-form-scenario-5",
+      "family_reviewed": false,
+      "pages": 1,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 1613,
+          "text_sha256": "f6615a37b1f8c6c34fe8bc5de4ea216a6a3d5ebebf7b1c6d41d8faabcf39fe69",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        }
+      ],
+      "text_characters": 1613,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "7f5965219c49288d4b00467937bf249f6934c4b5543180adbbe3d75b7a38e94e",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 1059106,
+      "format": "pdf",
+      "declared_folder_language": "te",
+      "language_validated": false,
+      "family_hint": "parallel-form-scenario-6",
+      "family_reviewed": false,
+      "pages": 3,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 1673,
+          "text_sha256": "e682fc3a08d7ff1dc73901600afdf3d1a6557655ab218e58b65b104fc9799f9f",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        },
+        {
+          "page": 2,
+          "text_characters": 1438,
+          "text_sha256": "2c92991f4b7d8f1eb39393c507892770c4175673807432e7b78baa2c2f8b8412",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        },
+        {
+          "page": 3,
+          "text_characters": 42,
+          "text_sha256": "9d7aa1f875bbfc2d95ba448137908da001203851d2d0ac99a5a1070d6e611b47",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        }
+      ],
+      "text_characters": 3153,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "805be25e41481eaf92a2b0e9af5fbfed6cb9fd85036bda8c7ae8d3a7e53ddbb5",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 42583,
+      "format": "pdf",
+      "declared_folder_language": "en",
+      "language_validated": false,
+      "family_hint": "form-english-tea-variants",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 1559,
+          "text_sha256": "4202cdfe19b6e18ce1ba5ee69bd0af0f8a0dde49cccf3879c036f70299827c76",
+          "has_null_or_replacement": false,
+          "width_points": 595.2756,
+          "height_points": 841.8898
+        },
+        {
+          "page": 2,
+          "text_characters": 788,
+          "text_sha256": "661ab62c7cb775744d9edcbe5dfd19292fcca89b5eb523f61b6efbe25de28e85",
+          "has_null_or_replacement": false,
+          "width_points": 595.2756,
+          "height_points": 841.8898
+        }
+      ],
+      "text_characters": 2347,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "81c1f7077df0db21c0a768f272647069c6e43fb2206bb935c63c825da43939e7",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 29692,
+      "format": "pdf",
+      "declared_folder_language": "en",
+      "language_validated": false,
+      "family_hint": "form-english-2",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 1378,
+          "text_sha256": "498e242570b515e7c49d1111bd8798f0df9455b65915f16bee5de94031a3b719",
+          "has_null_or_replacement": false,
+          "width_points": 595.2756,
+          "height_points": 841.8898
+        },
+        {
+          "page": 2,
+          "text_characters": 584,
+          "text_sha256": "9a68f3e21e8828fa14ebcdee8119405bd9547ea1692b41bf94e20fdfcf586775",
+          "has_null_or_replacement": false,
+          "width_points": 595.2756,
+          "height_points": 841.8898
+        }
+      ],
+      "text_characters": 1962,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "891116f2ff2ed91122623e94f569075530d77fda7c8d20408085bade9931eefd",
+      "archive_id": "d8782c79418a5d47df19a09bcbce6e18f8bd2d0235769060441d97318cb7966b",
+      "bytes": 31166,
+      "format": "pdf",
+      "declared_folder_language": "mr",
+      "language_validated": false,
+      "family_hint": "parallel-pdf-scenario-5",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 704,
+          "text_sha256": "91cf5bfdc346b28cd96b2281da3e0f2f9efe8baca98fb6ff3f3f12a9a63449fa",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        },
+        {
+          "page": 2,
+          "text_characters": 956,
+          "text_sha256": "a64d9685e61dff99ba7e3e59699a8fb4dc286af70551fe2766544b463879f86e",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        }
+      ],
+      "text_characters": 1660,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "92c9d8dc1c43e5466259502ed7e52bd3ec536b0601f52a220dae150ba94e4269",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 240222,
+      "format": "pdf",
+      "declared_folder_language": "hi",
+      "language_validated": false,
+      "family_hint": "parallel-form-scenario-1",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 1565,
+          "text_sha256": "ca175f2a8db8c628fb2c256bc75670e0c6558f28df76f7705ed7d92412d53f2a",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        },
+        {
+          "page": 2,
+          "text_characters": 1015,
+          "text_sha256": "9467b0eca597b23746cefff55bf51dac56f84abe246f0ff8d40598767a48653d",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        }
+      ],
+      "text_characters": 2580,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "976cc12ce02b44465968ccee722e1025a89aa69064c705f0f02eae6b5e5d1263",
+      "archive_id": "d8782c79418a5d47df19a09bcbce6e18f8bd2d0235769060441d97318cb7966b",
+      "bytes": 21150,
+      "format": "pdf",
+      "declared_folder_language": "mr",
+      "language_validated": false,
+      "family_hint": "parallel-pdf-scenario-4",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 823,
+          "text_sha256": "82e5196f40a394d7b8bc33d4c9f36db7282b42fc1af738b1e9348a962b5ca513",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        },
+        {
+          "page": 2,
+          "text_characters": 1198,
+          "text_sha256": "b6bf09405a44b72a7b59ab457705940b2a87abc5c83a784c22aea07e6cb16260",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        }
+      ],
+      "text_characters": 2021,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "9a131e0ed594eb9183fc36dcb8ad3016ba6501d8a5b38ce28f7aa675208a2b86",
+      "archive_id": "c400ae3d42b6c86cea7f68ca42bad153451469353a7cd6b5592cd411b97ffb72",
+      "bytes": 1605653,
+      "format": "mp4",
+      "declared_folder_language": "te",
+      "language_validated": false,
+      "family_hint": "audio-unreviewed",
+      "family_reviewed": false,
+      "container": "mov,mp4,m4a,3gp,3g2,mj2",
+      "audio_streams": 1,
+      "video_streams": 0,
+      "codec": "aac",
+      "sample_rate": 48000,
+      "channels": 2,
+      "duration_seconds": 98.944,
+      "decoded": true,
+      "decoded_frames": 4638,
+      "decoded_seconds": 98.944,
+      "inspection": "ok"
+    },
+    {
+      "id": "9dc51c79d8867e2a718d0a6ce3701ef3f1df10a33917a2c4ff173c8a099ac0d9",
+      "archive_id": "c400ae3d42b6c86cea7f68ca42bad153451469353a7cd6b5592cd411b97ffb72",
+      "bytes": 2009598,
+      "format": "mp4",
+      "declared_folder_language": "hi",
+      "language_validated": false,
+      "family_hint": "audio-unreviewed",
+      "family_reviewed": false,
+      "container": "mov,mp4,m4a,3gp,3g2,mj2",
+      "audio_streams": 1,
+      "video_streams": 0,
+      "codec": "aac",
+      "sample_rate": 48000,
+      "channels": 2,
+      "duration_seconds": 124.096,
+      "decoded": true,
+      "decoded_frames": 5817,
+      "decoded_seconds": 124.096,
+      "inspection": "ok"
+    },
+    {
+      "id": "9fb7b3e91720d2e57dc9fb2fb705887afa9fbf511a3e623a36b9ecb70da84c74",
+      "archive_id": "d8782c79418a5d47df19a09bcbce6e18f8bd2d0235769060441d97318cb7966b",
+      "bytes": 5362502,
+      "format": "pdf",
+      "declared_folder_language": "hi",
+      "language_validated": false,
+      "family_hint": "unreviewed-f9d0796aea25",
+      "family_reviewed": false,
+      "pages": 11,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 2,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 3,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 4,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 5,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 6,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 7,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 8,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 9,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 10,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 11,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        }
+      ],
+      "text_characters": 0,
+      "scan_candidate": true,
+      "inspection": "ok"
+    },
+    {
+      "id": "a579962806b841466e8b6634017432db38ad93a152d0ef18f69206badef0ae17",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 233073,
+      "format": "pdf",
+      "declared_folder_language": "hi",
+      "language_validated": false,
+      "family_hint": "parallel-form-scenario-2",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 1269,
+          "text_sha256": "158dad9d2ad60c553df472e7584b83a3007ae9638273f9a7e3de499f96866c0e",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        },
+        {
+          "page": 2,
+          "text_characters": 707,
+          "text_sha256": "07f96d48befe2658796aef8849479b82dd64d5c8a94ca488f160dea9c62a2fe4",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        }
+      ],
+      "text_characters": 1976,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "a59859c64a6bbff8e7e921bbe630cb08f323b8361f074398551f0f7c4fac3957",
+      "archive_id": "c400ae3d42b6c86cea7f68ca42bad153451469353a7cd6b5592cd411b97ffb72",
+      "bytes": 2402702,
+      "format": "mp4",
+      "declared_folder_language": "or",
+      "language_validated": false,
+      "family_hint": "audio-unreviewed",
+      "family_reviewed": false,
+      "container": "mov,mp4,m4a,3gp,3g2,mj2",
+      "audio_streams": 1,
+      "video_streams": 0,
+      "codec": "aac",
+      "sample_rate": 48000,
+      "channels": 1,
+      "duration_seconds": 147.198,
+      "decoded": true,
+      "decoded_frames": 6900,
+      "decoded_seconds": 147.2,
+      "inspection": "ok"
+    },
+    {
+      "id": "ada1eab8d8622cbd7e3d10efe70a3ac15b9a993ad03fd08c8ab9fa5085f96a26",
+      "archive_id": "d8782c79418a5d47df19a09bcbce6e18f8bd2d0235769060441d97318cb7966b",
+      "bytes": 3564274,
+      "format": "pdf",
+      "declared_folder_language": "hi",
+      "language_validated": false,
+      "family_hint": "unreviewed-b2858054b673",
+      "family_reviewed": false,
+      "pages": 11,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 2,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 3,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 4,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 5,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 6,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 7,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 8,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 9,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 10,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        },
+        {
+          "page": 11,
+          "text_characters": 0,
+          "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "has_null_or_replacement": false,
+          "width_points": 595.0,
+          "height_points": 842.0
+        }
+      ],
+      "text_characters": 0,
+      "scan_candidate": true,
+      "inspection": "ok"
+    },
+    {
+      "id": "b266327f3235fb7530e66348766b349c824b2eb7dbea0100c24978f1002df614",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 341268,
+      "format": "pdf",
+      "declared_folder_language": "te",
+      "language_validated": false,
+      "family_hint": "parallel-form-scenario-1",
+      "family_reviewed": false,
+      "pages": 1,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 1938,
+          "text_sha256": "f46af69268bf8d98f773e1248a04c386762b5ad9db7e3e6166412be6b5e22073",
+          "has_null_or_replacement": true,
+          "width_points": 595.91998,
+          "height_points": 842.88
+        }
+      ],
+      "text_characters": 1938,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "b97d8e7119009338c75a8f2a70823f2c5a2301f274058accfdf705cdfe6a81f0",
+      "archive_id": "d8782c79418a5d47df19a09bcbce6e18f8bd2d0235769060441d97318cb7966b",
+      "bytes": 30589,
+      "format": "pdf",
+      "declared_folder_language": "te",
+      "language_validated": false,
+      "family_hint": "parallel-pdf-scenario-1",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 900,
+          "text_sha256": "308c06b5609553b239dc42fa3aa51b8b8ac2ed7f726acd41f9f6df6e9cb631a0",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        },
+        {
+          "page": 2,
+          "text_characters": 1465,
+          "text_sha256": "166407bbfa347d497011e32234bf215c4bd412d3e0c3dcbfce37e59ae40e1cce",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        }
+      ],
+      "text_characters": 2365,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "ba78ceb53eafb4929335858e841eb73005504a102ff5b2df8a222d1bf3ea58ab",
+      "archive_id": "c400ae3d42b6c86cea7f68ca42bad153451469353a7cd6b5592cd411b97ffb72",
+      "bytes": 2360777,
+      "format": "mp4",
+      "declared_folder_language": "hi",
+      "language_validated": false,
+      "family_hint": "audio-unreviewed",
+      "family_reviewed": false,
+      "container": "mov,mp4,m4a,3gp,3g2,mj2",
+      "audio_streams": 1,
+      "video_streams": 0,
+      "codec": "aac",
+      "sample_rate": 48000,
+      "channels": 2,
+      "duration_seconds": 145.792,
+      "decoded": true,
+      "decoded_frames": 6834,
+      "decoded_seconds": 145.792,
+      "inspection": "ok"
+    },
+    {
+      "id": "c51c3f274d11c5689b5e347a5047ef4c6b32b7a8c13fe6ebd1631c0b0d5bf5b6",
+      "archive_id": "c400ae3d42b6c86cea7f68ca42bad153451469353a7cd6b5592cd411b97ffb72",
+      "bytes": 338436,
+      "format": "ogg",
+      "declared_folder_language": "bn",
+      "language_validated": false,
+      "family_hint": "audio-unreviewed",
+      "family_reviewed": false,
+      "container": "ogg",
+      "audio_streams": 1,
+      "video_streams": 0,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 1,
+      "duration_seconds": 159.466,
+      "decoded": true,
+      "decoded_frames": 1329,
+      "decoded_seconds": 159.454,
+      "inspection": "ok"
+    },
+    {
+      "id": "c7896b598bb5bfbfaf326d46bf7ad84bae0ae2c6b7f2a5348559cb6d99be529d",
+      "archive_id": "c400ae3d42b6c86cea7f68ca42bad153451469353a7cd6b5592cd411b97ffb72",
+      "bytes": 703555,
+      "format": "ogg",
+      "declared_folder_language": "bn",
+      "language_validated": false,
+      "family_hint": "audio-unreviewed",
+      "family_reviewed": false,
+      "container": "ogg",
+      "audio_streams": 1,
+      "video_streams": 0,
+      "codec": "opus",
+      "sample_rate": 48000,
+      "channels": 1,
+      "duration_seconds": 322.627,
+      "decoded": true,
+      "decoded_frames": 2689,
+      "decoded_seconds": 322.614,
+      "inspection": "ok"
+    },
+    {
+      "id": "cfc566b3dc0488ffe3fe09c8d9f07ffd58736c21bc1106833c5c75a8ac12d9dc",
+      "archive_id": "d8782c79418a5d47df19a09bcbce6e18f8bd2d0235769060441d97318cb7966b",
+      "bytes": 27487,
+      "format": "pdf",
+      "declared_folder_language": "te",
+      "language_validated": false,
+      "family_hint": "parallel-pdf-scenario-3",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 705,
+          "text_sha256": "97ceaebcd79f7dc29dbc66968ec3f663b89323531a0ea4effa3848a3bbb1f2a1",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        },
+        {
+          "page": 2,
+          "text_characters": 1066,
+          "text_sha256": "1737a3c7bd387f9652b38f6b134d86e8ff2f37547de35d2d7d38ea1191f0a5c9",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        }
+      ],
+      "text_characters": 1771,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "d2bbec6050aef76531f4ed1be1556c976068bf25c974ff5cfbc6af48bc723710",
+      "archive_id": "c400ae3d42b6c86cea7f68ca42bad153451469353a7cd6b5592cd411b97ffb72",
+      "bytes": 2763006,
+      "format": "mp4",
+      "declared_folder_language": "or",
+      "language_validated": false,
+      "family_hint": "audio-unreviewed",
+      "family_reviewed": false,
+      "container": "mov,mp4,m4a,3gp,3g2,mj2",
+      "audio_streams": 1,
+      "video_streams": 0,
+      "codec": "aac",
+      "sample_rate": 48000,
+      "channels": 1,
+      "duration_seconds": 169.277,
+      "decoded": true,
+      "decoded_frames": 7935,
+      "decoded_seconds": 169.28,
+      "inspection": "ok"
+    },
+    {
+      "id": "dd4ff6d4471b743a5b8ae5d199cb29b03d8f29a3ab22f225b3748536c7189069",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 29614,
+      "format": "pdf",
+      "declared_folder_language": "en",
+      "language_validated": false,
+      "family_hint": "form-english-tea-variants",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 1146,
+          "text_sha256": "9fe5077c318878b354d9cafb57cf430ebb0a312c8113efdec3dde5af6f370ccf",
+          "has_null_or_replacement": false,
+          "width_points": 595.2756,
+          "height_points": 841.8898
+        },
+        {
+          "page": 2,
+          "text_characters": 731,
+          "text_sha256": "7621be74756d048c53791de587154a4e07f001b6e8451ee7d35d2ecad446ca45",
+          "has_null_or_replacement": false,
+          "width_points": 595.2756,
+          "height_points": 841.8898
+        }
+      ],
+      "text_characters": 1877,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "de353e3d0df4b85cc83e50318d2de670e5d87022032637573d1b9c0cc9f6052c",
+      "archive_id": "79f8591839254e856af314a31d9231367b35a209e0ac8dea708e7daea098b4ca",
+      "bytes": 29680,
+      "format": "pdf",
+      "declared_folder_language": "en",
+      "language_validated": false,
+      "family_hint": "form-english-tea-variants",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 1291,
+          "text_sha256": "e2c725d89c4e656b92e6c37513dbd0270ea6248d7e6da1b72a1b0f12f94518da",
+          "has_null_or_replacement": false,
+          "width_points": 595.2756,
+          "height_points": 841.8898
+        },
+        {
+          "page": 2,
+          "text_characters": 553,
+          "text_sha256": "d676cdb861b551ceea9030bf93397c6edc257f714e7598bd83d17967b86cc864",
+          "has_null_or_replacement": false,
+          "width_points": 595.2756,
+          "height_points": 841.8898
+        }
+      ],
+      "text_characters": 1844,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "e88005fdf326f7409598bd28d7a957741f144848464425c9ecad4dbd4ab30ec6",
+      "archive_id": "d8782c79418a5d47df19a09bcbce6e18f8bd2d0235769060441d97318cb7966b",
+      "bytes": 20829,
+      "format": "pdf",
+      "declared_folder_language": "en",
+      "language_validated": false,
+      "family_hint": "parallel-pdf-scenario-4",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 829,
+          "text_sha256": "de63ae65660af84710c51e06b526e96448f1194ba403288c63808437ebcd2b57",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        },
+        {
+          "page": 2,
+          "text_characters": 1205,
+          "text_sha256": "6ba252e1cc9e4b490812537e882fd7e83cd73a7803a884e83fa6171c33592a60",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        }
+      ],
+      "text_characters": 2034,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "eb68fc97280a4a2d62bed58bcafc28721bfc566f8e87c118ba1467cf33dafebe",
+      "archive_id": "d8782c79418a5d47df19a09bcbce6e18f8bd2d0235769060441d97318cb7966b",
+      "bytes": 23824,
+      "format": "pdf",
+      "declared_folder_language": "mr",
+      "language_validated": false,
+      "family_hint": "parallel-pdf-scenario-1",
+      "family_reviewed": false,
+      "pages": 2,
+      "page_metadata": [
+        {
+          "page": 1,
+          "text_characters": 866,
+          "text_sha256": "fc6ca64a8b7f8b3863d3a0da6b7e32996c55de41f4aa75c7e4109bc3b3434ab8",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        },
+        {
+          "page": 2,
+          "text_characters": 1373,
+          "text_sha256": "ad006807a39deacd5a12bc8267ac311e092b34a87f9e2c83eb6f10cc3c5cfea0",
+          "has_null_or_replacement": false,
+          "width_points": 595.275591,
+          "height_points": 841.889764
+        }
+      ],
+      "text_characters": 2239,
+      "scan_candidate": false,
+      "inspection": "ok"
+    },
+    {
+      "id": "f911cf84bd0a930625df4c86d2762b3d65d2785537176d45c014f805d8dc3355",
+      "archive_id": "c400ae3d42b6c86cea7f68ca42bad153451469353a7cd6b5592cd411b97ffb72",
+      "bytes": 1792074,
+      "format": "mp4",
+      "declared_folder_language": "te",
+      "language_validated": false,
+      "family_hint": "audio-unreviewed",
+      "family_reviewed": false,
+      "container": "mov,mp4,m4a,3gp,3g2,mj2",
+      "audio_streams": 1,
+      "video_streams": 0,
+      "codec": "aac",
+      "sample_rate": 48000,
+      "channels": 2,
+      "duration_seconds": 110.464,
+      "decoded": true,
+      "decoded_frames": 5178,
+      "decoded_seconds": 110.464,
+      "inspection": "ok"
+    }
+  ]
+}

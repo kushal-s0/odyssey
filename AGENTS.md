@@ -4,9 +4,9 @@
 
 - Every new commit must have both author and committer `Kartik Verma <kartikverma2204number1@gmail.com>`. Verify both after committing. No co-author, sign-off or AI-attribution trailers. Preserve historical attribution.
 - Keep commits local. Never push any branch, create a pull request, upload source to a model host, or publish/deploy changes without Kartik's explicit approval for that publication. Prepare reviewable artifacts first.
-- Confirm repository remote, branch and working tree before work. This project currently uses `https://github.com/kushal-s0/odyssey.git`, branch `master`; do not confuse it with the portfolio repository.
+- Confirm repository remote, branch and working tree before work. This project currently uses `https://github.com/kushal-s0/odyssey.git`, branch `main`; do not confuse it with the portfolio repository.
 - Read `planning/SESSION_HANDOFF.md` and `planning/HACKATHON_DELIVERY_PLAN.md` before resuming. A new session/model/account must inspect actual state and reuse verified work; chat history is not the continuation record.
-- Confirmed deadline: **18 October 2026, 06:00 Asia/Calcutta**, including a deployed demo. Current authorization is project review and documentation/task revision only, not application implementation or publication.
+- Confirmed deadline: **18 October 2026, 06:00 Asia/Calcutta**, including a deployed demo. Current authorization is full step-by-step implementation, local commits and ongoing explanation/committee-preparation docs. Publication still requires explicit approval.
 - Kartik prefers inference without an expiring provider allowance and can keep his laptop running. Prefer a verified owned-laptop worker for judging; free Hugging Face deployment remains a separately verified target. Do not describe a laptop-backed deployment as fully cloud hosted or unlimited.
 - Available human language review: English and Hindi only. Other languages remain unvalidated unless a reviewer becomes available.
 
@@ -16,7 +16,7 @@ This repository contains the uploaded Tata STRIVE problem statement/datasets and
 
 - The user requires free deployment and no paid APIs. Read `planning/FREE_MODEL_HOSTING_PLAN.md`; do not restore old hosted-model/paid-worker assumptions or add paid fallbacks.
 - The user confirmed an eligible Hugging Face account. Verify actual free Space provisioning, model access and quotas; no paid plan or GPU purchase is authorized.
-- Complete T09A (small relevance-model experiment) and T23A (versioned model deployment) within the 28-task backlog. Existing open-weight models are self-hosted, not represented as models trained by this project.
+- Complete T09A (small relevance-model experiment) and T23A (versioned model deployment) within the 29-task backlog (including final T27 deployment walkthrough). Existing open-weight models are self-hosted, not represented as models trained by this project.
 - Distinguish quota-limited free deployment from scalability demonstrated on local/owned hardware. Do not load test public free services.
 
 ## When implementing the application
@@ -28,3 +28,8 @@ This repository contains the uploaded Tata STRIVE problem statement/datasets and
 - On resumption, inspect the latest report and actual code state. Preserve user changes and do not repeat already verified work unnecessarily.
 - Keep source data private, APIs stateless, long-running work durable, and evidence/revisions traceable. Apply the explicit access, recovery, scalability and deployment gates in the execution plan.
 - Never claim mocked provider behavior is a live integration, a container build is a deployment, or an unmeasured scaling target is achieved capacity.
+
+## Implementation documentation
+
+- Maintain `explanations/` with code/module guides, data flow, design choices, limitations and committee questions as each task progresses. Preserve required licenses and source provenance for external models/data/resources; do not conceal third-party work or make unsupported originality claims.
+- Finish with T27: detailed step-by-step deployment instructions for the actual free configuration, including prerequisites, secret setup, build/deploy, owned-worker startup, verification, recovery and troubleshooting.

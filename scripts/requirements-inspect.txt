@@ -1,0 +1,8 @@
+av==16.0.1
+huggingface-hub==0.36.0
+Pillow==11.3.0
+psutil==7.1.0
+pypdf==6.1.1
+pytest==8.4.2
+python-dotenv==1.1.1
+truststore==0.10.4

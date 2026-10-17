@@ -1,11 +1,11 @@
 # Codex task status
 
-**Application state:** planning review/revision only; no application/model deployed.
+**Application state:** implementation started; no application/model deployed.
 **Budget:** zero paid API or hosting dependencies.  
-**Active application task:** none. **Next task if implementation is requested:** T01. **Current scope:** analyze project and revise tasks/docs; local documentation commit only.
-**Last update:** 2026-10-17, Asia/Calcutta. **Progress:** 0 / 28 tasks done.
+**Active application task:** none. **Current scope:** full implementation, explanations/ and final T27 deployment walkthrough; local commits only.
+**Last update:** 2026-10-17, Asia/Calcutta. **Progress:** 0 / 29 tasks done.
 
-**Deadline:** 2026-10-18 06:00 Asia/Calcutta, working deployed demo included. Read [SESSION_HANDOFF.md](SESSION_HANDOFF.md), [HACKATHON_DELIVERY_PLAN.md](HACKATHON_DELIVERY_PLAN.md) and [PROJECT_REVIEW.md](PROJECT_REVIEW.md). Prefer verified laptop inference; English/Hindi human review only. No implementation/publication authorization follows from this tracker.
+**Deadline:** 2026-10-18 06:00 Asia/Calcutta, working deployed demo included. Read [SESSION_HANDOFF.md](SESSION_HANDOFF.md), [HACKATHON_DELIVERY_PLAN.md](HACKATHON_DELIVERY_PLAN.md) and [PROJECT_REVIEW.md](PROJECT_REVIEW.md). Prefer verified laptop inference; English/Hindi human review only. Implementation is authorized by the latest user request; publication remains unapproved.
 
 Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FREE_MODEL_HOSTING_PLAN.md) and [ordered tasks](IMPLEMENTATION_TASKS.md). States: `pending`, `in_progress`, `blocked`, `done`. A completed task needs actual checks and a report.
 
@@ -13,7 +13,7 @@ Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FRE
 
 | ID | Task | Status | Report path (create during execution) | Blocker |
 |---|---|---|---|---|
-| T01 | Inspect dataset and prove free-runtime feasibility | pending | `task-reports/T01.md` | Laptop inference, gated model access and actual HF provisioning/quota remain unverified |
+| T01 | Inspect dataset and prove free-runtime feasibility | blocked | `task-reports/T01.md` | Gated AI4Bharat access pending; CUDA/model inference and HF provisioning/guarded integration unverified |
 | T02 | Scaffold application and local toolchain | pending | `task-reports/T02.md` | None confirmed |
 | T03 | Define contracts, domain rules and rubric | pending | `task-reports/T03.md` | None confirmed |
 | T04 | Implement database, durable stage leases and private storage | pending | `task-reports/T04.md` | None confirmed |
@@ -41,6 +41,7 @@ Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FRE
 | T24 | Deploy and verify the full free hosted application | pending | `task-reports/T24.md` | Service projects/access not verified; publication approval absent |
 | T25 | Run deployed acceptance and recovery checks | pending | `task-reports/T25.md` | None confirmed |
 | T26 | Write final implementation and readiness handover | pending | `task-reports/T26.md` | None confirmed |
+| T27 | Write detailed free-deployment walkthrough | pending | `task-reports/T27.md` | Deployment configuration must be finalized and verified |
 
 ## Prerequisite record
 
@@ -48,10 +49,12 @@ The prior plan records an eligible Hugging Face account for free ZeroGPU. Actual
 
 ## Resume note
 
-The latest user instruction is review and planning revision, with continuation across models/sessions/accounts. Earlier T01-only execution text is superseded. No application implementation report exists; the stale T01 in-progress marker was reconciled to pending. Read SESSION_HANDOFF.md and actual code/reports on resumption. A later implementation request may authorize the backlog; do not infer that request from the plan itself. Preserve zero-spend and local-only Git rules.
+Full implementation is authorized. Follow the explicit order; maintain explanations/ and task reports. T27 adds the requested final deployment walkthrough. Preserve original uploads and honest provenance for any external resources. Current branch is main; do not reset to the historical master name. Publication remains unapproved.
 
 ## History
 
 - 2026-10-17: Created sequential Codex tasks and mandatory Markdown completion reports.
-- 2026-10-17: Revised to free infrastructure and self-hosted open weights; added T09A custom relevance-model experiment and T23A model deployment. All 28 tasks remain pending.
+- 2026-10-17: Revised to free infrastructure and self-hosted open weights; added T09A custom relevance-model experiment and T23A model deployment. All 29 tasks remain pending.
 - 2026-10-17: Reviewed original brief, dataset containers/PDFs, plans, official runtime limits and laptop hardware. Confirmed 18 October 06:00 IST deployed-demo deadline, preference for owned inference and English/Hindi review. Added deadline/continuation documents and reconciled stale T01 state; no application task marked complete.
+
+- 2026-10-17: User authorized full implementation, external resources with retained license/provenance, ongoing explanations/ and final T27 deployment walkthrough. T01 started; actual branch main retained.

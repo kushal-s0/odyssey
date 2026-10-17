@@ -2,9 +2,9 @@
 
 **Project:** Udyam Saathi — Tata STRIVE business-idea screening.  
 **Executor:** Codex. This replaces the earlier assignment of tasks to three human builders.  
-**Current state:** planning review/revision only; no application task has passed its acceptance checks. See the tracker and actual code rather than inferring implementation from planning tools.
+**Current state:** full implementation authorized; T01 is starting. No application task has passed acceptance yet. Maintain explanations/ with module/functionality guides and committee questions.
 
-**Confirmed delivery deadline:** 18 October 2026, 06:00 Asia/Calcutta, including a deployed demo. Read [deadline checkpoints](HACKATHON_DELIVERY_PLAN.md) and [session handoff](SESSION_HANDOFF.md) first. These planning instructions do not authorize implementation or publication by themselves.
+**Confirmed delivery deadline:** 18 October 2026, 06:00 Asia/Calcutta, including a deployed demo. Read [deadline checkpoints](HACKATHON_DELIVERY_PLAN.md) and [session handoff](SESSION_HANDOFF.md) first. The user has authorized full implementation; remote publication still requires explicit approval.
 
 **Budget policy:** no paid API or hosting purchases, no trial-credit dependency and no paid fallback. The user confirmed an eligible free Hugging Face account; still verify real provisioning and quotas. Existing open weights are self-hosted; only the small answer-relevance model is trained for this project.
 
@@ -97,11 +97,11 @@ Provider-free load tests measure application infrastructure only. Record real AI
 
 T23 must deliver reproducible application builds, migrations, service configuration, health checks, CI, rollback and operating instructions. T23A must deliver model manifests, classifier/baseline artifacts, two free Space deployments and cold/warm memory/latency measurements. T09A performs the small relevance-model training experiment with an explicit promotion/rejection decision. T24 and T25 must validate the live environment. The final readiness report distinguishes verified results, targets not reached and work that remains blocked.
 
-T01 proves the model/runtime path early and T02 prepares deployable skeleton configuration. Seek explicit approval for an early sanitized preview; do not wait for final packaging to discover hosting incompatibility. This does not mark T23/T24 done or waive any final gate. T23A also packages and measures the preferred laptop worker; HF blockers remain separate and visible. Distinguish a verified selected-profile demo from full completion of all 28 tasks.
+T01 proves the model/runtime path early and T02 prepares deployable skeleton configuration. Seek explicit approval for an early sanitized preview; do not wait for final packaging to discover hosting incompatibility. This does not mark T23/T24 done or waive any final gate. T23A also packages and measures the preferred laptop worker; HF blockers remain separate and visible. Distinguish a verified selected-profile demo from full completion of all 29 tasks.
 
 ## 6. Completion and handover
 
-The implementation is complete when all 28 tasks (T01-T26 plus T09A and T23A) are `done`, every report exists, the deployed end-to-end checks pass, and the deployment checklist is supported by recorded evidence. If any of these remain unmet, provide a precise partial-completion report instead of calling the application production-ready.
+The implementation is complete when all 29 tasks (T01-T27 plus T09A and T23A) are `done`, every report exists, the deployed end-to-end checks pass, and the deployment checklist is supported by recorded evidence. If any of these remain unmet, provide a precise partial-completion report instead of calling the application production-ready.
 
 At handover, distinguish quota-limited free deployment from capacity on additional owned hardware. Provide the deployed URL, release/version identifier, startup/deployment instructions, actual test results, dataset evaluation, scaling measurements, cost/configuration notes and any residual limitations. The app is a first-line assessment aid; final program/funding decisions remain with authorized reviewers.
 

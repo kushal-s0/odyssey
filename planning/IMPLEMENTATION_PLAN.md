@@ -1,13 +1,13 @@
 # Udyam Saathi — implementation plan
 
 **Tata STRIVE: AI-Powered Business Idea Screening and Assessment**  
-**Execution:** Codex follows 28 tasks in the explicit deadline order; the historical event window was 30 hours. **Confirmed deadline: 18 October 2026, 06:00 Asia/Calcutta, deployed demo included.**
-**Status:** planning deliverable; application implementation and deployment have not started.  
+**Execution:** Codex follows 29 tasks in the explicit deadline order; the historical event window was 30 hours. **Confirmed deadline: 18 October 2026, 06:00 Asia/Calcutta, deployed demo included.**
+**Status:** implementation authorized; consult TASK_STATUS.md for actual progress; no deployment verified.
 **Prepared and revised:** 17 October 2026
 
 **Execution entry point:** [CODEX_EXECUTION_PLAN.md](CODEX_EXECUTION_PLAN.md). This file is the product/architecture specification; task order and completion reporting are defined in the execution plan and [IMPLEMENTATION_TASKS.md](IMPLEMENTATION_TASKS.md). Earlier human assignments and estimates are superseded.
 
-Read [HACKATHON_DELIVERY_PLAN.md](HACKATHON_DELIVERY_PLAN.md) for early deployment checkpoints and [SESSION_HANDOFF.md](SESSION_HANDOFF.md) for current authorization and continuation across models/sessions/accounts. Current scope is planning revision only. Prefer a verified owned-laptop model worker for judging to avoid an expiring inference allowance; keep free HF deployment as a separate target. Available human review: English/Hindi only.
+Read [HACKATHON_DELIVERY_PLAN.md](HACKATHON_DELIVERY_PLAN.md) for early deployment checkpoints and [SESSION_HANDOFF.md](SESSION_HANDOFF.md) for current authorization and continuation across models/sessions/accounts. Current scope is full step-by-step implementation with explanations/ and final T27 deployment instructions. Prefer a verified owned-laptop model worker for judging to avoid an expiring inference allowance; keep free HF deployment as a separate target. Available human review: English/Hindi only.
 
 > Product promise: Turn a regional-language business idea into an evidence-backed assessment, then help the entrepreneur supply the missing information.
 
@@ -237,10 +237,11 @@ Execute the backlog in the explicit order from [HACKATHON_DELIVERY_PLAN.md](HACK
 | T20-T22 | Quality, access and scaling | Recorded dataset metrics, security checks and multi-instance load/recovery evidence |
 | T23, T23A, T24-T25 | App/model deployability and real free release | Reproducible packaging, versioned models, actual HTTPS deployment and deployed acceptance pass |
 | T26 | Final handover | Requirements-to-evidence mapping and honest readiness report |
+| T27 | Detailed deployment walkthrough | Verified numbered instructions, recovery and troubleshooting |
 
 After each task, Codex writes `planning/task-reports/TXX.md` using the report template, records actual changes and checks, then updates [TASK_STATUS.md](TASK_STATUS.md) and the CSV. Only then may the task be marked done. All tasks are initially pending. Reports must be written during implementation, not pre-filled with expected success.
 
-The fixed deadline should guide simplicity: use one modular backend, basic charts, list-based local context and browser print-to-PDF. Keep read-aloud, full maps, peer matching and large-model training outside this execution scope. Self-hosted open-weight inference and the small relevance-model experiment are included. Clarification and arithmetic are explicitly included tasks. Do not silently remove committed requirements to fit the clock. Distinguish a verified selected-profile demo from completion of all 28 tasks; missing required HF deployments, scaling evidence or language reviewers remain explicit limitations/blockers. Update SESSION_HANDOFF.md at each checkpoint so another model/session can continue without this chat.
+The fixed deadline should guide simplicity: use one modular backend, basic charts, list-based local context and browser print-to-PDF. Keep read-aloud, full maps, peer matching and large-model training outside this execution scope. Self-hosted open-weight inference and the small relevance-model experiment are included. Clarification and arithmetic are explicitly included tasks. Do not silently remove committed requirements to fit the clock. Distinguish a verified selected-profile demo from completion of all 29 tasks; missing required HF deployments, scaling evidence or language reviewers remain explicit limitations/blockers. Update SESSION_HANDOFF.md at each checkpoint so another model/session can continue without this chat.
 
 Scalability is verified in T22 using two API replicas, two workers, 10,000 synthetic metadata records, a queued-job recovery workload and a concurrent metadata/status workload. The execution plan defines measurement gates. These are planned tests, not achieved capacity claims. Run scale workloads locally, not against public free services. T23 verifies app packaging; T23A verifies model packaging/serving; T24 verifies the actual free deployment. Missing model access, exhausted quotas or unavailable hosting remain named blockers.
 

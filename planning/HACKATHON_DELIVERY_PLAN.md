@@ -5,9 +5,9 @@
 - Deadline: **18 October 2026, 06:00 Asia/Calcutta**, working deployed demo included.
 - Service spend: zero; no paid APIs, subscriptions, GPU purchase, trial-credit dependency or paid fallback.
 - Prefer inference without a provider's expiring allowance. Kartik can keep his RTX 5050 laptop running for inference/training. Use a verified owned worker as the preferred judging profile; free HF deployments remain a separate target, not the sole inference budget.
-- Current authorization: review and revise planning/tasks/docs, then commit locally as Kartik. Application implementation and any publication need a subsequent explicit instruction. Do not interpret this file as authorization to start or deploy.
+- Current authorization: implement the full backlog step by step, maintain explanations/ and commit locally as Kartik. Any publication still needs explicit approval.
 - Human review available: English and Hindi only. Mark other language quality unvalidated until reviewed.
-- All 28 task IDs and their reports remain required for full-backlog completion. Never mark a failed/unmeasured criterion done to meet the clock.
+- All 29 task IDs and their reports remain required for full-backlog completion. Never mark a failed/unmeasured criterion done to meet the clock.
 
 ## Deployment profiles
 
@@ -19,13 +19,13 @@ The operator starts the worker during real processing/judging sessions. Use boun
 
 **Secondary hosted model profile:** two owned Gradio ZeroGPU Spaces with the existing signed stage contract. Verify actual eligibility/access/quota. Keep HF-specific CPU ONNX restrictions separate from laptop execution: a local supported PyTorch/GPU ASR path is allowed only after measuring it. Do not route automatically to HF or spend its remaining quota without recording the selected backend. No multi-account quota bypass.
 
-T23A still packages the versioned local worker and both Space runtimes and verifies the required deployments. If free HF provisioning fails, record its unfinished criteria; the laptop demo can be verified separately, but full 28-task completion remains blocked until its required gates pass or Kartik explicitly revises that scope.
+T23A still packages the versioned local worker and both Space runtimes and verifies the required deployments. If free HF provisioning fails, record its unfinished criteria; the laptop demo can be verified separately, but full 29-task completion remains blocked until its required gates pass or Kartik explicitly revises that scope.
 
 ## Execution order and early preview
 
 Keep one task active at a time and finish its report/status before switching. Use this explicit task order after implementation is authorized:
 
-`T01 -> T02 -> T03 -> T04 -> T05 -> T06 -> T07 -> T09 -> T09A -> T12 -> T08 -> T10 -> T11 -> T13 -> T14 -> T15 -> T16 -> T17 -> T18 -> T19 -> T20 -> T21 -> T22 -> T23 -> T23A -> T24 -> T25 -> T26`
+`T01 -> T02 -> T03 -> T04 -> T05 -> T06 -> T07 -> T09 -> T09A -> T12 -> T08 -> T10 -> T11 -> T13 -> T14 -> T15 -> T16 -> T17 -> T18 -> T19 -> T20 -> T21 -> T22 -> T23 -> T23A -> T24 -> T25 -> T26 -> T27`
 
 This moves text understanding/scoring before the applicant UI milestone, so T08 can demonstrate a real text-to-assessment result. T09A remains a bounded required experiment and may reject a candidate; T12 must not depend on successful promotion. PDF/audio, assessor review and all required comparison views remain in scope.
 
@@ -58,6 +58,6 @@ If implementation starts after a checkpoint, immediately record elapsed time and
 
 ## Definition of outcomes
 
-**Demo verified:** the recorded hosted URL works with the selected model backend for explicitly listed journeys, private persistence and recovery. State unavailable features, languages and hosted-model targets. This can exist before full backlog completion and must not be presented as all 28 tasks done.
+**Demo verified:** the recorded hosted URL works with the selected model backend for explicitly listed journeys, private persistence and recovery. State unavailable features, languages and hosted-model targets. This can exist before full backlog completion and must not be presented as all 29 tasks done.
 
-**Full backlog complete:** all 28 reports and acceptance gates, required model deployments, evaluation/scaling evidence, final release checks and consistent tracker/CSV. Unavailable quotas/reviewers/infrastructure remain named blockers. No production-readiness claim follows from a successful five-minute demo.
+**Full backlog complete:** all 29 reports and acceptance gates, required model deployments, evaluation/scaling evidence, final release checks and consistent tracker/CSV. Unavailable quotas/reviewers/infrastructure remain named blockers. No production-readiness claim follows from a successful five-minute demo.

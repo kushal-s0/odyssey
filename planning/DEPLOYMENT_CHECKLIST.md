@@ -2,7 +2,7 @@
 
 **Executor: Codex. Status: planned, not deployed.** Apply this during T23, T23A, T24 and T25. Every completed check needs actual evidence in its task report. See [FREE_MODEL_HOSTING_PLAN.md](FREE_MODEL_HOSTING_PLAN.md) for official sources, model choices, runtime contracts and account requirements.
 
-**Deadline:** 18 October 2026, 06:00 Asia/Calcutta, deployed demo included. Prepare skeleton configuration in T02 and seek approval for an early preview; this checklist still governs final release. [HACKATHON_DELIVERY_PLAN.md](HACKATHON_DELIVERY_PLAN.md) distinguishes a selected-profile demo from full-backlog completion. Current authorization is documentation only; no deployment/source upload is approved.
+**Deadline:** 18 October 2026, 06:00 Asia/Calcutta, deployed demo included. Prepare skeleton configuration in T02 and seek approval for an early preview; this checklist still governs final release. [HACKATHON_DELIVERY_PLAN.md](HACKATHON_DELIVERY_PLAN.md) distinguishes a selected-profile demo from full-backlog completion. Full implementation is authorized; no deployment/source upload is approved. Final T27 must provide a detailed deployment walkthrough.
 
 ## 1. Verify the selected zero-spend profile
 

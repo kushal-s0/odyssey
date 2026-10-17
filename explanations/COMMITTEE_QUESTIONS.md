@@ -1,0 +1,33 @@
+# Committee questions - living evidence-backed answers
+
+## What problem are you solving?
+
+An assessor needs a consistent first understanding of business ideas submitted in regional languages and different formats. The intended workflow preserves originals, structures facts with evidence, explains ratings and asks useful follow-up questions. Refer to task reports for what is implemented at the time of judging.
+
+## Did you train the language/speech/vision models?
+
+No. Those are existing open-weight models selected and self-hosted by the project. T09A implements a separate small answer-relevance experiment; its training data provenance, grouped evaluation and promotion/rejection decision will be recorded. Do not claim a validated custom model until the required evidence exists.
+
+## Why can you deploy for free?
+
+The intended deployment uses free frontend/API/database plans and owned laptop inference. There is no paid inference API or expiring trial-credit requirement. Hosted services still have quotas/sleep behavior and the laptop must stay online. No unlimited throughput or fully cloud-hosted claim is justified.
+
+## Is the supplied dataset a training benchmark?
+
+It is a small collection of scenario examples, including translations and altered answers. It has no business-success labels. We inventory all inputs, keep personal data private, separate related families before splitting and do not train a funding-success predictor.
+
+## What happens when extraction is uncertain?
+
+The design preserves original evidence, alternatives and explicit missing/irrelevant/ambiguous/unreadable states. Unknown values remain null. Verification of the actual implementation must be linked from the relevant task report as those features land.
+
+## Does a high score approve funding?
+
+No. The proposed rubric is a first-level assessment aid requiring human review and later stakeholder calibration. Information completeness is separate from potential, and missing evidence must not become a zero score.
+
+## Which languages have been validated?
+
+English/Hindi human review is available, but availability alone is not completed validation. Marathi, Telugu, Bengali and Odia require fluent reviewers before accuracy/fairness claims. Publish actual sample counts and failure cases.
+
+## What public resources are used?
+
+Only resources with suitable permissions should be incorporated. Model manifests, dependency lockfiles and source records preserve provenance and licenses. Public or synthetic additions are separated from the organizer corpus and held-out real evaluation; they are not presented as independently collected beneficiary data.
