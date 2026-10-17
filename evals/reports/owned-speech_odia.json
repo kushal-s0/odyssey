@@ -1,0 +1,26 @@
+{
+  "scope": "Actual owned local model inference; no population accuracy or human validation claim",
+  "case": "speech_odia",
+  "human_validated": false,
+  "deployed": false,
+  "model": {
+    "id": "ARTPARK-IISc/whisper-large-v3-vaani-odia",
+    "revision": "357f3571fde5962196596cef29b76807e0932ff4"
+  },
+  "original_sha256": "0793a0df377ed4e7124e102e16eebeefa89ea6cea6fe906cd5adcae0f97ff424",
+  "sample_start_seconds": 0.0,
+  "sample_end_seconds": 6.45,
+  "transcript_characters": 54,
+  "language": {
+    "code": "or",
+    "provenance": "declared",
+    "model_id": null,
+    "model_confidence": null,
+    "needs_confirmation": true
+  },
+  "transcript_review": "Private transcript retained under .local; no human reference/WER measured",
+  "status": "passed",
+  "seconds": 24.007,
+  "gpu": "NVIDIA GeForce RTX 5050 Laptop GPU",
+  "peak_vram_bytes": 3373683712
+}

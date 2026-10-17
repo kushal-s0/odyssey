@@ -4,7 +4,7 @@ No code push/deployment is authorized yet. This page lists private prerequisites
 
 ## Hugging Face
 
-Accept the access conditions for the three AI4Bharat repositories linked in [SOURCES.md](SOURCES.md). Create a minimal read token and add `HF_TOKEN=...` to ignored root `.env.local`. The model probe reads it without printing its value. Do not buy a plan/GPU or enable paid inference. Free Space creation/upload is a separate approval/verification step.
+The selected Qwen/MiniLM/PaddleOCR/Whisper/NLLB artifacts are public and explicitly downloaded by setup. Gated AI4Bharat artifacts remain historical alternatives, not startup prerequisites. Review [model licenses](../models/PROVENANCE.md), especially NLLB's noncommercial restriction. A minimal optional `HF_TOKEN` stays in ignored root `.env.local`; never buy a GPU/plan or enable paid inference. Free Space creation/source upload still requires separate publication approval.
 
 ## Supabase Free
 
@@ -44,8 +44,8 @@ The application will report unavailable/blocked infrastructure until real checks
    ```
 
    Use `applicant` for submission accounts. The API trusts this database role,
-   never a role typed into the browser. Assessor accounts require the separate
-   assessor workspace, which is still on the implementation backlog.
+   never a role typed into the browser. Provision `--role assessor` only for a
+   trusted reviewer assigned to the appropriate cohort; it opens the assessor queue.
 5. Run `start.cmd`, open http://127.0.0.1:5173 and sign in with that password account.
    Submit an English idea with concrete business details to exercise the current
    working model path. The first assessment includes model loading time.

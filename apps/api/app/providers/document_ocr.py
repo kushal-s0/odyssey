@@ -39,11 +39,15 @@ class DocumentOCR:
         started=time.perf_counter()
         messages=[{'role':'user','content':[{'type':'image','image':image},{'type':'text','text':'OCR:'}]}]
         inputs=self.processor.apply_chat_template(messages,tokenize=True,add_generation_prompt=True,
-                                                  return_dict=True,return_tensors='pt').to(self.device)
+            return_dict=True,return_tensors='pt', images_kwargs={'size':{
+                'shortest_edge':self.processor.image_processor.min_pixels,'longest_edge':1_200_000}}).to(self.device)
         if inputs['input_ids'].shape[1]>4096:
             raise ValueError('OCR page exceeds context budget')
         with torch.inference_mode():
-            output=self.model.generate(**inputs,max_new_tokens=1536,do_sample=False)
+            # The upstream checkpoint defaults use_cache=False (training).
+            # Recomputing the full vision/text prefix for every output token is
+            # unusably slow for full forms; native DynamicCache is supported.
+            output=self.model.generate(**inputs,max_new_tokens=2048,do_sample=False,use_cache=True)
         if self.device=='cuda':
             torch.cuda.synchronize()
         generated=output[0][inputs['input_ids'].shape[1]:]
@@ -53,8 +57,8 @@ class DocumentOCR:
             'load_seconds':round(self.load_seconds,3),'seconds':round(time.perf_counter()-started,3),
             'input_tokens':int(inputs['input_ids'].shape[1]),'output_tokens':len(generated),
             'peak_vram_bytes':int(torch.cuda.max_memory_allocated()) if self.device=='cuda' else 0,
-            'rss_bytes':int(psutil.Process().memory_info().rss),'token_cap_reached':len(generated)>=1536,
+            'rss_bytes':int(psutil.Process().memory_info().rss),'token_cap_reached':len(generated)>=2048,
             'human_quality_validated':False})
-        if len(generated)>=1536:
+        if len(generated)>=2048:
             raise ValueError('OCR output was truncated; page requires review')
         return text

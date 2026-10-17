@@ -17,8 +17,13 @@ This directory explains the implementation as it is built. It is a companion to 
 | [09-text-pipeline.md](09-text-pipeline.md) | Actual owned text stages, exact quotes, model gates and limits |
 | [09a-relevance.md](09a-relevance.md) | Reproducible experimental classifier and rejection decision |
 | [12-assessments.md](12-assessments.md) | Grounded domain judgments, atomic persistence and server totals |
+| [11-speech-and-translation.md](11-speech-and-translation.md) | Local speech, Odia model, translation and review limitations |
+| [13-assessor-workspace.md](13-assessor-workspace.md) | Scoped queue, source corrections and review history |
+| [14-similar-ideas.md](14-similar-ideas.md) | Current-revision embeddings, access and retrieval limits |
+| [15-19-product-tools.md](15-19-product-tools.md) | Location, comparisons, arithmetic, explanations and printable history |
+| [17-clarifications.md](17-clarifications.md) | Three prioritized questions and immutable reassessment |
 | [COMMITTEE_QUESTIONS.md](COMMITTEE_QUESTIONS.md) | Likely judging questions and evidence-backed answers |
 
-Each implemented module gets an explanation of its purpose, main files/functions, input/output, data flow, security boundaries, failure handling, verification and tradeoffs. Add a link here when a guide exists. The final T27 adds `docs/DEPLOYMENT_GUIDE.md` and deployment Q&A after the actual configuration is known.
+Each implemented module gets an explanation of its purpose, main files/functions, input/output, data flow, security boundaries, failure handling, verification and tradeoffs. Add a link here when a guide exists. The prepared T27 instructions are in [docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md); public deployment is still unapproved and unverified.
 
 External models, libraries and permitted public data may be used. Their licenses/provenance belong in the model manifests and source records; required attribution is retained. Our own code, our trained candidate and pretrained models are described accurately.

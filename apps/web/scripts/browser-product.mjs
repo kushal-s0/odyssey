@@ -1,0 +1,141 @@
+// Auth/model results are explicit fixtures; API authorization, SQL and UI are real/local.
+import { chromium, expect } from '@playwright/test'
+import { readFile, writeFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
+
+const fixture = JSON.parse(await readFile(process.env.PRODUCT_UI_FIXTURE, 'utf8'))
+const browser = await chromium.launch({ headless: true, channel: process.env.BROWSER_CHANNEL || 'msedge' })
+const checks = []
+try {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } })
+  const page = await context.newPage()
+  const errors = []
+  page.on('pageerror', e => errors.push(e.message))
+  page.on('response', response => { if (response.url().startsWith(fixture.origin) && response.status() >= 500) errors.push(`API ${response.status()} ${new URL(response.url()).pathname}`) })
+  let account = 'applicant'
+  await page.route('https://identity.example.test/**', route => {
+    const user = { id: fixture.accounts[account].user, aud: 'authenticated', role: 'authenticated',
+      email: `${account}@example.test`, app_metadata: {}, user_metadata: {}, created_at: new Date().toISOString() }
+    if (route.request().url().includes('/token')) return route.fulfill({ json: {
+      access_token: fixture.accounts[account].token, refresh_token: 'synthetic-refresh', expires_in: 3600,
+      expires_at: fixture.expires, token_type: 'bearer', user } })
+    if (route.request().url().includes('/user')) return route.fulfill({ json: user })
+    return route.fulfill({ status: 204 })
+  })
+  async function signIn() {
+    await page.getByRole('button', { name: 'Sign in', exact: true }).click()
+    await page.getByLabel('Email', { exact: true }).fill(`${account}@example.test`)
+    await page.getByLabel('Password', { exact: true }).fill('synthetic-password')
+    await page.getByRole('button', { name: 'Sign in to workspace' }).click()
+  }
+  async function screenshot(name) {
+    const dims = await page.evaluate(() => ({ w:document.documentElement.clientWidth, scroll:document.documentElement.scrollWidth }))
+    expect(dims.scroll).toBeLessThanOrEqual(dims.w)
+    await page.screenshot({ path: resolve(fixture.directory,name+'.png'),fullPage:true })
+  }
+  await page.goto(fixture.web,{waitUntil:'networkidle'})
+  await page.getByLabel('Color theme').selectOption('dark')
+  await expect(page.locator('html')).toHaveAttribute('data-theme','dark')
+  await page.reload({waitUntil:'networkidle'})
+  await expect(page.locator('html')).toHaveAttribute('data-theme','dark')
+  await screenshot('landing-dark')
+  checks.push('Dark theme persists across reload; landing has no horizontal overflow.')
+  await signIn()
+  await page.getByRole('heading',{name:/Your idea,/}).waitFor()
+  await page.locator('.submission-list button').first().click()
+  await page.getByRole('heading',{name:'A clearer view of your idea',exact:true}).waitFor()
+  await page.getByRole('heading',{name:'Understand your results',exact:true}).waitFor()
+  await expect(page.getByRole('button',{name:'Explain with Groq'})).toBeDisabled()
+  await expect(page.locator('.economics-list')).toContainText('30000.00')
+  await expect(page.locator('.economics-list')).toContainText('revenue, not profit')
+  await expect(page.getByRole('heading',{name:'Make your next version stronger'})).toBeVisible()
+  await expect(page.getByRole('heading',{name:'Understand the business area'})).toBeVisible()
+  await page.getByLabel('Business area',{exact:true}).fill('Synthetic app input · public Bengaluru snapshot area')
+  await page.getByLabel('Approximate latitude',{exact:true}).fill('12.972')
+  await page.getByLabel('Approximate longitude',{exact:true}).fill('77.595')
+  await page.getByRole('checkbox',{name:/I confirm this is the approximate business area/}).check()
+  await page.getByRole('button',{name:'Search nearby businesses',exact:true}).click()
+  await expect(page.getByText('OpenStreetMap dated snapshot',{exact:false})).toBeVisible()
+  await expect(page.locator('.local-business').first()).toBeVisible()
+  checks.push('Confirmed-area UI survives an explicit provider-outage fixture and renders the real attributed/geofenced dated OSM snapshot.')
+  await page.getByRole('button',{name:'View source 1',exact:true}).first().click()
+  await expect(page.getByRole('region',{name:'Selected source'})).toContainText('Tea for office workers')
+  await screenshot('applicant-dark')
+  checks.push('Applicant sees saved facts, evidence, rule-based explanation, missing-key state, arithmetic and follow-ups.')
+  await page.getByRole('button',{name:'View & print report'}).click()
+  const report = page.getByRole('dialog',{name:'Assessment report version 1'})
+  await expect(report).toBeVisible()
+  const frame = page.frameLocator('iframe[title="Printable assessment report"]')
+  await expect(frame.getByRole('heading',{name:'Financial checks',exact:true})).toBeVisible()
+  const downloads = page.waitForEvent('download')
+  await report.getByRole('button',{name:'HTML',exact:true}).click()
+  await (await downloads).saveAs(resolve(fixture.directory,'report.html'))
+  const reportHtml = await readFile(resolve(fixture.directory,'report.html'),'utf8')
+  expect(reportHtml).not.toContain(fixture.accounts.applicant.token)
+  expect(reportHtml).not.toContain('service_role')
+  // Chromium PDF generation validates actual multipage print layout independently of the dialog UI.
+  const printPage = await context.newPage()
+  await printPage.setContent(reportHtml,{waitUntil:'load'})
+  await printPage.pdf({path:resolve(fixture.directory,'assessment-report.pdf'),format:'A4',printBackground:true})
+  await printPage.close()
+  await page.getByRole('button',{name:'Close report'}).click()
+  checks.push('Authorized report opens in isolated preview; HTML download excludes credentials; multipage PDF generated.')
+  await page.getByLabel('Color theme').selectOption('light')
+  await page.setViewportSize({width:390,height:900})
+  await screenshot('applicant-mobile-light')
+  await page.getByLabel('Color theme').selectOption('dark')
+  await screenshot('applicant-mobile-dark')
+  checks.push('Applicant workspace fits mobile in both themes.')
+  await page.getByRole('button',{name:'Comparisons',exact:true}).click()
+  await page.getByRole('heading',{name:'Compare with context.'}).waitFor()
+  await page.getByRole('checkbox',{name:'Include clearly labelled synthetic examples'}).check()
+  await expect(page.locator('.comparison-chart')).toContainText('Business clarity')
+  for (const label of ['By trade','By cohort','Across cohorts · same trade','Assessment dimensions']) {
+    await page.getByRole('button',{name:label,exact:true}).click()
+    await expect(page.locator('.comparison-chart')).toBeVisible()
+  }
+  await screenshot('comparisons-mobile-dark')
+  checks.push('All four scoped comparison views render known fixtures, missing values and denominators.')
+  await page.getByRole('button',{name:'Sign out',exact:true}).click()
+  account = 'assessor'
+  await page.setViewportSize({width:1440,height:1000})
+  await signIn()
+  await page.getByRole('heading',{name:/Every idea deserves/}).waitFor()
+  // A previous account's view selection may persist; explicitly choose the queue.
+  await page.getByRole('button',{name:'Review queue',exact:true}).click()
+  await expect(page.locator('.queue-row')).toHaveCount(2)
+  await page.locator(`.queue-row[data-submission-id="${fixture.submission}"]`).click()
+  await page.getByRole('heading',{name:'Your review',exact:true}).waitFor()
+  await page.getByLabel('Reason',{exact:true}).fill('Original evidence checked; demand research needs a follow-up.')
+  await page.getByRole('button',{name:'Save review',exact:true}).click()
+  await expect(page.getByText('Review saved.',{exact:true})).toBeVisible()
+  await page.getByRole('checkbox',{name:'Not reviewed',exact:true}).check()
+  await expect(page.locator('.queue-row')).toHaveCount(1)
+  await page.getByRole('checkbox',{name:'Not reviewed',exact:true}).uncheck()
+  await expect(page.locator('.queue-row')).toHaveCount(2)
+  await page.getByText('Check or correct the transcript',{exact:true}).click()
+  await page.getByLabel('Correction or complete corrected business transcript',{exact:true}).fill('Tea for office workers. The corrected selling price is INR 12 per cup.')
+  await page.getByRole('checkbox',{name:/I checked the complete business transcript/}).check()
+  await page.getByRole('checkbox',{name:/Use my correction as the complete business transcript/}).check()
+  await page.getByLabel('Reason',{exact:true}).fill('The complete synthetic original was checked and the selling price corrected.')
+  await page.getByRole('button',{name:'Save review',exact:true}).click()
+  await expect(page.getByText('Correction saved as a new revision. A fresh assessment is queued.',{exact:true})).toBeVisible()
+  await page.getByLabel('Assessment version',{exact:true}).selectOption('1')
+  await expect(page.getByText('Historical version 1',{exact:true})).toBeVisible()
+  checks.push('Trusted transcript replacement queues a new revision while the earlier assessment remains navigable.')
+  await screenshot('assessor-desktop-dark')
+  await page.setViewportSize({width:390,height:900})
+  await screenshot('assessor-mobile-dark')
+  expect(errors).toEqual([])
+  checks.push('Assessor has a real scoped paginated queue, immutable review write and unreviewed filter; no JS errors or mobile overflow.')
+  await writeFile(resolve(fixture.directory,'browser-results.json'),JSON.stringify({
+    scope:'Real local Edge/API/PostgreSQL. Auth issuer, assessment outputs and vectors are synthetic fixtures. No live external providers or GPU inference in this check.',
+    checks,page_errors:errors,model_quality_validated:false,deployed:false
+  },null,2)+'\n')
+  console.log(JSON.stringify({checks:checks.length,pageErrors:errors.length}))
+} catch(e) {
+  console.error(e)
+  throw e
+} finally {
+  await browser.close()
+}

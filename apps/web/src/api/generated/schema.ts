@@ -396,6 +396,230 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/submissions/{submission_id}/questions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Question List */
+        get: operations["question_list_v1_submissions__submission_id__questions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/submissions/{submission_id}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** History */
+        get: operations["history_v1_submissions__submission_id__history_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/submissions/{submission_id}/clarifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Answer */
+        post: operations["answer_v1_submissions__submission_id__clarifications_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/review-queue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Queue */
+        get: operations["queue_v1_review_queue_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/submissions/{submission_id}/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Reviews */
+        get: operations["reviews_v1_submissions__submission_id__reviews_get"];
+        put?: never;
+        /** Review */
+        post: operations["review_v1_submissions__submission_id__reviews_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/submissions/{submission_id}/similar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Similar */
+        get: operations["similar_v1_submissions__submission_id__similar_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/analytics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Analytics */
+        get: operations["analytics_v1_analytics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/submissions/{submission_id}/explanation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Explanation */
+        get: operations["explanation_v1_submissions__submission_id__explanation_get"];
+        put?: never;
+        /** Explain */
+        post: operations["explain_v1_submissions__submission_id__explanation_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/submissions/{submission_id}/location-settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Location Settings */
+        get: operations["location_settings_v1_submissions__submission_id__location_settings_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/submissions/{submission_id}/location-insights": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Location Insights */
+        get: operations["location_insights_v1_submissions__submission_id__location_insights_get"];
+        put?: never;
+        /** Lookup */
+        post: operations["lookup_v1_submissions__submission_id__location_insights_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/submissions/{submission_id}/geocode": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Locate */
+        post: operations["locate_v1_submissions__submission_id__geocode_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/submissions/{submission_id}/economics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Checks */
+        get: operations["checks_v1_submissions__submission_id__economics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/submissions/{submission_id}/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Report */
+        get: operations["report_v1_submissions__submission_id__report_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health/live": {
         parameters: {
             query?: never;
@@ -531,6 +755,31 @@ export interface components {
             /** Note */
             note: string;
         };
+        /** Analytics */
+        Analytics: {
+            /**
+             * Rubric Version
+             * @default rubric-v1
+             */
+            rubric_version: string;
+            /** Assessed Count */
+            assessed_count: number;
+            /** Eligible Count */
+            eligible_count: number;
+            /** Excluded Synthetic */
+            excluded_synthetic: number;
+            /** Excluded Repeated Family */
+            excluded_repeated_family: number;
+            /** Include Synthetic */
+            include_synthetic: boolean;
+            /** Views */
+            views: components["schemas"]["ComparisonView"][];
+            /**
+             * Note
+             * @default Potential comparisons include only current, complete, ranking-eligible assessments using the same rubric. Domain means use their assessable records; missing evidence is never zero. Small groups are descriptive only.
+             */
+            note: string;
+        };
         /** Assessment */
         Assessment: {
             /**
@@ -548,6 +797,8 @@ export interface components {
              * Format: uuid
              */
             input_revision_id: string;
+            /** Parent Revision Id */
+            parent_revision_id?: string | null;
             /** Version */
             version: number;
             /**
@@ -627,6 +878,11 @@ export interface components {
             start_seconds: number;
             /** End Seconds */
             end_seconds: number;
+            /**
+             * Transcription Uncertain
+             * @default true
+             */
+            transcription_uncertain: boolean;
         };
         /** BusinessRecord */
         "BusinessRecord-Input": {
@@ -713,6 +969,35 @@ export interface components {
              */
             retry_after_seconds: number;
         };
+        /** ClarificationBatch */
+        ClarificationBatch: {
+            /**
+             * Expected Revision Id
+             * Format: uuid
+             */
+            expected_revision_id: string;
+            /** Answers */
+            answers: {
+                [key: string]: string;
+            };
+        };
+        /** ClarificationQuestion */
+        ClarificationQuestion: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Field */
+            field: string;
+            /** Label */
+            label: string;
+            /** Question */
+            question: string;
+            status: components["schemas"]["FieldStatus"];
+            /** Priority */
+            priority: number;
+        };
         /** CohortAccess */
         CohortAccess: {
             /**
@@ -728,11 +1013,52 @@ export interface components {
              */
             role: "applicant" | "assessor";
         };
+        /** ComparisonGroup */
+        ComparisonGroup: {
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+            /** Trade */
+            trade?: string | null;
+            /** Synthetic */
+            synthetic: boolean;
+            /** Count */
+            count: number;
+            /** Rated Count */
+            rated_count: number;
+            /** Mean Score */
+            mean_score: number | null;
+            /** Mean Completeness */
+            mean_completeness: number | null;
+            /** Mean Coverage */
+            mean_coverage: number | null;
+            /** Small Sample */
+            small_sample: boolean;
+        };
+        /** ComparisonView */
+        ComparisonView: {
+            /**
+             * Dimension
+             * @enum {string}
+             */
+            dimension: "domain" | "trade" | "cohort" | "across_cohort";
+            /** Groups */
+            groups: components["schemas"]["ComparisonGroup"][];
+        };
         /**
          * Domain
          * @enum {string}
          */
         Domain: "clarity" | "customer_need" | "market_potential" | "feasibility" | "competition" | "differentiation";
+        /** DomainExplanation */
+        DomainExplanation: {
+            domain: components["schemas"]["Domain"];
+            /** Explanation */
+            explanation: string;
+            /** Evidence Fields */
+            evidence_fields?: ("offer" | "target_customers" | "problem" | "location" | "market_research" | "raw_materials" | "suppliers" | "investment" | "own_funds" | "requested_loan" | "unit_price" | "revenue" | "expenses" | "profit" | "competition" | "differentiation" | "existing_business" | "business_type")[];
+        };
         /** DomainRating */
         DomainRating: {
             domain: components["schemas"]["Domain"];
@@ -748,6 +1074,52 @@ export interface components {
              * @enum {string}
              */
             basis: "self_reported" | "reviewer_verified" | "mixed" | "insufficient";
+        };
+        /** Economics */
+        Economics: {
+            /**
+             * Assessment Id
+             * Format: uuid
+             */
+            assessment_id: string;
+            /** Checks */
+            checks: components["schemas"]["EconomicsCheck"][];
+            /**
+             * Note
+             * @default Arithmetic checks use supplied figures and explicit periods. Calculated estimates do not overwrite claims or alter assessment scores. Revenue is not profit.
+             */
+            note: string;
+        };
+        /** EconomicsCheck */
+        EconomicsCheck: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "funding" | "revenue" | "profit";
+            /** Title */
+            title: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "consistent" | "discrepancy" | "calculated" | "needs_clarification";
+            /** Explanation */
+            explanation: string;
+            /** Formula */
+            formula?: string | null;
+            /** Calculated Amount */
+            calculated_amount?: string | null;
+            /** Stated Amount */
+            stated_amount?: string | null;
+            /** Currency */
+            currency?: string | null;
+            /** Period */
+            period?: string | null;
+            /** Source Segment Ids */
+            source_segment_ids: string[];
+            /** Assumptions */
+            assumptions: string[];
         };
         /** ErrorEnvelope */
         ErrorEnvelope: {
@@ -859,11 +1231,96 @@ export interface components {
              */
             accepted: true;
         };
+        /** Explanation */
+        Explanation: {
+            /** Summary */
+            summary: string;
+            /** Domain Notes */
+            domain_notes: components["schemas"]["DomainExplanation"][];
+            /** Next Steps */
+            next_steps: components["schemas"]["NextStep"][];
+            /**
+             * Assessment Id
+             * Format: uuid
+             */
+            assessment_id: string;
+            /**
+             * Provider
+             * @enum {string}
+             */
+            provider: "groq" | "rule_based";
+            /** Model */
+            model?: string | null;
+            /**
+             * Language
+             * @default en
+             * @enum {string}
+             */
+            language: "en" | "hi";
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "ready" | "not_configured" | "unavailable" | "quota_limited";
+            /**
+             * Generated At
+             * Format: date-time
+             */
+            generated_at: string;
+            /** Note */
+            note: string;
+        };
+        /** ExplanationRequest */
+        ExplanationRequest: {
+            /**
+             * Expected Assessment Id
+             * Format: uuid
+             */
+            expected_assessment_id: string;
+            /**
+             * Language
+             * @default en
+             * @enum {string}
+             */
+            language: "en" | "hi";
+        };
         /**
          * FieldStatus
          * @enum {string}
          */
         FieldStatus: "present" | "missing" | "irrelevant" | "ambiguous" | "unreadable";
+        /** GeocodeCandidate */
+        GeocodeCandidate: {
+            /** Label */
+            label: string;
+            /** Latitude */
+            latitude: number;
+            /** Longitude */
+            longitude: number;
+        };
+        /** GeocodeRequest */
+        GeocodeRequest: {
+            /**
+             * Expected Revision Id
+             * Format: uuid
+             */
+            expected_revision_id: string;
+        };
+        /** GeocodeResults */
+        GeocodeResults: {
+            /** Candidates */
+            candidates: components["schemas"]["GeocodeCandidate"][];
+            /**
+             * Attribution
+             * @default © OpenStreetMap contributors · ODbL · Nominatim
+             */
+            attribution: string;
+            /**
+             * Note
+             * @default Choose and confirm the business area. Coordinates are approximate; a PIN is not an exact address.
+             */
+            note: string;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -934,6 +1391,28 @@ export interface components {
              */
             needs_confirmation: boolean;
         };
+        /** LocalBusiness */
+        LocalBusiness: {
+            /**
+             * Osm Type
+             * @enum {string}
+             */
+            osm_type: "node" | "way" | "relation";
+            /** Osm Id */
+            osm_id: number;
+            /** Name */
+            name: string;
+            /** Category */
+            category: string;
+            /** Latitude */
+            latitude: number;
+            /** Longitude */
+            longitude: number;
+            /** Distance M */
+            distance_m: number;
+            /** Url */
+            url: string;
+        };
         /** Location */
         Location: {
             /** Locality */
@@ -961,6 +1440,85 @@ export interface components {
              * @default false
              */
             applicant_confirmed: boolean;
+        };
+        /** LocationInsights */
+        LocationInsights: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "ready" | "empty" | "not_requested" | "unsupported_trade" | "unavailable";
+            /**
+             * Source
+             * @enum {string}
+             */
+            source: "OpenStreetMap Overpass" | "OpenStreetMap dated snapshot" | "none";
+            /**
+             * Attribution
+             * @default © OpenStreetMap contributors · ODbL
+             */
+            attribution: string;
+            /** Retrieved At */
+            retrieved_at?: string | null;
+            /** Area Label */
+            area_label?: string | null;
+            /** Latitude */
+            latitude?: number | null;
+            /** Longitude */
+            longitude?: number | null;
+            /** Radius M */
+            radius_m?: number | null;
+            /** Category */
+            category?: string | null;
+            /** Items */
+            items?: components["schemas"]["LocalBusiness"][];
+            /**
+             * Note
+             * @default OSM listings may be incomplete or outdated. Nearby listings are context, not verified direct competitors. Empty results do not mean there is no competition.
+             */
+            note: string;
+            /**
+             * Cached
+             * @default false
+             */
+            cached: boolean;
+        };
+        /** LocationLookup */
+        LocationLookup: {
+            /**
+             * Expected Revision Id
+             * Format: uuid
+             */
+            expected_revision_id: string;
+            /** Latitude */
+            latitude: number;
+            /** Longitude */
+            longitude: number;
+            /**
+             * Radius M
+             * @default 1500
+             */
+            radius_m: number;
+            /** Area Label */
+            area_label: string;
+            /**
+             * Confirmed
+             * @constant
+             */
+            confirmed: true;
+        };
+        /** LocationSettings */
+        LocationSettings: {
+            /**
+             * Revision Id
+             * Format: uuid
+             */
+            revision_id: string;
+            declared_location?: components["schemas"]["Location"] | null;
+            /** Geocoding Enabled */
+            geocoding_enabled: boolean;
+            /** Supported Trade */
+            supported_trade: boolean;
         };
         /** Money */
         "Money-Input": {
@@ -997,6 +1555,13 @@ export interface components {
             period: "day" | "week" | "month" | "year" | "once" | "unknown";
             /** Unit */
             unit?: string | null;
+        };
+        /** NextStep */
+        NextStep: {
+            /** Action */
+            action: string;
+            /** Evidence Fields */
+            evidence_fields?: ("offer" | "target_customers" | "problem" | "location" | "market_research" | "raw_materials" | "suppliers" | "investment" | "own_funds" | "requested_loan" | "unit_price" | "revenue" | "expenses" | "profit" | "competition" | "differentiation" | "existing_business" | "business_type")[];
         };
         /** PdfEvidence */
         PdfEvidence: {
@@ -1056,6 +1621,61 @@ export interface components {
              */
             extraction_uncertain: boolean;
         };
+        /** QueueItem */
+        QueueItem: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Revision Id
+             * Format: uuid
+             */
+            revision_id: string;
+            /** Cohort Id */
+            cohort_id: string | null;
+            /** Cohort Name */
+            cohort_name: string | null;
+            /** Synthetic */
+            synthetic: boolean;
+            /** Title */
+            title: string;
+            /** Input Kind */
+            input_kind: string;
+            /**
+             * Language
+             * @enum {string}
+             */
+            language: "en" | "hi" | "mr" | "te" | "bn" | "or" | "und";
+            status: components["schemas"]["JobStatus"];
+            /** Potential */
+            potential: number | null;
+            /** Completeness */
+            completeness: number | null;
+            /** Ranking Eligible */
+            ranking_eligible: boolean;
+            /** Trade */
+            trade: string | null;
+            /** Reviewed */
+            reviewed: boolean;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** QueuePage */
+        QueuePage: {
+            /** Items */
+            items: components["schemas"]["QueueItem"][];
+            /** Total */
+            total: number;
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+        };
         /** RelevanceCheck */
         RelevanceCheck: {
             domain: components["schemas"]["Domain"];
@@ -1084,6 +1704,80 @@ export interface components {
              * @constant
              */
             independently_validated: false;
+        };
+        /** ReviewInput */
+        ReviewInput: {
+            /**
+             * Expected Revision Id
+             * Format: uuid
+             */
+            expected_revision_id: string;
+            /**
+             * Outcome
+             * @enum {string}
+             */
+            outcome: "needs_clarification" | "deeper_evaluation" | "mentoring" | "skilling" | "reviewed";
+            /** Reason */
+            reason: string;
+            /** Correction Text */
+            correction_text?: string | null;
+            /**
+             * Source Verified
+             * @default false
+             */
+            source_verified: boolean;
+            /**
+             * Replace Transcript
+             * @default false
+             */
+            replace_transcript: boolean;
+        };
+        /** ReviewView */
+        ReviewView: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Input Revision Id
+             * Format: uuid
+             */
+            input_revision_id: string;
+            /** Outcome */
+            outcome: string;
+            /** Reason */
+            reason: string;
+            /** Correction Revision Id */
+            correction_revision_id: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** RevisionView */
+        RevisionView: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Parent Revision Id */
+            parent_revision_id: string | null;
+            /** Revision Number */
+            revision_number: number;
+            /** Input Kind */
+            input_kind: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Attachment Id */
+            attachment_id: string | null;
+            /** Assessment Version */
+            assessment_version: number | null;
         };
         /** ScoreSummary */
         "ScoreSummary-Input": {
@@ -1146,6 +1840,47 @@ export interface components {
             ranking_eligible: boolean;
             /** Withheld Reason */
             withheld_reason?: string | null;
+        };
+        /** SimilarIdea */
+        SimilarIdea: {
+            /**
+             * Submission Id
+             * Format: uuid
+             */
+            submission_id: string;
+            /** Title */
+            title: string;
+            /** Customers */
+            customers: string | null;
+            /** Trade */
+            trade: string;
+            /** Cosine Similarity */
+            cosine_similarity: number;
+            /** Shared Traits */
+            shared_traits: string[];
+            /** Differences */
+            differences: string[];
+            /** Synthetic */
+            synthetic: boolean;
+        };
+        /** SimilarResults */
+        SimilarResults: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "ready" | "not_indexed";
+            /** Model */
+            model: string;
+            /** Preprocessing */
+            preprocessing: string;
+            /** Items */
+            items: components["schemas"]["SimilarIdea"][];
+            /**
+             * Note
+             * @default Similarity is advisory, not a probability, plagiarism finding or proof of competition.
+             */
+            note: string;
         };
         /** SourceAccess */
         SourceAccess: {
@@ -2402,7 +3137,9 @@ export interface operations {
     };
     assessment_v1_submissions__submission_id__assessment_get: {
         parameters: {
-            query?: never;
+            query?: {
+                version?: number | null;
+            };
             header?: never;
             path: {
                 submission_id: string;
@@ -2449,6 +3186,539 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TextEvidence"] | components["schemas"]["PdfEvidence"] | components["schemas"]["AudioEvidence"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    question_list_v1_submissions__submission_id__questions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                submission_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClarificationQuestion"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    history_v1_submissions__submission_id__history_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                submission_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RevisionView"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    answer_v1_submissions__submission_id__clarifications_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "idempotency-key": string;
+            };
+            path: {
+                submission_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClarificationBatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubmissionAccepted"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    queue_v1_review_queue_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+                status?: components["schemas"]["JobStatus"] | null;
+                cohort_id?: string | null;
+                trade?: components["schemas"]["Trade"] | null;
+                search?: string;
+                unreviewed?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuePage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reviews_v1_submissions__submission_id__reviews_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                submission_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewView"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    review_v1_submissions__submission_id__reviews_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "idempotency-key": string;
+            };
+            path: {
+                submission_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewInput"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    similar_v1_submissions__submission_id__similar_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                submission_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SimilarResults"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    analytics_v1_analytics_get: {
+        parameters: {
+            query?: {
+                cohort_id?: string | null;
+                trade?: components["schemas"]["Trade"] | null;
+                sector?: ("agriculture" | "food_beverage" | "retail" | "services" | "manufacturing" | "other" | "unknown") | null;
+                include_synthetic?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Analytics"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    explanation_v1_submissions__submission_id__explanation_get: {
+        parameters: {
+            query?: {
+                language?: "en" | "hi";
+            };
+            header?: never;
+            path: {
+                submission_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Explanation"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    explain_v1_submissions__submission_id__explanation_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                submission_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExplanationRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Explanation"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    location_settings_v1_submissions__submission_id__location_settings_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                submission_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LocationSettings"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    location_insights_v1_submissions__submission_id__location_insights_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                submission_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LocationInsights"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    lookup_v1_submissions__submission_id__location_insights_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                submission_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LocationLookup"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LocationInsights"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    locate_v1_submissions__submission_id__geocode_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                submission_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GeocodeRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GeocodeResults"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    checks_v1_submissions__submission_id__economics_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                submission_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Economics"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    report_v1_submissions__submission_id__report_get: {
+        parameters: {
+            query?: {
+                version?: number | null;
+            };
+            header?: never;
+            path: {
+                submission_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/html": string;
                 };
             };
             /** @description Validation Error */

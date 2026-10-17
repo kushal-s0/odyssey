@@ -3,10 +3,10 @@
 > **Current demo priorities:** [HACKATHON_RESET.md](HACKATHON_RESET.md) supersedes the old release order. This table preserves the engineering backlog and its unverified gates; its done count is not product-completion percentage. Secondary HF/large scale work is deferred while brief features are implemented.
 
 
-**Application state:** local app runs against actual Supabase; real English text and digital-PDF model assessments verified in a browser. No public application deployment.
+**Application state:** Supabase-backed applicant and assessor workspaces, reviews/corrections, current/historical reports, similarity, four comparison views, financial checks, confirmed-area OSM and optional Groq explanations implemented. Dark/light/system responsive UI. Actual Groq English/Hindi, OSM, local translation/Hindi/Odia speech and full scan processing measured with limits; see [current checkpoint](../evals/reports/product-completion.json). No public application deployment.
 **Budget:** zero paid API or hosting dependencies.  
-**Active application task:** None; requested startup/access repair completed and verified. **Current scope:** full implementation, explanations/ and final T27 deployment walkthrough; local commits only.
-**Last update:** 2026-10-17, Asia/Calcutta. **Progress:** 5 / 29 tasks done.
+**Active application task:** none. **Current scope:** full implementation, explanations/ and final T27 deployment walkthrough; local commits only.
+**Last update:** 2026-10-18, Asia/Calcutta. **Progress:** 9 / 29 tasks done.
 
 **Deadline:** 2026-10-18 06:00 Asia/Calcutta, working deployed demo included. Read [SESSION_HANDOFF.md](SESSION_HANDOFF.md), [HACKATHON_DELIVERY_PLAN.md](HACKATHON_DELIVERY_PLAN.md) and [PROJECT_REVIEW.md](PROJECT_REVIEW.md). Prefer verified laptop inference; English/Hindi human review only. Implementation is authorized by the latest user request; publication remains unapproved.
 
@@ -27,15 +27,15 @@ Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FRE
 | T09 | Implement self-hosted extraction and Indic translation | blocked | `task-reports/T09.md` | English/adversarial owned assessments verified; IndicTrans2 401, longer exact-quote extraction, human review and remaining runtime gates pending |
 | T09A | Train and evaluate our answer-relevance model | done | `task-reports/T09A.md` | None confirmed |
 | T10 | Implement PDF and handwritten scans with open weights | blocked | `task-reports/T10.md` | Digital PDF passes; full Hindi handwriting quality failed; OCR replacement not integrated |
-| T11 | Implement self-hosted regional audio transcription | pending | `task-reports/T11.md` | None confirmed |
+| T11 | Implement self-hosted regional audio transcription | blocked | `task-reports/T11.md` | Owned Hindi ASR smoke passes; full audio/language/recovery matrix pending and selected model lacks Odia |
 | T12 | Implement evidence-backed ratings and deterministic totals | done | `task-reports/T12.md` | None confirmed |
-| T13 | Build assessor workspace, evidence viewer and review | pending | `task-reports/T13.md` | None confirmed |
-| T14 | Implement authorized similar-idea retrieval | pending | `task-reports/T14.md` | None confirmed |
-| T15 | Implement free OpenStreetMap business context | pending | `task-reports/T15.md` | None confirmed |
-| T16 | Implement all four comparison views | pending | `task-reports/T16.md` | None confirmed |
-| T17 | Implement clarification and reassessment | pending | `task-reports/T17.md` | None confirmed |
-| T18 | Implement business arithmetic checks | pending | `task-reports/T18.md` | None confirmed |
-| T19 | Implement reports and version history | pending | `task-reports/T19.md` | None confirmed |
+| T13 | Build assessor workspace, evidence viewer and review | blocked | `task-reports/T13.md` | Scoped queue/review/correction tests pass; all-format source and model/browser acceptance pending |
+| T14 | Implement authorized similar-idea retrieval | blocked | `task-reports/T14.md` | Scoped pgvector retrieval passes; real embedding publication and annotated Recall@5 pending |
+| T15 | Implement free OpenStreetMap business context | done | `task-reports/T15.md` | None confirmed |
+| T16 | Implement all four comparison views | done | `task-reports/T16.md` | None confirmed |
+| T17 | Implement clarification and reassessment | blocked | `task-reports/T17.md` | Text revision flow verified; localized/audio follow-ups and real-model before/after pending |
+| T18 | Implement business arithmetic checks | done | `task-reports/T18.md` | None confirmed |
+| T19 | Implement reports and version history | done | `task-reports/T19.md` | None confirmed |
 | T20 | Evaluate dataset and our model with real measurements | pending | `task-reports/T20.md` | Human review currently available only for English/Hindi; other language quality unvalidated |
 | T21 | Harden access, uploads and failure boundaries | pending | `task-reports/T21.md` | None confirmed |
 | T22 | Measure portable API and model scalability | pending | `task-reports/T22.md` | Docker verified locally at T04; required two-API/two-worker scale experiment not run |
@@ -44,7 +44,7 @@ Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FRE
 | T24 | Deploy and verify the full free hosted application | pending | `task-reports/T24.md` | Service projects/access not verified; publication approval absent |
 | T25 | Run deployed acceptance and recovery checks | pending | `task-reports/T25.md` | None confirmed |
 | T26 | Write final implementation and readiness handover | pending | `task-reports/T26.md` | None confirmed |
-| T27 | Write detailed free-deployment walkthrough | pending | `task-reports/T27.md` | Deployment configuration must be finalized and verified |
+| T27 | Write detailed free-deployment walkthrough | blocked | `task-reports/T27.md` | Detailed actual-configuration guide prepared; publication/host provisioning and deployed reproduction unverified |
 
 ## Prerequisite record
 

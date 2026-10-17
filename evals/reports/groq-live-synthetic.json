@@ -1,0 +1,25 @@
+{
+  "scope": "Actual configured Groq provider; synthetic business data only; no applicant/DB records sent",
+  "model": "openai/gpt-oss-20b",
+  "results": [
+    {
+      "language": "en",
+      "passed": true,
+      "seconds": 1.07,
+      "summary": "The assessment shows only a basic offer and target customer group, so the rating is limited by the lack of supporting evidence. The current score reflects that the business idea is clear but unsubstantiated in key areas. Further details are needed to evaluate potential and feasibility.",
+      "domain_count": 6,
+      "scores_unchanged": true
+    },
+    {
+      "language": "hi",
+      "passed": true,
+      "seconds": 1.116,
+      "summary": "यह मूल्यांकन केवल दो जानकारी पर आधारित है: उत्पाद और लक्षित ग्राहक। इसलिए यह स्पष्टता के लिए कुछ अंक देता है, परंतु अन्य महत्वपूर्ण पहलुओं के लिए पर्याप्त साक्ष्य नहीं है।",
+      "domain_count": 6,
+      "scores_unchanged": true
+    }
+  ],
+  "human_validated": false,
+  "deployed": false,
+  "passed": true
+}

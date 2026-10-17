@@ -1,0 +1,13 @@
+{
+  "scope": "Actual owned local model inference; no population accuracy or human validation claim",
+  "case": "audio-fixtures",
+  "human_validated": false,
+  "deployed": false,
+  "chunks": 3,
+  "contiguous": true,
+  "nonoverlapping": true,
+  "status": "passed",
+  "seconds": 4.245,
+  "gpu": "NVIDIA GeForce RTX 5050 Laptop GPU",
+  "peak_vram_bytes": 0
+}

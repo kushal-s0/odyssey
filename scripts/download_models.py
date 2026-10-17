@@ -45,7 +45,7 @@ def provision(client,artifact,token):
     for entry in metadata.json()['siblings']:
         name=entry['rfilename']
         if '/' in name or '\\' in name or name.startswith('.') or not (
-                Path(name).suffix in {'.json','.safetensors','.txt','.model','.tiktoken','.py'} or name.startswith('LICENSE') or name=='README.md'):
+                Path(name).suffix in {'.json','.safetensors','.txt','.model','.tiktoken','.py','.jinja'} or name == 'pytorch_model.bin' or name.startswith('LICENSE') or name=='README.md'):
             continue
         target=folder/name
         size=int(entry['size'])
@@ -99,7 +99,7 @@ def provision(client,artifact,token):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--artifacts',nargs='+',choices=['qwen','embedding','ocr','indic_en','en_indic'],default=['qwen','embedding'])
+    parser.add_argument('--artifacts',nargs='+',choices=['qwen','embedding','ocr','indic_en','en_indic','speech','speech_odia','translation'],default=['qwen','embedding'])
     args=parser.parse_args()
     # Read existing configuration in memory; do not create additional token files.
     token=os.environ.get('HF_TOKEN') or dotenv_values(ROOT/'.env.local').get('HF_TOKEN') or dotenv_values(ROOT/'.env').get('HF_TOKEN')
@@ -110,7 +110,7 @@ def main():
         try:
             with httpx.Client(timeout=60,follow_redirects=True,trust_env=False) as client:
                 # Public artifacts do not depend on an optional gated-model token being valid.
-                files=provision(client,artifact,None if name in {'qwen','embedding','ocr'} else token)
+                files=provision(client,artifact,None if name in {'qwen','embedding','ocr','speech','speech_odia','translation'} else token)
             report.append({'artifact':name,**artifact,'files':files})
             print('Pinned artifact cached and hashed: '+name,flush=True)
         except Exception as error:

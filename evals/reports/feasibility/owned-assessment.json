@@ -3,22 +3,22 @@
   "cases": [
     {
       "case": "english",
-      "seconds": 168.306,
+      "seconds": 77.268,
       "status": "completed",
       "error_code": null,
       "structured": true,
-      "manifest_hash": "5a92382e6237e8b15789551265512189abd55c77b63b1006ca9962d8eceab9b0",
+      "manifest_hash": "7cd6ce07d7111de655b43cd50a7edea919893f751c4731bb37f64c390753d9b4",
       "human_quality_validated": false,
       "measurements": [
         {
           "model": "Qwen3-VL-2B-Instruct",
           "device": "cuda",
-          "seconds": 11.822,
-          "rss_bytes": 2191646720,
-          "input_tokens": 505,
-          "load_seconds": 41.938,
+          "seconds": 9.763,
+          "rss_bytes": 6148366336,
+          "input_tokens": 547,
+          "load_seconds": 13.458,
           "output_tokens": 94,
-          "peak_vram_bytes": 4390399488,
+          "peak_vram_bytes": 4407866880,
           "token_cap_reached": false,
           "human_quality_validated": false
         }
@@ -79,24 +79,24 @@
         {
           "model": "Qwen3-VL-2B-Instruct",
           "device": "cuda",
-          "seconds": 5.211,
-          "rss_bytes": 2247323648,
-          "input_tokens": 343,
-          "load_seconds": 10.16,
-          "output_tokens": 42,
-          "peak_vram_bytes": 4343580672,
+          "seconds": 4.916,
+          "rss_bytes": 6193987584,
+          "input_tokens": 352,
+          "load_seconds": 8.79,
+          "output_tokens": 39,
+          "peak_vram_bytes": 4346883072,
           "token_cap_reached": false,
           "human_quality_validated": false
         },
         {
           "model": "Qwen3-VL-2B-Instruct",
           "device": "cuda",
-          "seconds": 8.36,
-          "rss_bytes": 2263416832,
-          "input_tokens": 447,
-          "load_seconds": 10.16,
-          "output_tokens": 91,
-          "peak_vram_bytes": 4372407296,
+          "seconds": 7.676,
+          "rss_bytes": 6209175552,
+          "input_tokens": 449,
+          "load_seconds": 8.79,
+          "output_tokens": 88,
+          "peak_vram_bytes": 4372937216,
           "token_cap_reached": false,
           "human_quality_validated": false
         }

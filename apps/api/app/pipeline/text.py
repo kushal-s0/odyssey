@@ -9,7 +9,8 @@ from typing import Any
 
 from ..contracts.pipeline import EvidenceBundle, ExtractionDraft, StructuredBundle
 from ..contracts.worker import StageInput
-from ..providers.local_models import IndicTranslator, LanguageIdentifier, ModelUnavailable, Qwen
+from ..providers.local_models import LanguageIdentifier, ModelUnavailable, Qwen
+from ..providers.translation import LocalTranslator
 from .normalize import normalize_text, numeric_tokens
 from .structure import IDENTITY, SOURCE_INSTRUCTION, assemble
 
@@ -25,7 +26,7 @@ The problem field means the CUSTOMER problem addressed, not the applicant's miss
 The ONLY top-level keys are facts, trade, sector. Every business field, including target_customers, MUST be an entry inside facts with field, segment and quote. Copy the quote's original capitalization.'''
 
 
-def translated(bundle: EvidenceBundle, translator: IndicTranslator, completed: int = 0) -> Iterator[tuple[int,EvidenceBundle]]:
+def translated(bundle: EvidenceBundle, translator: LocalTranslator, completed: int = 0) -> Iterator[tuple[int,EvidenceBundle]]:
     for index in range(completed,len(bundle.evidence)):
         segment=bundle.evidence[index]
         code=segment.language.code
@@ -119,7 +120,7 @@ def handler(context: dict[str,Any]) -> Iterator[dict[str,Any]]:
         elif stage=='translate':
             bundle=EvidenceBundle.model_validate(checkpoint.get('bundle') or value.previous_outputs['extract:'+value.input_kind])
             start=int(checkpoint.get('next_segment',0))
-            for index,bundle in translated(bundle,IndicTranslator(),start):
+            for index,bundle in translated(bundle,LocalTranslator(),start):
                 yield {'checkpoint':{'next_segment':index,'bundle':bundle.model_dump(mode='json')}}
             yield {'publish':bundle.model_dump(mode='json')}
         elif stage=='structure':

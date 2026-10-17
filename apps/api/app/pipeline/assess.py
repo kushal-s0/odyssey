@@ -11,6 +11,7 @@ from ..contracts.models import Contract, Domain, DomainRating, RelevanceCheck
 from ..contracts.pipeline import AssessmentBundle, StructuredBundle
 from ..contracts.worker import StageInput
 from ..domain.relevance import SELECTED_RELEVANCE, baseline_label
+from ..domain.similarity import similarity_text
 from ..providers.local_models import ModelUnavailable, Qwen, SentenceEncoder
 from ..worker.manifest import MANIFEST
 from .assessment_rules import ANCHORS, QUESTIONS, domain_facts, validate_ratings
@@ -77,6 +78,11 @@ def handler(context: dict[str,Any]) -> Iterator[dict[str,Any]]:
         artifact=MANIFEST['qwen']
         output=AssessmentBundle(model_id=artifact['id'],model_revision=artifact['revision'],domains=ratings,
             relevance=relevance,measurements=saved+(model.measurements if model else []))
+        summary=similarity_text(bundle.business)
+        if summary:
+            if encoder is None:
+                encoder=SentenceEncoder()
+            output.similarity_vector=encoder.embed(summary)
         validate_ratings(bundle,output.domains)
         yield {'publish':output.model_dump(mode='json')}
     except ModelUnavailable:

@@ -5,8 +5,9 @@ from typing import Any
 from .assess import handler as assess
 from .text import handler as text
 from .pdf import handler as pdf
+from .audio import handler as audio
 
 
 def handler(context: dict[str,Any]) -> Iterator[dict[str,Any]]:
     stage=context['work']['stage_key']
-    yield from (assess(context) if stage=='assess' else pdf(context) if stage=='extract:pdf' else text(context))
+    yield from (assess(context) if stage=='assess' else pdf(context) if stage=='extract:pdf' else audio(context) if stage=='extract:audio' else text(context))

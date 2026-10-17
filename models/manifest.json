@@ -1,6 +1,6 @@
 {
   "schema_version": "1",
-  "manifest_hash": "3641414491e89a71bdde82c63cff7a04a38947912c0d4c7431413e162e9677d9",
+  "manifest_hash": "0e0af25e8503370f82a5fde840f09c7f002bfd66b3772719ab1c8eb462bf2d70",
   "pipeline": "screening-v1",
   "protocol": "stage-v1",
   "preprocessing": "text-evidence-v1",
@@ -67,6 +67,33 @@
       "provenance": "third-party pretrained open weights",
       "owned_framework": "PyTorch/Transformers",
       "readiness": "see measured reports; not a deployment claim"
+    },
+    {
+      "task": "speech",
+      "id": "openai/whisper-large-v3-turbo",
+      "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9",
+      "license": "MIT",
+      "provenance": "third-party pretrained open weights",
+      "owned_framework": "PyTorch/Transformers",
+      "readiness": "see measured reports; not a deployment claim"
+    },
+    {
+      "task": "speech_odia",
+      "id": "ARTPARK-IISc/whisper-large-v3-vaani-odia",
+      "revision": "357f3571fde5962196596cef29b76807e0932ff4",
+      "license": "Apache-2.0",
+      "provenance": "third-party pretrained open weights",
+      "owned_framework": "PyTorch/Transformers",
+      "readiness": "see measured reports; not a deployment claim"
+    },
+    {
+      "task": "translation",
+      "id": "facebook/nllb-200-distilled-600M",
+      "revision": "f8d333a098d19b4fd9a8b18f94170487ad3f821d",
+      "license": "CC-BY-NC-4.0",
+      "provenance": "third-party pretrained open weights",
+      "owned_framework": "PyTorch/Transformers",
+      "readiness": "see measured reports; not a deployment claim"
     }
   ],
   "owned_text_limits": {
@@ -81,12 +108,41 @@
   "owned_pdf_limits": {
     "pages": 20,
     "image_pixels": 1200000,
-    "ocr_output_tokens": 1024,
+    "ocr_output_tokens": 2048,
     "checkpoints": "one per completed page",
     "ocr": "unverified; headline/ranking withheld"
   },
   "promotion": {
     "relevance": "experimental candidate rejected; rules-cosine-baseline-v1 selected"
   },
+  "selected_speech": {
+    "id": "openai/whisper-large-v3-turbo",
+    "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+  },
+  "selected_odia_speech": {
+    "id": "ARTPARK-IISc/whisper-large-v3-vaani-odia",
+    "revision": "357f3571fde5962196596cef29b76807e0932ff4"
+  },
+  "selected_translation": {
+    "id": "facebook/nllb-200-distilled-600M",
+    "revision": "f8d333a098d19b4fd9a8b18f94170487ad3f821d"
+  },
+  "owned_speech_limits": {
+    "languages": [
+      "en",
+      "hi",
+      "mr",
+      "te",
+      "bn",
+      "or"
+    ],
+    "odia": "separate declared-language ARTPARK-IISc model; quality validation recorded separately",
+    "max_seconds": 600,
+    "chunk_seconds": 28,
+    "odia_chunk_seconds": 10,
+    "timestamps": "actual non-overlapping sample ranges, not word alignment",
+    "review": "transcriptions require source review; headline/ranking withheld"
+  },
+  "translation_usage": "NLLB CC-BY-NC-4.0; noncommercial hackathon prototype, not a general commercial deployment license",
   "deployment": "not deployed; expected artifacts only"
 }

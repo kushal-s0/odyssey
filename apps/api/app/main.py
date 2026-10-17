@@ -25,6 +25,14 @@ from .routes.submissions import router as submissions_router
 from .routes.jobs import router as jobs_router
 from .routes.internal_jobs import router as internal_jobs_router
 from .routes.assessments import router as assessments_router
+from .routes.clarifications import router as clarifications_router
+from .routes.reviews import router as reviews_router
+from .routes.similar import router as similar_router
+from .routes.analytics import router as analytics_router
+from .routes.explanations import router as explanations_router
+from .routes.location_insights import router as location_router
+from .routes.economics import router as economics_router
+from .routes.reports import router as reports_router
 from .services.jobs import Jobs
 from .worker.gradio import activity
 from .services.storage import StorageUnavailable
@@ -66,6 +74,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     application.include_router(jobs_router)
     application.include_router(internal_jobs_router)
     application.include_router(assessments_router)
+    application.include_router(clarifications_router)
+    application.include_router(reviews_router)
+    application.include_router(similar_router)
+    application.include_router(analytics_router)
+    application.include_router(explanations_router)
+    application.include_router(location_router)
+    application.include_router(economics_router)
+    application.include_router(reports_router)
     application.add_middleware(CORSMiddleware, allow_origins=config.cors_origins,
                                allow_credentials=False, allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
                                allow_headers=["Authorization", "Content-Type", "Idempotency-Key", "X-Request-ID"])

@@ -17,7 +17,7 @@ from .structure import assemble
 def persist_text_stage(c: Connection[DictRow], stage: DictRow, job: DictRow, payload: dict[str,Any]) -> None:
     """Lightweight API validation, in the same transaction as publication."""
     key=stage['stage_key']
-    if job['pipeline_version']!='screening-v1' or key not in {'extract:text','extract:pdf','translate','structure'}:
+    if job['pipeline_version']!='screening-v1' or key not in {'extract:text','extract:pdf','extract:audio','translate','structure'}:
         return
     try:
         bundle=EvidenceBundle.model_validate({key:payload[key] for key in ('schema_version','evidence','warnings')})
@@ -26,7 +26,7 @@ def persist_text_stage(c: Connection[DictRow], stage: DictRow, job: DictRow, pay
         revision=c.execute('SELECT * FROM public.submission_versions WHERE id=%s',(job['input_revision_id'],)).fetchone()
         if not revision:
             raise ValueError('Revision unavailable')
-        attachment=c.execute("SELECT id,pages FROM public.attachments WHERE input_revision_id=%s AND status='attached'",
+        attachment=c.execute("SELECT id,pages,duration_seconds FROM public.attachments WHERE input_revision_id=%s AND status='attached'",
                              (job['input_revision_id'],)).fetchone()
         for segment in bundle.evidence:
             if segment.submission_id!=job['submission_id'] or segment.input_revision_id!=job['input_revision_id']:
@@ -41,6 +41,11 @@ def persist_text_stage(c: Connection[DictRow], stage: DictRow, job: DictRow, pay
                     raise ValueError('PDF evidence points outside its private attachment')
                 if segment.extraction_method=='vision_ocr' and not segment.extraction_uncertain:
                     raise ValueError('Unreviewed OCR cannot claim certainty')
+            if segment.kind=='audio':
+                if (not attachment or segment.attachment_id != attachment['id'] or
+                        segment.end_seconds > float(attachment['duration_seconds'] or 0) + 1 or
+                        not segment.transcription_uncertain):
+                    raise ValueError('Audio evidence requires a valid attachment time range and transcription review')
             if key.startswith('extract:') and segment.english_text is not None:
                 raise ValueError('Extraction must preserve originals before translation')
         if key in {'translate','structure'}:

@@ -1,0 +1,324 @@
+{
+  "license": "ODbL-1.0",
+  "license_url": "https://opendatacommons.org/licenses/odbl/1-0/",
+  "source_url": "https://overpass.private.coffee/api/interpreter",
+  "source": "OpenStreetMap contributors",
+  "scope": "One bounded query of cafe/tea listings, not complete competition coverage; no applicant data",
+  "trade": "tea_stall",
+  "coverage_radius_m": 1500,
+  "result": {
+    "status": "ready",
+    "source": "OpenStreetMap Overpass",
+    "attribution": "© OpenStreetMap contributors · ODbL",
+    "retrieved_at": "2026-10-17T20:27:30.562019Z",
+    "area_label": "Central Bengaluru · public regional sample",
+    "latitude": 12.972,
+    "longitude": 77.595,
+    "radius_m": 1500,
+    "category": "tea_stall",
+    "items": [
+      {
+        "osm_type": "node",
+        "osm_id": 12461000328,
+        "name": "Blue Tokai Coffee Roasters",
+        "category": "cafe",
+        "latitude": 12.971744,
+        "longitude": 77.5943973,
+        "distance_m": 71,
+        "url": "https://www.openstreetmap.org/node/12461000328"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 663568572,
+        "name": "Cafe Coffee Day",
+        "category": "cafe",
+        "latitude": 12.9717817,
+        "longitude": 77.5942306,
+        "distance_m": 87,
+        "url": "https://www.openstreetmap.org/node/663568572"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 12119590183,
+        "name": "Third Wave Coffee",
+        "category": "cafe",
+        "latitude": 12.9717772,
+        "longitude": 77.5958246,
+        "distance_m": 93,
+        "url": "https://www.openstreetmap.org/node/12119590183"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 9532858988,
+        "name": "Theobroma",
+        "category": "cafe",
+        "latitude": 12.9712972,
+        "longitude": 77.5975701,
+        "distance_m": 289,
+        "url": "https://www.openstreetmap.org/node/9532858988"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 10753340367,
+        "name": "MAP Cafe",
+        "category": "cafe",
+        "latitude": 12.9746415,
+        "longitude": 77.5967427,
+        "distance_m": 349,
+        "url": "https://www.openstreetmap.org/node/10753340367"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 10236025482,
+        "name": "Glen's Bakehouse",
+        "category": "cafe",
+        "latitude": 12.969789,
+        "longitude": 77.5974038,
+        "distance_m": 358,
+        "url": "https://www.openstreetmap.org/node/10236025482"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 9532858987,
+        "name": "Starbucks",
+        "category": "cafe",
+        "latitude": 12.97119,
+        "longitude": 77.5982058,
+        "distance_m": 359,
+        "url": "https://www.openstreetmap.org/node/9532858987"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 11356383323,
+        "name": "Smoor",
+        "category": "cafe",
+        "latitude": 12.972872,
+        "longitude": 77.6002751,
+        "distance_m": 580,
+        "url": "https://www.openstreetmap.org/node/11356383323"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 10731156961,
+        "name": "O'ver Coffee",
+        "category": "cafe",
+        "latitude": 12.974959,
+        "longitude": 77.599563,
+        "distance_m": 594,
+        "url": "https://www.openstreetmap.org/node/10731156961"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 428457212,
+        "name": "Old Madras Baking Company",
+        "category": "cafe",
+        "latitude": 12.9697383,
+        "longitude": 77.6003775,
+        "distance_m": 635,
+        "url": "https://www.openstreetmap.org/node/428457212"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 661983020,
+        "name": "Juice Junction",
+        "category": "cafe",
+        "latitude": 12.9720317,
+        "longitude": 77.6009309,
+        "distance_m": 643,
+        "url": "https://www.openstreetmap.org/node/661983020"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 9532858994,
+        "name": "Lavonne Cafe",
+        "category": "cafe",
+        "latitude": 12.9695074,
+        "longitude": 77.6003515,
+        "distance_m": 643,
+        "url": "https://www.openstreetmap.org/node/9532858994"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 10051816956,
+        "name": "Delistic",
+        "category": "cafe",
+        "latitude": 12.9688477,
+        "longitude": 77.6002752,
+        "distance_m": 671,
+        "url": "https://www.openstreetmap.org/node/10051816956"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 3019535004,
+        "name": "Chamundeshwari Coffee",
+        "category": "cafe",
+        "latitude": 12.9659456,
+        "longitude": 77.5924964,
+        "distance_m": 726,
+        "url": "https://www.openstreetmap.org/node/3019535004"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 12051506508,
+        "name": "Ramji Chaiwale",
+        "category": "cafe",
+        "latitude": 12.9674667,
+        "longitude": 77.5999201,
+        "distance_m": 734,
+        "url": "https://www.openstreetmap.org/node/12051506508"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 2322736999,
+        "name": "Sweet Chariot",
+        "category": "cafe",
+        "latitude": 12.9684869,
+        "longitude": 77.6008019,
+        "distance_m": 740,
+        "url": "https://www.openstreetmap.org/node/2322736999"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 12475698450,
+        "name": "Magnolia Bakery",
+        "category": "cafe",
+        "latitude": 12.9734621,
+        "longitude": 77.6019267,
+        "distance_m": 768,
+        "url": "https://www.openstreetmap.org/node/12475698450"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 10009475817,
+        "name": "Fuga",
+        "category": "cafe",
+        "latitude": 12.9688078,
+        "longitude": 77.6013703,
+        "distance_m": 776,
+        "url": "https://www.openstreetmap.org/node/10009475817"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 661983038,
+        "name": "Bowring Stall",
+        "category": "cafe",
+        "latitude": 12.9751155,
+        "longitude": 77.6014152,
+        "distance_m": 777,
+        "url": "https://www.openstreetmap.org/node/661983038"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 11975333361,
+        "name": "Ithaca",
+        "category": "cafe",
+        "latitude": 12.9659664,
+        "longitude": 77.5987275,
+        "distance_m": 783,
+        "url": "https://www.openstreetmap.org/node/11975333361"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 11035521590,
+        "name": "The Caffeine Baar",
+        "category": "cafe",
+        "latitude": 12.9757608,
+        "longitude": 77.6024073,
+        "distance_m": 905,
+        "url": "https://www.openstreetmap.org/node/11035521590"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 9381352866,
+        "name": "Amintri Cafe and Pastries",
+        "category": "cafe",
+        "latitude": 12.9737225,
+        "longitude": 77.6032468,
+        "distance_m": 914,
+        "url": "https://www.openstreetmap.org/node/9381352866"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 595411387,
+        "name": "Temple of The Senses",
+        "category": "cafe",
+        "latitude": 12.9751034,
+        "longitude": 77.6028435,
+        "distance_m": 917,
+        "url": "https://www.openstreetmap.org/node/595411387"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 12492736878,
+        "name": "Atty's Express Cafe",
+        "category": "cafe",
+        "latitude": 12.9753903,
+        "longitude": 77.602846,
+        "distance_m": 930,
+        "url": "https://www.openstreetmap.org/node/12492736878"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 9738943447,
+        "name": "Ground Up Coffee",
+        "category": "cafe",
+        "latitude": 12.968292,
+        "longitude": 77.6027535,
+        "distance_m": 936,
+        "url": "https://www.openstreetmap.org/node/9738943447"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 9828605792,
+        "name": "Zed The Baker",
+        "category": "cafe",
+        "latitude": 12.9760006,
+        "longitude": 77.602614,
+        "distance_m": 937,
+        "url": "https://www.openstreetmap.org/node/9828605792"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 11356383315,
+        "name": "Lime Light",
+        "category": "cafe",
+        "latitude": 12.9760718,
+        "longitude": 77.60261,
+        "distance_m": 941,
+        "url": "https://www.openstreetmap.org/node/11356383315"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 12452433472,
+        "name": "The White Room Coffee & Kitchen",
+        "category": "cafe",
+        "latitude": 12.9751544,
+        "longitude": 77.6031683,
+        "distance_m": 952,
+        "url": "https://www.openstreetmap.org/node/12452433472"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 4527833925,
+        "name": "Unnamed cafe",
+        "category": "cafe",
+        "latitude": 12.9660378,
+        "longitude": 77.6023232,
+        "distance_m": 1034,
+        "url": "https://www.openstreetmap.org/node/4527833925"
+      },
+      {
+        "osm_type": "node",
+        "osm_id": 10295411750,
+        "name": "Blini Bistro",
+        "category": "cafe",
+        "latitude": 12.975061,
+        "longitude": 77.6040322,
+        "distance_m": 1036,
+        "url": "https://www.openstreetmap.org/node/10295411750"
+      }
+    ],
+    "note": "OSM listings may be incomplete or outdated. Nearby listings are context, not verified direct competitors. Empty results do not mean there is no competition.",
+    "cached": false
+  }
+}

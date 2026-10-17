@@ -1,0 +1,16 @@
+{
+  "scope": "Real local Edge/API/PostgreSQL. Auth issuer, assessment outputs and vectors are synthetic fixtures. No live external providers or GPU inference in this check.",
+  "checks": [
+    "Dark theme persists across reload; landing has no horizontal overflow.",
+    "Confirmed-area UI survives an explicit provider-outage fixture and renders the real attributed/geofenced dated OSM snapshot.",
+    "Applicant sees saved facts, evidence, rule-based explanation, missing-key state, arithmetic and follow-ups.",
+    "Authorized report opens in isolated preview; HTML download excludes credentials; multipage PDF generated.",
+    "Applicant workspace fits mobile in both themes.",
+    "All four scoped comparison views render known fixtures, missing values and denominators.",
+    "Trusted transcript replacement queues a new revision while the earlier assessment remains navigable.",
+    "Assessor has a real scoped paginated queue, immutable review write and unreviewed filter; no JS errors or mobile overflow."
+  ],
+  "page_errors": [],
+  "model_quality_validated": false,
+  "deployed": false
+}

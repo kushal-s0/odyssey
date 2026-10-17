@@ -94,7 +94,7 @@ def main() -> None:
                                           (accepted['job_id'],))
                             interrupted=True
                             worker=launch()
-                        if (args.extract_only and state['extraction_status']=='completed') or state['status'] in {'completed','failed','needs_review','partial'}:
+                        if (args.extract_only and state['extraction_status']=='completed') or state['status'] in {'completed','failed','needs_review','partial','cancelled'}:
                             break
                         if worker.poll() is not None:
                             raise RuntimeError('PDF worker stopped; inspect its private log')

@@ -1,6 +1,6 @@
 from typing import Annotated, Literal
 
-from pydantic import Field
+from pydantic import Field, field_validator
 
 from .models import BusinessRecord, Contract, DomainRating, Evidence, RelevanceCheck
 
@@ -49,3 +49,12 @@ class AssessmentBundle(Contract):
     domains: list[DomainRating] = Field(min_length=6,max_length=6)
     relevance: list[RelevanceCheck] = Field(min_length=6,max_length=6)
     measurements: list[dict[str, str | float | int | bool]] = Field(default_factory=list,max_length=200)
+    similarity_vector: list[float] | None = Field(default=None, min_length=384, max_length=384)
+
+    @field_validator('similarity_vector')
+    @classmethod
+    def normalized_vector(cls, value: list[float] | None) -> list[float] | None:
+        import math
+        if value is not None and (any(not math.isfinite(v) for v in value) or abs(sum(v*v for v in value) - 1) > .01):
+            raise ValueError('Expected a finite normalized MiniLM vector')
+        return value

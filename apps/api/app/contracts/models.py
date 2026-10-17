@@ -116,6 +116,7 @@ class AudioEvidence(EvidenceBase):
     attachment_id: UUID
     start_seconds: float = Field(ge=0)
     end_seconds: float = Field(gt=0)
+    transcription_uncertain: bool = True
 
     @model_validator(mode="after")
     def time_order(self) -> AudioEvidence:
@@ -266,6 +267,7 @@ class Assessment(Contract):
     id: UUID
     submission_id: UUID
     input_revision_id: UUID
+    parent_revision_id: UUID | None = None
     version: int = Field(ge=1)
     created_at: datetime
     pipeline_version: str = Field(min_length=1)

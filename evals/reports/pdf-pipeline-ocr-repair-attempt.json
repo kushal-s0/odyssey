@@ -1,0 +1,119 @@
+{
+  "cases": [
+    {
+      "case": "synthetic",
+      "scope": "Real local API/private storage/HTTP/native model; trusted synthetic operator identity, not hosted Auth",
+      "seconds": 70.453,
+      "source_sha256": "5bf59901b1ec4475a796165b3ae507b2a4ddaa06047752cbb06147e476800008",
+      "manifest_hash": "da3408a2f99be2ddfc91a5253eda500bb647350adf95793c28918128facc876a",
+      "status": "completed",
+      "error_code": null,
+      "extraction_published": true,
+      "pages_checkpointed": 0,
+      "pages_with_text": [
+        1,
+        2
+      ],
+      "segments": 6,
+      "methods": [
+        "text_layer"
+      ],
+      "all_ocr_marked_uncertain": true,
+      "interruption_requested": false,
+      "interruption_exercised": false,
+      "lease_generation": 1,
+      "original_download_intact": true,
+      "assessment_persisted": true,
+      "measurements": [],
+      "human_quality_validated": false,
+      "deployed": false,
+      "scores": {
+        "usable_fields": 3,
+        "rubric_version": "rubric-v1",
+        "excluded_fields": {},
+        "withheld_reason": "insufficient_coverage",
+        "ranking_eligible": false,
+        "applicable_fields": 18,
+        "evidence_coverage": "0.15",
+        "headline_potential": null,
+        "needs_clarification": true,
+        "completeness_percent": "16.67",
+        "provisional_potential": "50.00"
+      },
+      "checks_passed": true
+    },
+    {
+      "case": "hindi-scan",
+      "scope": "Real local API/private storage/HTTP/native model; trusted synthetic operator identity, not hosted Auth",
+      "seconds": 661.016,
+      "source_sha256": "ada1eab8d8622cbd7e3d10efe70a3ac15b9a993ad03fd08c8ab9fa5085f96a26",
+      "manifest_hash": "7cd6ce07d7111de655b43cd50a7edea919893f751c4731bb37f64c390753d9b4",
+      "status": "needs_review",
+      "error_code": "needs_review",
+      "extraction_published": false,
+      "pages_checkpointed": 4,
+      "pages_with_text": [],
+      "segments": 0,
+      "methods": [],
+      "all_ocr_marked_uncertain": true,
+      "interruption_requested": true,
+      "interruption_exercised": true,
+      "lease_generation": 3,
+      "original_download_intact": true,
+      "assessment_persisted": false,
+      "measurements": [
+        {
+          "model": "PaddleOCR-VL-1.5",
+          "device": "cuda",
+          "seconds": 15.756,
+          "rss_bytes": 2000076800,
+          "input_tokens": 1531,
+          "load_seconds": 9.574,
+          "output_tokens": 287,
+          "peak_vram_bytes": 2300431872,
+          "token_cap_reached": false,
+          "human_quality_validated": false
+        },
+        {
+          "model": "PaddleOCR-VL-1.5",
+          "device": "cuda",
+          "seconds": 23.453,
+          "rss_bytes": 2012475392,
+          "input_tokens": 1531,
+          "load_seconds": 9.481,
+          "output_tokens": 422,
+          "peak_vram_bytes": 2300431872,
+          "token_cap_reached": false,
+          "human_quality_validated": false
+        },
+        {
+          "model": "PaddleOCR-VL-1.5",
+          "device": "cuda",
+          "seconds": 101.434,
+          "rss_bytes": 2014175232,
+          "input_tokens": 1531,
+          "load_seconds": 9.481,
+          "output_tokens": 2048,
+          "peak_vram_bytes": 2300431872,
+          "token_cap_reached": true,
+          "human_quality_validated": false
+        },
+        {
+          "model": "PaddleOCR-VL-1.5",
+          "device": "cuda",
+          "seconds": 17.293,
+          "rss_bytes": 2018402304,
+          "input_tokens": 1531,
+          "load_seconds": 9.481,
+          "output_tokens": 377,
+          "peak_vram_bytes": 2300431872,
+          "token_cap_reached": false,
+          "human_quality_validated": false
+        }
+      ],
+      "human_quality_validated": false,
+      "deployed": false,
+      "checks_passed": false
+    }
+  ]
+}

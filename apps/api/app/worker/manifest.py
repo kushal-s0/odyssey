@@ -17,6 +17,9 @@ class PipelineManifest(TypedDict):
     indic_en: Artifact
     en_indic: Artifact
     embedding: Artifact
+    speech: Artifact
+    speech_odia: Artifact
+    translation: Artifact
     rubric: str
     preprocessing: str
     language_detector: str
@@ -34,6 +37,9 @@ MANIFEST: PipelineManifest = {
     'indic_en': {'id':'ai4bharat/indictrans2-indic-en-dist-200M','revision':'d66a2122ad6d28184f3dc3797b652bd80ae3f65f'},
     'en_indic': {'id':'ai4bharat/indictrans2-en-indic-dist-200M','revision':'2cfd0a20057756d756bf3e53528f492afc52f91a'},
     'embedding': {'id':'sentence-transformers/all-MiniLM-L6-v2','revision':'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'},
+    'speech': {'id':'openai/whisper-large-v3-turbo','revision':'41f01f3fe87f28c78e2fbf8b568835947dd65ed9'},
+    'speech_odia': {'id':'ARTPARK-IISc/whisper-large-v3-vaani-odia','revision':'357f3571fde5962196596cef29b76807e0932ff4'},
+    'translation': {'id':'facebook/nllb-200-distilled-600M','revision':'f8d333a098d19b4fd9a8b18f94170487ad3f821d'},
     'rubric': 'rubric-v1', 'preprocessing':'text-evidence-v1', 'language_detector':'py3langid-0.3.0',
     'assessment_policy':'grounded-domain-v1', 'relevance':'rules-cosine-baseline-v1',
     'extraction_policy':'quoted-facts-v5-individual-grounding-repair',

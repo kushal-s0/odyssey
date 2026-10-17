@@ -32,6 +32,14 @@ class Settings(BaseSettings):
     model_runtime: Literal["owned_worker", "hf_zerogpu"] = "owned_worker"
     allow_paid_services: Literal[False] = False
     enable_public_nominatim: bool = False
+    groq_enabled: bool = True
+    groq_api_key: SecretStr | None = None
+    groq_model: str = Field(default='openai/gpt-oss-120b', min_length=1, max_length=100, pattern=r'^[a-zA-Z0-9._/-]+$')
+    groq_daily_requests_per_user: int = Field(default=30, ge=1, le=200)
+    osm_user_agent: str = 'UdyamSaathi/0.1 (local assessment prototype)'
+    osm_overpass_url: str = 'https://overpass.private.coffee/api/interpreter'
+    osm_nominatim_url: str = 'https://nominatim.openstreetmap.org/search'
+    osm_cache_hours: int = Field(default=24, ge=1, le=168)
     max_upload_mb: int = Field(default=25, gt=0, le=50)
     max_pdf_pages: int = Field(default=20, ge=11, le=100)
     max_audio_seconds: int = Field(default=600, gt=0, le=1800)
@@ -46,6 +54,14 @@ class Settings(BaseSettings):
     text_document_space_url: str | None = None
     speech_translation_space_url: str | None = None
     hf_token: SecretStr | None = None
+
+    @field_validator('osm_overpass_url', 'osm_nominatim_url')
+    @classmethod
+    def osm_provider_url(cls, value: str) -> str:
+        parsed = urlsplit(value)
+        if parsed.scheme != 'https' or not parsed.hostname or parsed.username or parsed.password or parsed.query or parsed.fragment:
+            raise ValueError('OSM providers require an HTTPS URL without credentials or query parameters')
+        return value
 
     @field_validator('text_document_space_url', 'speech_translation_space_url', mode='before')
     @classmethod

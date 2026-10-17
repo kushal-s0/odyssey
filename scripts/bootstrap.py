@@ -34,8 +34,8 @@ def main() -> None:
     run([npm, '--prefix', 'apps/web', 'ci', '--no-fund', '--no-audit'])
     # Configure reports missing values but prepares the canonical file regardless.
     subprocess.run([str(api), '-B', 'scripts/configure.py'], cwd=ROOT, check=False)
-    run([str(model), '-B', 'scripts/download_models.py', '--artifacts', 'qwen', 'embedding'])
-    print('Dependencies/models prepared. Fill the two Supabase secrets in root .env.local, then run start.cmd.')
+    run([str(model), '-B', 'scripts/download_models.py', '--artifacts', 'qwen', 'embedding', 'speech', 'speech_odia', 'translation', 'ocr'])
+    print('Dependencies/models prepared. Review models/PROVENANCE.md for the noncommercial translation license. Check root .env.local, then run start.cmd.')
 
 
 if __name__ == '__main__':

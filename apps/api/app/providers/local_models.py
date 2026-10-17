@@ -126,6 +126,15 @@ class SentenceEncoder:
         self.tokenizer=transformers.AutoTokenizer.from_pretrained(str(snapshot),local_files_only=True)
         self.model=transformers.AutoModel.from_pretrained(str(snapshot),local_files_only=True).eval()
 
+    def embed(self, text: str) -> list[float]:
+        encoded=self.tokenizer([text],padding=True,truncation=True,max_length=384,return_tensors='pt')
+        with self.torch.inference_mode():
+            hidden=self.model(**encoded).last_hidden_state
+            mask=encoded['attention_mask'].unsqueeze(-1)
+            pooled=(hidden*mask).sum(1)/mask.sum(1).clamp(min=1)
+            vector=self.torch.nn.functional.normalize(pooled,p=2,dim=1)[0]
+        return list(vector.tolist())
+
     def cosine(self,question: str,answer: str) -> float:
         encoded=self.tokenizer([question,answer],padding=True,truncation=True,max_length=256,return_tensors='pt')
         with self.torch.inference_mode():

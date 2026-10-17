@@ -6,11 +6,11 @@ An assessor needs a consistent first understanding of business ideas submitted i
 
 ## Did you train the language/speech/vision models?
 
-No. Those are existing open-weight models selected and self-hosted by the project. T09A implements a separate small answer-relevance experiment; its training data provenance, grouped evaluation and promotion/rejection decision will be recorded. Do not claim a validated custom model until the required evidence exists.
+No. Those are existing open-weight models selected and self-hosted by the project. The separate small relevance experiment was evaluated and rejected for promotion. Its reports remain preserved; the frozen MiniLM/rules baseline remains selected.
 
 ## Why can you deploy for free?
 
-The intended deployment uses free frontend/API/database plans and owned laptop inference. There is no paid inference API or expiring trial-credit requirement. Hosted services still have quotas/sleep behavior and the laptop must stay online. No unlimited throughput or fully cloud-hosted claim is justified.
+The intended deployment uses free frontend/API/database plans and owned laptop inference. Core assessment uses owned inference. Optional Groq explanations use the configured free account and remain quota-dependent; local saved results work without it. Hosted services still have quotas/sleep behavior and the laptop must stay online. No unlimited throughput or fully cloud-hosted claim is justified.
 
 ## Is the supplied dataset a training benchmark?
 
@@ -34,7 +34,7 @@ Only resources with suitable permissions should be incorporated. Model manifests
 
 ## Can an applicant make themselves an assessor?
 
-The API ignores user-editable role metadata. It verifies the signed session and reads roles/cohort assignments from trusted database tables. Local tests cover two applicants and two assigned assessors across separate cohorts, including forged metadata and denied cross-cohort access. Live Supabase account checks remain pending private configuration. See [authentication guide](05-authentication-and-access.md).
+The API ignores user-editable role metadata. It verifies the signed session and reads roles/cohort assignments from trusted database tables. Local tests cover two applicants and two assigned assessors across separate cohorts, including forged metadata and denied cross-cohort access. Real Supabase login and applicant PDF assessment have passed; the complete hosted cross-cohort access matrix remains unfinished. See [authentication guide](05-authentication-and-access.md).
 
 ## What if the laptop or a model runtime stops?
 

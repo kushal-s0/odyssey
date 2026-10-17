@@ -1,0 +1,11 @@
+# Context, comparisons, financial checks and reports
+
+OpenStreetMap context is an explicit confirmed-area lookup. Trade categories are chosen by the server, coordinates rounded to a coarse point, requests bounded and source/date/coverage displayed. Nominatim remains opt-in under its policy, with saved coarse locality and a database-wide one-per-second maximum. Standard public OSM endpoints need no secret. No absence-of-competition claim follows from empty results.
+
+Comparisons query only authorized current assessments under one rubric. Missing domain evidence is excluded from the domain average, never changed to zero. Potential comparisons require all domains and an eligible headline. Counts, partial exclusions, synthetic examples and repeated families are visible; small samples do not establish meaningful rank differences. Across-cohort views are broken down by trade to make composition differences visible.
+
+Financial checks use Decimal, explicit units and compatible periods. Revenue minus stated expenses is only an operating-surplus estimate; the listed expense categories may omit taxes, debt and owner pay. Daily sales multiplied by price and explicit operating days estimates revenue, never profit. No arithmetic check edits the applicant's claims or score.
+
+Reports are generated from a selected immutable assessment, its own evidence, review actions and saved local context. All text is HTML-escaped. They contain no private download credentials. Current authorized similarity may be included; historical similarity is explicitly unavailable. The browser print dialog saves the version as PDF. Version comparisons show potential, completeness and coverage separately.
+
+Groq is an optional external explanation layer. It receives a reduced structured business context and saved judgments, with no raw original or identity fields. Schema, citation and numeric checks reduce some errors; they do not certify correctness or measured accuracy. Generated prose is labelled, linked to fields, cached by immutable assessment/model/language/policy and never used to rescore. Missing credentials/provider errors preserve the stored-rule explanation. Its free-tier quota is distinct from the owned local model runtime.

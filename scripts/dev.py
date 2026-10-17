@@ -62,8 +62,8 @@ def main() -> None:
         worker_env.update({key:values[key] or '' for key in ('WORKER_API_URL','WORKER_ID','WORKER_CREDENTIAL','HF_TOKEN') if key in values})
         worker_env['PYTHONIOENCODING'] = 'utf-8'
         commands.append(('worker', [str(model_python), '-B', '-m', 'app.worker', '--allow-loopback',
-            '--handler', 'app.pipeline.run:handler', '--stages', 'extract:text', 'extract:pdf', 'translate', 'structure', 'assess',
-            '--continuous', '--stage-seconds', '240'], worker_env))
+            '--handler', 'app.pipeline.run:handler', '--stages', 'extract:text', 'extract:pdf', 'extract:audio', 'translate', 'structure', 'assess',
+            '--continuous', '--stage-seconds', '600'], worker_env))
     try:
         print('Starting API and checking the database connection…', flush=True)
         for name, command, environment in commands:

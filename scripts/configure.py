@@ -17,6 +17,15 @@ def configure() -> dict[str, str | None]:
     if not target.exists():
         target.write_text((ROOT / '.env.example').read_text(encoding='utf-8'), encoding='utf-8')
     values = dict(dotenv_values(target, interpolate=False))
+    optional = {'GROQ_ENABLED': 'true', 'GROQ_API_KEY': '', 'GROQ_MODEL': 'openai/gpt-oss-120b',
+                'GROQ_DAILY_REQUESTS_PER_USER': '30', 'ENABLE_PUBLIC_NOMINATIM': 'false',
+                'OSM_USER_AGENT': 'UdyamSaathi/0.1 (local assessment prototype)',
+                'OSM_OVERPASS_URL': 'https://overpass.private.coffee/api/interpreter',
+                'OSM_NOMINATIM_URL': 'https://nominatim.openstreetmap.org/search', 'OSM_CACHE_HOURS': '24'}
+    for key, value in optional.items():
+        if key not in values:
+            set_key(str(target), key, value)
+            values[key] = value
     legacy = ROOT / 'apps/web/.env.local'
     old = dict(dotenv_values(legacy, interpolate=False)) if legacy.exists() else {}
     # Preserve configured values; migrate legacy browser settings to the canonical file.

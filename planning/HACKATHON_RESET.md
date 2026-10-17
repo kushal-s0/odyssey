@@ -1,5 +1,7 @@
 # Hackathon reset: current code audit and repair order
 
+> The original audit below is historical. The 18 October feature completion pass supersedes its missing-feature/configuration statements; read [SESSION_HANDOFF.md](SESSION_HANDOFF.md) and [current verification](../evals/reports/product-completion.json). Product priorities and publication restrictions remain applicable.
+
 Updated 2026-10-17 21:39 IST. Latest user direction: solve the problem statement quickly; this is a hackathon build, not a production-readiness program. This file takes priority over the older sequential release gates. Deadline remains 18 October, 06:00 IST. No paid APIs or publication without approval.
 
 ## What the organizer actually asks for

@@ -1,5 +1,5 @@
 {
-  "manifest_hash": "da3408a2f99be2ddfc91a5253eda500bb647350adf95793c28918128facc876a",
+  "manifest_hash": "0e0af25e8503370f82a5fde840f09c7f002bfd66b3772719ab1c8eb462bf2d70",
   "artifacts": [
     {
       "artifact": "embedding",
@@ -127,6 +127,289 @@
           "path": "vocab.json",
           "bytes": 2776833,
           "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+        }
+      ]
+    },
+    {
+      "artifact": "speech",
+      "id": "openai/whisper-large-v3-turbo",
+      "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9",
+      "files": [
+        {
+          "path": "README.md",
+          "bytes": 21196,
+          "sha256": "aaef74a740faca90fa1899c4233ebe17f2093b9846d0acf16d9131bf650e9585"
+        },
+        {
+          "path": "added_tokens.json",
+          "bytes": 34648,
+          "sha256": "3c51f66c4c21f9e126970078f11ae77a78c74aee8df606ee9daba86e467108e0"
+        },
+        {
+          "path": "config.json",
+          "bytes": 1256,
+          "sha256": "c5b526b3e3cd64cd8940dabb45e8ba726629e22d8ed389c29b552f9140daf04a"
+        },
+        {
+          "path": "generation_config.json",
+          "bytes": 3772,
+          "sha256": "cce11bfe3aaa6ae9e072ea2637caaec8795e68d9b67e655a5af16ee509681a4c"
+        },
+        {
+          "path": "merges.txt",
+          "bytes": 493869,
+          "sha256": "2df2990a395e35e8dfbc7511e08c12d56018d8d04691e0133e5d63b21e154dc6"
+        },
+        {
+          "path": "model.safetensors",
+          "bytes": 1617824864,
+          "sha256": "542566a422ae4f3fd23f1ba11add198fca01bbf82e66e6a2857b3f608b1eb9d1"
+        },
+        {
+          "path": "normalizer.json",
+          "bytes": 52666,
+          "sha256": "bf1c507dc8724ca9cf9903640dacfb69dae2f00edee4f21ceba106a7392f26dd"
+        },
+        {
+          "path": "preprocessor_config.json",
+          "bytes": 340,
+          "sha256": "7ccc62c6f2765af1f3b46c00c9b5894426835a05021c8b9c01eecb6dfb542711"
+        },
+        {
+          "path": "special_tokens_map.json",
+          "bytes": 2186,
+          "sha256": "baea4ea09372eb4fca86b4e4346139fd73cb807d5087e9de0948e971739c3e74"
+        },
+        {
+          "path": "tokenizer.json",
+          "bytes": 2710337,
+          "sha256": "297b13372ac43916285644fb9687add3cc62ee2a1adb60da3dc25cc94c1871fd"
+        },
+        {
+          "path": "tokenizer_config.json",
+          "bytes": 282843,
+          "sha256": "844b642c73a91359722f47b35705f7174686df33d252695d8572cf9ac03a6389"
+        },
+        {
+          "path": "vocab.json",
+          "bytes": 1036558,
+          "sha256": "e2aa043ef015641d363d8288e7c241c85e36a5c761fb303598e0710233344387"
+        }
+      ]
+    },
+    {
+      "artifact": "translation",
+      "id": "facebook/nllb-200-distilled-600M",
+      "revision": "f8d333a098d19b4fd9a8b18f94170487ad3f821d",
+      "files": [
+        {
+          "path": "README.md",
+          "bytes": 7667,
+          "sha256": "0964c46d35be00825c73b3a9ca212043b4b4e4f38e18e88c22e4490d31f9f1a3"
+        },
+        {
+          "path": "config.json",
+          "bytes": 846,
+          "sha256": "f9b4081d3d108e9d06532ea8d92b932c04ed3a15ff2f87e6982f8e14db51fbc5"
+        },
+        {
+          "path": "generation_config.json",
+          "bytes": 189,
+          "sha256": "0bb604cdb8392649176935a447ce994128f170a6908c135a17d0e3dfb8113cb2"
+        },
+        {
+          "path": "pytorch_model.bin",
+          "bytes": 2460457927,
+          "sha256": "c266c2cfd19758b6d09c1fc31ecdf1e485509035f6b51dfe84f1ada83eefcc42"
+        },
+        {
+          "path": "sentencepiece.bpe.model",
+          "bytes": 4852054,
+          "sha256": "14bb8dfb35c0ffdea7bc01e56cea38b9e3d5efcdcb9c251d6b40538e1aab555a"
+        },
+        {
+          "path": "special_tokens_map.json",
+          "bytes": 3548,
+          "sha256": "992bd4ed610d644d6823081937bcc91bb8878dd556cea4ae5327f2480361330e"
+        },
+        {
+          "path": "tokenizer.json",
+          "bytes": 17331176,
+          "sha256": "e316b82de11d0f951f370943b3c438311629547285129b0b81dadabd01bca665"
+        },
+        {
+          "path": "tokenizer_config.json",
+          "bytes": 564,
+          "sha256": "d1aa8c3697d3e35674f97b5b7e9c99d22b010f528e80140257d97316be90d044"
+        }
+      ]
+    },
+    {
+      "artifact": "ocr",
+      "id": "PaddlePaddle/PaddleOCR-VL-1.5",
+      "revision": "2a4195faa5e7914c12f2fc601d72c81caf8d2da5",
+      "files": [
+        {
+          "path": "LICENSE",
+          "bytes": 11376,
+          "sha256": "b8c4d7deccd236af023af1c88c4d4e8f0fc2f41914e0fb23a3ec9678fb5a8456"
+        },
+        {
+          "path": "README.md",
+          "bytes": 22955,
+          "sha256": "0eeebf42ca617495dec7343909667a79840b240d7cb6c5572e221fad0b128557"
+        },
+        {
+          "path": "added_tokens.json",
+          "bytes": 25381,
+          "sha256": "f59f889088e0fe21c523e7cf121bb6dca3b0bb148cb7159fbb4572c74dfc5644"
+        },
+        {
+          "path": "chat_template.jinja",
+          "bytes": 1474,
+          "sha256": "2f27812dab7f333e471884e0c803d807f11953d5453140dfb1aaba234f872bc8"
+        },
+        {
+          "path": "config.json",
+          "bytes": 2059,
+          "sha256": "ce7f4565f8b1db78532ad5d1b9ebe55c2139d49bd4cb04778b580a08a598f171"
+        },
+        {
+          "path": "configuration_paddleocr_vl.py",
+          "bytes": 8104,
+          "sha256": "753dd93654c3a9c8c85a3eaee1e3092dd12591b0f2dce0305e1abfb7a41ff160"
+        },
+        {
+          "path": "generation_config.json",
+          "bytes": 133,
+          "sha256": "a6701d78ab3b4d972307cdec3b69d4c13f46e0d5140514f50ab7d84259324b94"
+        },
+        {
+          "path": "image_processing_paddleocr_vl.py",
+          "bytes": 25032,
+          "sha256": "a4fa521b9cb16e207f94b7f2d16427771776dfc634420d319fc4916ee58049ec"
+        },
+        {
+          "path": "model.safetensors",
+          "bytes": 1917255968,
+          "sha256": "d557c9d8997ae57ed3b1b33bdf347be878cc335687f32ca105341c16973f8958"
+        },
+        {
+          "path": "modeling_paddleocr_vl.py",
+          "bytes": 103889,
+          "sha256": "c5013dff57ca8b87dc1de64d0fd839a44313de09d230a4fb2d08289d2cad5111"
+        },
+        {
+          "path": "preprocessor_config.json",
+          "bytes": 641,
+          "sha256": "111872ab1e8bb7fd040ac5087bfced7ab8f011f02139b088cba294964c3b1d0e"
+        },
+        {
+          "path": "processing_paddleocr_vl.py",
+          "bytes": 12253,
+          "sha256": "e29cb1e5f275f2bd3ce051bd5c9983a33894e693b2823a0e13d4c07c8c4f9e13"
+        },
+        {
+          "path": "processor_config.json",
+          "bytes": 137,
+          "sha256": "1568858960a9760c54431dae693a6152e601ff55cdf6d2eab97a4a99958faea0"
+        },
+        {
+          "path": "special_tokens_map.json",
+          "bytes": 1151,
+          "sha256": "d3a125c03103deb2acaf7730791bdbbf196f620e5a2213b664511ff9b4b25bab"
+        },
+        {
+          "path": "tokenizer.json",
+          "bytes": 11189060,
+          "sha256": "c8a215a59183d0d0781adc33bacd3ce6162716f7fd568fb30234a74d69803a7d"
+        },
+        {
+          "path": "tokenizer.model",
+          "bytes": 1614363,
+          "sha256": "34ef7db83df785924fb83d7b887b6e822a031c56e15cff40aaf9b982988180df"
+        },
+        {
+          "path": "tokenizer_config.json",
+          "bytes": 186947,
+          "sha256": "1f979337347cc0cb72a6282d8a23ed183539aa81a87a906f022aee2bab83c7c5"
+        }
+      ]
+    },
+    {
+      "artifact": "speech_odia",
+      "id": "ARTPARK-IISc/whisper-large-v3-vaani-odia",
+      "revision": "357f3571fde5962196596cef29b76807e0932ff4",
+      "files": [
+        {
+          "path": "README.md",
+          "bytes": 1459,
+          "sha256": "e51c9d1b14666ba215deb3327a7200cf8ecfa2c0bafc7a4efa4c24d1bca6cae5"
+        },
+        {
+          "path": "added_tokens.json",
+          "bytes": 34667,
+          "sha256": "9709bcad82b0213026b6485690716ba0155e33ac72ffce4ad476f35bec2683b0"
+        },
+        {
+          "path": "config.json",
+          "bytes": 1270,
+          "sha256": "396309b4392c0a488582190172fa8bfe5c268d589b0dace78df29faceb6ce05c"
+        },
+        {
+          "path": "generation_config.json",
+          "bytes": 321,
+          "sha256": "77d630f772c327ebf4fe94d8208833853187a4994ab45503ed9ea98cc3525905"
+        },
+        {
+          "path": "merges.txt",
+          "bytes": 493869,
+          "sha256": "2df2990a395e35e8dfbc7511e08c12d56018d8d04691e0133e5d63b21e154dc6"
+        },
+        {
+          "path": "model-00001-of-00002.safetensors",
+          "bytes": 4993454000,
+          "sha256": "d0f2d06fa0acfbccf6cf83cfffff76240e57eaa7f800531c1684888ae8401e83"
+        },
+        {
+          "path": "model-00002-of-00002.safetensors",
+          "bytes": 1180663192,
+          "sha256": "3d15a608a53030aa48a8ad5172005624f4f8370ee0ea0b43e321480ed06eb473"
+        },
+        {
+          "path": "model.safetensors.index.json",
+          "bytes": 111598,
+          "sha256": "4bf26be7bda24829131bffc971f4e29f82a6201ad42906bfba065c5017885c2a"
+        },
+        {
+          "path": "normalizer.json",
+          "bytes": 52666,
+          "sha256": "bf1c507dc8724ca9cf9903640dacfb69dae2f00edee4f21ceba106a7392f26dd"
+        },
+        {
+          "path": "preprocessor_config.json",
+          "bytes": 340,
+          "sha256": "7ccc62c6f2765af1f3b46c00c9b5894426835a05021c8b9c01eecb6dfb542711"
+        },
+        {
+          "path": "special_tokens_map.json",
+          "bytes": 2186,
+          "sha256": "baea4ea09372eb4fca86b4e4346139fd73cb807d5087e9de0948e971739c3e74"
+        },
+        {
+          "path": "tokenizer_config.json",
+          "bytes": 283017,
+          "sha256": "4e1e795533d50f5b69c81e498ceeee81bee99927f411820fb37c825db8a04383"
+        },
+        {
+          "path": "trainer_state.json",
+          "bytes": 10675,
+          "sha256": "f3f6282e8626dd800847c3bc9510c36f7b370456fd752d29219ca37c67d5a17c"
+        },
+        {
+          "path": "vocab.json",
+          "bytes": 1036558,
+          "sha256": "e2aa043ef015641d363d8288e7c241c85e36a5c761fb303598e0710233344387"
         }
       ]
     }

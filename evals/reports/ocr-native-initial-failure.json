@@ -1,0 +1,7 @@
+{
+  "scope": "Actual pinned OCR on a synthetic English image; not handwriting/language validation",
+  "status": "failed",
+  "error_type": "ValueError",
+  "synthetic_diagnostic": "Cannot use apply_chat_template because this processor does not have a chat template.",
+  "seconds": 16.817
+}

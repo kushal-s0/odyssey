@@ -1,0 +1,14 @@
+{
+  "scope": "Read-only actual configured Supabase schema/permission verification after explicit migration approval",
+  "checks": {
+    "cache_exists": true,
+    "vector_schema_usage": true,
+    "cache_rls": true,
+    "scoped_cache_select": true,
+    "browser_writes_denied": true,
+    "migration_recorded": true
+  },
+  "passed": true,
+  "user_data_read": false,
+  "published": false
+}

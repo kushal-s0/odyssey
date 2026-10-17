@@ -1,0 +1,26 @@
+{
+  "scope": "Actual owned local model inference; no population accuracy or human validation claim",
+  "case": "speech",
+  "human_validated": false,
+  "deployed": false,
+  "model": {
+    "id": "openai/whisper-large-v3-turbo",
+    "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+  },
+  "original_sha256": "9dc51c79d8867e2a718d0a6ce3701ef3f1df10a33917a2c4ff173c8a099ac0d9",
+  "sample_start_seconds": 0.0,
+  "sample_end_seconds": 25.85,
+  "transcript_characters": 261,
+  "language": {
+    "code": "hi",
+    "provenance": "declared",
+    "model_id": null,
+    "model_confidence": null,
+    "needs_confirmation": true
+  },
+  "transcript_review": "Private transcript retained under .local; no human reference/WER measured",
+  "status": "passed",
+  "seconds": 22.651,
+  "gpu": "NVIDIA GeForce RTX 5050 Laptop GPU",
+  "peak_vram_bytes": 1675880960
+}

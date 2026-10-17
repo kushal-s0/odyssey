@@ -1,0 +1,18 @@
+{
+  "scope": "Actual owned local model inference; no population accuracy or human validation claim",
+  "case": "translation",
+  "human_validated": false,
+  "deployed": false,
+  "model": {
+    "id": "facebook/nllb-200-distilled-600M",
+    "revision": "f8d333a098d19b4fd9a8b18f94170487ad3f821d"
+  },
+  "synthetic_source": "मैं कार्यालय के कर्मचारियों को चाय बेचता हूँ। एक कप चाय की कीमत 10 रुपये है।",
+  "english": "I sell tea to office workers. a cup of tea costs 10 rupees.",
+  "numbers_preserved": true,
+  "smoke_terms_present": true,
+  "status": "passed",
+  "seconds": 20.306,
+  "gpu": "NVIDIA GeForce RTX 5050 Laptop GPU",
+  "peak_vram_bytes": 2835353600
+}

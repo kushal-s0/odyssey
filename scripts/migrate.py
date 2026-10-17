@@ -45,4 +45,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except psycopg.Error as error:
+        print('Database migration failed (' + type(error).__name__ + '). Connection details remain private; check the configured project and network.')
+        raise SystemExit(1) from None

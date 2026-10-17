@@ -3,6 +3,12 @@ import { RefreshCw } from 'lucide-react'
 import { apiRequest, ApiError, type Assessment, type JobView } from '../api/client'
 import type { components } from '../api/generated/schema'
 import { AssessmentView } from '../components/AssessmentView'
+import { Clarifications } from '../components/Clarifications'
+import { SimilarIdeas } from '../components/SimilarIdeas'
+import { ExplanationPanel } from '../components/ExplanationPanel'
+import { LocalContext } from '../components/LocalContext'
+import { ArithmeticChecks } from '../components/ArithmeticChecks'
+import { VersionHistory } from '../components/VersionHistory'
 
 export type Submission = components['schemas']['SubmissionView']
 const finished = new Set(['completed', 'partial', 'needs_review', 'failed', 'cancelled'])
@@ -22,7 +28,7 @@ export function MySubmissions({ items, selectedId, onSelect, token, refresh }: {
   </section>
 }
 
-function SubmissionDetail({ id, token, onFinished }: { id: string; token: string; onFinished: () => void }) {
+export function SubmissionDetail({ id, token, onFinished, canClarify = true }: { id: string; token: string; onFinished: () => void; canClarify?: boolean }) {
   const [submission, setSubmission] = useState<Submission | null>(null)
   const [job, setJob] = useState<JobView | null>(null)
   const [assessment, setAssessment] = useState<Assessment | null>(null)
@@ -37,7 +43,7 @@ function SubmissionDetail({ id, token, onFinished }: { id: string; token: string
     let timer: number | undefined
     let disposed = false
     const started = Date.now()
-    setError(''); setNote('Checking saved processing state…')
+    setError(''); setAssessment(null); setNote('Checking saved processing state…')
     async function check() {
       if (!disposed) setChecking(true)
       try {
@@ -64,7 +70,6 @@ function SubmissionDetail({ id, token, onFinished }: { id: string; token: string
           if (!disposed) setNote(state.status === 'needs_review' ? 'Your original is saved. Processing needs review; retry may still require human help.' : 'Saved state retrieved from your workspace.')
           return
         }
-        if (current.input_kind === 'audio') { setNote('Your original upload is saved. Audio processing is not available yet; this is not a completed assessment.'); return }
         if (waiting.has(state.status)) { setNote(`${current.input_kind === 'pdf' ? 'Your original upload is saved.' : 'Your idea is safely queued.'} Start or resume the owned worker, then refresh status. Automatic updates are paused.`); return }
         setNote(state.status === 'queued'
           ? 'Saved and queued. The laptop processes one idea at a time. You can return later; your work stays saved.'
@@ -119,6 +124,7 @@ function SubmissionDetail({ id, token, onFinished }: { id: string; token: string
       {(['failed', 'cancelled', 'needs_review'].includes(job.status) || waiting.has(job.status)) && <button className="secondary-button" type="button" disabled={busy} onClick={() => { void control(true) }}>Resume processing</button>}
       {submission.attachment_id && <button className="secondary-button" type="button" disabled={busy} onClick={() => { void download() }}>Download original</button>}</div>}
     {submission?.source_text && <details><summary>Your original submitted text</summary><p className="original-text">{submission.source_text}</p></details>}
-    {assessment && <AssessmentView key={assessment.id} value={assessment} />}
+    {assessment && <><AssessmentView key={assessment.id} value={assessment} /><ExplanationPanel key={`explain:${assessment.id}`} value={assessment} token={token} /><ArithmeticChecks key={`math:${assessment.id}`} value={assessment} token={token} /><SimilarIdeas key={`similar:${assessment.id}`} value={assessment} token={token} /><LocalContext key={`local:${assessment.id}`} value={assessment} token={token} />{canClarify && <Clarifications value={assessment} token={token} onReassess={() => { setAssessment(null); setRefresh(n => n + 1); onFinished() }} />}</>}
+    {submission && <VersionHistory key={`history:${submission.revision_id}`} id={id} current={assessment} token={token} />}
   </div>
 }

@@ -6,6 +6,10 @@
 !apps/api/requirements.lock
 !infra/
 !infra/Dockerfile.api
+!data/
+!data/osm/
+!data/osm/bengaluru-tea.json
+!data/osm/README.md
 **/__pycache__/
 **/*.pyc
 **/.env*

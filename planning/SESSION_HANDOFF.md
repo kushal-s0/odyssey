@@ -1,3 +1,56 @@
+# Session handoff ? current 18 October 2026
+
+This current checkpoint supersedes missing-feature statements in the historical handoff below. Read AGENTS.md and HACKATHON_RESET.md. Branch second, origin https://github.com/kushal-s0/odyssey.git verified. Both new commit identities must be Kartik Verma <kartikverma2204number1@gmail.com>; local only, no attribution trailers. No push/PR/website deployment/model upload authorized.
+
+## Approved migration and private configuration
+
+The user explicitly approved only supabase/migrations/202610180006_enrichment_cache.sql after automatic review required approval. Applied to configured Supabase; all six independent read-only schema/access checks passed (evals/reports/supabase-enrichment-schema.json). Prior migrations unchanged. This is not general remote publication/mutation approval.
+
+Root ignored .env.local remains canonical; filled values preserved and never printed. Groq key is now filled and the user's openai/gpt-oss-20b preference preserved; fresh defaults use GPT-OSS120B. Real synthetic English/Hindi generation passed, six domains and unchanged scores, 1.070/1.116 seconds. First Hindi attempt was unavailable; explicit recheck passed. No applicant records sent, no paid fallback or human explanation-quality claim. Public OSM requires no key; Nominatim deliberately disabled.
+
+## Implemented product
+
+Existing real Supabase Auth/private submissions/durable worker retained. Added scoped assessor queue, filters/pagination, review recommendations/history, correction revisions and trusted complete-transcript verification. Stale/idempotency checks preserve history. Verification applies only to the exact correction revision and never certifies business claims.
+
+Three prioritized gap/conflict questions and text clarification revisions; historical versions separate potential, coverage and completeness. Question localization/audio follow-ups remain unfinished. MiniLM384 embeddings and scoped current-revision pgvector peers exclude source families/stale hashes and describe shared traits/differences. Old assessments may need scripts/backfill_embeddings.py (dry-run default); no hosted backfill applied and no Recall@5 calibration.
+
+Four comparison views enforce same rubric, real denominators, eligibility and synthetic/family exclusions. Decimal economics preserve facts/unknowns: 120?10?25=30000 monthly revenue, never profit; uncertain source amounts excluded. Authorized version-specific reports include evidence/provenance, reviews/context and explicit unavailable historical similarity; browser print/PDF and HTML export.
+
+Optional Groq explanations are cached, user triggered and guarded by schema/citation/numeric checks/shared limits. They cannot rescore; fallback survives provider failure. Confirmed coarse-area OSM uses bounded GET Overpass, shared limits, date/attribution and coverage caveats. Real public lookup returned30 listings; licensed data/osm/bengaluru-tea.json fallback is used only within matching trade/geographical containment, visibly dated. No bulk/autocomplete.
+
+Responsive light/dark/system UI, role-aware navigation, source disclosure, all facts, persistent early theme, lazy assessor/comparison bundles, SPA fallback and exact-origin security headers implemented.
+
+## Actual models and limits
+
+Third-party pretrained models, not our new foundation-model training. Pinned manifests/checksums/license provenance maintained; rejected custom relevance experiment stays rejected. Existing CUDA/PyTorch/Qwen/MiniLM reused, Transformers5 native adapters. Children remain stripped of DB/service/Groq/signing keys. See models/PROVENANCE.md.
+
+- Current English owned pipeline passed77.268s. Actual CPU MiniLM384 normalized smoke: related0.6454 vs unrelated0.0478,54.184s cold; no population retrieval claim.
+- Connected local NLLB600M Hindi synthetic translation passed20.306s preserving10. CC-BY-NC4 research/noncommercial hackathon only, not a commercial/production license. Other languages semantically unvalidated.
+- Whisper turbo Hindi clean wrapper passed:25.85s input,261 characters,22.651s cold,1,675,880,960 allocated VRAM. Actual coarse sample times, silence omission and chunk checkpoints; no word alignment.
+- Explicit Odia selects pinned ARTPARK-IISc Vaani model, Apache2. Cleared upstream forced IDs and omitted incompatible task/language parameters. Longer input hit output cap; ten-second chunk bound repaired smoke:6.45s,54 Odia characters,24.007s,3,373,683,712 VRAM. Full recordings/WER/human reference remain unverified; base Whisper does not detect Odia, select it explicitly.
+- Native PaddleOCR-VL1.5 connected. Missing Jinja/download filter and generation-cache defaults repaired. Full11-page Hindi scan extract/recovery completed415.188s, original intact, lease generation2,49 uncertain segments. Pages3/7/9 yielded no usable text/capped outcomes. Processing completion is not handwriting-quality acceptance or a full assessment; previous failures retained in reports.
+- Unreviewed OCR/ASR/language uncertainty withholds headline/ranking, including descendants until trusted exact-revision verification. Full regional audio-to-assessment/recovery, mixed/overwritten cases and human-reference quality/fairness remain incomplete.
+
+## Final verification
+
+162 backend tests passed/no skips in81.22s; one existing Starlette/anyio deprecation warning. Later safe Groq diagnostics:3 explanation regressions passed. Ruff, strict mypy79 files, frontend typecheck/lint/production build passed; main490.55kB plus lazy bundles, no size warning.
+
+Eight real local Edge/API/PostgreSQL browser checks passed with no JS errors/overflow: themes/mobile, source/math/fallback, OSM-outage real snapshot, four views, reviews, transcript replacement/history, report/PDF. Auth issuer/model outputs/vectors are explicit fixtures, not live quality. Four-page print contact sheet inspected, readable/no clipping. Actual Groq/OSM/Supabase checks recorded separately. Configured nonpublic secrets absent from changed/new source/build; ignored private inputs/transcripts/logs preserved.
+
+T15/T16/T18/T19 meet local task acceptance; tracker/CSV9/29 is engineering backlog progress, not app percentage. T09/T10/T11/T13/T14/T17 retain incomplete quality/format acceptance. HF/large-scale gates deferred by reset. T27 docs/DEPLOYMENT.md prepared; actual free-host provisioning, clean-machine reproduction and public deployment remain unverified/unapproved.
+
+## Services and continuation
+
+Earlier repo launcher was verified by process ancestry/cwd and restarted only after read-only hosted count showed zero active model stages. New launcher tool session41492 starts API8000/web5173/continuous owned worker with audio and600-second stage bound. Check actual health before stopping anything. No unrelated process/submission was stopped/deleted. No verification browser/model process remains.
+
+Supabase is the only app database/Auth/storage. Optional test Postgres127.0.0.1:55432 uses ignored .local/test-database-url; never aim fixtures at hosted data. Prefer sequential DB/browser/model harnesses. start.cmd uses filled root configuration; setup.cmd provisions selected cached weights. No public deployment.
+
+Next: human-review actual source/English transcriptions; finish localized/audio follow-ups, full recording-to-assessment/recovery and annotated retrieval. Do not retrain the rejected relevance candidate or expand secondary HF/scale before brief acceptance. Publication requires explicit separate approval after reviewing docs/DEPLOYMENT.md. Inspect git log for actual local commit identity/state; no historical attribution rewritten.
+
+---
+
+# Historical handoff, superseded by checkpoint above
+
 # Session handoff
 
 Updated 17 October 2026, 23:25 IST. Deadline: 18 October 06:00 IST including deployed demo. Read AGENTS.md and HACKATHON_RESET.md before continuing.

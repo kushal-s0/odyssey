@@ -11,7 +11,7 @@ from app.contracts.models import BusinessRecord, Domain, DomainRating, LanguageR
 from app.contracts.pipeline import EvidenceBundle
 from app.contracts.worker import StagePublish, WorkerRequest
 from app.domain.scoring import summarize
-from app.pipeline.pdf import handler, suspect_text
+from app.pipeline.pdf import handler, suspect_text, ocr_segments
 from app.services.jobs import Jobs
 from app.worker.capabilities import Capabilities
 from app.worker.manifest import MANIFEST_HASH
@@ -61,6 +61,16 @@ def test_digital_pages_resume_without_losing_originals_or_using_vision(tmp_path,
     assert [s.model_dump(mode='json') for s in bundle.evidence if s.page==1]==first['bundle']['evidence']
     context['input']['checkpoint']['source_hash']='0'*64
     assert list(handler(context))[-1]=={'failure':{'code':'needs_review'}}
+
+
+def test_ocr_rows_stay_exact_and_bounded_without_mixing_identity_lines():
+    source='Name: Synthetic person\n' + '\n'.join(f'Business detail {i}: supplied answer.' for i in range(24))
+    result=ocr_segments(source,uuid4(),uuid4(),'en',lambda *_: LanguageResult(code='en',provenance='declared'))
+    assert len(result)<15
+    assert result[0].original_text == 'Name: Synthetic person'
+    assert all('Name:' not in part.original_text for part in result[1:])
+    assert all(source[part.start_character:part.end_character]==part.original_text for part in result)
+    assert all(f'Business detail {i}:' in '\n'.join(part.original_text for part in result) for i in range(24))
 
 
 def test_corrupt_font_maps_are_suspect_but_normal_mixed_scripts_are_not():
