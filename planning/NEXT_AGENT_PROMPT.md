@@ -5,7 +5,9 @@ Preserve branch second, original data, credentials and unrelated .tools entries.
 Latest request: T09 -> T09A -> T12 -> T08, sequentially. T09 English model run
 passes; translation/human review and remaining runtime acceptance are blocked.
 T09A is done with a fitted but rejected candidate; baseline remains active.
-T12 is active. Finish T12 then T08 with actual evidence and honest gates.
+T12 is done locally: actual English/adversarial HTTP+model paths persist
+assessments, 138 API tests pass. Read T12.md and owned-assessment.json.
+T08 is active; build and browser-verify applicant submission/recording/results UI.
 Both author AND committer: kushal-s0 <kushal.soni@somaiya.edu>; no trailers.
 Verify every local commit. Never push, PR, upload source or deploy without approval.
 Native PG loopback 55432; private DSN in ignored .local/test-database-url.

@@ -24,6 +24,7 @@ from .routes.uploads import router as uploads_router
 from .routes.submissions import router as submissions_router
 from .routes.jobs import router as jobs_router
 from .routes.internal_jobs import router as internal_jobs_router
+from .routes.assessments import router as assessments_router
 from .services.jobs import Jobs
 from .worker.gradio import activity
 from .services.storage import StorageUnavailable
@@ -64,6 +65,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     application.include_router(submissions_router)
     application.include_router(jobs_router)
     application.include_router(internal_jobs_router)
+    application.include_router(assessments_router)
     application.add_middleware(CORSMiddleware, allow_origins=config.cors_origins,
                                allow_credentials=False, allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
                                allow_headers=["Authorization", "Content-Type", "Idempotency-Key", "X-Request-ID"])

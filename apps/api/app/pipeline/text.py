@@ -19,6 +19,8 @@ Use short EXACT English source quotes. For money include amount/currency and sup
 Select only business-relevant statements. Preserve contradictory supplied values as separate quotes. For explicit unrelated/unreadable answers you may add status: irrelevant/unreadable/ambiguous. Additional technical facts use field additional and a short business label.
 trade is one of tea_stall,tailoring,food_service,dairy,poultry,beauty_services,mobile_repair,agricultural_inputs,solar_services,packaged_water,bag_manufacturing,other,unknown.
 sector is agriculture,food_beverage,retail,services,manufacturing,other,unknown. Include offer, target_customers and unit_price whenever explicitly supplied. At most 16 short quoted facts. All claims are self-reported, never externally verified.'''
+EXTRACT_SYSTEM+=''' One sentence may support several different fields. Example source segment 0: "I sell tea to office workers." gives facts [{"field":"offer","segment":0,"quote":"tea"},{"field":"target_customers","segment":0,"quote":"office workers"}].
+The problem field means the CUSTOMER problem addressed, not the applicant's missing cost/profit knowledge. Statements of unknown/not-decided details are not present facts. Include each explicitly supplied field; do not stop after one fact per sentence.'''
 
 
 def translated(bundle: EvidenceBundle, translator: IndicTranslator, completed: int = 0) -> Iterator[tuple[int,EvidenceBundle]]:
@@ -60,7 +62,7 @@ def structure_groups(bundle: EvidenceBundle) -> list[list[int]]:
             bundle.warnings=list(dict.fromkeys([*bundle.warnings,'identity_source_excluded_from_facts']))
             continue
         count=len(segment.english_text)
-        if not groups or size+count>2400:
+        if not groups or size+count>2400 or len(groups[-1])>=4:
             groups.append([])
             size=0
         groups[-1].append(index)
@@ -103,10 +105,12 @@ def handler(context: dict[str,Any]) -> Iterator[dict[str,Any]]:
             model=Qwen()
             for group in groups[len(drafts):]:
                 source=json.dumps([{'segment':index,'text':bundle.evidence[index].english_text} for index in group],ensure_ascii=False)
-                draft=ExtractionDraft.model_validate(model.json(EXTRACT_SYSTEM,source))
-                if any(fact.segment not in group for fact in draft.facts):
-                    raise ValueError('Model cited a segment outside its bounded input')
-                assemble(bundle,[draft])  # Reject fabricated quotes before persisting a checkpoint.
+                def validate_draft(payload: dict[str,Any]) -> None:
+                    candidate=ExtractionDraft.model_validate(payload)
+                    if any(fact.segment not in group for fact in candidate.facts):
+                        raise ValueError('Model cited a segment outside its bounded input')
+                    assemble(bundle,[candidate])
+                draft=ExtractionDraft.model_validate(model.json(EXTRACT_SYSTEM,source,validator=validate_draft))
                 drafts.append(draft)
                 yield {'checkpoint':{'drafts':[item.model_dump(mode='json') for item in drafts],
                     'measurements':saved_measurements+model.measurements}}

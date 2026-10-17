@@ -11,7 +11,13 @@ the earlier Kartik-only identity below; historical commits must remain unchanged
 Actual current branch is `second`; preserve it. Publication remains unapproved.
 T09 is blocked after actual English inference passed. T09A is done with an
 explicit rejected experimental candidate; the baseline remains selected. T12
-is now active. Read T09A.md/model card and evals/reports/relevance.json. Actual
+is now done locally; T08 is active. Read T12.md and owned-assessment.json: actual
+English/adversarial model checks reach persisted assessments (51.159/42.137 s),
+valid citations and null unknowns. API totals withhold insufficient headlines.
+Full API suite 138 passed, strict mypy 53 files, frontend typecheck passes.
+Longer quote-paraphrase input remains needs_review in T09; do not claim broad
+quality or translation. Pipeline entrypoint: app.pipeline.run:handler.
+Read T09A.md/model card and evals/reports/relevance.json. Actual
 102 QA pairs/11 PDFs/5 families; zero reviewed labels. Export parity and grouped
 isolation pass; repeated artifact hash is stable. No validation-quality claim.
 See task-reports/T09.md and evals/reports/feasibility/owned-text.json. Both model

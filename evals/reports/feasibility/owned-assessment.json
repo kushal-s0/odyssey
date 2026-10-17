@@ -1,0 +1,204 @@
+{
+  "scope": "Actual local HTTP/owned inference on synthetic inputs; not human quality validation or hosted deployment",
+  "cases": [
+    {
+      "case": "english",
+      "seconds": 51.159,
+      "status": "completed",
+      "error_code": null,
+      "structured": true,
+      "manifest_hash": "5a92382e6237e8b15789551265512189abd55c77b63b1006ca9962d8eceab9b0",
+      "human_quality_validated": false,
+      "measurements": [
+        {
+          "model": "Qwen3-VL-2B-Instruct",
+          "device": "cuda",
+          "seconds": 5.317,
+          "rss_bytes": 1505550336,
+          "input_tokens": 505,
+          "load_seconds": 11.005,
+          "output_tokens": 94,
+          "peak_vram_bytes": 4390399488,
+          "token_cap_reached": false,
+          "human_quality_validated": false
+        }
+      ],
+      "offer_present": true,
+      "unknown_profit_preserved": true,
+      "no_fabricated_profit": true,
+      "supplied_price_preserved": true,
+      "identity_excluded": true,
+      "assessment_persisted": true,
+      "score_summary": {
+        "usable_fields": 4,
+        "rubric_version": "rubric-v1",
+        "excluded_fields": {},
+        "withheld_reason": "insufficient_coverage",
+        "ranking_eligible": false,
+        "applicable_fields": 18,
+        "evidence_coverage": "0.4",
+        "headline_potential": null,
+        "needs_clarification": true,
+        "completeness_percent": "22.22",
+        "provisional_potential": "50.00"
+      },
+      "domains": [
+        {
+          "domain": "clarity",
+          "rating": 2,
+          "valid_evidence": true
+        },
+        {
+          "domain": "customer_need",
+          "rating": null,
+          "valid_evidence": true
+        },
+        {
+          "domain": "market_potential",
+          "rating": null,
+          "valid_evidence": true
+        },
+        {
+          "domain": "feasibility",
+          "rating": 2,
+          "valid_evidence": true
+        },
+        {
+          "domain": "competition",
+          "rating": null,
+          "valid_evidence": true
+        },
+        {
+          "domain": "differentiation",
+          "rating": null,
+          "valid_evidence": true
+        }
+      ],
+      "relevance_model": "rules-cosine-baseline-v1",
+      "assessment_measurements": [
+        {
+          "model": "Qwen3-VL-2B-Instruct",
+          "device": "cuda",
+          "seconds": 2.571,
+          "rss_bytes": 1893965824,
+          "input_tokens": 352,
+          "load_seconds": 9.546,
+          "output_tokens": 39,
+          "peak_vram_bytes": 4346874880,
+          "token_cap_reached": false,
+          "human_quality_validated": false
+        },
+        {
+          "model": "Qwen3-VL-2B-Instruct",
+          "device": "cuda",
+          "seconds": 2.885,
+          "rss_bytes": 1912696832,
+          "input_tokens": 451,
+          "load_seconds": 9.546,
+          "output_tokens": 69,
+          "peak_vram_bytes": 4373443584,
+          "token_cap_reached": false,
+          "human_quality_validated": false
+        }
+      ]
+    },
+    {
+      "case": "complete",
+      "seconds": 26.082,
+      "status": "needs_review",
+      "error_code": "needs_review",
+      "structured": false,
+      "manifest_hash": "5a92382e6237e8b15789551265512189abd55c77b63b1006ca9962d8eceab9b0",
+      "human_quality_validated": false
+    },
+    {
+      "case": "injection",
+      "seconds": 42.137,
+      "status": "completed",
+      "error_code": null,
+      "structured": true,
+      "manifest_hash": "5a92382e6237e8b15789551265512189abd55c77b63b1006ca9962d8eceab9b0",
+      "human_quality_validated": false,
+      "measurements": [
+        {
+          "model": "Qwen3-VL-2B-Instruct",
+          "device": "cuda",
+          "seconds": 3.686,
+          "rss_bytes": 1904095232,
+          "input_tokens": 458,
+          "load_seconds": 10.036,
+          "output_tokens": 63,
+          "peak_vram_bytes": 4377592320,
+          "token_cap_reached": false,
+          "human_quality_validated": false
+        }
+      ],
+      "offer_present": true,
+      "unknown_profit_preserved": true,
+      "no_fabricated_profit": true,
+      "supplied_price_preserved": true,
+      "identity_excluded": true,
+      "assessment_persisted": true,
+      "score_summary": {
+        "usable_fields": 3,
+        "rubric_version": "rubric-v1",
+        "excluded_fields": {},
+        "withheld_reason": "insufficient_coverage",
+        "ranking_eligible": false,
+        "applicable_fields": 18,
+        "evidence_coverage": "0.15",
+        "headline_potential": null,
+        "needs_clarification": true,
+        "completeness_percent": "16.67",
+        "provisional_potential": "50.00"
+      },
+      "domains": [
+        {
+          "domain": "clarity",
+          "rating": 2,
+          "valid_evidence": true
+        },
+        {
+          "domain": "customer_need",
+          "rating": null,
+          "valid_evidence": true
+        },
+        {
+          "domain": "market_potential",
+          "rating": null,
+          "valid_evidence": true
+        },
+        {
+          "domain": "feasibility",
+          "rating": null,
+          "valid_evidence": true
+        },
+        {
+          "domain": "competition",
+          "rating": null,
+          "valid_evidence": true
+        },
+        {
+          "domain": "differentiation",
+          "rating": null,
+          "valid_evidence": true
+        }
+      ],
+      "relevance_model": "rules-cosine-baseline-v1",
+      "assessment_measurements": [
+        {
+          "model": "Qwen3-VL-2B-Instruct",
+          "device": "cuda",
+          "seconds": 2.658,
+          "rss_bytes": 1941684224,
+          "input_tokens": 353,
+          "load_seconds": 7.815,
+          "output_tokens": 50,
+          "peak_vram_bytes": 4347109888,
+          "token_cap_reached": false,
+          "human_quality_validated": false
+        }
+      ]
+    }
+  ]
+}

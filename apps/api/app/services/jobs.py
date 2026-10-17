@@ -20,6 +20,7 @@ from ..worker.capabilities import Capabilities
 from ..worker.manifest import MANIFEST_HASH
 from .storage import configured_storage
 from ..pipeline.persistence import persist_text_stage
+from ..pipeline.assessment_persistence import persist_assessment_stage
 
 
 class Jobs:
@@ -195,6 +196,7 @@ class Jobs:
                     raise HTTPException(409, 'Conflicting duplicate stage publication')
                 return {'published':False, 'status':job['status']}
             persist_text_stage(c,stage,job,output.payload)
+            persist_assessment_stage(c,stage,job,output.payload)
             c.execute('SELECT public.publish_stage(%s,%s,%s,%s,%s,%s,%s)',
                 (stage['id'], claims['sub'], claims['generation'], digest, output.model_manifest_hash,
                  output.schema_version, Jsonb(output.payload)))

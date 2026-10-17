@@ -19,6 +19,9 @@ class PipelineManifest(TypedDict):
     rubric: str
     preprocessing: str
     language_detector: str
+    assessment_policy: str
+    relevance: str
+    extraction_policy: str
 
 # Expected pipeline artifacts, not a deployment/quality claim. T09+ verify individual handlers.
 MANIFEST: PipelineManifest = {
@@ -29,6 +32,8 @@ MANIFEST: PipelineManifest = {
     'en_indic': {'id':'ai4bharat/indictrans2-en-indic-dist-200M','revision':'2cfd0a20057756d756bf3e53528f492afc52f91a'},
     'embedding': {'id':'sentence-transformers/all-MiniLM-L6-v2','revision':'1110a243fdf4706b3f48f1d95db1a4f5529b4d41'},
     'rubric': 'rubric-v1', 'preprocessing':'text-evidence-v1', 'language_detector':'py3langid-0.3.0',
+    'assessment_policy':'grounded-domain-v1', 'relevance':'rules-cosine-baseline-v1',
+    'extraction_policy':'quoted-facts-v4-bounded-grounding-repair',
 }
 MANIFEST_HASH = hashlib.sha256(json.dumps(MANIFEST, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
 

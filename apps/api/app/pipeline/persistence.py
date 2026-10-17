@@ -9,7 +9,7 @@ from psycopg.types.json import Jsonb
 
 from ..contracts.pipeline import EvidenceBundle, StructuredBundle
 from ..repositories.idempotency import canonical_hash
-from ..worker.manifest import MANIFEST_HASH
+from ..worker.manifest import MANIFEST, MANIFEST_HASH
 from .normalize import numeric_tokens
 from .structure import assemble
 
@@ -65,6 +65,8 @@ def persist_text_stage(c: Connection[DictRow], stage: DictRow, job: DictRow, pay
                      Jsonb(locator),segment.translation_uncertain))
         elif key=='structure':
             structured=StructuredBundle.model_validate(payload)
+            if (structured.model_id,structured.model_revision)!=(MANIFEST['qwen']['id'],MANIFEST['qwen']['revision']):
+                raise ValueError('Structured model differs from pinned artifact')
             rebuilt=assemble(bundle,structured.drafts)
             if canonical_hash(rebuilt.business.model_dump(mode='json'))!=canonical_hash(structured.business.model_dump(mode='json')):
                 raise ValueError('Structured business differs from supported source quotes')

@@ -13,6 +13,7 @@ MONEY_FIELDS={'investment','own_funds','requested_loan','unit_price','revenue','
 LIST_FIELDS={'raw_materials','suppliers'}
 IDENTITY=re.compile(r'\b(?:my name|applicant name|phone|mobile number|caste|gender|my education|educational qualification|aadhaar)\b',re.I)
 SOURCE_INSTRUCTION=re.compile(r'ignore.{0,50}instructions|\b(?:system|assistant)\s*:|\bgive\s+(?:every|all)\s+(?:rating|score)|\binvent\s+(?:INR|₹|\d)',re.I)
+UNKNOWN_STATEMENT=re.compile(r"\b(?:not known|unknown|not sure|not decided|don't know|do not know|not available|yet to decide)\b",re.I)
 
 
 def quoted_money(quote: str) -> Money | None:
@@ -55,6 +56,8 @@ def assemble(bundle: EvidenceBundle, drafts: list[ExtractionDraft]) -> Structure
             if fact.status!='present':
                 candidates.setdefault(fact.field,[]).append({'status':fact.status,'source_segment_ids':[segment.id]})
                 continue
+            if UNKNOWN_STATEMENT.search(fact.quote):
+                continue  # Explicit ignorance cannot become a positive fact in another domain.
             if fact.field in MONEY_FIELDS:
                 value=quoted_money(fact.quote)
                 if value is None:

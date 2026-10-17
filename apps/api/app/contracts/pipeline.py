@@ -2,7 +2,7 @@ from typing import Annotated, Literal
 
 from pydantic import Field
 
-from .models import BusinessRecord, Contract, Evidence
+from .models import BusinessRecord, Contract, DomainRating, Evidence, RelevanceCheck
 
 
 class EvidenceBundle(Contract):
@@ -37,4 +37,15 @@ class StructuredBundle(EvidenceBundle):
     model_revision: str
     preprocessing_version: Literal['text-evidence-v1'] = 'text-evidence-v1'
     drafts: list[ExtractionDraft] = Field(default_factory=list,max_length=200)
+    measurements: list[dict[str, str | float | int | bool]] = Field(default_factory=list,max_length=200)
+
+
+class AssessmentBundle(Contract):
+    schema_version: Literal['1'] = '1'
+    rubric_version: Literal['rubric-v1'] = 'rubric-v1'
+    policy_version: Literal['grounded-domain-v1'] = 'grounded-domain-v1'
+    model_id: str
+    model_revision: str
+    domains: list[DomainRating] = Field(min_length=6,max_length=6)
+    relevance: list[RelevanceCheck] = Field(min_length=6,max_length=6)
     measurements: list[dict[str, str | float | int | bool]] = Field(default_factory=list,max_length=200)

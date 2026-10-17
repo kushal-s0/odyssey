@@ -2,6 +2,15 @@
 
 ## Confirmed constraints
 
+Latest 17 October checkpoint: local commits now use the user's requested
+`kushal-s0 <kushal.soni@somaiya.edu>` identity for both author and committer.
+Current measured laptop is RTX 3050 6 GB; earlier hardware notes below are
+historical. Publication still needs explicit approval. At 20:22 IST, local
+English text-to-persisted-assessment works; no hosted demo has been verified.
+T09 translation/quality gates remain blocked, T09A rejects its unvalidated
+candidate, and T12 validation precedes T08. The 20:00 hosted checkpoint was
+missed; this is not a deployment claim. Remaining requested scope is unchanged.
+
 - Deadline: **18 October 2026, 06:00 Asia/Calcutta**, working deployed demo included.
 - Service spend: zero; no paid APIs, subscriptions, GPU purchase, trial-credit dependency or paid fallback.
 - Prefer inference without a provider's expiring allowance. Kartik can keep his RTX 5050 laptop running for inference/training. Use a verified owned worker as the preferred judging profile; free HF deployments remain a separate target, not the sole inference budget.

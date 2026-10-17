@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import importlib
+from collections.abc import Callable
 import json
 import os
 import time
@@ -89,18 +90,45 @@ class Qwen:
             raise ValueError('Model output was truncated; review or use a smaller input')
         return text
 
-    def json(self, system: str, source: str) -> dict[str,Any]:
+    def json(self, system: str, source: str, *, validator: Callable[[dict[str,Any]],None] | None=None) -> dict[str,Any]:
         for attempt in range(2):
-            raw=self.generate(system+(' Previous output was invalid. Return one complete JSON object only.' if attempt else ''),source)
+            raw=self.generate(system+(' Previous output was invalid. Return one complete schema-valid JSON object. Every quote must be an EXACT contiguous source substring; never paraphrase or remove words inside a quote. Omit unsupported facts; at most eight short facts.' if attempt else ''),source)
             try:
                 value=json.loads(raw.removeprefix('```json').removeprefix('```').removesuffix('```').strip())
                 if not isinstance(value,dict):
                     raise ValueError('Expected an object')
+                if validator:
+                    validator(value)
                 return value
             except ValueError:
                 if attempt:
                     raise
         raise ValueError('Invalid model output')
+
+
+class SentenceEncoder:
+    """Frozen pinned MiniLM CPU encoder, used only for advisory similarity."""
+    def __init__(self) -> None:
+        os.environ['HF_HUB_OFFLINE']='1'
+        os.environ['TRANSFORMERS_OFFLINE']='1'
+        transformers=importlib.import_module('transformers')
+        self.torch=importlib.import_module('torch')
+        self.torch.set_num_threads(2)
+        artifact=MANIFEST['embedding']
+        snapshot=CACHE/('models--'+artifact['id'].replace('/','--'))/'snapshots'/artifact['revision']
+        if not snapshot.is_dir():
+            raise ModelUnavailable('Pinned embedding snapshot is unavailable')
+        self.tokenizer=transformers.AutoTokenizer.from_pretrained(str(snapshot),local_files_only=True)
+        self.model=transformers.AutoModel.from_pretrained(str(snapshot),local_files_only=True).eval()
+
+    def cosine(self,question: str,answer: str) -> float:
+        encoded=self.tokenizer([question,answer],padding=True,truncation=True,max_length=256,return_tensors='pt')
+        with self.torch.inference_mode():
+            hidden=self.model(**encoded).last_hidden_state
+            mask=encoded['attention_mask'].unsqueeze(-1)
+            pooled=(hidden*mask).sum(1)/mask.sum(1).clamp(min=1)
+            normalized=self.torch.nn.functional.normalize(pooled,p=2,dim=1)
+        return max(-1.,min(1.,float((normalized[0]*normalized[1]).sum())))
 
 
 class IndicTranslator:

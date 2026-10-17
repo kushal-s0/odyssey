@@ -1,10 +1,12 @@
 {
   "schema_version": "1",
-  "manifest_hash": "9e526e675a02e174d77e75c26340140e1380305c134677a704e25cc9009e70db",
+  "manifest_hash": "5a92382e6237e8b15789551265512189abd55c77b63b1006ca9962d8eceab9b0",
   "pipeline": "screening-v1",
   "protocol": "stage-v1",
   "preprocessing": "text-evidence-v1",
   "rubric": "rubric-v1",
+  "assessment_policy": "grounded-domain-v1",
+  "extraction_policy": "quoted-facts-v4-bounded-grounding-repair",
   "language_detector": {
     "id": "py3langid-0.3.0",
     "license": "BSD-3-Clause",
@@ -63,10 +65,11 @@
     "output_tokens": 640,
     "segment_characters": 1200,
     "batch_characters": 2400,
+    "batch_segments": 4,
     "format_repair_attempts": 1
   },
   "promotion": {
-    "relevance": "not trained yet; advisory baseline only"
+    "relevance": "experimental candidate rejected; rules-cosine-baseline-v1 selected"
   },
   "deployment": "not deployed; expected artifacts only"
 }

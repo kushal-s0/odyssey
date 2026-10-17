@@ -251,6 +251,15 @@ class ScoreSummary(Contract):
         return self
 
 
+class RelevanceCheck(Contract):
+    domain: Domain
+    classifier: Literal['rules-cosine-baseline-v1'] = 'rules-cosine-baseline-v1'
+    result: Literal['missing','relevant','uncertain']
+    cosine_similarity: float | None = Field(default=None, ge=-1, le=1)
+    advisory_only: Literal[True] = True
+    independently_validated: Literal[False] = False
+
+
 class Assessment(Contract):
     id: UUID
     submission_id: UUID
@@ -266,6 +275,9 @@ class Assessment(Contract):
     strengths: list[str] = Field(default_factory=list, max_length=10)
     gaps: list[str] = Field(default_factory=list, max_length=20)
     risks: list[str] = Field(default_factory=list, max_length=20)
+    assessment_policy_version: Literal['grounded-domain-v1'] = 'grounded-domain-v1'
+    relevance_model: Literal['rules-cosine-baseline-v1'] = 'rules-cosine-baseline-v1'
+    relevance: list[RelevanceCheck] = Field(default_factory=list, max_length=6)
 
     @model_validator(mode="after")
     def traceability(self) -> Assessment:
@@ -276,6 +288,8 @@ class Assessment(Contract):
             raise ValueError("Evidence identifiers must be unique")
         if any(segment.submission_id != self.submission_id for segment in self.evidence):
             raise ValueError("Evidence must belong to this submission")
+        if any(segment.input_revision_id != self.input_revision_id for segment in self.evidence):
+            raise ValueError("Evidence must belong to this input revision")
 
         def check(value: object) -> None:
             if isinstance(value, dict):

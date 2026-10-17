@@ -8,8 +8,8 @@ from app.contracts.pipeline import EvidenceBundle, ExtractionDraft
 from app.contracts.worker import StagePublish, WorkerRequest
 from app.pipeline.normalize import normalize_text, numeric_tokens
 from app.pipeline.structure import assemble, quoted_money
-from app.pipeline.text import translated
-from app.providers.local_models import ModelUnavailable
+from app.pipeline.text import structure_groups, translated
+from app.providers.local_models import ModelUnavailable, Qwen
 from app.services.jobs import Jobs
 from app.worker.capabilities import Capabilities
 from app.worker.manifest import MANIFEST_HASH
@@ -128,3 +128,29 @@ def test_declared_english_does_not_falsely_mark_mixed_regional_text_as_translate
     value.evidence[0].english_text=None
     with pytest.raises(ModelUnavailable):
         list(translated(value,None))
+
+
+def test_fact_batches_bound_sentence_count_as_well_as_character_count():
+    value=bundle('Tea for workers. '*9)
+    groups=structure_groups(value)
+    assert [len(group) for group in groups]==[4,4,1]
+
+
+def test_model_grounding_repair_is_bounded_and_uses_exact_quotes(monkeypatch):
+    value=bundle('I spoke to workers who said they would buy tea.')
+    outputs=iter(['{"facts":[{"field":"market_research","segment":0,"quote":"workers said they would buy tea"}]}',
+                  '{"facts":[{"field":"market_research","segment":0,"quote":"said they would buy tea"}]}'])
+    calls=[]
+    model=Qwen.__new__(Qwen)
+    def generate(system,source):
+        calls.append(system)
+        return next(outputs)
+    monkeypatch.setattr(model,'generate',generate)
+    def validate(payload):
+        assemble(value,[ExtractionDraft.model_validate(payload)])
+    repaired=model.json('Extract facts','synthetic source',validator=validate)
+    assert repaired['facts'][0]['quote']=='said they would buy tea'
+    assert len(calls)==2 and 'EXACT contiguous' in calls[-1]
+    monkeypatch.setattr(model,'generate',lambda system,source:'{"facts":[{"field":"profit","segment":0,"quote":"INR 999999"}]}')
+    with pytest.raises(ValueError):
+        model.json('Extract facts','synthetic source',validator=validate)

@@ -1067,6 +1067,121 @@
         }
       }
     },
+    "/v1/submissions/{submission_id}/assessment": {
+      "get": {
+        "tags": [
+          "assessments"
+        ],
+        "summary": "Assessment",
+        "operationId": "assessment_v1_submissions__submission_id__assessment_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "submission_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Submission Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Assessment"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/evidence/{evidence_id}": {
+      "get": {
+        "tags": [
+          "assessments"
+        ],
+        "summary": "Evidence",
+        "operationId": "evidence_v1_evidence__evidence_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "evidence_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Evidence Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/TextEvidence"
+                    },
+                    {
+                      "$ref": "#/components/schemas/PdfEvidence"
+                    },
+                    {
+                      "$ref": "#/components/schemas/AudioEvidence"
+                    }
+                  ],
+                  "discriminator": {
+                    "propertyName": "kind",
+                    "mapping": {
+                      "text": "#/components/schemas/TextEvidence",
+                      "pdf": "#/components/schemas/PdfEvidence",
+                      "audio": "#/components/schemas/AudioEvidence"
+                    }
+                  },
+                  "title": "Response Evidence V1 Evidence  Evidence Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health/live": {
       "get": {
         "tags": [
@@ -1158,6 +1273,648 @@
         ],
         "title": "ActorView"
       },
+      "AdditionalFact-Input": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxLength": 150,
+            "minLength": 1,
+            "title": "Label"
+          },
+          "fact": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "label",
+          "fact"
+        ],
+        "title": "AdditionalFact"
+      },
+      "AdditionalFact-Output": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxLength": 150,
+            "minLength": 1,
+            "title": "Label"
+          },
+          "fact": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "label",
+          "fact"
+        ],
+        "title": "AdditionalFact"
+      },
+      "Alternative_Location_": {
+        "properties": {
+          "value": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "source_segment_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Source Segment Ids"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Note"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "value",
+          "source_segment_ids",
+          "note"
+        ],
+        "title": "Alternative[Location]"
+      },
+      "Alternative_Money_-Input": {
+        "properties": {
+          "value": {
+            "$ref": "#/components/schemas/Money-Input"
+          },
+          "source_segment_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Source Segment Ids"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Note"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "value",
+          "source_segment_ids",
+          "note"
+        ],
+        "title": "Alternative[Money]"
+      },
+      "Alternative_Money_-Output": {
+        "properties": {
+          "value": {
+            "$ref": "#/components/schemas/Money-Output"
+          },
+          "source_segment_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Source Segment Ids"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Note"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "value",
+          "source_segment_ids",
+          "note"
+        ],
+        "title": "Alternative[Money]"
+      },
+      "Alternative_bool_": {
+        "properties": {
+          "value": {
+            "type": "boolean",
+            "title": "Value"
+          },
+          "source_segment_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Source Segment Ids"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Note"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "value",
+          "source_segment_ids",
+          "note"
+        ],
+        "title": "Alternative[bool]"
+      },
+      "Alternative_list_str__": {
+        "properties": {
+          "value": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Value"
+          },
+          "source_segment_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Source Segment Ids"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Note"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "value",
+          "source_segment_ids",
+          "note"
+        ],
+        "title": "Alternative[list[str]]"
+      },
+      "Alternative_str_": {
+        "properties": {
+          "value": {
+            "type": "string",
+            "title": "Value"
+          },
+          "source_segment_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Source Segment Ids"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Note"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "value",
+          "source_segment_ids",
+          "note"
+        ],
+        "title": "Alternative[str]"
+      },
+      "Assessment": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "submission_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Submission Id"
+          },
+          "input_revision_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Input Revision Id"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Version"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "pipeline_version": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Pipeline Version"
+          },
+          "model_manifest_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Model Manifest Hash"
+          },
+          "business": {
+            "$ref": "#/components/schemas/BusinessRecord-Output"
+          },
+          "evidence": {
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/TextEvidence"
+                },
+                {
+                  "$ref": "#/components/schemas/PdfEvidence"
+                },
+                {
+                  "$ref": "#/components/schemas/AudioEvidence"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "kind",
+                "mapping": {
+                  "audio": "#/components/schemas/AudioEvidence",
+                  "pdf": "#/components/schemas/PdfEvidence",
+                  "text": "#/components/schemas/TextEvidence"
+                }
+              }
+            },
+            "type": "array",
+            "maxItems": 1000,
+            "title": "Evidence"
+          },
+          "domains": {
+            "items": {
+              "$ref": "#/components/schemas/DomainRating"
+            },
+            "type": "array",
+            "maxItems": 6,
+            "minItems": 6,
+            "title": "Domains"
+          },
+          "scores": {
+            "$ref": "#/components/schemas/ScoreSummary-Output"
+          },
+          "strengths": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Strengths"
+          },
+          "gaps": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Gaps"
+          },
+          "risks": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Risks"
+          },
+          "assessment_policy_version": {
+            "type": "string",
+            "const": "grounded-domain-v1",
+            "title": "Assessment Policy Version",
+            "default": "grounded-domain-v1"
+          },
+          "relevance_model": {
+            "type": "string",
+            "const": "rules-cosine-baseline-v1",
+            "title": "Relevance Model",
+            "default": "rules-cosine-baseline-v1"
+          },
+          "relevance": {
+            "items": {
+              "$ref": "#/components/schemas/RelevanceCheck"
+            },
+            "type": "array",
+            "maxItems": 6,
+            "title": "Relevance"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "submission_id",
+          "input_revision_id",
+          "version",
+          "created_at",
+          "pipeline_version",
+          "model_manifest_hash",
+          "business",
+          "evidence",
+          "domains",
+          "scores"
+        ],
+        "title": "Assessment"
+      },
+      "AudioEvidence": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "submission_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Submission Id"
+          },
+          "input_revision_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Input Revision Id"
+          },
+          "original_text": {
+            "type": "string",
+            "maxLength": 30000,
+            "minLength": 1,
+            "title": "Original Text"
+          },
+          "english_text": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 30000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "English Text"
+          },
+          "language": {
+            "$ref": "#/components/schemas/LanguageResult"
+          },
+          "translation_uncertain": {
+            "type": "boolean",
+            "title": "Translation Uncertain",
+            "default": false
+          },
+          "kind": {
+            "type": "string",
+            "const": "audio",
+            "title": "Kind",
+            "default": "audio"
+          },
+          "attachment_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Attachment Id"
+          },
+          "start_seconds": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Start Seconds"
+          },
+          "end_seconds": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "End Seconds"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "submission_id",
+          "input_revision_id",
+          "original_text",
+          "attachment_id",
+          "start_seconds",
+          "end_seconds"
+        ],
+        "title": "AudioEvidence"
+      },
+      "BusinessRecord-Input": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1",
+            "title": "Schema Version",
+            "default": "1"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "business_type": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "offer": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "target_customers": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "problem": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "location": {
+            "$ref": "#/components/schemas/EvidenceField_Location_-Input"
+          },
+          "market_research": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "raw_materials": {
+            "$ref": "#/components/schemas/EvidenceField_list_str__"
+          },
+          "suppliers": {
+            "$ref": "#/components/schemas/EvidenceField_list_str__"
+          },
+          "investment": {
+            "$ref": "#/components/schemas/EvidenceField_Money_-Input"
+          },
+          "own_funds": {
+            "$ref": "#/components/schemas/EvidenceField_Money_-Input"
+          },
+          "requested_loan": {
+            "$ref": "#/components/schemas/EvidenceField_Money_-Input"
+          },
+          "unit_price": {
+            "$ref": "#/components/schemas/EvidenceField_Money_-Input"
+          },
+          "revenue": {
+            "$ref": "#/components/schemas/EvidenceField_Money_-Input"
+          },
+          "expenses": {
+            "$ref": "#/components/schemas/EvidenceField_Money_-Input"
+          },
+          "profit": {
+            "$ref": "#/components/schemas/EvidenceField_Money_-Input"
+          },
+          "competition": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "differentiation": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "existing_business": {
+            "$ref": "#/components/schemas/EvidenceField_bool_"
+          },
+          "sector": {
+            "type": "string",
+            "enum": [
+              "agriculture",
+              "food_beverage",
+              "retail",
+              "services",
+              "manufacturing",
+              "other",
+              "unknown"
+            ],
+            "title": "Sector",
+            "default": "unknown"
+          },
+          "trade": {
+            "$ref": "#/components/schemas/Trade",
+            "default": "unknown"
+          },
+          "additional_facts": {
+            "items": {
+              "$ref": "#/components/schemas/AdditionalFact-Input"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "title": "Additional Facts"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "BusinessRecord"
+      },
+      "BusinessRecord-Output": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1",
+            "title": "Schema Version",
+            "default": "1"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "business_type": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "offer": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "target_customers": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "problem": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "location": {
+            "$ref": "#/components/schemas/EvidenceField_Location_-Output"
+          },
+          "market_research": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "raw_materials": {
+            "$ref": "#/components/schemas/EvidenceField_list_str__"
+          },
+          "suppliers": {
+            "$ref": "#/components/schemas/EvidenceField_list_str__"
+          },
+          "investment": {
+            "$ref": "#/components/schemas/EvidenceField_Money_-Output"
+          },
+          "own_funds": {
+            "$ref": "#/components/schemas/EvidenceField_Money_-Output"
+          },
+          "requested_loan": {
+            "$ref": "#/components/schemas/EvidenceField_Money_-Output"
+          },
+          "unit_price": {
+            "$ref": "#/components/schemas/EvidenceField_Money_-Output"
+          },
+          "revenue": {
+            "$ref": "#/components/schemas/EvidenceField_Money_-Output"
+          },
+          "expenses": {
+            "$ref": "#/components/schemas/EvidenceField_Money_-Output"
+          },
+          "profit": {
+            "$ref": "#/components/schemas/EvidenceField_Money_-Output"
+          },
+          "competition": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "differentiation": {
+            "$ref": "#/components/schemas/EvidenceField_str_"
+          },
+          "existing_business": {
+            "$ref": "#/components/schemas/EvidenceField_bool_"
+          },
+          "sector": {
+            "type": "string",
+            "enum": [
+              "agriculture",
+              "food_beverage",
+              "retail",
+              "services",
+              "manufacturing",
+              "other",
+              "unknown"
+            ],
+            "title": "Sector",
+            "default": "unknown"
+          },
+          "trade": {
+            "$ref": "#/components/schemas/Trade",
+            "default": "unknown"
+          },
+          "additional_facts": {
+            "items": {
+              "$ref": "#/components/schemas/AdditionalFact-Output"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "title": "Additional Facts"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "BusinessRecord"
+      },
       "ClaimResponse": {
         "properties": {
           "claim": {
@@ -1212,6 +1969,72 @@
         ],
         "title": "CohortAccess"
       },
+      "Domain": {
+        "type": "string",
+        "enum": [
+          "clarity",
+          "customer_need",
+          "market_potential",
+          "feasibility",
+          "competition",
+          "differentiation"
+        ],
+        "title": "Domain"
+      },
+      "DomainRating": {
+        "properties": {
+          "domain": {
+            "$ref": "#/components/schemas/Domain"
+          },
+          "rating": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 4.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rating"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 4000,
+            "minLength": 1,
+            "title": "Reason"
+          },
+          "source_segment_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "title": "Source Segment Ids"
+          },
+          "basis": {
+            "type": "string",
+            "enum": [
+              "self_reported",
+              "reviewer_verified",
+              "mixed",
+              "insufficient"
+            ],
+            "title": "Basis",
+            "default": "self_reported"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "domain",
+          "rating",
+          "reason"
+        ],
+        "title": "DomainRating"
+      },
       "ErrorEnvelope": {
         "properties": {
           "code": {
@@ -1242,6 +2065,362 @@
         ],
         "title": "ErrorEnvelope"
       },
+      "EvidenceField_Location_-Input": {
+        "properties": {
+          "value": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Location"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/FieldStatus",
+            "default": "missing"
+          },
+          "source_segment_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "title": "Source Segment Ids"
+          },
+          "alternatives": {
+            "items": {
+              "$ref": "#/components/schemas/Alternative_Location_"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Alternatives"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "EvidenceField[Location]"
+      },
+      "EvidenceField_Location_-Output": {
+        "properties": {
+          "value": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Location"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/FieldStatus",
+            "default": "missing"
+          },
+          "source_segment_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "title": "Source Segment Ids"
+          },
+          "alternatives": {
+            "items": {
+              "$ref": "#/components/schemas/Alternative_Location_"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Alternatives"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "EvidenceField[Location]"
+      },
+      "EvidenceField_Money_-Input": {
+        "properties": {
+          "value": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Money-Input"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/FieldStatus",
+            "default": "missing"
+          },
+          "source_segment_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "title": "Source Segment Ids"
+          },
+          "alternatives": {
+            "items": {
+              "$ref": "#/components/schemas/Alternative_Money_-Input"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Alternatives"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "EvidenceField[Money]"
+      },
+      "EvidenceField_Money_-Output": {
+        "properties": {
+          "value": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Money-Output"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/FieldStatus",
+            "default": "missing"
+          },
+          "source_segment_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "title": "Source Segment Ids"
+          },
+          "alternatives": {
+            "items": {
+              "$ref": "#/components/schemas/Alternative_Money_-Output"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Alternatives"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "EvidenceField[Money]"
+      },
+      "EvidenceField_bool_": {
+        "properties": {
+          "value": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FieldStatus",
+            "default": "missing"
+          },
+          "source_segment_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "title": "Source Segment Ids"
+          },
+          "alternatives": {
+            "items": {
+              "$ref": "#/components/schemas/Alternative_bool_"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Alternatives"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "EvidenceField[bool]"
+      },
+      "EvidenceField_list_str__": {
+        "properties": {
+          "value": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FieldStatus",
+            "default": "missing"
+          },
+          "source_segment_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "title": "Source Segment Ids"
+          },
+          "alternatives": {
+            "items": {
+              "$ref": "#/components/schemas/Alternative_list_str__"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Alternatives"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "EvidenceField[list[str]]"
+      },
+      "EvidenceField_str_": {
+        "properties": {
+          "value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FieldStatus",
+            "default": "missing"
+          },
+          "source_segment_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "maxItems": 50,
+            "title": "Source Segment Ids"
+          },
+          "alternatives": {
+            "items": {
+              "$ref": "#/components/schemas/Alternative_str_"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Alternatives"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "EvidenceField[str]"
+      },
       "ExecutionAccepted": {
         "properties": {
           "accepted": {
@@ -1254,6 +2433,17 @@
         "additionalProperties": false,
         "type": "object",
         "title": "ExecutionAccepted"
+      },
+      "FieldStatus": {
+        "type": "string",
+        "enum": [
+          "present",
+          "missing",
+          "irrelevant",
+          "ambiguous",
+          "unreadable"
+        ],
+        "title": "FieldStatus"
       },
       "HTTPValidationError": {
         "properties": {
@@ -1377,6 +2567,67 @@
         ],
         "title": "JobView"
       },
+      "LanguageResult": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "en",
+              "hi",
+              "mr",
+              "te",
+              "bn",
+              "or",
+              "und"
+            ],
+            "title": "Code",
+            "default": "und"
+          },
+          "provenance": {
+            "type": "string",
+            "enum": [
+              "declared",
+              "detected",
+              "confirmed",
+              "unknown"
+            ],
+            "title": "Provenance",
+            "default": "unknown"
+          },
+          "model_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Id"
+          },
+          "model_confidence": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Confidence"
+          },
+          "needs_confirmation": {
+            "type": "boolean",
+            "title": "Needs Confirmation",
+            "default": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "LanguageResult"
+      },
       "Location": {
         "properties": {
           "locality": {
@@ -1486,6 +2737,480 @@
         "additionalProperties": false,
         "type": "object",
         "title": "Location"
+      },
+      "Money-Input": {
+        "properties": {
+          "amount": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "string",
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,12}|(?=[\\d.]{1,15}0*$)\\d{0,12}\\.\\d{0,2}0*$)"
+              }
+            ],
+            "title": "Amount"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "INR",
+              "unknown"
+            ],
+            "title": "Currency"
+          },
+          "period": {
+            "type": "string",
+            "enum": [
+              "day",
+              "week",
+              "month",
+              "year",
+              "once",
+              "unknown"
+            ],
+            "title": "Period",
+            "default": "unknown"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "amount",
+          "currency"
+        ],
+        "title": "Money"
+      },
+      "Money-Output": {
+        "properties": {
+          "amount": {
+            "type": "string",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,12}|(?=[\\d.]{1,15}0*$)\\d{0,12}\\.\\d{0,2}0*$)",
+            "title": "Amount"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "INR",
+              "unknown"
+            ],
+            "title": "Currency"
+          },
+          "period": {
+            "type": "string",
+            "enum": [
+              "day",
+              "week",
+              "month",
+              "year",
+              "once",
+              "unknown"
+            ],
+            "title": "Period",
+            "default": "unknown"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "amount",
+          "currency"
+        ],
+        "title": "Money"
+      },
+      "PdfEvidence": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "submission_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Submission Id"
+          },
+          "input_revision_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Input Revision Id"
+          },
+          "original_text": {
+            "type": "string",
+            "maxLength": 30000,
+            "minLength": 1,
+            "title": "Original Text"
+          },
+          "english_text": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 30000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "English Text"
+          },
+          "language": {
+            "$ref": "#/components/schemas/LanguageResult"
+          },
+          "translation_uncertain": {
+            "type": "boolean",
+            "title": "Translation Uncertain",
+            "default": false
+          },
+          "kind": {
+            "type": "string",
+            "const": "pdf",
+            "title": "Kind",
+            "default": "pdf"
+          },
+          "attachment_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Attachment Id"
+          },
+          "page": {
+            "type": "integer",
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "title": "Page"
+          },
+          "normalized_box": {
+            "anyOf": [
+              {
+                "prefixItems": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "type": "array",
+                "maxItems": 4,
+                "minItems": 4
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Normalized Box"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "submission_id",
+          "input_revision_id",
+          "original_text",
+          "attachment_id",
+          "page"
+        ],
+        "title": "PdfEvidence"
+      },
+      "RelevanceCheck": {
+        "properties": {
+          "domain": {
+            "$ref": "#/components/schemas/Domain"
+          },
+          "classifier": {
+            "type": "string",
+            "const": "rules-cosine-baseline-v1",
+            "title": "Classifier",
+            "default": "rules-cosine-baseline-v1"
+          },
+          "result": {
+            "type": "string",
+            "enum": [
+              "missing",
+              "relevant",
+              "uncertain"
+            ],
+            "title": "Result"
+          },
+          "cosine_similarity": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": -1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cosine Similarity"
+          },
+          "advisory_only": {
+            "type": "boolean",
+            "const": true,
+            "title": "Advisory Only",
+            "default": true
+          },
+          "independently_validated": {
+            "type": "boolean",
+            "const": false,
+            "title": "Independently Validated",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "domain",
+          "result"
+        ],
+        "title": "RelevanceCheck"
+      },
+      "ScoreSummary-Input": {
+        "properties": {
+          "rubric_version": {
+            "type": "string",
+            "const": "rubric-v1",
+            "title": "Rubric Version",
+            "default": "rubric-v1"
+          },
+          "provisional_potential": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 100.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "string",
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provisional Potential"
+          },
+          "headline_potential": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 100.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "string",
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Headline Potential"
+          },
+          "evidence_coverage": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "string",
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+              }
+            ],
+            "title": "Evidence Coverage"
+          },
+          "completeness_percent": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 100.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "string",
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+              }
+            ],
+            "title": "Completeness Percent"
+          },
+          "usable_fields": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Usable Fields"
+          },
+          "applicable_fields": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Applicable Fields"
+          },
+          "excluded_fields": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Excluded Fields"
+          },
+          "needs_clarification": {
+            "type": "boolean",
+            "title": "Needs Clarification"
+          },
+          "ranking_eligible": {
+            "type": "boolean",
+            "title": "Ranking Eligible"
+          },
+          "withheld_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Withheld Reason"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "provisional_potential",
+          "headline_potential",
+          "evidence_coverage",
+          "completeness_percent",
+          "usable_fields",
+          "applicable_fields",
+          "needs_clarification",
+          "ranking_eligible"
+        ],
+        "title": "ScoreSummary"
+      },
+      "ScoreSummary-Output": {
+        "properties": {
+          "rubric_version": {
+            "type": "string",
+            "const": "rubric-v1",
+            "title": "Rubric Version",
+            "default": "rubric-v1"
+          },
+          "provisional_potential": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provisional Potential"
+          },
+          "headline_potential": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Headline Potential"
+          },
+          "evidence_coverage": {
+            "type": "string",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Evidence Coverage"
+          },
+          "completeness_percent": {
+            "type": "string",
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "title": "Completeness Percent"
+          },
+          "usable_fields": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Usable Fields"
+          },
+          "applicable_fields": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Applicable Fields"
+          },
+          "excluded_fields": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Excluded Fields"
+          },
+          "needs_clarification": {
+            "type": "boolean",
+            "title": "Needs Clarification"
+          },
+          "ranking_eligible": {
+            "type": "boolean",
+            "title": "Ranking Eligible"
+          },
+          "withheld_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Withheld Reason"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "provisional_potential",
+          "headline_potential",
+          "evidence_coverage",
+          "completeness_percent",
+          "usable_fields",
+          "applicable_fields",
+          "needs_clarification",
+          "ranking_eligible"
+        ],
+        "title": "ScoreSummary"
       },
       "SourceAccess": {
         "properties": {
@@ -2053,6 +3778,97 @@
         ],
         "title": "SubmissionView"
       },
+      "TextEvidence": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "submission_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Submission Id"
+          },
+          "input_revision_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Input Revision Id"
+          },
+          "original_text": {
+            "type": "string",
+            "maxLength": 30000,
+            "minLength": 1,
+            "title": "Original Text"
+          },
+          "english_text": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 30000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "English Text"
+          },
+          "language": {
+            "$ref": "#/components/schemas/LanguageResult"
+          },
+          "translation_uncertain": {
+            "type": "boolean",
+            "title": "Translation Uncertain",
+            "default": false
+          },
+          "kind": {
+            "type": "string",
+            "const": "text",
+            "title": "Kind",
+            "default": "text"
+          },
+          "start_character": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Start Character"
+          },
+          "end_character": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "End Character"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "submission_id",
+          "input_revision_id",
+          "original_text",
+          "start_character",
+          "end_character"
+        ],
+        "title": "TextEvidence"
+      },
+      "Trade": {
+        "type": "string",
+        "enum": [
+          "tea_stall",
+          "tailoring",
+          "food_service",
+          "dairy",
+          "poultry",
+          "beauty_services",
+          "mobile_repair",
+          "agricultural_inputs",
+          "solar_services",
+          "packaged_water",
+          "bag_manufacturing",
+          "other",
+          "unknown"
+        ],
+        "title": "Trade"
+      },
       "UploadCompleted": {
         "properties": {
           "attachment_id": {
@@ -2264,37 +4080,6 @@
         "title": "AdditionalFact",
         "type": "object"
       },
-      "Alternative_Location_": {
-        "additionalProperties": false,
-        "properties": {
-          "value": {
-            "$ref": "#/components/schemas/Location"
-          },
-          "source_segment_ids": {
-            "items": {
-              "format": "uuid",
-              "type": "string"
-            },
-            "maxItems": 50,
-            "minItems": 1,
-            "title": "Source Segment Ids",
-            "type": "array"
-          },
-          "note": {
-            "maxLength": 1000,
-            "minLength": 1,
-            "title": "Note",
-            "type": "string"
-          }
-        },
-        "required": [
-          "value",
-          "source_segment_ids",
-          "note"
-        ],
-        "title": "Alternative[Location]",
-        "type": "object"
-      },
       "Alternative_Money_": {
         "additionalProperties": false,
         "properties": {
@@ -2324,304 +4109,6 @@
           "note"
         ],
         "title": "Alternative[Money]",
-        "type": "object"
-      },
-      "Alternative_bool_": {
-        "additionalProperties": false,
-        "properties": {
-          "value": {
-            "title": "Value",
-            "type": "boolean"
-          },
-          "source_segment_ids": {
-            "items": {
-              "format": "uuid",
-              "type": "string"
-            },
-            "maxItems": 50,
-            "minItems": 1,
-            "title": "Source Segment Ids",
-            "type": "array"
-          },
-          "note": {
-            "maxLength": 1000,
-            "minLength": 1,
-            "title": "Note",
-            "type": "string"
-          }
-        },
-        "required": [
-          "value",
-          "source_segment_ids",
-          "note"
-        ],
-        "title": "Alternative[bool]",
-        "type": "object"
-      },
-      "Alternative_list_str__": {
-        "additionalProperties": false,
-        "properties": {
-          "value": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Value",
-            "type": "array"
-          },
-          "source_segment_ids": {
-            "items": {
-              "format": "uuid",
-              "type": "string"
-            },
-            "maxItems": 50,
-            "minItems": 1,
-            "title": "Source Segment Ids",
-            "type": "array"
-          },
-          "note": {
-            "maxLength": 1000,
-            "minLength": 1,
-            "title": "Note",
-            "type": "string"
-          }
-        },
-        "required": [
-          "value",
-          "source_segment_ids",
-          "note"
-        ],
-        "title": "Alternative[list[str]]",
-        "type": "object"
-      },
-      "Alternative_str_": {
-        "additionalProperties": false,
-        "properties": {
-          "value": {
-            "title": "Value",
-            "type": "string"
-          },
-          "source_segment_ids": {
-            "items": {
-              "format": "uuid",
-              "type": "string"
-            },
-            "maxItems": 50,
-            "minItems": 1,
-            "title": "Source Segment Ids",
-            "type": "array"
-          },
-          "note": {
-            "maxLength": 1000,
-            "minLength": 1,
-            "title": "Note",
-            "type": "string"
-          }
-        },
-        "required": [
-          "value",
-          "source_segment_ids",
-          "note"
-        ],
-        "title": "Alternative[str]",
-        "type": "object"
-      },
-      "Assessment": {
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "format": "uuid",
-            "title": "Id",
-            "type": "string"
-          },
-          "submission_id": {
-            "format": "uuid",
-            "title": "Submission Id",
-            "type": "string"
-          },
-          "input_revision_id": {
-            "format": "uuid",
-            "title": "Input Revision Id",
-            "type": "string"
-          },
-          "version": {
-            "minimum": 1,
-            "title": "Version",
-            "type": "integer"
-          },
-          "created_at": {
-            "format": "date-time",
-            "title": "Created At",
-            "type": "string"
-          },
-          "pipeline_version": {
-            "minLength": 1,
-            "title": "Pipeline Version",
-            "type": "string"
-          },
-          "model_manifest_hash": {
-            "pattern": "^[a-f0-9]{64}$",
-            "title": "Model Manifest Hash",
-            "type": "string"
-          },
-          "business": {
-            "$ref": "#/components/schemas/BusinessRecord"
-          },
-          "evidence": {
-            "items": {
-              "discriminator": {
-                "mapping": {
-                  "audio": "#/components/schemas/AudioEvidence",
-                  "pdf": "#/components/schemas/PdfEvidence",
-                  "text": "#/components/schemas/TextEvidence"
-                },
-                "propertyName": "kind"
-              },
-              "oneOf": [
-                {
-                  "$ref": "#/components/schemas/TextEvidence"
-                },
-                {
-                  "$ref": "#/components/schemas/PdfEvidence"
-                },
-                {
-                  "$ref": "#/components/schemas/AudioEvidence"
-                }
-              ]
-            },
-            "maxItems": 1000,
-            "title": "Evidence",
-            "type": "array"
-          },
-          "domains": {
-            "items": {
-              "$ref": "#/components/schemas/DomainRating"
-            },
-            "maxItems": 6,
-            "minItems": 6,
-            "title": "Domains",
-            "type": "array"
-          },
-          "scores": {
-            "$ref": "#/components/schemas/ScoreSummary"
-          },
-          "strengths": {
-            "items": {
-              "type": "string"
-            },
-            "maxItems": 10,
-            "title": "Strengths",
-            "type": "array"
-          },
-          "gaps": {
-            "items": {
-              "type": "string"
-            },
-            "maxItems": 20,
-            "title": "Gaps",
-            "type": "array"
-          },
-          "risks": {
-            "items": {
-              "type": "string"
-            },
-            "maxItems": 20,
-            "title": "Risks",
-            "type": "array"
-          }
-        },
-        "required": [
-          "id",
-          "submission_id",
-          "input_revision_id",
-          "version",
-          "created_at",
-          "pipeline_version",
-          "model_manifest_hash",
-          "business",
-          "evidence",
-          "domains",
-          "scores"
-        ],
-        "title": "Assessment",
-        "type": "object"
-      },
-      "AudioEvidence": {
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "format": "uuid",
-            "title": "Id",
-            "type": "string"
-          },
-          "submission_id": {
-            "format": "uuid",
-            "title": "Submission Id",
-            "type": "string"
-          },
-          "input_revision_id": {
-            "format": "uuid",
-            "title": "Input Revision Id",
-            "type": "string"
-          },
-          "original_text": {
-            "maxLength": 30000,
-            "minLength": 1,
-            "title": "Original Text",
-            "type": "string"
-          },
-          "english_text": {
-            "anyOf": [
-              {
-                "maxLength": 30000,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "English Text"
-          },
-          "language": {
-            "$ref": "#/components/schemas/LanguageResult"
-          },
-          "translation_uncertain": {
-            "default": false,
-            "title": "Translation Uncertain",
-            "type": "boolean"
-          },
-          "kind": {
-            "const": "audio",
-            "default": "audio",
-            "title": "Kind",
-            "type": "string"
-          },
-          "attachment_id": {
-            "format": "uuid",
-            "title": "Attachment Id",
-            "type": "string"
-          },
-          "start_seconds": {
-            "minimum": 0,
-            "title": "Start Seconds",
-            "type": "number"
-          },
-          "end_seconds": {
-            "exclusiveMinimum": 0,
-            "title": "End Seconds",
-            "type": "number"
-          }
-        },
-        "required": [
-          "id",
-          "submission_id",
-          "input_revision_id",
-          "original_text",
-          "attachment_id",
-          "start_seconds",
-          "end_seconds"
-        ],
-        "title": "AudioEvidence",
         "type": "object"
       },
       "BusinessRecord": {
@@ -2768,72 +4255,6 @@
         "title": "ClarificationAnswer",
         "type": "object"
       },
-      "Domain": {
-        "enum": [
-          "clarity",
-          "customer_need",
-          "market_potential",
-          "feasibility",
-          "competition",
-          "differentiation"
-        ],
-        "title": "Domain",
-        "type": "string"
-      },
-      "DomainRating": {
-        "additionalProperties": false,
-        "properties": {
-          "domain": {
-            "$ref": "#/components/schemas/Domain"
-          },
-          "rating": {
-            "anyOf": [
-              {
-                "maximum": 4,
-                "minimum": 0,
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Rating"
-          },
-          "reason": {
-            "maxLength": 4000,
-            "minLength": 1,
-            "title": "Reason",
-            "type": "string"
-          },
-          "source_segment_ids": {
-            "items": {
-              "format": "uuid",
-              "type": "string"
-            },
-            "maxItems": 50,
-            "title": "Source Segment Ids",
-            "type": "array"
-          },
-          "basis": {
-            "default": "self_reported",
-            "enum": [
-              "self_reported",
-              "reviewer_verified",
-              "mixed",
-              "insufficient"
-            ],
-            "title": "Basis",
-            "type": "string"
-          }
-        },
-        "required": [
-          "domain",
-          "rating",
-          "reason"
-        ],
-        "title": "DomainRating",
-        "type": "object"
-      },
       "EvidenceField_Location_": {
         "additionalProperties": false,
         "properties": {
@@ -2938,242 +4359,6 @@
         "title": "EvidenceField[Money]",
         "type": "object"
       },
-      "EvidenceField_bool_": {
-        "additionalProperties": false,
-        "properties": {
-          "value": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Value"
-          },
-          "status": {
-            "$ref": "#/components/schemas/FieldStatus",
-            "default": "missing"
-          },
-          "source_segment_ids": {
-            "items": {
-              "format": "uuid",
-              "type": "string"
-            },
-            "maxItems": 50,
-            "title": "Source Segment Ids",
-            "type": "array"
-          },
-          "alternatives": {
-            "items": {
-              "$ref": "#/components/schemas/Alternative_bool_"
-            },
-            "maxItems": 10,
-            "title": "Alternatives",
-            "type": "array"
-          },
-          "note": {
-            "anyOf": [
-              {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Note"
-          }
-        },
-        "title": "EvidenceField[bool]",
-        "type": "object"
-      },
-      "EvidenceField_list_str__": {
-        "additionalProperties": false,
-        "properties": {
-          "value": {
-            "anyOf": [
-              {
-                "items": {
-                  "type": "string"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Value"
-          },
-          "status": {
-            "$ref": "#/components/schemas/FieldStatus",
-            "default": "missing"
-          },
-          "source_segment_ids": {
-            "items": {
-              "format": "uuid",
-              "type": "string"
-            },
-            "maxItems": 50,
-            "title": "Source Segment Ids",
-            "type": "array"
-          },
-          "alternatives": {
-            "items": {
-              "$ref": "#/components/schemas/Alternative_list_str__"
-            },
-            "maxItems": 10,
-            "title": "Alternatives",
-            "type": "array"
-          },
-          "note": {
-            "anyOf": [
-              {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Note"
-          }
-        },
-        "title": "EvidenceField[list[str]]",
-        "type": "object"
-      },
-      "EvidenceField_str_": {
-        "additionalProperties": false,
-        "properties": {
-          "value": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Value"
-          },
-          "status": {
-            "$ref": "#/components/schemas/FieldStatus",
-            "default": "missing"
-          },
-          "source_segment_ids": {
-            "items": {
-              "format": "uuid",
-              "type": "string"
-            },
-            "maxItems": 50,
-            "title": "Source Segment Ids",
-            "type": "array"
-          },
-          "alternatives": {
-            "items": {
-              "$ref": "#/components/schemas/Alternative_str_"
-            },
-            "maxItems": 10,
-            "title": "Alternatives",
-            "type": "array"
-          },
-          "note": {
-            "anyOf": [
-              {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Note"
-          }
-        },
-        "title": "EvidenceField[str]",
-        "type": "object"
-      },
-      "FieldStatus": {
-        "enum": [
-          "present",
-          "missing",
-          "irrelevant",
-          "ambiguous",
-          "unreadable"
-        ],
-        "title": "FieldStatus",
-        "type": "string"
-      },
-      "LanguageResult": {
-        "additionalProperties": false,
-        "properties": {
-          "code": {
-            "default": "und",
-            "enum": [
-              "en",
-              "hi",
-              "mr",
-              "te",
-              "bn",
-              "or",
-              "und"
-            ],
-            "title": "Code",
-            "type": "string"
-          },
-          "provenance": {
-            "default": "unknown",
-            "enum": [
-              "declared",
-              "detected",
-              "confirmed",
-              "unknown"
-            ],
-            "title": "Provenance",
-            "type": "string"
-          },
-          "model_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Model Id"
-          },
-          "model_confidence": {
-            "anyOf": [
-              {
-                "maximum": 1,
-                "minimum": 0,
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Model Confidence"
-          },
-          "needs_confirmation": {
-            "default": true,
-            "title": "Needs Confirmation",
-            "type": "boolean"
-          }
-        },
-        "title": "LanguageResult",
-        "type": "object"
-      },
       "Money": {
         "additionalProperties": false,
         "properties": {
@@ -3222,108 +4407,6 @@
           "currency"
         ],
         "title": "Money",
-        "type": "object"
-      },
-      "PdfEvidence": {
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "format": "uuid",
-            "title": "Id",
-            "type": "string"
-          },
-          "submission_id": {
-            "format": "uuid",
-            "title": "Submission Id",
-            "type": "string"
-          },
-          "input_revision_id": {
-            "format": "uuid",
-            "title": "Input Revision Id",
-            "type": "string"
-          },
-          "original_text": {
-            "maxLength": 30000,
-            "minLength": 1,
-            "title": "Original Text",
-            "type": "string"
-          },
-          "english_text": {
-            "anyOf": [
-              {
-                "maxLength": 30000,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "English Text"
-          },
-          "language": {
-            "$ref": "#/components/schemas/LanguageResult"
-          },
-          "translation_uncertain": {
-            "default": false,
-            "title": "Translation Uncertain",
-            "type": "boolean"
-          },
-          "kind": {
-            "const": "pdf",
-            "default": "pdf",
-            "title": "Kind",
-            "type": "string"
-          },
-          "attachment_id": {
-            "format": "uuid",
-            "title": "Attachment Id",
-            "type": "string"
-          },
-          "page": {
-            "maximum": 100,
-            "minimum": 1,
-            "title": "Page",
-            "type": "integer"
-          },
-          "normalized_box": {
-            "anyOf": [
-              {
-                "maxItems": 4,
-                "minItems": 4,
-                "prefixItems": [
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "number"
-                  }
-                ],
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Normalized Box"
-          }
-        },
-        "required": [
-          "id",
-          "submission_id",
-          "input_revision_id",
-          "original_text",
-          "attachment_id",
-          "page"
-        ],
-        "title": "PdfEvidence",
         "type": "object"
       },
       "ReviewCreate": {
@@ -3520,98 +4603,6 @@
         ],
         "title": "StageClaim",
         "type": "object"
-      },
-      "TextEvidence": {
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "format": "uuid",
-            "title": "Id",
-            "type": "string"
-          },
-          "submission_id": {
-            "format": "uuid",
-            "title": "Submission Id",
-            "type": "string"
-          },
-          "input_revision_id": {
-            "format": "uuid",
-            "title": "Input Revision Id",
-            "type": "string"
-          },
-          "original_text": {
-            "maxLength": 30000,
-            "minLength": 1,
-            "title": "Original Text",
-            "type": "string"
-          },
-          "english_text": {
-            "anyOf": [
-              {
-                "maxLength": 30000,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "English Text"
-          },
-          "language": {
-            "$ref": "#/components/schemas/LanguageResult"
-          },
-          "translation_uncertain": {
-            "default": false,
-            "title": "Translation Uncertain",
-            "type": "boolean"
-          },
-          "kind": {
-            "const": "text",
-            "default": "text",
-            "title": "Kind",
-            "type": "string"
-          },
-          "start_character": {
-            "minimum": 0,
-            "title": "Start Character",
-            "type": "integer"
-          },
-          "end_character": {
-            "exclusiveMinimum": 0,
-            "title": "End Character",
-            "type": "integer"
-          }
-        },
-        "required": [
-          "id",
-          "submission_id",
-          "input_revision_id",
-          "original_text",
-          "start_character",
-          "end_character"
-        ],
-        "title": "TextEvidence",
-        "type": "object"
-      },
-      "Trade": {
-        "enum": [
-          "tea_stall",
-          "tailoring",
-          "food_service",
-          "dairy",
-          "poultry",
-          "beauty_services",
-          "mobile_repair",
-          "agricultural_inputs",
-          "solar_services",
-          "packaged_water",
-          "bag_manufacturing",
-          "other",
-          "unknown"
-        ],
-        "title": "Trade",
-        "type": "string"
       }
     },
     "securitySchemes": {

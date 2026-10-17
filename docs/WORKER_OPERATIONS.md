@@ -111,6 +111,31 @@ permissions. Only owner/admin may cancel/resume; resume requires
 
 ## Gradio target: live verification pending
 
+## Owned English screening handler (T09/T12)
+
+After provisioning the pinned local cache and installing the isolated model
+dependencies, the implemented text handler is `app.pipeline.run:handler`:
+
+```powershell
+.venv-model/Scripts/python.exe -B -m app.worker --handler app.pipeline.run:handler --stages extract:text translate structure assess
+```
+
+Configure the existing ignored worker API URL and bootstrap credential first;
+the API separately needs database/auth/private-storage/signing configuration.
+Use explicit `--allow-loopback` only with a local HTTP API. This command does not
+create hosted accounts or configure missing credentials. It opens a bounded
+outbound worker session; no public laptop port is necessary.
+
+Current machine: measured RTX 3050 Laptop 6 GB, not the older RTX 5050 profile.
+Pinned weights are local and inference offline; heavy libraries never enter the
+API image. English synthetic HTTP checks reached stored assessments; see the
+actual timings in evals/reports/feasibility/owned-assessment.json. These are local
+measurements, not deployment or human-quality validation. Indic translation is
+gated (401), and some longer exact-quote extraction cases still require review.
+PDF/audio extraction handlers remain T10/T11. Never advertise those as completed.
+
+## Gradio target: live verification pending (continued)
+
 Only explicit `MODEL_RUNTIME=hf_zerogpu` selects configured owned
 `TEXT_DOCUMENT_SPACE_URL` and `SPEECH_TRANSLATION_SPACE_URL`. The bounded adapter
 uses `POST /gradio_api/call/run_stage`, a five-second timeout and optional private
