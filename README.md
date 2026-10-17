@@ -2,7 +2,7 @@
 
 Evidence-linked first-level screening of business ideas submitted as text, documents or recordings. The intended workflow preserves original evidence, structures business facts, explains ratings and supports assessor review.
 
-**Implementation is in progress. There is no deployed application or complete submission-to-assessment flow yet.** The frontend preview, authenticated API foundation, private uploads and outbound worker orchestration work locally. Model handlers and live hosted checks remain unfinished.
+**Implementation is in progress; nothing is deployed.** A local signed-in applicant flow now submits text through the owned Qwen worker to a stored, evidence-backed assessment. Edge verification also covers private PDF/audio uploads, recording, retries and refresh. Authentication-provider responses in that check are labeled fixtures; hosted integration and language/model quality gates remain unfinished.
 
 ## See progress and continue development
 
@@ -16,7 +16,7 @@ Evidence-linked first-level screening of business ideas submitted as text, docum
 | [Committee questions](explanations/COMMITTEE_QUESTIONS.md) | Evidence-backed answers for judging |
 | [Implementation tasks](planning/IMPLEMENTATION_TASKS.md) | Full backlog and acceptance criteria |
 
-Current checkpoint: T02/T03 done; T01/T04/T05/T06 have verified local capabilities but external checks remain blocked. **T07's local runtime is verified**: restricted worker HTTP, native sessions, durable checkpoint recovery after process termination/API restart, scoped job controls and a bounded Gradio adapter are implemented. Live HF enqueue/auth/quota remain blocked; simulated Gradio responses are not live integration. The browser is still a workspace preview. See [worker operations](docs/WORKER_OPERATIONS.md) and the tracker for remaining tasks.
+Current checkpoint: T02/T03/T09A/T12 done locally. T09A fitted an experimental relevance classifier and rejected promotion; the advisory baseline remains active. T08 applicant UI passed nine local browser journeys and remains in progress for final review/regressions. T09 retains gated translation, longer quote-extraction and human-review blockers. T01/T04–T07 retain their recorded external checks. See [T08 checkpoint](planning/task-reports/T08.md), [worker operations](docs/WORKER_OPERATIONS.md) and the tracker. PDF/audio originals are saved; their processing remains T10/T11.
 
 ## Requirements
 
@@ -29,7 +29,7 @@ Current checkpoint: T02/T03 done; T01/T04/T05/T06 have verified local capabiliti
 | Network access for dependency/model downloads | Initial setup; model caches can be reused afterward |
 | Supabase **Free** project | Real hosted Auth, database and private object storage; not required just to view the frontend |
 | Hugging Face account and **read** token | Gated model downloads after accepting each model's access conditions |
-| NVIDIA laptop for the planned owned worker | Observed RTX 5050 Laptop with about 8 GB VRAM and 24 GB system RAM; use one model stage at a time |
+| NVIDIA laptop for the owned worker | Current verified RTX 3050 Laptop 6 GB VRAM / about 16.85 GB RAM; English Qwen peak allocation about 4.39 GB. Older RTX 5050 evidence is historical; serialize stages |
 | Cloudflare Pages Free / Render Free accounts | Final static frontend/lightweight API hosting; no project is deployed yet |
 
 The tested local model environment uses PyTorch 2.9.1+cu128, torchvision 0.24.1+cu128 and transformers 4.57.6, separate from the API. A supported NVIDIA driver is required; installing a standalone CUDA toolkit is not normally necessary for the pinned PyTorch wheel. Model fit/quality varies by stage: only the CUDA and bounded Qwen feasibility checks have run. Do not assume all models fit in VRAM together. See [actual feasibility evidence](docs/FREE_FEASIBILITY.md).

@@ -20,7 +20,7 @@ Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FRE
 | T05 | Implement authentication and authorization | blocked | `task-reports/T05.md` | Local signatures/access/UI passed; actual Supabase signing, identities and hosted login/refresh unverified |
 | T06 | Implement uploads and submission APIs | blocked | `task-reports/T06.md` | All 55 files verified through local API/PG/private disk; actual Supabase object upload/download/delete and retry recovery unverified |
 | T07 | Implement durable Postgres jobs and free-runtime dispatch | blocked | `task-reports/T07.md` | Local HTTP/native recovery verified; required live owned HF enqueue/auth/quota/sleep and ZeroGPU compatibility unverified |
-| T08 | Build applicant submission and recording UI | in_progress | `task-reports/T08.md` | None confirmed |
+| T08 | Build applicant submission and recording UI | in_progress | `task-reports/T08.md` | Checkpoint: nine actual local applicant browser journeys passed; pending-microphone race review and prior landing/auth regressions remain |
 | T09 | Implement self-hosted extraction and Indic translation | blocked | `task-reports/T09.md` | English/adversarial owned assessments verified; IndicTrans2 401, longer exact-quote extraction, human review and remaining runtime gates pending |
 | T09A | Train and evaluate our answer-relevance model | done | `task-reports/T09A.md` | None confirmed |
 | T10 | Implement PDF and handwritten scans with open weights | pending | `task-reports/T10.md` | None confirmed |

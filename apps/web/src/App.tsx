@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { ArrowUpRight, AudioLines, FileText, Leaf, ShieldCheck, Sprout } from 'lucide-react'
 import { AccountMenu } from './auth/AccountMenu'
 import { useAuth } from './auth/AuthProvider'
+import { ApplicantWorkspace } from './pages/ApplicantWorkspace'
 
 type Health = 'checking' | 'connected' | 'unavailable' | 'unconfigured'
 const apiBase = import.meta.env.VITE_API_BASE_URL as string | undefined
@@ -26,7 +27,9 @@ export default function App() {
       <span className="status-chip"><span className={`status-dot ${health === 'connected' ? 'online' : ''}`} />{health === 'connected' ? 'API connected' : health === 'checking' ? 'Checking connection' : 'Local development'}</span>
       <AccountMenu />
     </header>
-    <main id="main" className="welcome">
+    <main id="main" className={auth.actor && ['applicant', 'admin'].includes(auth.actor.role) ? 'workspace-shell' : 'welcome'}>
+      {import.meta.env.VITE_FIXTURE_MODE === 'true' && <p className="form-message" role="note">Local verification fixture: synthetic account and input. Auth-provider responses are fixtures; API, database and model run locally.</p>}
+      {auth.actor && ['applicant', 'admin'].includes(auth.actor.role) ? <ApplicantWorkspace /> : <>
       {auth.message && !auth.actor && <p className="auth-banner" role="status">{auth.message}</p>}
       <div className="eyebrow"><span /> EVERY LIVELIHOOD STARTS WITH AN IDEA</div>
       <div className="welcome-grid">
@@ -40,6 +43,7 @@ export default function App() {
         <div className="format-grid">{[{ icon: FileText, title: 'In their own words', text: 'A written idea, without a formal business-plan template.' }, { icon: AudioLines, title: 'A voice that matters', text: 'Regional-language recordings, with originals kept for review.' }, { icon: Leaf, title: 'Evidence you can follow', text: 'Sources, explanations, and space for human judgment.' }].map(({icon: Icon, title, text}) => <article className="format-card" key={title}><Icon size={25} strokeWidth={1.5} /><h3>{title}</h3><p>{text}</p></article>)}</div>
       </section>
       <aside className="setup-notice" role="status"><span className="notice-number">01</span><div><strong>Workspace foundation is ready.</strong><p>Submission and assessment tools are being connected. {health === 'connected' ? 'The API process is reachable; data and model readiness are checked separately.' : health === 'unconfigured' ? 'Set VITE_API_BASE_URL in the frontend environment to connect the API.' : 'The API is not reachable yet; check its startup and URL.'}</p></div></aside>
+      </>}
     </main>
     <footer className="footer"><span>Udyam Saathi <span aria-hidden="true">/</span> A first step, with context.</span><span>Assessment support. Decisions stay with people.</span></footer>
   </>

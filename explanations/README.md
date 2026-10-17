@@ -11,6 +11,7 @@ This directory explains the implementation as it is built. It is a companion to 
 | [05-authentication-and-access.md](05-authentication-and-access.md) | Signed sessions, trusted roles/cohorts, login and judging-account setup |
 | [06-uploads-and-submissions.md](06-uploads-and-submissions.md) | Private file validation, intact originals, retries, atomic job intent and cleanup |
 | [07-worker-checkpoint.md](07-worker-checkpoint.md) | Partial durable worker service and exact unfinished boundaries |
+| [08-applicant-workspace.md](08-applicant-workspace.md) | Verified local applicant UI checkpoint and remaining review |
 | [09-text-pipeline.md](09-text-pipeline.md) | Actual owned text stages, exact quotes, model gates and limits |
 | [09a-relevance.md](09a-relevance.md) | Reproducible experimental classifier and rejection decision |
 | [12-assessments.md](12-assessments.md) | Grounded domain judgments, atomic persistence and server totals |

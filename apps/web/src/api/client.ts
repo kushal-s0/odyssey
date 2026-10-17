@@ -19,8 +19,10 @@ export async function apiRequest<T>(path: `/v1/${string}`, options: {
   if (options.idempotencyKey) headers['Idempotency-Key'] = options.idempotencyKey
   let response: Response
   try {
+    const timeout = AbortSignal.timeout(15_000)
+    const signal = options.signal ? AbortSignal.any([options.signal, timeout]) : timeout
     response = await fetch(`${base.replace(/\/$/, '')}${path}`, { method: options.method || 'GET', headers,
-      body: options.body === undefined ? undefined : JSON.stringify(options.body), signal: options.signal })
+      body: options.body === undefined ? undefined : JSON.stringify(options.body), signal })
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') throw error
     throw new ApiError('network_error', 'Connection interrupted. Your saved work remains available.', true)

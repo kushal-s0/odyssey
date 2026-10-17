@@ -7,7 +7,13 @@ passes; translation/human review and remaining runtime acceptance are blocked.
 T09A is done with a fitted but rejected candidate; baseline remains active.
 T12 is done locally: actual English/adversarial HTTP+model paths persist
 assessments, 138 API tests pass. Read T12.md and owned-assessment.json.
-T08 is active; build and browser-verify applicant submission/recording/results UI.
+The user requested immediate checkpoint/commit; the next agent will continue.
+T08 is implemented and nine Edge journeys passed against actual local API/PG/
+private storage/Qwen in 96.849 s. Auth provider/microphone inputs are fixtures.
+Typecheck/lint/build passed. Read T08.md: it remains in_progress for a pending-
+microphone-permission submit race review and existing landing/auth regressions.
+Finish those items before marking T08 done. The harness is scripts/verify_applicant_ui.py;
+safe evidence is evals/reports/applicant-ui.json. Its temporary services stopped.
 Both author AND committer: kushal-s0 <kushal.soni@somaiya.edu>; no trailers.
 Verify every local commit. Never push, PR, upload source or deploy without approval.
 Native PG loopback 55432; private DSN in ignored .local/test-database-url.

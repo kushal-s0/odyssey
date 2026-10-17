@@ -1,0 +1,28 @@
+import { useState } from 'react'
+import type { Assessment } from '../api/client'
+
+const labels: Record<string, string> = { clarity: 'Business clarity', customer_need: 'Customer need', market_potential: 'Market potential',
+  feasibility: 'Feasibility', competition: 'Competition', differentiation: 'Differentiation' }
+
+export function AssessmentView({ value }: { value: Assessment }) {
+  const [selected, setSelected] = useState<string | null>(null)
+  const scores = value.scores
+  const evidence = value.evidence.find(item => item.id === selected)
+  const gaps = value.gaps || []
+  const risks = value.risks || []
+  return <section className="assessment-view" aria-labelledby="assessment-title">
+    <div className="panel-heading"><span className="eyebrow">AUTOMATED FIRST-LEVEL ASSESSMENT</span><h2 id="assessment-title">A clearer view of your idea</h2><p>Source-backed suggestions for authorized human review. This is not a funding decision or a prediction of business success.</p></div>
+    <div className="score-grid"><div><span>Potential</span><strong>{scores.headline_potential === null ? 'Clarification needed' : `${scores.headline_potential} / 100`}</strong>{scores.headline_potential === null && <small>Provisional: {scores.provisional_potential === null ? 'Not assessable' : `${scores.provisional_potential} / 100`}. Headline withheld: {scores.withheld_reason?.replaceAll('_', ' ')}.</small>}</div>
+      <div><span>Evidence coverage</span><strong>{(Number(scores.evidence_coverage) * 100).toFixed(0)}%</strong><small>Weight of dimensions with usable evidence.</small></div>
+      <div><span>Information completeness</span><strong>{scores.completeness_percent}%</strong><small>{scores.usable_fields} of {scores.applicable_fields} applicable fields. Completeness is separate from potential.</small></div></div>
+    <p className="field-note">{scores.ranking_eligible ? 'Complete domain coverage; comparison still requires authorized, comparable records.' : 'This assessment is not eligible for ranking.'} Model judgments and the advisory relevance baseline are not independently validated.</p>
+    <div className="domain-grid">{value.domains.map(domain => <article key={domain.domain} className="domain-card"><div><h3>{labels[domain.domain]}</h3><strong>{domain.rating === null ? 'Needs evidence' : `${domain.rating} / 4`}</strong></div><p>{domain.reason}</p><small>{domain.basis === 'insufficient' ? 'Insufficient evidence' : 'Self-reported source claims'}</small>
+      {(domain.source_segment_ids || []).map(id => <button className="text-button" type="button" key={id} onClick={() => setSelected(id)}>View source {value.evidence.findIndex(item => item.id === id) + 1}</button>)}</article>)}</div>
+    <section className="evidence-panel" aria-label="Original evidence"><h3>Follow the original evidence</h3><label>Source segment<select value={selected || ''} onChange={event => setSelected(event.target.value || null)}><option value="">Choose a source segment</option>{value.evidence.map((item, i) => <option key={item.id} value={item.id}>Source {i + 1} · {item.kind}</option>)}</select></label>
+      {evidence && <div className="source-detail" role="region" aria-label="Selected source"><h4>Original words</h4><blockquote>{evidence.original_text}</blockquote><h4>English rendering</h4><blockquote>{evidence.english_text || 'Not translated yet.'}</blockquote><p>{evidence.language?.code || 'und'} · {evidence.language?.provenance || 'unknown'}{evidence.language?.needs_confirmation ? ' · language confirmation needed' : ''}{evidence.translation_uncertain ? ' · translation requires review' : ''}</p><small>{evidence.kind === 'text' ? `Characters ${evidence.start_character}–${evidence.end_character}` : evidence.kind === 'pdf' ? `Page ${evidence.page}` : `${evidence.start_seconds}–${evidence.end_seconds} seconds`}</small></div>}
+    </section>
+    {gaps.length > 0 && <details><summary>Information to clarify ({gaps.length})</summary><ul>{gaps.map((gap, i) => <li key={i}>{gap}</li>)}</ul></details>}
+    {risks.length > 0 && <details><summary>Limits and risks</summary><ul>{risks.map((risk, i) => <li key={i}>{risk}</li>)}</ul></details>}
+    <p className="field-note">Assessment version {value.version} · {value.scores.rubric_version} · {new Date(value.created_at).toLocaleString()}. Original evidence is private.</p>
+  </section>
+}

@@ -1,63 +1,104 @@
-# Session handoff - read first after a model/session/account change
+# Session handoff — current checkpoint
 
-Updated: 17 October 2026, Asia/Calcutta. This file records repository state, not a promise of completion.
+Updated: 17 October 2026, 20:36 Asia/Calcutta. Actual repository evidence is authoritative.
 
 ## Current instruction and next action
 
-**Latest override, 17 October 2026:** the user requested the next four deadline-order
-tasks, T09 → T09A → T12 → T08, with local commits as
-`kushal-s0 <kushal.soni@somaiya.edu>` for BOTH author and committer. This supersedes
-the earlier Kartik-only identity below; historical commits must remain unchanged.
-Actual current branch is `second`; preserve it. Publication remains unapproved.
-T09 is blocked after actual English inference passed. T09A is done with an
-explicit rejected experimental candidate; the baseline remains selected. T12
-is now done locally; T08 is active. Read T12.md and owned-assessment.json: actual
-English/adversarial model checks reach persisted assessments (51.159/42.137 s),
-valid citations and null unknowns. API totals withhold insufficient headlines.
-Full API suite 138 passed, strict mypy 53 files, frontend typecheck passes.
-Longer quote-paraphrase input remains needs_review in T09; do not claim broad
-quality or translation. Pipeline entrypoint: app.pipeline.run:handler.
-Read T09A.md/model card and evals/reports/relevance.json. Actual
-102 QA pairs/11 PDFs/5 families; zero reviewed labels. Export parity and grouped
-isolation pass; repeated artifact hash is stable. No validation-quality claim.
-See task-reports/T09.md and evals/reports/feasibility/owned-text.json. Both model
-downloads are hash-verified; .venv-model/CUDA are ready. English HTTP/worker
-structure: 23.601 s and 4.36 GB allocated VRAM. Mixed language stops on denied
-gated translation; adversarial extraction stops for review. API suite 126 passed.
-No provisioning sessions remain. The following provisioning notes are historical.
-Its local parser/API persistence checks pass; actual inference
-is pending isolated model environment/weight downloads on this machine's
-RTX 3050 6 GB, which differs from the older RTX 5050 evidence. IndicTrans2
-access checks returned HTTP 401; no paid/hosted fallback is authorized.
+The user requested an immediate local checkpoint because the session limit is
+near; the next agent will continue. Stop implementation after saving this state.
+Earlier four-task scope was T09 -> T09A -> T12 -> T08. T09 is blocked, T09A/T12
+are done locally, and T08 is in progress with nine browser journeys passing.
+Read planning/task-reports/T08.md before editing. Finish its remaining review
+and browser regressions; do not redo already verified work without a reason.
 
-Running provisioning operations at this checkpoint: resumable official CUDA
-wheel and Qwen weight downloads in ignored `.local/range-downloads`, with final
-upstream SHA-256 required. Earlier full downloads stalled/truncated; no failed
-checksum was bypassed. Existing HF token is read in memory only. Automatic
-approval review rejected copying it into extra files; that mutation was removed
-and in-memory access checks were approved. No credentials were changed/copied.
-Read the latest T09 report before resuming; the older T07 checkpoint remains below.
+Remote: https://github.com/kushal-s0/odyssey.git. Current branch: second.
+Both new author AND committer: kushal-s0 <kushal.soni@somaiya.edu>, no co-author,
+sign-off or AI trailers. This latest user override supersedes older Kartik-only
+instructions. Keep all commits local. No push/PR/source upload/deployment approved.
 
-Current T09 partial checks: full API suite 122 passed/no skips in 44.75 seconds;
-strict mypy 47 files passed. Native range-download sessions 45461 (CUDA wheel)
-and 12498 (Qwen weights) are current, not the old interrupted full-download
-sessions. Their ignored scripts `.local/download_ranges.py torch` / `qwen`
-resume already complete chunks and require upstream checksums. Do not treat a
-partial cache file as ready. Next: install the verified local wheel, install
-`models/requirements-text.txt` plus the API package in `.venv-model`, complete
-model cache provisioning, then run `scripts/verify_owned_text.py` before reporting
-actual inference. Public artifact metadata is safe; never print private tokens.
+## Verified work to reuse
 
-**Authorized now:** implement the requested next four tasks, maintain explanations/ and committee Q&A, and commit locally using the latest identity above. No push/publication is authorized.
+- Local commits before this checkpoint: 9ce064d (partial text), b0de693 (owned
+  inference/Windows transport), 7789faf (relevance experiment), 643df9d (T12).
+  Inspect Git for the subsequent applicant-checkpoint commit; do not invent its hash.
+- T12 full API regression: 138 passed/no skips, 35.49 s; strict mypy 53 files
+  and Ruff passed. Actual English/adversarial owned-worker assessments persisted
+  in 51.159/42.137 s. Scores are API-computed, missing evidence null, insufficient
+  headline withheld. Native handler: app.pipeline.run:handler.
+- T09A actually fitted frozen MiniLM + logistic regression: 102 proposed QA pairs,
+  11 English-folder PDFs, five coarse family groups. Zero independently reviewed
+  labels. Repeated artifact hash stable; JSON export parity/group isolation pass.
+  Explicit promotion rejection: rules-cosine-baseline-v1 remains advisory serving.
+- T08 actual Edge/API/PG/private-disk/Qwen check passed nine journeys in 96.849 s:
+  lost accepted response + double-submit recovery, persisted text assessment,
+  evidence display, refresh, PDF upload failure/retry and identical original
+  download, denied-mic WAV fallback, real MediaRecorder/WebM upload, mobile/
+  keyboard/Indic input and private-UI removal at sign-out. Exactly four new
+  submissions verified, only text assessed. Auth provider replies and microphone
+  input are labeled fixtures, NOT hosted Supabase evidence.
+- T08 typecheck/lint and production build passed; Vite build 18.22 s.
+  Safe report: evals/reports/applicant-ui.json. Ignored screenshots under
+  .local/applicant-ui-<run>/. Ephemeral synthetic session token removed.
+  Harness stopped its own worker/Vite/API and cleaned synthetic DB data.
+- No application/model is deployed. PDF/audio processing remains T10/T11.
 
-Next action: read the rolling checkpoint and latest task report. Current branch is `second` (changed by the user since T07); preserve it.
+## Finish T08 next
+
+1. Review a pending-microphone race: when an old audio file is selected, a submit
+   during unresolved getUserMedia permission may submit the old file. Current
+   SubmitIdea guard queries the recording alert. Use a synchronous activity ref/
+   callback covering permission request and recording, and add a browser case.
+   This is a known review item, not a claim that the race was tested.
+2. Run existing landing/auth browser regressions at the fixture Vite origin.
+   verify_applicant_ui.py currently invokes only browser-applicant.mjs.
+   Extend the harness to invoke browser-smoke.mjs/browser-auth.mjs before its
+   cleanup with PREVIEW_URL/AUTH_PREVIEW_URL set to its web origin. Existing
+   browser-auth uses HTTP fixtures; keep that distinction.
+3. Rerun checks justified by those edits, finish T08 report/status/CSV and commit
+   locally. Do not mark T08 done just because the new nine-case check passed.
+
+## Runtime, privacy and blockers
+
+- Current hardware RTX 3050 Laptop 6144 MiB VRAM, ~16.85 GB RAM. Older RTX 5050/
+  8 GB/24 GB notes below are historical. Qwen peak allocated VRAM ~4.39 GB.
+- Native PG16.15 + pgvector0.8.1 is on loopback 55432. Private ignored DSN:
+  .local/test-database-url. API/tests: .venv. CUDA/model environment: .venv-model.
+  Model cache downloads are complete, pinned and upstream-hash verified.
+  No downloads or long-running verification sessions remain.
+- If PG stops: .local/native-postgres/pgsql/bin/pg_ctl.exe -D
+  .local/native-postgres-data -l .local/native-postgres.log -o
+  '-h 127.0.0.1 -p 55432' start (PowerShell command, escalation may be needed).
+- Run real model/browser harnesses separately from DB tests. Shared worker
+  capacity intentionally one. Freeze manifest/code while child-process tests
+  run. An overlapping/changing run produced rejected claims; frozen rerun passed.
+- T09: IndicTrans2 config access returned 401. Custom code not accessible/reviewed.
+  Mixed source preserved with model_access_denied. Longer proposal still
+  paraphrases exact quotes and stops needs_review despite bounded repair.
+  Human English/Hindi review not performed; other languages unvalidated.
+- Hosted Auth/database/private storage and live HF enqueue/quota/sleep remain
+  unfinished T04–T07/T01 gates. Local synthetic verification is not deployment.
+- Root/frontend/worker credentials remain private/ignored and preserved. Backend
+  .env.local/worker placeholders still need real operator values for normal use.
+  Never print secrets. Approval review rejected copying an existing HF token to
+  extra files; that mutation was removed. Read existing token in memory only.
+- Preserve original private archives and unrelated pre-existing .tools/t01
+  deletion entries (135 historical entries); never stage or repair them for this task.
+  evals/manifests/dataset.json showed only normalized line-ending status after
+  restoring its historical bytes; current-tool inventory is separately recorded
+  in evals/reports/feasibility/current-dataset.json.
+- Deadline remains 18 October 2026 06:00 Asia/Calcutta. No paid fallback.
+
+## Historical continuation record
+
+Retained below for provenance. Current checkpoint above supersedes old active
+tasks, running-session IDs, pending-download notes, identities and hardware claims.
 
 ## User decisions that persist
 
 - Working deployed demo deadline: **18 October 2026, 06:00 Asia/Calcutta**.
 - Zero paid service/API spend; prefer a route without expiring inference allowance. Kartik can keep his laptop online for training/inference. Prefer the owned worker after a measured smoke test; retain HF deployment and honest quota blockers separately.
 - Human language review: English and Hindi only. Other corpus languages remain unvalidated.
-- Every new author AND committer: **Kartik Verma <kartikverma2204number1@gmail.com>**. No co-authors, sign-offs or AI-attribution trailers. Verify both identities after every commit. Never rewrite historical commits for attribution.
+- Latest override: every new author AND committer is **kushal-s0 <kushal.soni@somaiya.edu>**. No co-authors, sign-offs or AI-attribution trailers. Verify both identities after every commit. Never rewrite historical commits for attribution.
 - No push, PR, remote source upload or deployment without explicit publication approval. Local commit approval is not publication approval.
 - Ask before resolving material uncertainty about scope, external actions or missing prerequisites. Do not invent an answer or ask for credentials in chat/committed files.
 
