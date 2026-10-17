@@ -17,7 +17,7 @@ def rounded(value: Decimal) -> Decimal:
 
 
 def summarize(ratings: list[DomainRating], business: BusinessRecord, *, critical_conflict: bool = False,
-              reviewer_exclusions: dict[str, str] | None = None) -> ScoreSummary:
+              reviewer_exclusions: dict[str, str] | None = None, source_review_required: bool = False) -> ScoreSummary:
     """Exclusions must come from trusted reviewer policy, never applicant/model input."""
     by_domain = {r.domain: r for r in ratings}
     if len(ratings) != len(WEIGHTS) or set(by_domain) != set(WEIGHTS):
@@ -35,7 +35,7 @@ def summarize(ratings: list[DomainRating], business: BusinessRecord, *, critical
     unresolved = any(getattr(business, name).status != FieldStatus.present for name in ("offer", "target_customers"))
     critical_conflict = critical_conflict or any(getattr(business, name).status == FieldStatus.ambiguous
         for name in ("investment", "own_funds", "requested_loan", "unit_price", "revenue", "location"))
-    reason = ("critical_conflict" if critical_conflict else "offer_or_customers_unresolved" if unresolved
+    reason = ("source_requires_review" if source_review_required else "critical_conflict" if critical_conflict else "offer_or_customers_unresolved" if unresolved
               else "insufficient_coverage" if coverage < Decimal("0.70") else None)
     return ScoreSummary(provisional_potential=potential, headline_potential=potential if reason is None else None,
         evidence_coverage=coverage, completeness_percent=rounded(HUNDRED * usable / len(fields)),

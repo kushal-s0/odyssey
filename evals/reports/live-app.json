@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "Real Supabase password login, ES256 session verification, profile/cohort access and workspace retry.",
+    "Private Supabase PDF upload/download preserves bytes and real digital-PDF assessment completes.",
+    "Sign-out clears private workspace; no browser page errors."
+  ],
+  "passed": true,
+  "scope": "Local UI/API/owned GPU; real hosted Supabase Auth, PostgreSQL and private storage",
+  "deployed_application": false,
+  "synthetic_account": true
+}

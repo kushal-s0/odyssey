@@ -17,7 +17,7 @@ from .structure import assemble
 def persist_text_stage(c: Connection[DictRow], stage: DictRow, job: DictRow, payload: dict[str,Any]) -> None:
     """Lightweight API validation, in the same transaction as publication."""
     key=stage['stage_key']
-    if job['pipeline_version']!='screening-v1' or key not in {'extract:text','translate','structure'}:
+    if job['pipeline_version']!='screening-v1' or key not in {'extract:text','extract:pdf','translate','structure'}:
         return
     try:
         bundle=EvidenceBundle.model_validate({key:payload[key] for key in ('schema_version','evidence','warnings')})
@@ -26,13 +26,22 @@ def persist_text_stage(c: Connection[DictRow], stage: DictRow, job: DictRow, pay
         revision=c.execute('SELECT * FROM public.submission_versions WHERE id=%s',(job['input_revision_id'],)).fetchone()
         if not revision:
             raise ValueError('Revision unavailable')
+        attachment=c.execute("SELECT id,pages FROM public.attachments WHERE input_revision_id=%s AND status='attached'",
+                             (job['input_revision_id'],)).fetchone()
         for segment in bundle.evidence:
             if segment.submission_id!=job['submission_id'] or segment.input_revision_id!=job['input_revision_id']:
                 raise ValueError('Unrelated evidence')
             if segment.kind=='text':
                 if (not revision['source_text'] or revision['source_text'][segment.start_character:segment.end_character]!=segment.original_text):
                     raise ValueError('Original text differs')
-            if key=='extract:text' and segment.english_text is not None:
+            if segment.kind!=revision['input_kind']:
+                raise ValueError('Evidence modality differs from its original')
+            if segment.kind=='pdf':
+                if not attachment or segment.attachment_id!=attachment['id'] or segment.page>(attachment['pages'] or 0):
+                    raise ValueError('PDF evidence points outside its private attachment')
+                if segment.extraction_method=='vision_ocr' and not segment.extraction_uncertain:
+                    raise ValueError('Unreviewed OCR cannot claim certainty')
+            if key.startswith('extract:') and segment.english_text is not None:
                 raise ValueError('Extraction must preserve originals before translation')
         if key in {'translate','structure'}:
             prior_key='extract:'+revision['input_kind'] if key=='translate' else 'translate'

@@ -59,15 +59,20 @@ class Qwen:
         self.load_seconds=time.perf_counter()-started
         self.measurements: list[dict[str,str|float|int|bool]]=[]
 
-    def generate(self, system: str, source: str, *, max_tokens: int = 640) -> str:
+    def generate(self, system: str, source: str, *, max_tokens: int = 640, image: Any = None) -> str:
         if len(source)>12000 or not 1<=max_tokens<=1024:
             raise ValueError('Inference input/output exceeds bounds')
         torch=self.torch
         if self.device=='cuda':
             torch.cuda.reset_peak_memory_stats()
         started=time.perf_counter()
+        content: list[dict[str,Any]]=[{'type':'text','text':source}]
+        if image is not None:
+            if image.width * image.height > 1_600_000:
+                raise ValueError('Page image exceeds the pixel bound')
+            content.insert(0, {'type':'image','image':image})
         messages=[{'role':'system','content':[{'type':'text','text':system}]},
-                  {'role':'user','content':[{'type':'text','text':source}]}]
+                  {'role':'user','content':content}]
         inputs=self.processor.apply_chat_template(messages,tokenize=True,add_generation_prompt=True,
                                                   return_dict=True,return_tensors='pt').to(self.device)
         inputs.pop('token_type_ids',None)
@@ -92,8 +97,8 @@ class Qwen:
 
     def json(self, system: str, source: str, *, validator: Callable[[dict[str,Any]],None] | None=None) -> dict[str,Any]:
         for attempt in range(2):
-            raw=self.generate(system+(' Previous output was invalid. Return one complete schema-valid JSON object. Every quote must be an EXACT contiguous source substring; never paraphrase or remove words inside a quote. Omit unsupported facts; at most eight short facts.' if attempt else ''),source)
             try:
+                raw=self.generate(system+(' Previous output was invalid. Return one complete schema-valid JSON object. Every quote must be an EXACT contiguous source substring; never paraphrase or remove words inside a quote. Omit unsupported facts; at most eight short facts.' if attempt else ''),source)
                 value=json.loads(raw.removeprefix('```json').removeprefix('```').removesuffix('```').strip())
                 if not isinstance(value,dict):
                     raise ValueError('Expected an object')

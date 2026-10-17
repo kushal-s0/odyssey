@@ -99,6 +99,8 @@ class PdfEvidence(EvidenceBase):
     attachment_id: UUID
     page: int = Field(ge=1, le=100)
     normalized_box: tuple[float, float, float, float] | None = None
+    extraction_method: Literal['text_layer', 'vision_ocr'] = 'text_layer'
+    extraction_uncertain: bool = False
 
     @model_validator(mode="after")
     def box_bounds(self) -> PdfEvidence:

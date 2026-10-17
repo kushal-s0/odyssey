@@ -19,6 +19,6 @@ Setup reuses existing environments/model downloads. All local settings live in *
 .\start.cmd
 ```
 
-Apply migrations and create your Supabase account/profile once using [setup details](docs/SETUP.md). Open **http://127.0.0.1:5173** and sign in through Supabase. API, frontend and text worker run together; Ctrl+C stops them. `start.cmd --preview` shows the landing page without inference.
+Apply migrations and create your Supabase account/profile once using [account setup](docs/ACCOUNT_SETUP.md). Open **http://127.0.0.1:5173** and sign in through Supabase. An Auth account needs an application profile; creating only a login is insufficient. API, frontend and model worker run together; Ctrl+C stops them. Startup checks the database before printing the link. After changing `.env.local`, restart `start.cmd`. `start.cmd --preview` shows the landing page without inference.
 
-English text assessments run locally; PDF/audio uploads work but their processing and regional translation remain incomplete. Nothing is publicly deployed. [Setup details](docs/SETUP.md) | [Current plan](planning/HACKATHON_RESET.md) | [Code explanations](explanations/README.md)
+English text and digital-PDF assessments have passed local model checks. Scanned handwriting, audio processing and regional translation remain incomplete. Nothing is publicly deployed. [Setup details](docs/SETUP.md) | [Current plan](planning/HACKATHON_RESET.md) | [Code explanations](explanations/README.md)

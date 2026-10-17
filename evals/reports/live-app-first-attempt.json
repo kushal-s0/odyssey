@@ -1,0 +1,19 @@
+{
+  "scope": "Local browser/API/owned GPU with real hosted Supabase Auth, PostgreSQL and private storage",
+  "date": "2026-10-17",
+  "overall_passed": false,
+  "completed_checks": [
+    "Real Supabase password login and ES256 API verification",
+    "Trusted applicant profile/cohort access",
+    "Workspace retry after a deliberately injected API 503; Auth itself was real",
+    "Text submission to real GPU assessment persisted in Supabase",
+    "Assessment source evidence opens in the browser",
+    "Reload restores real session, saved submission and assessment",
+    "Private PDF upload and authenticated byte-identical original download"
+  ],
+  "incomplete_check": "PDF assessment browser wait exceeded the original 290-second bound while sharing the worker queue with existing user work",
+  "disposable_account_and_data_cleanup": "passed",
+  "existing_user_data": "preserved",
+  "follow_up": "Retry PDF-only with bounded ten-minute wait and explicit UI status refresh; see live-app.json for its result",
+  "public_application_deployed": false
+}

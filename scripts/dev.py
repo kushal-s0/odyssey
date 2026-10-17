@@ -8,8 +8,27 @@ import socket
 import subprocess
 import sys
 import time
+from urllib.error import URLError
+from urllib.request import urlopen
 
 from configure import REQUIRED, ROOT, configure
+from stop_child import stop_child
+
+
+def wait_for(url: str, process: subprocess.Popen[bytes], name: str) -> None:
+    deadline = time.monotonic() + 40
+    while time.monotonic() < deadline:
+        if process.poll() is not None:
+            raise RuntimeError(f'{name} stopped; inspect .local/run-logs/{name}.log')
+        try:
+            with urlopen(url, timeout=2) as response:
+                if response.status == 200:
+                    return
+        except (URLError, TimeoutError, OSError):
+            pass
+        time.sleep(.5)
+    raise RuntimeError(f'{name} did not become available. Check root .env.local and .local/run-logs/{name}.log. '
+                       'For database errors, verify the Supabase session-pooler URI and network, then restart start.cmd.')
 
 
 def main() -> None:
@@ -43,15 +62,21 @@ def main() -> None:
         worker_env.update({key:values[key] or '' for key in ('WORKER_API_URL','WORKER_ID','WORKER_CREDENTIAL','HF_TOKEN') if key in values})
         worker_env['PYTHONIOENCODING'] = 'utf-8'
         commands.append(('worker', [str(model_python), '-B', '-m', 'app.worker', '--allow-loopback',
-            '--handler', 'app.pipeline.run:handler', '--stages', 'extract:text', 'translate', 'structure', 'assess',
+            '--handler', 'app.pipeline.run:handler', '--stages', 'extract:text', 'extract:pdf', 'translate', 'structure', 'assess',
             '--continuous', '--stage-seconds', '240'], worker_env))
     try:
+        print('Starting API and checking the database connection…', flush=True)
         for name, command, environment in commands:
             output = (logs/f'{name}.log').open('wb')
             handles.append(output)
             children.append(subprocess.Popen(command, cwd=ROOT if name!='web' else ROOT/'apps/web',
                 env=environment, stdout=output, stderr=subprocess.STDOUT,
                 creationflags=subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0))
+            if name == 'api':
+                wait_for('http://127.0.0.1:8000/health/live' if args.preview else
+                         'http://127.0.0.1:8000/health/workspace', children[-1], name)
+            elif name == 'web':
+                wait_for('http://127.0.0.1:5173/', children[-1], name)
         print('Open http://127.0.0.1:5173 | Supabase login only | Ctrl+C stops these app processes.', flush=True)
         print('Logs: .local/run-logs. '+('Preview only; no model worker.' if args.preview else 'Owned worker stays available until you stop the app.'), flush=True)
         while True:
@@ -65,14 +90,7 @@ def main() -> None:
         raise SystemExit(str(error)) from None
     finally:
         for process in reversed(children):
-            if process.poll() is None:
-                process.terminate()
-        for process in children:
-            try:
-                process.wait(timeout=10)
-            except subprocess.TimeoutExpired:
-                process.kill()
-                process.wait(timeout=5)
+            stop_child(process)
         for handle in handles:
             handle.close()
 

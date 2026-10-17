@@ -118,6 +118,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return JSONResponse(status_code=503, content={"status": "not_ready", "checks": {
             "database": database_status, "storage": "not_verified", "models": "not_verified"}})
 
+    @application.get("/health/workspace", tags=["health"])
+    def workspace_health(request: Request) -> JSONResponse:
+        # This check covers API persistence, not model quality or private storage.
+        database = getattr(request.app.state, "database", None)
+        connected = bool(database and database.ready())
+        return JSONResponse(status_code=200 if connected else 503,
+                            content={"database": "ready" if connected else "unavailable"})
+
     application.openapi = lambda: build_openapi(application)  # type: ignore[method-assign]
     return application
 

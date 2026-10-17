@@ -8,7 +8,7 @@ from app.contracts.pipeline import EvidenceBundle, ExtractionDraft
 from app.contracts.worker import StagePublish, WorkerRequest
 from app.pipeline.normalize import normalize_text, numeric_tokens
 from app.pipeline.structure import assemble, quoted_money
-from app.pipeline.text import structure_groups, translated
+from app.pipeline.text import grounded_draft, structure_groups, translated
 from app.providers.local_models import ModelUnavailable, Qwen
 from app.services.jobs import Jobs
 from app.worker.capabilities import Capabilities
@@ -26,6 +26,30 @@ def bundle(text='Tea costs INR 12.50 per cup. Investment is INR 30000.'):
     for segment in value.evidence:
         segment.english_text=segment.original_text
     return value
+
+
+def test_one_invalid_fact_cannot_discard_valid_quotes_or_create_evidence():
+    value=bundle('Tea for office workers. Price INR 10 per cup.')
+    candidate=ExtractionDraft(facts=[{'field':'offer','segment':0,'quote':'Tea'},
+        {'field':'target_customers','segment':0,'quote':'office workers'},
+        {'field':'profit','segment':0,'quote':'INR 999999'},
+        {'field':'unit_price','segment':99,'quote':'INR 10'}])
+    accepted=grounded_draft(value,candidate,[0,1])
+    business=assemble(value,[accepted]).business
+    assert business.offer.value=='Tea' and business.target_customers.value=='office workers'
+    assert business.profit.value is None and business.unit_price.value is None
+    assert set(value.warnings)=={'unsupported_model_quote:profit','unsupported_model_quote:unit_price'}
+
+
+def test_quote_case_repair_copies_actual_source_without_repairing_paraphrases():
+    value=bundle('Tea for office workers.')
+    accepted=grounded_draft(value,ExtractionDraft(facts=[
+        {'field':'offer','segment':0,'quote':'tea'},
+        {'field':'target_customers','segment':0,'quote':'people working in offices'}]),[0])
+    assert accepted.facts[0].quote=='Tea'
+    assert len(accepted.facts)==1
+    assert 'model_quote_capitalization_restored' in value.warnings
+    assert 'unsupported_model_quote:target_customers' in value.warnings
 
 
 def test_decimal_segmentation_retains_exact_offsets_and_stable_evidence():

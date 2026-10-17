@@ -119,7 +119,7 @@ export function SubmitIdea({ actor, token, onAccepted }: { actor: Actor; token: 
       if (controller.signal.aborted) return
       try { sessionStorage.removeItem(storageKey) } catch { /* private storage disabled */ }
       pending.current = null
-      setMessage('Your idea is saved. Follow its progress below.'); setText(''); setFile(null); setConsent(false)
+      setMessage(mode === 'text' ? 'Your idea is saved. Follow its progress below.' : 'Your original upload is saved. Follow its progress below.'); setText(''); setFile(null); setConsent(false)
       onAccepted(accepted)
     } catch (failure) {
       if (!controller.signal.aborted) {
@@ -142,7 +142,7 @@ export function SubmitIdea({ actor, token, onAccepted }: { actor: Actor; token: 
         {mode === 'text' ? <label>Your idea<textarea required maxLength={30000} rows={7} value={text} onChange={event => setText(event.target.value)} placeholder="I plan to sell… My customers are…" /><small>{text.length.toLocaleString()} / 30,000 characters</small></label> : <>
           {mode === 'audio' && <AudioRecorder onFile={pickFile} disabled={busy} onActivityChange={onRecordingActivity} />}
           <label className="file-picker"><Upload size={20} />{mode === 'pdf' ? 'Choose a PDF' : 'Upload an audio file'}<input ref={fileInput} aria-label={mode === 'pdf' ? 'PDF file' : 'Audio file'} type="file" accept={mode === 'pdf' ? 'application/pdf,.pdf' : 'audio/*,video/mp4,.m4a,.mp4,.ogg,.webm,.wav,.mp3'} onChange={event => pickFile(event.target.files?.[0] || null)} /></label>
-          <p className="field-note">{mode === 'pdf' ? 'Maximum 20 pages and 25 MB. Keep the original readable.' : 'Maximum 10 minutes and 25 MB.'} Your file is saved privately. {mode === 'pdf' ? 'Document' : 'Audio'} processing is pending; uploading does not mean assessment is complete.</p>
+          <p className="field-note">{mode === 'pdf' ? 'Maximum 20 pages and 25 MB. Digital PDFs are processed by the local worker; scanned handwriting is not yet reliable.' : 'Maximum 10 minutes and 25 MB. Audio processing is not available yet.'} Your file is saved privately. Uploading does not mean assessment is complete.</p>
           {file && <p className="selected-file">{file.name} · {(file.size / 1024).toFixed(1)} KB</p>}
           {playback && <audio controls src={playback} aria-label="Recording playback" />}
         </>}

@@ -1225,6 +1225,25 @@
           }
         }
       }
+    },
+    "/health/workspace": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Workspace Health",
+        "operationId": "workspace_health_health_workspace_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2930,6 +2949,20 @@
               }
             ],
             "title": "Normalized Box"
+          },
+          "extraction_method": {
+            "type": "string",
+            "enum": [
+              "text_layer",
+              "vision_ocr"
+            ],
+            "title": "Extraction Method",
+            "default": "text_layer"
+          },
+          "extraction_uncertain": {
+            "type": "boolean",
+            "title": "Extraction Uncertain",
+            "default": false
           }
         },
         "additionalProperties": false,

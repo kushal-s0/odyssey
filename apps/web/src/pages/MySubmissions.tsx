@@ -18,17 +18,18 @@ export function MySubmissions({ items, selectedId, onSelect, token, refresh }: {
   return <section className="my-submissions" aria-labelledby="my-submissions-title"><div className="list-heading"><div><span className="eyebrow">SAVED IN YOUR WORKSPACE</span><h2 id="my-submissions-title">My submissions</h2></div><button type="button" className="secondary-button" onClick={refresh}><RefreshCw size={15} />Refresh list</button></div>
     <p className="field-note">Latest 20 submissions. Your accepted ideas and progress stay saved after refresh or sign-out.</p>
     {items.length === 0 ? <p className="empty-state">Your saved ideas will appear here.</p> : <div className="submission-list">{items.map(item => <button type="button" key={item.id} className={selectedId === item.id ? 'selected' : ''} aria-pressed={selectedId === item.id} onClick={() => onSelect(item.id)}><strong>{item.input_kind === 'text' ? 'Written idea' : item.input_kind === 'pdf' ? 'PDF idea' : 'Audio idea'}</strong><span>{new Date(item.created_at).toLocaleString()}</span><small>{names[item.status] || 'Saved'} · {item.preferred_language}</small></button>)}</div>}
-    {selectedId && <SubmissionDetail key={selectedId} id={selectedId} token={token} />}
+    {selectedId && <SubmissionDetail key={selectedId} id={selectedId} token={token} onFinished={refresh} />}
   </section>
 }
 
-function SubmissionDetail({ id, token }: { id: string; token: string }) {
+function SubmissionDetail({ id, token, onFinished }: { id: string; token: string; onFinished: () => void }) {
   const [submission, setSubmission] = useState<Submission | null>(null)
   const [job, setJob] = useState<JobView | null>(null)
   const [assessment, setAssessment] = useState<Assessment | null>(null)
   const [error, setError] = useState('')
   const [note, setNote] = useState('')
   const [busy, setBusy] = useState(false)
+  const [checking, setChecking] = useState(false)
   const [refresh, setRefresh] = useState(0)
   const operation = useRef<AbortController | null>(null)
   useEffect(() => {
@@ -38,6 +39,7 @@ function SubmissionDetail({ id, token }: { id: string; token: string }) {
     const started = Date.now()
     setError(''); setNote('Checking saved processing state…')
     async function check() {
+      if (!disposed) setChecking(true)
       try {
         if (document.hidden || Date.now() - started > 300_000) {
           if (!disposed) setNote('Automatic updates paused. Use Refresh status when you are ready.')
@@ -48,6 +50,7 @@ function SubmissionDetail({ id, token }: { id: string; token: string }) {
         if (disposed) return
         setSubmission(current); setJob(state)
         if (finished.has(state.status)) {
+          onFinished()
           if (['completed', 'partial'].includes(state.status)) {
             try {
               const result = await apiRequest<Assessment>(`/v1/submissions/${id}/assessment`, { token, signal: controller.signal })
@@ -61,17 +64,19 @@ function SubmissionDetail({ id, token }: { id: string; token: string }) {
           if (!disposed) setNote(state.status === 'needs_review' ? 'Your original is saved. Processing needs review; retry may still require human help.' : 'Saved state retrieved from your workspace.')
           return
         }
-        if (current.input_kind !== 'text') { setNote('Your original upload is saved. PDF and audio processing are not available yet; this is not a completed assessment.'); return }
-        if (waiting.has(state.status)) { setNote('Your idea is safely queued. Start or resume the owned worker, then refresh status. Automatic updates are paused.'); return }
-        setNote('Processing saved work. Updates stop after five minutes or when this page is hidden.')
+        if (current.input_kind === 'audio') { setNote('Your original upload is saved. Audio processing is not available yet; this is not a completed assessment.'); return }
+        if (waiting.has(state.status)) { setNote(`${current.input_kind === 'pdf' ? 'Your original upload is saved.' : 'Your idea is safely queued.'} Start or resume the owned worker, then refresh status. Automatic updates are paused.`); return }
+        setNote(state.status === 'queued'
+          ? 'Saved and queued. The laptop processes one idea at a time. You can return later; your work stays saved.'
+          : 'Processing on the local worker. Model results can take several minutes. Automatic updates pause after five minutes or when this page is hidden; use Refresh status to continue.')
         timer = window.setTimeout(() => { void check() }, Math.min(30, Math.max(3, state.retry_after_seconds || 3)) * 1000)
       } catch (failure) {
         if (!disposed && !controller.signal.aborted) { setError(failure instanceof Error ? failure.message : 'Could not retrieve saved state.'); setNote('Use Refresh status to try again. Your saved submission is unchanged.') }
-      }
+      } finally { if (!disposed) setChecking(false) }
     }
     void check()
     return () => { disposed = true; controller.abort(); window.clearTimeout(timer) }
-  }, [id, token, refresh])
+  }, [id, token, refresh, onFinished])
   useEffect(() => () => operation.current?.abort(), [])
   async function control(resume: boolean) {
     if (!submission || busy) return
@@ -105,7 +110,7 @@ function SubmissionDetail({ id, token }: { id: string; token: string }) {
     } catch (failure) { if (!controller.signal.aborted) setError(failure instanceof Error ? failure.message : 'Download failed.') }
     finally { if (!controller.signal.aborted) setBusy(false) }
   }
-  return <div className="submission-detail"><div className="detail-heading"><h3>Saved processing status</h3><button className="secondary-button" type="button" disabled={busy} onClick={() => setRefresh(value => value + 1)}>Refresh status</button></div>
+  return <div className="submission-detail"><div className="detail-heading"><h3>Saved processing status</h3><button className="secondary-button" type="button" disabled={busy || checking} onClick={() => setRefresh(value => value + 1)}>Refresh status</button></div>
     <p className="processing-status" role="status">{job ? names[job.status] || job.status : 'Loading…'}</p>
     {job && <><progress aria-label="Completed processing stages" value={job.completed_stages} max={job.total_stages} /><p className="field-note">{job.completed_stages} of {job.total_stages} processing stages saved. {job.error?.message}</p></>}
     <p className="field-note">{note}</p>

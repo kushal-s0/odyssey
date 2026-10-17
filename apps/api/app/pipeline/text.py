@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import re
 import unicodedata
 from collections.abc import Iterator
 from typing import Any
@@ -20,7 +21,8 @@ Select only business-relevant statements. Preserve contradictory supplied values
 trade is one of tea_stall,tailoring,food_service,dairy,poultry,beauty_services,mobile_repair,agricultural_inputs,solar_services,packaged_water,bag_manufacturing,other,unknown.
 sector is agriculture,food_beverage,retail,services,manufacturing,other,unknown. Include offer, target_customers and unit_price whenever explicitly supplied. At most 16 short quoted facts. All claims are self-reported, never externally verified.'''
 EXTRACT_SYSTEM+=''' One sentence may support several different fields. Example source segment 0: "I sell tea to office workers." gives facts [{"field":"offer","segment":0,"quote":"tea"},{"field":"target_customers","segment":0,"quote":"office workers"}].
-The problem field means the CUSTOMER problem addressed, not the applicant's missing cost/profit knowledge. Statements of unknown/not-decided details are not present facts. Include each explicitly supplied field; do not stop after one fact per sentence.'''
+The problem field means the CUSTOMER problem addressed, not the applicant's missing cost/profit knowledge. Statements of unknown/not-decided details are not present facts. Include each explicitly supplied field; do not stop after one fact per sentence.
+The ONLY top-level keys are facts, trade, sector. Every business field, including target_customers, MUST be an entry inside facts with field, segment and quote. Copy the quote's original capitalization.'''
 
 
 def translated(bundle: EvidenceBundle, translator: IndicTranslator, completed: int = 0) -> Iterator[tuple[int,EvidenceBundle]]:
@@ -70,6 +72,30 @@ def structure_groups(bundle: EvidenceBundle) -> list[list[int]]:
     return groups
 
 
+def grounded_draft(bundle: EvidenceBundle, candidate: ExtractionDraft, group: list[int]) -> ExtractionDraft:
+    """Keep independently validated exact quotes; expose discarded output as a warning."""
+    facts=[]
+    for fact in candidate.facts:
+        try:
+            if fact.segment not in group:
+                raise ValueError('Citation is outside this input')
+            source=bundle.evidence[fact.segment].english_text or ''
+            if fact.quote not in source:
+                match=re.search(re.escape(fact.quote),source,re.I)
+                if match:
+                    # Restore original capitalization from the actual source;
+                    # never turn a paraphrase into invented evidence.
+                    fact=fact.model_copy(update={'quote':match.group()})
+                    bundle.warnings.append('model_quote_capitalization_restored')
+            assemble(bundle,[ExtractionDraft(facts=[fact])])
+            facts.append(fact)
+        except ValueError:
+            bundle.warnings.append('unsupported_model_quote:'+fact.field)
+    bundle.warnings=list(dict.fromkeys(bundle.warnings))[:200]
+    return ExtractionDraft(facts=facts,trade=candidate.trade if facts else 'unknown',
+                           sector=candidate.sector if facts else 'unknown')
+
+
 def handler(context: dict[str,Any]) -> Iterator[dict[str,Any]]:
     work=context['work']
     if work['pipeline_version']!='screening-v1':
@@ -98,6 +124,7 @@ def handler(context: dict[str,Any]) -> Iterator[dict[str,Any]]:
             yield {'publish':bundle.model_dump(mode='json')}
         elif stage=='structure':
             bundle=EvidenceBundle.model_validate(value.previous_outputs['translate'])
+            bundle.warnings=list(dict.fromkeys(bundle.warnings+checkpoint.get('warnings',[])))[:200]
             drafts=[ExtractionDraft.model_validate(item) for item in checkpoint.get('drafts',[])]
             groups=structure_groups(bundle)
             if not groups:
@@ -106,14 +133,12 @@ def handler(context: dict[str,Any]) -> Iterator[dict[str,Any]]:
             for group in groups[len(drafts):]:
                 source=json.dumps([{'segment':index,'text':bundle.evidence[index].english_text} for index in group],ensure_ascii=False)
                 def validate_draft(payload: dict[str,Any]) -> None:
-                    candidate=ExtractionDraft.model_validate(payload)
-                    if any(fact.segment not in group for fact in candidate.facts):
-                        raise ValueError('Model cited a segment outside its bounded input')
-                    assemble(bundle,[candidate])
-                draft=ExtractionDraft.model_validate(model.json(EXTRACT_SYSTEM,source,validator=validate_draft))
+                    ExtractionDraft.model_validate(payload)
+                candidate=ExtractionDraft.model_validate(model.json(EXTRACT_SYSTEM,source,validator=validate_draft))
+                draft=grounded_draft(bundle,candidate,group)
                 drafts.append(draft)
                 yield {'checkpoint':{'drafts':[item.model_dump(mode='json') for item in drafts],
-                    'measurements':saved_measurements+model.measurements}}
+                    'measurements':saved_measurements+model.measurements,'warnings':bundle.warnings}}
             result: StructuredBundle=assemble(bundle,drafts)
             result.measurements=saved_measurements+model.measurements
             yield {'publish':result.model_dump(mode='json')}

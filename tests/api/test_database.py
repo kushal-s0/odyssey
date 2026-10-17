@@ -137,3 +137,5 @@ def test_api_reports_real_database_readiness_without_claiming_models(database):
         assert response.status_code == 503
         assert response.json()["checks"]["database"] == "ready"
         assert response.json()["checks"]["models"] == "not_verified"
+        assert client.get('/health/workspace').status_code == 200
+        assert client.get('/health/workspace').json() == {'database': 'ready'}

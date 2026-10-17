@@ -3,9 +3,9 @@
 > **Current demo priorities:** [HACKATHON_RESET.md](HACKATHON_RESET.md) supersedes the old release order. This table preserves the engineering backlog and its unverified gates; its done count is not product-completion percentage. Secondary HF/large scale work is deferred while brief features are implemented.
 
 
-**Application state:** implementation started; no application/model deployed.
+**Application state:** local app runs against actual Supabase; real English text and digital-PDF model assessments verified in a browser. No public application deployment.
 **Budget:** zero paid API or hosting dependencies.  
-**Active application task:** none. **Current scope:** full implementation, explanations/ and final T27 deployment walkthrough; local commits only.
+**Active application task:** None; requested startup/access repair completed and verified. **Current scope:** full implementation, explanations/ and final T27 deployment walkthrough; local commits only.
 **Last update:** 2026-10-17, Asia/Calcutta. **Progress:** 5 / 29 tasks done.
 
 **Deadline:** 2026-10-18 06:00 Asia/Calcutta, working deployed demo included. Read [SESSION_HANDOFF.md](SESSION_HANDOFF.md), [HACKATHON_DELIVERY_PLAN.md](HACKATHON_DELIVERY_PLAN.md) and [PROJECT_REVIEW.md](PROJECT_REVIEW.md). Prefer verified laptop inference; English/Hindi human review only. Implementation is authorized by the latest user request; publication remains unapproved.
@@ -19,14 +19,14 @@ Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FRE
 | T01 | Inspect dataset and prove free-runtime feasibility | blocked | `task-reports/T01.md` | Gated language models/handwriting/audio and HF provisioning/access/quota unverified; owned English assessment and embeddings restored |
 | T02 | Scaffold application and local toolchain | done | `task-reports/T02.md` | None confirmed |
 | T03 | Define contracts, domain rules and rubric | done | `task-reports/T03.md` | None confirmed |
-| T04 | Implement database, durable stage leases and private storage | blocked | `task-reports/T04.md` | Local PG/RLS/fencing/recovery passed; hosted Supabase Free plan, connection and private-object operations unverified |
-| T05 | Implement authentication and authorization | blocked | `task-reports/T05.md` | Local signatures/access/UI passed; actual Supabase signing, identities and hosted login/refresh unverified |
-| T06 | Implement uploads and submission APIs | blocked | `task-reports/T06.md` | All 55 files verified through local API/PG/private disk; actual Supabase object upload/download/delete and retry recovery unverified |
+| T04 | Implement database, durable stage leases and private storage | blocked | `task-reports/T04.md` | Actual Supabase migrations/private-object operations pass; hosted Free-plan quota/account and recovery gates unverified |
+| T05 | Implement authentication and authorization | blocked | `task-reports/T05.md` | Real Supabase login/ES256/reload/logout pass; full hosted cross-cohort access matrix and forced token refresh unverified |
+| T06 | Implement uploads and submission APIs | blocked | `task-reports/T06.md` | Actual hosted private PDF upload/download/delete pass; hosted retry/recovery matrix incomplete |
 | T07 | Implement durable Postgres jobs and free-runtime dispatch | blocked | `task-reports/T07.md` | Owned HTTP/native recovery verified; secondary HF provisioning/quota compatibility deferred and unverified |
 | T08 | Build applicant submission and recording UI | done | `task-reports/T08.md` | None confirmed |
 | T09 | Implement self-hosted extraction and Indic translation | blocked | `task-reports/T09.md` | English/adversarial owned assessments verified; IndicTrans2 401, longer exact-quote extraction, human review and remaining runtime gates pending |
 | T09A | Train and evaluate our answer-relevance model | done | `task-reports/T09A.md` | None confirmed |
-| T10 | Implement PDF and handwritten scans with open weights | pending | `task-reports/T10.md` | None confirmed |
+| T10 | Implement PDF and handwritten scans with open weights | blocked | `task-reports/T10.md` | Digital PDF passes; full Hindi handwriting quality failed; OCR replacement not integrated |
 | T11 | Implement self-hosted regional audio transcription | pending | `task-reports/T11.md` | None confirmed |
 | T12 | Implement evidence-backed ratings and deterministic totals | done | `task-reports/T12.md` | None confirmed |
 | T13 | Build assessor workspace, evidence viewer and review | pending | `task-reports/T13.md` | None confirmed |
@@ -63,3 +63,5 @@ User redirected work to the functional hackathon demo; read HACKATHON_RESET.md a
 - 2026-10-17: User authorized full implementation, external resources with retained license/provenance, ongoing explanations/ and final T27 deployment walkthrough. T01 started; actual branch main retained.
 
 - 2026-10-17 22:22 IST: Cleanup/single local env/startup complete; setup and launcher preview/cleanup passed. Real RTX5050 English assessment and 10 applicant browser journeys passed; T08 done. Supabase service key missing and supplied database hostname does not resolve. No hosted changes/publication.
+
+- 2026-10-17 23:25 IST: Real Supabase startup/access repaired and existing applicant account provisioned. English and digital-PDF GPU assessments passed through live browser/Auth/database/private storage; temporary test accounts/data cleaned up. 144 backend tests and frontend checks pass. Initial PDF test timeout retained as failure evidence; PDF-only retry passed.

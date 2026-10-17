@@ -28,6 +28,7 @@ type AuthState = {
   session: Session | null; actor: Actor | null; loading: boolean; message: string; configured: boolean
   signIn: (email: string, password: string) => Promise<boolean>
   signOut: () => Promise<void>
+  retryWorkspace: () => void
 }
 const Context = createContext<AuthState | null>(null)
 
@@ -36,6 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [actor, setActor] = useState<Actor | null>(null)
   const [loading, setLoading] = useState(Boolean(client))
   const [message, setMessage] = useState('')
+  const [retry, setRetry] = useState(0)
   useEffect(() => {
     if (!client) return
     // Keep this callback synchronous; perform API work in the separate effect.
@@ -49,6 +51,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
   useEffect(() => {
     if (!session) return
+    setLoading(true)
+    setMessage('')
     const controller = new AbortController()
     const timeout = window.setTimeout(() => controller.abort(), 10_000)
     apiRequest<Actor>('/v1/me', { token: session.access_token, signal: controller.signal })
@@ -63,10 +67,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       })
       .finally(() => { window.clearTimeout(timeout); if (!controller.signal.aborted) setLoading(false) })
     const onTimeout = window.setTimeout(() => {
-      if (controller.signal.aborted) { setLoading(false); setMessage('Workspace connection timed out. Please sign in again.') }
+      if (controller.signal.aborted) { setLoading(false); setMessage('Workspace connection timed out. Check that start.cmd is running, then retry.') }
     }, 10_050)
     return () => { controller.abort(); window.clearTimeout(timeout); window.clearTimeout(onTimeout) }
-  }, [session])
+  }, [session, retry])
   async function signIn(email: string, password: string) {
     if (!client) return false
     setLoading(true); setMessage('')
@@ -80,7 +84,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setActor(null); setSession(null); setMessage('You are signed out.'); setLoading(false)
     await client?.auth.signOut({ scope: 'local' }).catch(() => undefined)
   }
-  return <Context.Provider value={{ session, actor, loading, message, configured: Boolean(client), signIn, signOut }}>{children}</Context.Provider>
+  return <Context.Provider value={{ session, actor, loading, message, configured: Boolean(client), signIn, signOut,
+    retryWorkspace: () => setRetry(value => value + 1) }}>{children}</Context.Provider>
 }
 
 export function useAuth() {

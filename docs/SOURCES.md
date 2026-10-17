@@ -32,3 +32,5 @@ No additional public dataset has been incorporated yet. If added, record URL, pu
 - [Gradio enqueue protocol](https://gradio.app/4.44.1/guides/querying-gradio-apps-with-curl):
   adapter design reference. Simulated transport is not hosted enqueue/quota proof;
   no unlimited/private-Space quota claim is adopted from this guide.
+
+- [pypdfium2 5.14.0](https://pypi.org/project/pypdfium2/5.14.0/): pinned worker-only PDF rendering, Apache-2.0/BSD-3-Clause wrapper plus bundled PDFium/dependency notices retained in installed wheels. [Official API](https://pypdfium2.readthedocs.io/en/stable/python_api.html). Rendering and OCR run locally; private pages are never sent to a model API.

@@ -14,22 +14,27 @@ export default function App() {
     if (!apiBase) return
     const controller = new AbortController()
     const timeout = window.setTimeout(() => controller.abort(), 8000)
-    fetch(`${apiBase}/health/live`, { signal: controller.signal })
+    fetch(`${apiBase}/health/workspace`, { signal: controller.signal })
       .then(response => { setHealth(response.ok ? 'connected' : 'unavailable') })
       .catch(() => { setHealth('unavailable') })
     return () => { controller.abort(); window.clearTimeout(timeout) }
-  }, [])
+  }, [auth.actor])
   return <>
     <a className="skip-link" href="#main">Skip to content</a>
     <header className="topbar">
       <a className="brand" href="/" aria-label="Udyam Saathi home"><span className="brand-mark"><Sprout size={25} /></span><span>udyam<span className="brand-light">saathi</span><small>IDEAS INTO LIVELIHOODS</small></span></a>
       <span className="topbar-label">Entrepreneurship assessment workspace</span>
-      <span className="status-chip"><span className={`status-dot ${health === 'connected' ? 'online' : ''}`} />{health === 'connected' ? 'API connected' : health === 'checking' ? 'Checking connection' : 'Local development'}</span>
+      <span className="status-chip"><span className={`status-dot ${health === 'connected' ? 'online' : ''}`} />{health === 'connected' ? 'Database connected' : health === 'checking' ? 'Checking connection' : 'Workspace unavailable'}</span>
       <AccountMenu />
     </header>
     <main id="main" className={auth.actor && ['applicant', 'admin'].includes(auth.actor.role) ? 'workspace-shell' : 'welcome'}>
       {import.meta.env.VITE_FIXTURE_MODE === 'true' && <p className="form-message" role="note">Local verification fixture: synthetic account and input. Auth-provider responses are fixtures; API, database and model run locally.</p>}
-      {auth.actor && ['applicant', 'admin'].includes(auth.actor.role) ? <ApplicantWorkspace /> : <>
+      {auth.actor && ['applicant', 'admin'].includes(auth.actor.role) ? <ApplicantWorkspace /> : auth.session ? <section className="submission-panel" aria-labelledby="workspace-access-heading">
+        <h1 id="workspace-access-heading">{auth.loading ? 'Opening your workspace…' : auth.actor ? 'Assessor tools are still being implemented.' : 'Your workspace needs attention.'}</h1>
+        <p role="status">{auth.loading ? 'Checking your signed-in account and program access.' : auth.message || 'Your login works. The assessor workspace is not available yet.'}</p>
+        {!auth.loading && !auth.actor && <button className="primary-link" onClick={auth.retryWorkspace}>Retry workspace connection</button>}
+        {!auth.loading && !auth.actor && <p>If access is not enabled, your coordinator must add your account to a program. You can also sign out using the button above.</p>}
+      </section> : <>
       {auth.message && !auth.actor && <p className="auth-banner" role="status">{auth.message}</p>}
       <div className="eyebrow"><span /> EVERY LIVELIHOOD STARTS WITH AN IDEA</div>
       <div className="welcome-grid">
@@ -42,7 +47,7 @@ export default function App() {
       <section id="workspace" className="workspace-intro" aria-labelledby="workspace-heading"><div className="section-heading"><div><span className="eyebrow">ONE WORKSPACE, EVERY FORMAT</span><h2 id="workspace-heading">Start with the idea, however it’s shared.</h2></div><p>Text, documents, and voice.<br />A common view for careful assessment.</p></div>
         <div className="format-grid">{[{ icon: FileText, title: 'In their own words', text: 'A written idea, without a formal business-plan template.' }, { icon: AudioLines, title: 'A voice that matters', text: 'Regional-language recordings, with originals kept for review.' }, { icon: Leaf, title: 'Evidence you can follow', text: 'Sources, explanations, and space for human judgment.' }].map(({icon: Icon, title, text}) => <article className="format-card" key={title}><Icon size={25} strokeWidth={1.5} /><h3>{title}</h3><p>{text}</p></article>)}</div>
       </section>
-      <aside className="setup-notice" role="status"><span className="notice-number">01</span><div><strong>Workspace foundation is ready.</strong><p>Submission and assessment tools are being connected. {health === 'connected' ? 'The API process is reachable; data and model readiness are checked separately.' : health === 'unconfigured' ? 'Set VITE_API_BASE_URL in the frontend environment to connect the API.' : 'The API is not reachable yet; check its startup and URL.'}</p></div></aside>
+      <aside className="setup-notice" role="status"><span className="notice-number">01</span><div><strong>Sign in to submit your business idea.</strong><p>{health === 'connected' ? 'The application database is connected. Sign in above to open your submission form and saved results.' : health === 'unconfigured' ? 'Set VITE_API_BASE_URL in root .env.local to connect the API.' : 'The workspace connection is unavailable. Check start.cmd and the API log.'}</p></div></aside>
       </>}
     </main>
     <footer className="footer"><span>Udyam Saathi <span aria-hidden="true">/</span> A first step, with context.</span><span>Assessment support. Decisions stay with people.</span></footer>

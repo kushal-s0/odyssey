@@ -13,6 +13,7 @@ def test_live_process_does_not_claim_infrastructure_ready() -> None:
     assert live.json()["status"] == "ok"
     assert live.headers["x-request-id"]
     assert client.get("/health/ready").status_code == 503
+    assert client.get("/health/workspace").status_code == 503
 
 
 def test_missing_production_configuration_is_actionable_and_redacted() -> None:

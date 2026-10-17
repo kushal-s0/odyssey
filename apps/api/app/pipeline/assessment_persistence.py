@@ -53,7 +53,9 @@ def persist_assessment_stage(c: Connection[DictRow],stage: DictRow,job: DictRow,
         version=c.execute('SELECT coalesce(max(version),0)+1 AS n FROM public.assessments WHERE submission_id=%s',
                           (job['submission_id'],)).fetchone()
         assert version is not None
-        scores=summarize(output.domains,bundle.business)
+        source_review=any(s.kind=='pdf' and s.extraction_uncertain for s in bundle.evidence) or any(
+            warning.startswith(('pdf_ocr_', 'pdf_page_', 'pdf_corrupt_')) for warning in bundle.warnings)
+        scores=summarize(output.domains,bundle.business,source_review_required=source_review)
         assessment=Assessment(id=uuid4(),submission_id=job['submission_id'],input_revision_id=job['input_revision_id'],
             version=version['n'],created_at=datetime.now(timezone.utc),pipeline_version=job['pipeline_version'],
             model_manifest_hash=MANIFEST_HASH,business=bundle.business,evidence=bundle.evidence,
@@ -62,7 +64,8 @@ def persist_assessment_stage(c: Connection[DictRow],stage: DictRow,job: DictRow,
             gaps=[r.domain.value+': '+r.reason for r in output.domains if r.rating is None or r.rating<=1],
             risks=['Self-reported proposal; source claims and model judgments require human verification.',
                    'Relevance baseline is advisory and has not been independently validated.']+
-                  (['Translation/language uncertainty requires human review.'] if bundle.warnings else []))
+                  (['Source extraction/language uncertainty requires human review.'] if bundle.warnings else [])+
+                  (['Scan transcriptions are unverified; inspect original pages before using these suggestions.'] if source_review else []))
         c.execute('''INSERT INTO public.assessments(id,submission_id,input_revision_id,pipeline_version,version,
             rubric_version,model_manifest_hash,payload,potential,evidence_coverage,completeness_percent,
             ranking_eligible,trade,sector,created_at) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)''',

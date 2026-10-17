@@ -23,7 +23,7 @@ The existing public Supabase URL/publishable key are reused and the standard iss
 
 The user explicitly chose Supabase login only. There is no demo authentication bypass. Create password judging accounts and trusted profiles/cohort assignments using [account setup](ACCOUNT_SETUP.md). A public key alone cannot perform backend storage/database operations or provision profiles. Applying `.venv/Scripts/python.exe -B scripts/migrate.py` modifies the privately configured project; local tests always use a separate loopback DSN.
 
-After setup/configuration, run **`start.cmd`** from the repository root. It starts the real API, frontend and owned text worker together. Open http://127.0.0.1:5173 and sign in with your Supabase account. Ctrl+C stops only its own child processes. `start.cmd --preview` starts the landing/API preview without a worker; this does not create assessments. Logs are ignored under `.local/run-logs`.
+After setup/configuration, run **`start.cmd`** from the repository root. It starts the real API, frontend and owned worker together, checking the database before printing the link. Open http://127.0.0.1:5173 and sign in with your provisioned Supabase applicant account. Ctrl+C stops only its own child processes. Restart after changing root `.env.local`. `start.cmd --preview` starts the landing/API preview without a worker; this does not create assessments. Logs are ignored under `.local/run-logs`. If password login works but access fails, use the workspace retry button and verify the profile/cohort setup.
 
 ## GPU worker
 
@@ -47,10 +47,10 @@ if (!(Test-Path .env.worker.local)) { Copy-Item apps/api/worker.env.example .env
 Set `WORKER_API_URL=http://127.0.0.1:8000`, `WORKER_ID=owned-laptop`, the matching `WORKER_CREDENTIAL` and optional `HF_TOKEN`. Keep database/service-role/signing keys out of this worker file. With the API up and provisioning complete:
 
 ```powershell
-.venv-model/Scripts/python.exe -B -m app.worker --allow-loopback --handler app.pipeline.run:handler --stages extract:text translate structure assess --session-seconds 3600 --idle-seconds 300 --stage-seconds 240
+.venv-model/Scripts/python.exe -B -m app.worker --allow-loopback --handler app.pipeline.run:handler --stages extract:text extract:pdf translate structure assess --session-seconds 3600 --idle-seconds 300 --stage-seconds 240
 ```
 
-This advertises implemented text stages. It does not implement PDF/audio handlers. The standalone command above uses a finite session. The local start.cmd launcher explicitly runs the owned worker continuously until Ctrl+C, so there is no artificial idle/session expiry. Per-stage timeouts and concurrency-one limits still apply; the computer and network must remain available. The current API readiness endpoint also still returns 503 unconditionally for unverified storage/models, so liveness alone must not be presented as inference readiness.
+This advertises text and PDF stages; digital PDFs are verified, while scanned handwriting quality remains blocked. Audio processing is not implemented. The standalone command above uses a finite session. The local start.cmd launcher explicitly runs the owned worker continuously until Ctrl+C, so there is no artificial idle/session expiry. Per-stage timeouts and concurrency-one limits still apply; the computer and network must remain available. `/health/workspace` checks actual database access. The stricter `/health/ready` still returns 503 for unverified storage/model readiness; liveness alone is not inference readiness.
 
 The two AI4Bharat config probes still returned HTTP 401 using the already configured token on this machine during the audit. Do not make the demo depend on those gates silently resolving. A verified accessible local alternative or explicit configured access must supply translation/speech before those features are claimed.
 

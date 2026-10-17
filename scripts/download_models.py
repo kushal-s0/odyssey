@@ -99,7 +99,7 @@ def provision(client,artifact,token):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--artifacts',nargs='+',choices=['qwen','embedding','indic_en','en_indic'],default=['qwen','embedding'])
+    parser.add_argument('--artifacts',nargs='+',choices=['qwen','embedding','ocr','indic_en','en_indic'],default=['qwen','embedding'])
     args=parser.parse_args()
     # Read existing configuration in memory; do not create additional token files.
     token=os.environ.get('HF_TOKEN') or dotenv_values(ROOT/'.env.local').get('HF_TOKEN') or dotenv_values(ROOT/'.env').get('HF_TOKEN')
@@ -110,7 +110,7 @@ def main():
         try:
             with httpx.Client(timeout=60,follow_redirects=True,trust_env=False) as client:
                 # Public artifacts do not depend on an optional gated-model token being valid.
-                files=provision(client,artifact,None if name in {'qwen','embedding'} else token)
+                files=provision(client,artifact,None if name in {'qwen','embedding','ocr'} else token)
             report.append({'artifact':name,**artifact,'files':files})
             print('Pinned artifact cached and hashed: '+name,flush=True)
         except Exception as error:
