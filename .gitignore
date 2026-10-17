@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.env
+.env.*
+.npm-cache
+!.env.example
+*.log
+.planning/
+data/extracted/
+data/training/*.jsonl
+data/training/*features*.json
+model-service/artifacts/*.json
+!model-service/artifacts/.gitkeep
+__pycache__/
+.venv/
+coverage/

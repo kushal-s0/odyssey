@@ -1,0 +1,16 @@
+{
+  "name": "strive-screening", "version": "1.0.0", "private": true,
+  "workspaces": ["client", "server", "model-service"],
+  "scripts": {
+    "dev": "concurrently -n api,web -c white,gray \"npm run dev -w server\" \"npm run dev -w client\"",
+    "build": "npm run build -w client && npm run build -w server && npm run build -w model-service",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "tsx --test server/test/*.test.ts model-service/test/*.test.ts",
+    "start": "npm run start -w server",
+    "dataset:inventory": "python scripts/prepare_dataset.py",
+    "dataset:import": "tsx server/src/scripts/import-dataset.ts",
+    "training:export": "tsx server/src/scripts/export-training.ts"
+  },
+  "devDependencies": { "@types/node": "^24.0.0", "concurrently": "^9.2.1", "tsx": "^4.20.6", "typescript": "^5.9.3" },
+  "engines": { "node": ">=22" }
+}
