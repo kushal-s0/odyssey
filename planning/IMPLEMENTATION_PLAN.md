@@ -1,11 +1,13 @@
 # Udyam Saathi — implementation plan
 
 **Tata STRIVE: AI-Powered Business Idea Screening and Assessment**  
-**Execution:** Codex follows 28 ordered tasks; the hackathon window remains 30 hours.  
+**Execution:** Codex follows 28 tasks in the explicit deadline order; the historical event window was 30 hours. **Confirmed deadline: 18 October 2026, 06:00 Asia/Calcutta, deployed demo included.**
 **Status:** planning deliverable; application implementation and deployment have not started.  
 **Prepared and revised:** 17 October 2026
 
 **Execution entry point:** [CODEX_EXECUTION_PLAN.md](CODEX_EXECUTION_PLAN.md). This file is the product/architecture specification; task order and completion reporting are defined in the execution plan and [IMPLEMENTATION_TASKS.md](IMPLEMENTATION_TASKS.md). Earlier human assignments and estimates are superseded.
+
+Read [HACKATHON_DELIVERY_PLAN.md](HACKATHON_DELIVERY_PLAN.md) for early deployment checkpoints and [SESSION_HANDOFF.md](SESSION_HANDOFF.md) for current authorization and continuation across models/sessions/accounts. Current scope is planning revision only. Prefer a verified owned-laptop model worker for judging to avoid an expiring inference allowance; keep free HF deployment as a separate target. Available human review: English/Hindi only.
 
 > Product promise: Turn a regional-language business idea into an evidence-backed assessment, then help the entrepreneur supply the missing information.
 
@@ -33,6 +35,7 @@ Findings that affect implementation:
 - No separate scoring labels, cohort roster, authoritative trade taxonomy or local business directory was found in the supplied archives. Do not invent these as supplied ground truth.
 - Recordings were inventoried, not listened to or transcribed during planning. Language counts above use folder labels, which must be checked against content.
 - Normalize `Telegu` to `Telugu` and trailing spaces in folder names in the importer, while retaining the original archive path.
+- A fresh read-only audit accounts for 109 PDF pages, of which 44 are the four scans. The 13 recordings are approximately 99-353 seconds, below the proposed ten-minute limit; T01 must still decode/verify them. Nonempty Marathi/Telugu PDF text can contain corrupted glyph/script mappings without replacement characters. Preserve extra technical facts in changed questionnaires, not only the common ten-question template. See [review evidence and limits](PROJECT_REVIEW.md).
 
 Use this small dataset primarily for development/evaluation. T09A trains a compact answer-relevance classifier from annotated question-answer pairs, with family-separated evaluation. Do not train or fine-tune a foundation model or predict business success from these 55 scenario files. The machine-readable inventory is [dataset-inventory.json](dataset-inventory.json).
 
@@ -82,21 +85,22 @@ A more complete answer can improve confidence or change a rating in either direc
 | Frontend | React + TypeScript + Vite, Tailwind and basic charts | Cloudflare Pages Free, platform HTTPS domain |
 | API | Lightweight FastAPI + Pydantic | Render Free web service; no model weights/PyTorch in this process |
 | Durable jobs | Postgres stages, leases, retries and event dispatch | No hosted Redis or paid background worker; checkpoint before/after bounded Space events |
+| Preferred judging model worker | Owned RTX 5050 laptop after measured feasibility, authenticated outbound HTTPS claims/checkpoints | No provider daily inference quota or trial expiration; depends on laptop uptime/network and measured 8 GB VRAM fit |
 | Data/auth/files | Supabase Free Postgres, Auth, private Storage and pgvector | Stay within free storage/egress/connection limits; no paid add-ons |
 | PDF | pypdf/pdfplumber + pypdfium2; visual extraction for difficult pages | CPU preprocessing and bounded vision calls in our model runtime |
-| Text/vision | Qwen3-VL-2B-Instruct, pinned revision | Our Gradio ZeroGPU runtime A; verify actual extraction/handwriting quality |
-| Audio | FFmpeg + IndicConformer 600M | ONNX CPU in our runtime B initially; validate dialect/language quality and latency |
-| Translation | IndicTrans2 distilled 200M in each direction | Our runtime B; bounded Indic-English and English-Indic batches |
+| Text/vision | Qwen3-VL-2B-Instruct, pinned revision | Selected owned worker; separately verified Gradio ZeroGPU runtime A; measure extraction/handwriting quality |
+| Audio | FFmpeg + IndicConformer 600M | Selected owned worker; HF runtime B initially uses ONNX CPU; validate dialect/language quality and latency |
+| Translation | IndicTrans2 distilled 200M in each direction | Selected owned worker and separately verified HF runtime B; bounded Indic-English and English-Indic batches |
 | Our trained model | MiniLM features + logistic regression answer-relevance classifier | Train in T09A; promote only if held-out evidence supports it |
 | Similarity | Frozen MiniLM embeddings + pgvector | CPU inference; same model revision across compared vectors |
 | Ratings/arithmetic | Evidence-grounded domain judgments + deterministic versioned formulas | No outcome/funding predictor trained on the supplied files |
 | Local context | OpenStreetMap data, bounded Overpass and user-triggered Nominatim | Attribution, application-wide rate limits/cache; no Google Places dependency |
-| Hosting | Cloudflare Pages Free + Render Free API + Supabase Free + two eligible Gradio ZeroGPU Spaces | No paid inference APIs, worker subscription, hosted broker or GPU purchase |
+| Hosting | Cloudflare Pages Free + Render Free API + Supabase Free + preferred owned-laptop inference; two eligible ZeroGPU Spaces remain separate deployment targets | No paid inference APIs, worker subscription, hosted broker or GPU purchase; do not call the laptop-backed profile fully cloud hosted |
 | Verification | pytest, browser smoke, local infrastructure load tests and model benchmarks | Public free services get bounded smoke checks, not load tests |
 
 Use one modular codebase and model adapters shared between Spaces and a portable local/container worker. No general autonomous-agent framework is needed. The core models are existing open-weight models we deploy; only the small relevance classifier is project-trained.
 
-Free deployment has limited throughput, shared GPU quotas, cold starts and sleeping services. It is a viable hackathon target subject to verification, not unlimited free production compute. More capacity can use owned/institutional machines with the same contracts; do not automatically enable paid alternatives.
+Free hosted deployment has limited throughput, shared GPU quotas, cold starts and sleeping services. The preferred laptop model path avoids provider inference quota but still has hardware/uptime constraints; hosted web/API/data services retain free-tier limits. It is a hackathon target subject to verification, not unlimited free production compute. Do not automatically enable paid alternatives or claim laptop hardware inventory is an inference benchmark.
 
 Current official hosting limits, model licenses/access conditions, model selection rationale and OSM usage rules are cited in [FREE_MODEL_HOSTING_PLAN.md](FREE_MODEL_HOSTING_PLAN.md). No model has been trained, benchmarked or deployed during planning.
 
@@ -111,6 +115,8 @@ flowchart TD
   A --> Q[Bounded event dispatcher]
   Q --> R1[Owned Gradio ZeroGPU A: text and document models]
   Q --> R2[Owned Gradio ZeroGPU B: speech and translation]
+  L[Preferred owned-laptop worker] -->|Outbound authenticated claim/checkpoint| A
+  L -->|Private source download| S
   R1 --> P[Authenticated HTTPS checkpoint and publication API]
   R2 --> P
   P --> D
@@ -131,6 +137,8 @@ flowchart TD
 9. Save immutable assessment versions with input hash, model ID, prompt/rubric/schema versions, timing and measured usage. Reviewer corrections invalidate derived results and create a new version.
 
 Persist stage progress: `queued → extracting → translating → structuring → assessing → enriching → completed`. Include `partial`, `needs_review`, `failed` and `cancelled` outcomes. Use browser polling initially; refresh/reconnect must recover the current state. Also expose waiting_for_runtime and quota_exhausted as explicit resumable states.
+
+For laptop inference also expose `waiting_for_worker`; use operator-started bounded worker sessions and explicit resume if offline. Use fencing generations and lease checks on checkpoint/publication so stale workers cannot publish. Validate capabilities before GPU allocation and fetch fresh source URLs after claim. Choose explicit text/audio language identification in T01, implement it in T09/T11 and distinguish declared/detected/confirmed language. Unknown or unsupported identification must be reviewable.
 
 Jobs must be idempotent per input revision and pipeline version. Use a database uniqueness constraint, stage checkpoints, finite retries with backoff and a reconciliation on API startup, authenticated app activity and explicit resume for queued/stale jobs. A sleeping free runtime is not an always-on scheduler. The Space event queue is delivery infrastructure; the database is the source of truth. A duplicate delivery must not publish a duplicate assessment.
 
@@ -211,13 +219,13 @@ Domain-wise means assessment dimensions in this plan; also provide sector filter
 
 **Similar ideas:** embed normalized English offer/customer/problem summaries without names or phone numbers. Retrieve top 5 with pgvector cosine distance and show shared products/customers/trade plus differences. Similarity is not plagiarism or proof of competition. Exclude the same submission's revisions. Keep repeated scenario families out of population counts unless explicitly displayed as test data. Calibrate retrieval on annotated relevant/unrelated pairs; do not label raw cosine scores as a probability.
 
-**Nearby businesses:** use applicant-confirmed locality/PIN and business categories to query bounded OpenStreetMap data. Nominatim geocoding is explicit user-triggered, cached and globally limited; Overpass business queries are bounded, attributed and cached with dates. Use a small attributed regional snapshot as an honest dated fallback. Do not use Google Places or another paid directory.
+**Nearby businesses:** use applicant-confirmed locality/PIN and business categories to query bounded OpenStreetMap data. Public Nominatim stays disabled until Kartik deliberately opts in under its policy; if approved, geocoding is explicit user-triggered, cached and globally limited. Overpass business queries are bounded, attributed and cached with dates. Use confirmed coarse area/coordinates and a small attributed regional snapshot initially. Do not build a generic geocoder or use Google Places/another paid directory.
 
 Show location precision, search area/time, source and coverage limits. Do not send names/contact data to geocoders or infer an exact address from a PIN. Sparse OSM coverage is not proof that competition is absent. Applicant claims, retrieved listings and demo fixtures remain separate. The model/hosting specification gives the current official service policies and the scaling path to an owned regional OSM database.
 
 ## 9. Codex execution sequence and reporting
 
-Execute the ordered backlog in [IMPLEMENTATION_TASKS.md](IMPLEMENTATION_TASKS.md), following [CODEX_EXECUTION_PLAN.md](CODEX_EXECUTION_PLAN.md). This is an implementation sequence for Codex, not a division of work among people.
+Execute the backlog in the explicit order from [HACKATHON_DELIVERY_PLAN.md](HACKATHON_DELIVERY_PLAN.md), using [IMPLEMENTATION_TASKS.md](IMPLEMENTATION_TASKS.md) and [CODEX_EXECUTION_PLAN.md](CODEX_EXECUTION_PLAN.md). T09/T09A/T12 precede T08 so its text UI connects to real assessment. Prepare deployment configuration in T02 and request an early preview approval; do not wait until final packaging to discover hosting incompatibility. This is a sequential execution plan, not an instruction to delegate or a waiver of final release checks.
 
 | Tasks | Implementation milestone | Observable exit condition |
 |---|---|---|
@@ -232,13 +240,15 @@ Execute the ordered backlog in [IMPLEMENTATION_TASKS.md](IMPLEMENTATION_TASKS.md
 
 After each task, Codex writes `planning/task-reports/TXX.md` using the report template, records actual changes and checks, then updates [TASK_STATUS.md](TASK_STATUS.md) and the CSV. Only then may the task be marked done. All tasks are initially pending. Reports must be written during implementation, not pre-filled with expected success.
 
-The 30-hour constraint should guide simplicity: use one modular backend, basic charts, list-based local context and browser print-to-PDF. Keep read-aloud, full maps, peer matching and large-model training outside this execution scope. Self-hosted open-weight inference and the small relevance-model experiment are included. Clarification and arithmetic are explicitly included tasks. Do not silently remove committed requirements to fit the clock.
+The fixed deadline should guide simplicity: use one modular backend, basic charts, list-based local context and browser print-to-PDF. Keep read-aloud, full maps, peer matching and large-model training outside this execution scope. Self-hosted open-weight inference and the small relevance-model experiment are included. Clarification and arithmetic are explicitly included tasks. Do not silently remove committed requirements to fit the clock. Distinguish a verified selected-profile demo from completion of all 28 tasks; missing required HF deployments, scaling evidence or language reviewers remain explicit limitations/blockers. Update SESSION_HANDOFF.md at each checkpoint so another model/session can continue without this chat.
 
 Scalability is verified in T22 using two API replicas, two workers, 10,000 synthetic metadata records, a queued-job recovery workload and a concurrent metadata/status workload. The execution plan defines measurement gates. These are planned tests, not achieved capacity claims. Run scale workloads locally, not against public free services. T23 verifies app packaging; T23A verifies model packaging/serving; T24 verifies the actual free deployment. Missing model access, exhausted quotas or unavailable hosting remain named blockers.
 
 ## 10. Evaluation and deployment gates
 
 Create human-reviewed expected outputs before tuning prompts. Group repeated/translated versions of the same base idea into a single family and keep the family on one side of the development/holdout split. Folder labels describe intended scenarios, not authoritative truth for every field. Qualified fluent reviewers must validate relevant languages; automated translation alone is not ground truth. If unavailable, report that language as not yet human-validated.
+
+Current reviewers cover English/Hindi only; Marathi/Telugu/Bengali/Odia remain unvalidated. Evaluate primarily on owned hardware, cache by input/model/pipeline version and record HF usage separately. Audit class/family coverage before classifier splits and do not force metrics from insufficient independent groups. Relevance and numerical plausibility are distinct. Verify real Supabase connection/JWT settings and prepared demo logins early; do not depend on restricted default signup email.
 
 Targets below are goals to measure, not achieved results:
 

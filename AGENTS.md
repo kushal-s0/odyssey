@@ -1,5 +1,15 @@
 # Repository execution guide
 
+## Identity, publication and continuation
+
+- Every new commit must have both author and committer `Kartik Verma <kartikverma2204number1@gmail.com>`. Verify both after committing. No co-author, sign-off or AI-attribution trailers. Preserve historical attribution.
+- Keep commits local. Never push any branch, create a pull request, upload source to a model host, or publish/deploy changes without Kartik's explicit approval for that publication. Prepare reviewable artifacts first.
+- Confirm repository remote, branch and working tree before work. This project currently uses `https://github.com/kushal-s0/odyssey.git`, branch `master`; do not confuse it with the portfolio repository.
+- Read `planning/SESSION_HANDOFF.md` and `planning/HACKATHON_DELIVERY_PLAN.md` before resuming. A new session/model/account must inspect actual state and reuse verified work; chat history is not the continuation record.
+- Confirmed deadline: **18 October 2026, 06:00 Asia/Calcutta**, including a deployed demo. Current authorization is project review and documentation/task revision only, not application implementation or publication.
+- Kartik prefers inference without an expiring provider allowance and can keep his laptop running. Prefer a verified owned-laptop worker for judging; free Hugging Face deployment remains a separately verified target. Do not describe a laptop-backed deployment as fully cloud hosted or unlimited.
+- Available human language review: English and Hindi only. Other languages remain unvalidated unless a reviewer becomes available.
+
 This repository contains the uploaded Tata STRIVE problem statement/datasets and a Codex implementation plan. Preserve the original source files.
 
 ## Budget and model requirements

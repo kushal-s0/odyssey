@@ -1,9 +1,11 @@
 # Codex task status
 
-**Application state:** T01 implementation in progress; no application/model deployed.  
+**Application state:** planning review/revision only; no application/model deployed.
 **Budget:** zero paid API or hosting dependencies.  
-**Active task:** T01. **Current scope:** implement T01 only.  
+**Active application task:** none. **Next task if implementation is requested:** T01. **Current scope:** analyze project and revise tasks/docs; local documentation commit only.
 **Last update:** 2026-10-17, Asia/Calcutta. **Progress:** 0 / 28 tasks done.
+
+**Deadline:** 2026-10-18 06:00 Asia/Calcutta, working deployed demo included. Read [SESSION_HANDOFF.md](SESSION_HANDOFF.md), [HACKATHON_DELIVERY_PLAN.md](HACKATHON_DELIVERY_PLAN.md) and [PROJECT_REVIEW.md](PROJECT_REVIEW.md). Prefer verified laptop inference; English/Hindi human review only. No implementation/publication authorization follows from this tracker.
 
 Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FREE_MODEL_HOSTING_PLAN.md) and [ordered tasks](IMPLEMENTATION_TASKS.md). States: `pending`, `in_progress`, `blocked`, `done`. A completed task needs actual checks and a report.
 
@@ -11,7 +13,7 @@ Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FRE
 
 | ID | Task | Status | Report path (create during execution) | Blocker |
 |---|---|---|---|---|
-| T01 | Inspect dataset and prove free-runtime feasibility | in_progress | `task-reports/T01.md` | None confirmed |
+| T01 | Inspect dataset and prove free-runtime feasibility | pending | `task-reports/T01.md` | Laptop inference, gated model access and actual HF provisioning/quota remain unverified |
 | T02 | Scaffold application and local toolchain | pending | `task-reports/T02.md` | None confirmed |
 | T03 | Define contracts, domain rules and rubric | pending | `task-reports/T03.md` | None confirmed |
 | T04 | Implement database, durable stage leases and private storage | pending | `task-reports/T04.md` | None confirmed |
@@ -31,24 +33,25 @@ Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FRE
 | T17 | Implement clarification and reassessment | pending | `task-reports/T17.md` | None confirmed |
 | T18 | Implement business arithmetic checks | pending | `task-reports/T18.md` | None confirmed |
 | T19 | Implement reports and version history | pending | `task-reports/T19.md` | None confirmed |
-| T20 | Evaluate dataset and our model with real measurements | pending | `task-reports/T20.md` | None confirmed |
+| T20 | Evaluate dataset and our model with real measurements | pending | `task-reports/T20.md` | Human review currently available only for English/Hindi; other language quality unvalidated |
 | T21 | Harden access, uploads and failure boundaries | pending | `task-reports/T21.md` | None confirmed |
-| T22 | Measure portable API and model scalability | pending | `task-reports/T22.md` | None confirmed |
+| T22 | Measure portable API and model scalability | pending | `task-reports/T22.md` | Local Docker engine unavailable during review; container scale checks not run |
 | T23 | Package zero-spend application deployment | pending | `task-reports/T23.md` | None confirmed |
-| T23A | Package and deploy versioned model runtimes | pending | `task-reports/T23A.md` | None confirmed |
-| T24 | Deploy and verify the full free hosted application | pending | `task-reports/T24.md` | None confirmed |
+| T23A | Package and deploy versioned model runtimes | pending | `task-reports/T23A.md` | Required HF provisioning/model access unverified; publication approval absent |
+| T24 | Deploy and verify the full free hosted application | pending | `task-reports/T24.md` | Service projects/access not verified; publication approval absent |
 | T25 | Run deployed acceptance and recovery checks | pending | `task-reports/T25.md` | None confirmed |
 | T26 | Write final implementation and readiness handover | pending | `task-reports/T26.md` | None confirmed |
 
 ## Prerequisite record
 
-The user confirmed an eligible Hugging Face account for free ZeroGPU. Actual Space provisioning, programmatic enqueue/auth behavior, available quotas and gated model downloads remain unverified. Language-review support and model quality also need validation. No paid alternative is authorized.
+The prior plan records an eligible Hugging Face account for free ZeroGPU. Actual Space provisioning, enqueue/auth behavior, quota attribution and gated model downloads remain unverified. Current preference is inference without expiring provider allowance, using the owned laptop if its smoke tests pass. GPU readout: RTX 5050 Laptop, 8151 MiB VRAM; system memory 24,841,998,336 bytes. This is not a model-fit benchmark. Docker engine was unavailable. English/Hindi human review are available; Marathi/Telugu/Bengali/Odia are not yet human-validated. Cloud account/project access, selected Free plans and all publication approvals remain unverified/absent. No paid alternative is authorized.
 
 ## Resume note
 
-The user requested implementation of T01 only. Finish independent dataset/feasibility work and record actual live-access blockers; do not start T02 in this turn. Existing prepaid/paid-provider assumptions are superseded by FREE_MODEL_HOSTING_PLAN.md. Inspect actual code and the latest task report on resumption.
+The latest user instruction is review and planning revision, with continuation across models/sessions/accounts. Earlier T01-only execution text is superseded. No application implementation report exists; the stale T01 in-progress marker was reconciled to pending. Read SESSION_HANDOFF.md and actual code/reports on resumption. A later implementation request may authorize the backlog; do not infer that request from the plan itself. Preserve zero-spend and local-only Git rules.
 
 ## History
 
 - 2026-10-17: Created sequential Codex tasks and mandatory Markdown completion reports.
 - 2026-10-17: Revised to free infrastructure and self-hosted open weights; added T09A custom relevance-model experiment and T23A model deployment. All 28 tasks remain pending.
+- 2026-10-17: Reviewed original brief, dataset containers/PDFs, plans, official runtime limits and laptop hardware. Confirmed 18 October 06:00 IST deployed-demo deadline, preference for owned inference and English/Hindi review. Added deadline/continuation documents and reconciled stale T01 state; no application task marked complete.

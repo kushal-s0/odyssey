@@ -4,7 +4,9 @@
 
 Read [CODEX_EXECUTION_PLAN.md](CODEX_EXECUTION_PLAN.md), [FREE_MODEL_HOSTING_PLAN.md](FREE_MODEL_HOSTING_PLAN.md), [TASK_STATUS.md](TASK_STATUS.md) and [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 
-Execute in the listed order. Dependencies allow independent work around a recorded blocker. Every task requires implementation, actual acceptance checks, its own report using [TEMPLATE.md](task-reports/TEMPLATE.md), then tracker/CSV updates. No paid fallback, mock-as-live result or fabricated completion. T09A may conclude with a justified experimental-model rejection and a validated baseline; do not mislabel this as a successful trained-model deployment.
+Use the explicit deadline order in [HACKATHON_DELIVERY_PLAN.md](HACKATHON_DELIVERY_PLAN.md): T09/T09A/T12 precede T08; the index below is an ID lookup, not the execution order. Dependencies and its independent-work allowance govern work around recorded blockers. Every task requires implementation, actual acceptance checks, its own report using [TEMPLATE.md](task-reports/TEMPLATE.md), then tracker/CSV and SESSION_HANDOFF.md updates. No paid fallback, mock-as-live result or fabricated completion. T09A may conclude with a justified experimental-model rejection and a validated baseline; do not mislabel this as a successful trained-model deployment.
+
+Deadline: **18 October 2026, 06:00 Asia/Calcutta**, deployed demo included. Prefer a measured owned-laptop worker for judging; retain free HF runtime deployment as its own target. Prepare an approved preview early without claiming final deployment tasks passed. Current scope is documentation revision only; implementation/publication still need the corresponding user instruction.
 
 ## Task index
 
@@ -17,7 +19,7 @@ Execute in the listed order. Dependencies allow independent work around a record
 | T05 | Implement authentication and authorization | T04 | `task-reports/T05.md` |
 | T06 | Implement uploads and submission APIs | T05 | `task-reports/T06.md` |
 | T07 | Implement durable Postgres jobs and free-runtime dispatch | T06 | `task-reports/T07.md` |
-| T08 | Build applicant submission and recording UI | T03, T05, T06, T07 | `task-reports/T08.md` |
+| T08 | Build applicant submission and recording UI | T03, T05, T06, T07, T12 | `task-reports/T08.md` |
 | T09 | Implement self-hosted extraction and Indic translation | T03, T07 | `task-reports/T09.md` |
 | T09A | Train and evaluate our answer-relevance model | T09 | `task-reports/T09A.md` |
 | T10 | Implement PDF and handwritten scans with open weights | T09 | `task-reports/T10.md` |
@@ -49,9 +51,11 @@ Execute in the listed order. Dependencies allow independent work around a record
 
 Preserve sources and inventory the 55 files with hashes, media metadata and scenario families. Inspect representative hard inputs. Confirm the user-owned eligible Hugging Face account can create the two free Gradio ZeroGPU runtimes; do not create paid Docker Spaces. Spike authenticated API-to-Gradio stage enqueue, checkpointing and account-attributed GPU quotas. Test model access/license gates and one handwritten page, one regional audio chunk and one translated answer. Record memory/latency/compatibility; the user has confirmed eligibility, not successful provisioning.
 
+Prove the preferred owned-laptop worker as well: RTX 5050 Laptop with 8151 MiB reported VRAM and approximately 24 GB system memory is observed hardware, not verified model fit. Pin a compatible CUDA/framework environment, check a real GPU operation, then run bounded text, handwriting, audio and translation inference. Measure cold/warm time, RAM/VRAM, source access and checkpoint recovery at concurrency one. Local execution has no provider inference allowance; hardware/network availability still matter. Keep backend results separate. Audio MP4 metadata must use a decoder/track-aware inspector; a prior simple parser returned false zero durations. Select explicit text/audio language identification and a labeled confirmation fallback. Do not claim declared language is automatically detected.
+
 **Acceptance checks:**
 
-Repeatable inventory accounts for 42 PDFs/13 recordings and the four 11-page scans. Verify real free plan selection, no paid inference dependency and bounded stage access before committing to hosting. Record unavailable model permissions/quotas as specific blockers; never assume old CPU-Space advice applies.
+Repeatable inventory accounts for 42 PDFs/109 pages, 13 recordings and the four 11-page scans, with hashes, extractor versions and decoded media metadata. Verify actual owned-worker model inference/resource fit and the separately selected free HF plans/access/quota/guarded stage path before claiming feasibility. Record unavailable permissions/quotas as specific blockers; no paid dependency or unverified CPU-Space assumption. Local scaffolding may proceed only under the delivery plan's explicit independent-work allowance.
 
 **Required final action:** write `planning/task-reports/T01.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
@@ -64,6 +68,8 @@ Repeatable inventory accounts for 42 PDFs/13 recordings and the four 11-page sca
 **Implement:**
 
 Create React/TypeScript/Vite and FastAPI projects with compatible stable dependencies and lockfiles. Separate contracts, routes, repositories, pipeline, providers and workers. Add typed settings, liveness endpoint, lint/typecheck/build commands and initial CI. Document separate development persistence/auth/storage. Exclude archives, personal data and secrets from Git/build contexts.
+
+Prepare the minimal deployable frontend/API configuration and preview checklist here; final packaging stays in T23. Stage an exact sanitized preview artifact and destination for explicit publication approval; no Git push, HF upload or automatic deploy. Do not call a skeleton preview the completed application. Original archives and .tools files are already tracked; ignore rules alone do not remove them. Preserve source files/history and exclude them from release build contexts. If T01's HF-only access checks are blocked, record the verified local/dataset prerequisite used for safe scaffolding and keep T01 blocked.
 
 **Acceptance checks:**
 
@@ -81,6 +87,8 @@ Frontend production build, API startup and liveness response pass. Clean setup i
 
 Implement Pydantic/OpenAPI contracts and generated frontend types. Define field statuses, nulls, alternatives, evidence IDs, revisions and error shapes. Write domain-specific 0-4 anchors, weights, completeness applicability and ranking rules from IMPLEMENTATION_PLAN.md. Define provider interfaces and sanitized complete/partial/conflicting/irrelevant/failure fixtures.
 
+Define language provenance (declared/detected/confirmed), model/backend readiness, `waiting_for_worker`, lease generation and capability expiry/renewal. Preserve additional evidence-linked facts from changed technical questionnaires rather than discarding them or matching by question number. Keep relevance, factual uncertainty and plausibility as separate judgments.
+
 **Acceptance checks:**
 
 Schema checks accept valid partial records and reject invalid ratings/evidence structures. Generated types match API contracts. Rubric arithmetic, unknown handling and domain/trade/cohort meanings are explicit.
@@ -97,9 +105,11 @@ Schema checks accept valid partial records and reject invalid ratings/evidence s
 
 Implement the architecture tables on Supabase Free with indexes, scoped uniqueness and pgvector. Postgres is the durable queue: input/job/stage creation and dispatch intent are transactional; add leases, retry-at times and atomic publication keys. Protect claim/checkpoint operations and private object storage. No hosted Redis requirement. Budget database/object storage/egress within free limits; define deletion and manual export/restore procedures.
 
+Add an incrementing lease generation checked atomically on claim renewal, checkpoint and publication. Reject writes from expired/replaced claims, including a worker that returns after a newer claimant starts. Verify actual API-to-Supabase networking and TLS/session-pooler configuration without buying an IPv4 add-on. Keep total connection pools bounded across replicas and avoid transaction-pooler features unsupported by the chosen driver.
+
 **Acceptance checks:**
 
-Migrations apply cleanly and repeatably. Multiple claimants cannot own one unexpired stage lease. History survives restart and duplicate publication is rejected. Database and storage policies are separately checked; free quotas and absence of paid backup assumptions are documented.
+Migrations apply cleanly and repeatably. Concurrent claims are exclusive; expired/replaced workers cannot checkpoint or publish with stale fencing values. History survives restart and duplicate publication is rejected. Database/storage policies, verified connection mode, bounded pools, free quotas and manual backup assumptions are documented.
 
 **Required final action:** write `planning/task-reports/T04.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
@@ -112,6 +122,8 @@ Migrations apply cleanly and repeatably. Multiple claimants cannot own one unexp
 **Implement:**
 
 Verify token signature, issuer, audience and expiry; implement login/logout/session-expiry UI. Assign roles/cohorts through trusted setup. Build reusable resource checks for submissions, uploads, jobs, sources, reports, reviews, similarity and analytics. Provision limited test identities without committing credentials.
+
+Precreate limited password-based judging accounts through trusted setup. Verify the project's real JWT signing/key configuration instead of assuming a particular key algorithm. Do not rely on free default SMTP for public signup or last-minute magic links; document account recovery without paid SMS/email dependence.
 
 **Acceptance checks:**
 
@@ -145,15 +157,17 @@ All required input formats preserve intact originals; 11-page scans are accepted
 
 Implement Postgres stage claiming and bounded Gradio event enqueue through a runtime adapter, plus a local worker adapter for tests/owned hardware. Persist event IDs, checkpoints, leases/heartbeats and finite retry-at times. Authenticate job-specific capabilities before inference and use restricted HTTPS checkpoint APIs, not full database keys in models. Reconcile on startup, authorized app activity and explicit resume; allow completion-triggered next-stage dispatch. Do not assume a daemon can run while free services sleep.
 
+Make the owned-laptop adapter usable for real judging inference, not just fixtures. Use authenticated outbound claim/checkpoint operations and show `waiting_for_worker` when offline; no exposed laptop port is required. Persist backend selection and lease generation. Start bounded operator worker sessions for actual work, with backoff and explicit resume; no artificial anti-sleep pings. HF events still need separate live enqueue/quota proof. Validate capabilities outside GPU-decorated work; fetch fresh source URLs only after claim and define renewal when queue delays outlast capability expiry.
+
 **Acceptance checks:**
 
-A duplicate event, lost enqueue response, worker termination and sleeping runtime do not lose accepted input or publish duplicate versions. Progress exposes waiting_for_runtime and quota_exhausted accurately. A deterministic handler proves orchestration only; no Celery/Redis or paid worker is required for the free release.
+A duplicate event, lost enqueue response, worker termination, late stale claimant and sleeping/offline runtime preserve accepted input and one published version. Progress exposes waiting_for_worker, waiting_for_runtime and quota_exhausted accurately. Real owned-worker claim/checkpoint recovery is verified separately from Gradio enqueue. Deterministic handlers prove orchestration only; no paid worker/broker is required.
 
 **Required final action:** write `planning/task-reports/T07.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
 ## T08 - Build applicant submission and recording UI
 
-**Dependencies:** T03, T05, T06, T07.
+**Dependencies:** T03, T05, T06, T07, T12.
 
 **Primary files:** `apps/web/src/pages/SubmitIdea.tsx`, `apps/web/src/pages/MySubmissions.tsx`, `apps/web/src/components/`.
 
@@ -161,9 +175,11 @@ A duplicate event, lost enqueue response, worker termination and sleeping runtim
 
 Build text/audio/PDF tabs, preferred language, known location/cohort fields and consent. Add recording/playback, upload progress, denied-microphone fallback and duplicate-submit prevention. Connect real submit/poll APIs; recover after refresh and display failed/partial/retry states. Support mobile, keyboard and regional scripts; label fixtures.
 
+Use the already verified T09/T12 text pipeline to show a real persisted text assessment here. Upload/record UI for other formats may report queued/waiting until T10/T11 pass; do not mark unimplemented modality processing complete. Reuse the early preview configuration after explicit publication approval.
+
 **Acceptance checks:**
 
-A signed-in applicant submits each supported type and sees persisted state. Refresh, upload failure and denied microphone have recovery paths. Mobile/keyboard checks pass; absent processing stages are not shown as completed.
+A signed-in applicant submits each supported type and sees persisted state; text reaches a real persisted assessment through T09/T12. PDF/audio processing not yet implemented is labeled waiting rather than completed. Refresh, upload failure and denied microphone have recovery paths. Mobile/keyboard checks pass and fixture results are labeled.
 
 **Required final action:** write `planning/task-reports/T08.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
@@ -175,7 +191,9 @@ A signed-in applicant submits each supported type and sees persisted state. Refr
 
 **Implement:**
 
-Run pinned Qwen3-VL-2B-Instruct text extraction in owned runtime A and IndicTrans2 distilled models in runtime B. Use confirmed/validated language and answer-level segmentation, retaining original/English text and numbers/units. Enforce bounded output and Pydantic validation; small open models are not guaranteed schema adherence. Preserve missing/irrelevant/ambiguous/unreadable statuses and evidence alternatives. Record weights/license/runtime revisions and timings; no paid model key or fallback.
+Run pinned Qwen3-VL-2B-Instruct text extraction and IndicTrans2 distilled translation through the selected owned-worker adapter, with the same contracts for HF runtime A/B. Use confirmed/validated language and answer-level segmentation, retaining original/English text and numbers/units. Enforce bounded output and Pydantic validation; small open models are not guaranteed schema adherence. Preserve missing/irrelevant/ambiguous/unreadable statuses and evidence alternatives. Record weights/license/runtime revisions and timings; no paid model key or fallback.
+
+Prefer the verified owned worker for the judging path, using the same contracts as runtime A/B. Bound context/output/image sizes and serialize GPU work initially; do not assume all models fit simultaneously on 8 GB VRAM. Implement the T01 language-identification strategy with uncertainty and language provenance. Preserve additional technical fields, source numbers/units and names needed as business facts; exclude beneficiary identity from scoring. Validate English/Hindi with the available reviewer and label other language quality unvalidated.
 
 **Acceptance checks:**
 
@@ -193,6 +211,8 @@ Actual owned-model inference handles representative text and mixed-language exam
 
 Follow FREE_MODEL_HOSTING_PLAN.md: create question-answer pairs with family/source IDs and label provenance; remove identity. Compare a rules/cosine baseline with frozen MiniLM features plus logistic regression. Keep all family variants/translations together in group splits. Report real class/group counts, confusion matrix, macro-F1, irrelevant precision/recall and abstention. Export reproducible candidate artifacts and a model card; record an explicit promote/reject decision. Do not train foundation models or a funding/business-success predictor.
 
+Audit independent family/class counts before choosing a split; never force a metric from an empty or one-class holdout. Fit preprocessing/tuning on training/validation groups only. Only English/Hindi review is currently available. Keep the experiment bounded; reject promotion if independently reviewed groups are insufficient. Baseline serving allows T12 to proceed after the documented experiment even when the candidate is rejected. An implausible but on-topic answer is not automatically irrelevant.
+
 **Acceptance checks:**
 
 Re-running with pinned data/features/seed reproduces the experiment. No holdout leakage and no synthetic-only real-world accuracy claim. Promotion gates use independently reviewed real data; insufficient labels or failed gates keep the baseline active and candidate experimental. The task may finish with a justified rejection, but the release must not advertise an unvalidated model as validated.
@@ -207,7 +227,7 @@ Re-running with pinned data/features/seed reproduces the experiment. No holdout 
 
 **Implement:**
 
-Use text/layout extraction first; render only suspect/scanned pages. Run bounded one-page Qwen3-VL calls in our document Space, preserving original scans, source pages and reliable boxes. Printed OCR fallback does not prove handwriting support. Checkpoint page work and preserve uncertain overwrites as alternatives. Enforce pixel/page/runtime/memory budgets; no paid vision endpoint.
+Use text/layout extraction first; render only suspect/scanned pages. Run bounded one-page Qwen3-VL calls in the selected owned worker or separately verified document Space, preserving original scans, source pages and reliable boxes. Printed OCR fallback does not prove handwriting support. Checkpoint page work and preserve uncertain overwrites as alternatives. Enforce pixel/page/runtime/memory budgets; no paid vision endpoint. Check suspicious glyph/script mixtures and layout corruption even when text has no null/replacement characters; use actual regional samples. Preserve technical facts and financial tables across the full 11-page scan without treating blank tables as zero values.
 
 **Acceptance checks:**
 
@@ -223,11 +243,11 @@ Evaluate complete, corrupted-text, mixed-language and overwritten cases plus a f
 
 **Implement:**
 
-Use FFmpeg and pinned IndicConformer 600M with ONNX Runtime CPU in the speech Space initially. Verify model access and inspected remote code; do not assume ONNX GPU execution is ZeroGPU-compatible. Chunk audio with global offsets and preserve original transcripts; translate via IndicTrans2. Require/confirm audio language when automatic identification is unreliable and label declared versus detected language. Use segment references if precise word timestamps are unavailable.
+Use FFmpeg and pinned IndicConformer 600M through the selected owned worker; the HF speech Space initially uses ONNX Runtime CPU. Verify model access and inspected remote code; do not assume ONNX GPU execution is ZeroGPU-compatible. A supported local GPU/PyTorch path needs its own measurement. Chunk audio with global offsets and preserve original transcripts; translate via IndicTrans2. Implement the explicit audio language-identification strategy, requiring confirmation when unreliable, and label declared versus detected language. Use segment references if precise word timestamps are unavailable. Existing MP4 inputs are audio-only AAC containers; do not reject them because their extension suggests video.
 
 **Acceptance checks:**
 
-Run representative Hindi/Telugu/Bengali/Odia recordings on the actual owned runtime. Verify transcript/evidence alignment, CPU memory and chunk latency. Silence/invalid media and quota/runtime interruption have bounded recovery. No Sarvam or other paid ASR API is invoked.
+Run representative Hindi/Telugu/Bengali/Odia recordings on the actual selected owned runtime. Verify transcript/evidence alignment, memory and chunk latency; distinguish Hindi human validation from unvalidated other-language quality. Silence/invalid media and worker/quota/runtime interruption have bounded recovery. No paid ASR API is invoked; backend-specific measurements are not interchangeable.
 
 **Required final action:** write `planning/task-reports/T11.md` with actual evidence, then update tracker/CSV and continue to the next eligible task.
 
@@ -288,6 +308,8 @@ Annotated positive/hard-negative pairs yield measured Recall@5 and grounded reas
 **Implement:**
 
 Use applicant-confirmed location/category with bounded Overpass queries; Nominatim is only explicit user-triggered geocoding with identifiable User-Agent, cache and a shared maximum one request/second. No bulk dataset geocoding/autocomplete. Cache results with attribution/date and include a small licensed regional snapshot fallback. Never send beneficiary identity. Distinguish retrieved listings, applicant claims, dated snapshots and fixtures; no Google Places API.
+
+Public Nominatim is disabled until Kartik deliberately opts in after reviewing its policy; user-triggered lookup alone is not developer consent. Start with confirmed coarse coordinates/area and the licensed dated snapshot. Do not build a generic geocoding service or infer complete competitor coverage from OSM.
 
 **Acceptance checks:**
 
@@ -369,6 +391,8 @@ Multipage reports are readable with required sections and honest unavailable sta
 
 Use reviewed family-separated labels for extraction/statuses/numbers/evidence/retrieval/rating checks and the relevance classifier. Account for all 55 inputs. Manually validated audio and equivalent-language pairs support speech/fairness claims. Record model manifests, real cold/warm inference time, CPU/RAM/GPU use, queue wait, free quota usage and uncertainty. Compare the classifier to its baseline; do not force promotion.
 
+Run the corpus and repeated inference primarily on the owned laptop, reusing versioned outputs; do not spend the HF demo quota on a blanket evaluation run. Current reviewers cover English/Hindi only. Report unsupported quality claims as unvalidated with actual sample counts; folder labels or machine translations are not ground truth for the other languages. Record local and HF latency/usage separately.
+
 **Acceptance checks:**
 
 Reports include real numerators/denominators per language/format and no family leakage. Distinguish owned open-weight inference from the project-trained classifier. Assess release gates honestly; missing reviewed data and unmet required quality gates remain visible. Never substitute hosted paid models to meet a target.
@@ -417,6 +441,8 @@ Record real hardware and p50/p95/errors/cold starts/peak RAM/VRAM. Accepted jobs
 
 Build a lightweight non-root API image without model frameworks/weights and a static Pages frontend. Define Render Free API and Supabase Free persistence settings; model events replace paid workers/Redis. Keep a local container profile for durable stage workers and local load tests. CI validates contracts/builds/tests/migrations. Document free plan limits, pause/resume, backup exports, rollback and no-paid-fallback policy.
 
+Reuse T02's early deployment skeleton and finalize both selected laptop-worker and secondary Space adapter configuration. Include native laptop worker startup/stop/resume instructions, so unavailable Docker does not prevent the basic worker smoke check; container scaling checks still require real container infrastructure. Prepare sanitized artifacts with no dataset/.tools/secret inclusion. No automatic Git push or remote build deployment is authorized.
+
 **Acceptance checks:**
 
 Clean local deployment works and API fits the selected free runtime budget. Manifests contain no paid worker, broker, domain, GPU or add-on. Configuration/quotas are verified; a zero-spend flag alone is not proof. Secrets stay out of images/assets and runtime files remain disposable.
@@ -433,6 +459,8 @@ Clean local deployment works and API fits the selected free runtime budget. Mani
 
 Package two owned Gradio ZeroGPU Spaces using the supported PyTorch placement/decorator pattern; keep ONNX ASR CPU unless compatibility is proven. Pin model weights/preprocessing/licenses/checksums and classifier or baseline artifact. Authenticate stage capabilities before expensive inference. Add loading/ready/quota/unhealthy states, checkpoints, bounded page/chunk work and version rollback. Keep portable local worker entry points with the same contracts; do not republish private data or gated weights without permission.
 
+Package and measure the preferred versioned laptop worker as a real serving target, with 8 GB VRAM limits, explicit model lifetime, backend readiness and offline recovery. Keep both free HF deployments as separate required evidence, not a claim that their quota funds continuous judging. Stage exact Space source/artifacts/destinations for explicit publication approval; no upload is authorized by local commit permission. A blocked HF criterion cannot be erased by successful local inference.
+
 **Acceptance checks:**
 
 Use the eligible free account and prove owned model endpoints execute actual inference without paid APIs. Record cold/warm latency, peak RAM/VRAM, stage limits and quota attribution. Restart and model rollback preserve evidence and invalidate incompatible caches. Candidate classifier promotion/rejection is reflected in deployed config; runtime never trains on user requests.
@@ -447,7 +475,7 @@ Use the eligible free account and prove owned model endpoints execute actual inf
 
 **Implement:**
 
-Deploy the frontend/API/persistence and connect the two actual free model runtimes. Use platform domains, private secrets and restricted demo accounts. Verify account plan selection without enabling paid overages. Run real text/PDF/scan/audio and bounded OSM context through the public HTTPS application; record actual release URL and model manifests. Missing quota/account/model access remains a blocker, never a paid fallback.
+After explicit publication approval, deploy the frontend/API/persistence with the verified selected worker backend; the preferred judging profile uses owned-laptop inference. Verify the two free HF runtimes separately as required by T23A. Use platform domains, private secrets and restricted demo accounts. Verify account plan selection without enabling paid overages. Run real text/PDF/scan/audio and bounded OSM context through the public HTTPS application; record actual release URL, backend and model manifests. Missing quota/account/model access remains a named blocker, never a paid fallback. A verified local-backed demo may be recorded before full completion; T24 remains incomplete while required dependencies/gates are unmet.
 
 **Acceptance checks:**
 
@@ -480,6 +508,8 @@ Required journeys pass on recorded URL/release and blocking regressions are fixe
 **Implement:**
 
 Document architecture, setup/deployment/config names, supported formats/languages, model manifests, classifier promotion decision, roles, operations and limits. Map all brief requirements/features to actual implementation and evidence. Summarize evaluation, scale measurements, free quota use and zero-service-spend verification, release URL/ID and pilot-level work. Prepare five-minute demo with labeled backups; reconcile every report/tracker/CSV entry.
+
+Update SESSION_HANDOFF.md with exact startup/test/resume commands, current commit/backend, unfinished criteria, reviewer availability and pending publication approvals. Verify local commit author/committer and absence of trailers. Distinguish model-provider quota from owned hardware constraints, and a laptop-backed hosted demo from a fully cloud-hosted deployment. A new model/account using the same workspace must be able to continue without this chat; private data/secrets must not be transferred via public Git.
 
 **Acceptance checks:**
 

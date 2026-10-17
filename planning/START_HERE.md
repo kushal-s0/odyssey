@@ -2,9 +2,11 @@
 
 This is a complete task-by-task execution plan for **Codex** to build Udyam Saathi, a scalable and deployable Tata STRIVE business-idea screening application. It replaces the earlier human team assignment plan.
 
-**Current state: planning only. All 28 tasks are pending.** No application implementation or deployment has been performed.
+**Current state: planning review/revision only. All 28 tasks are pending.** No application implementation or deployment has been performed. Read [SESSION_HANDOFF.md](SESSION_HANDOFF.md) first when changing models/sessions/accounts; the current user request authorizes documentation changes only.
 
-**Budget requirement:** no paid APIs or purchased hosting. Use our eligible-account Gradio ZeroGPU runtimes, Render Free API, Cloudflare Pages Free and Supabase Free. See [free deployment and model plan](FREE_MODEL_HOSTING_PLAN.md). T09A trains a small relevance model; T23A packages/deploys the model runtimes. Free capacity is quota-limited.
+**Deadline: 18 October 2026, 06:00 Asia/Calcutta, deployed demo included.** Follow [HACKATHON_DELIVERY_PLAN.md](HACKATHON_DELIVERY_PLAN.md) for the explicit task order, early deployment checkpoints and distinction between demo verification and full-backlog completion. See [PROJECT_REVIEW.md](PROJECT_REVIEW.md) for findings and unverified assumptions.
+
+**Budget requirement:** no paid APIs or purchased hosting. Prefer verified owned-laptop inference for judging to avoid expiring provider inference allowances; use Render Free API, Cloudflare Pages Free and Supabase Free. Keep eligible-account Gradio ZeroGPU runtimes as a separate quota-limited deployment target. See [free deployment and model plan](FREE_MODEL_HOSTING_PLAN.md). T09A trains a small relevance model; T23A packages/deploys the versioned local and hosted runtimes. English/Hindi review are available; other corpus languages remain unvalidated. Commit locally only as Kartik, without trailers; no publication without explicit approval.
 
 ## Files Codex must follow
 

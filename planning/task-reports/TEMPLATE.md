@@ -58,6 +58,12 @@ State any incomplete acceptance criteria, unverified languages, missing credenti
 - What the next task can rely on:
 - Pending blocker to revisit:
 - Tracker and CSV updated: yes/no
+- SESSION_HANDOFF.md updated: yes/no
+- Exact next command/action (do not invent a command that does not exist):
+- Last verified command/result and current failing check:
+- Partial/uncommitted files and any active process/session needed for recovery:
+- Pending user decision/publication approval; secret configuration names only:
+- Local commit author/committer checked as Kartik, no trailers: yes/no/not committed
 
 ## Follow-up verification history
 
