@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "selected": "rules-cosine-baseline-v1",
+  "candidate": "udyam-answer-relevance-v1",
+  "promoted": false,
+  "reason": "No independently reviewed real labels or business-family validation. Candidate is experimental and rejected for serving.",
+  "policy": "Missing answers stay missing; low cosine abstains. Relevance is advisory and never predicts success or changes potential scores."
+}

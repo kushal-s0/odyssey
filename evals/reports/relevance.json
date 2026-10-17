@@ -1,0 +1,189 @@
+{
+  "artifact_sha256": "2255fa7ad97607d19376ee8d44457670229ded841c91f40b6a1a289f3f48385d",
+  "data_sha256": "8b2c097485fc162b49284e774e91590b7a2c54307656e79f9e76528250badd0b",
+  "decision": "reject",
+  "embedding_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "feature_contract": "minilm-mean-l2-256-qa-abs-cosine-v1",
+  "fitted": true,
+  "groups": {
+    "beauty": {
+      "relevant": 10
+    },
+    "dairy": {
+      "relevant": 9
+    },
+    "poultry": {
+      "relevant": 9
+    },
+    "tailoring": {
+      "relevant": 19
+    },
+    "tea-and-unresolved-pooled": {
+      "irrelevant": 4,
+      "relevant": 51
+    }
+  },
+  "independently_reviewed_pairs": 0,
+  "metrics": {
+    "test": {
+      "baseline": {
+        "abstention_rate": 0.5555555555555556,
+        "class_counts": {
+          "0": 9,
+          "1": 0
+        },
+        "confusion_matrix_relevant_irrelevant": [
+          [
+            4,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "count": 9,
+        "irrelevant_precision": null,
+        "irrelevant_recall": null,
+        "macro_f1": null,
+        "quality_claim_eligible": false
+      },
+      "candidate": {
+        "abstention_rate": 0.0,
+        "class_counts": {
+          "0": 9,
+          "1": 0
+        },
+        "confusion_matrix_relevant_irrelevant": [
+          [
+            9,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "count": 9,
+        "irrelevant_precision": null,
+        "irrelevant_recall": null,
+        "macro_f1": null,
+        "quality_claim_eligible": false
+      }
+    },
+    "train": {
+      "baseline": {
+        "abstention_rate": 0.5810810810810811,
+        "class_counts": {
+          "0": 70,
+          "1": 4
+        },
+        "confusion_matrix_relevant_irrelevant": [
+          [
+            30,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "count": 74,
+        "irrelevant_precision": 0.0,
+        "irrelevant_recall": 0.0,
+        "macro_f1": 0.4918032786885246,
+        "quality_claim_eligible": false
+      },
+      "candidate": {
+        "abstention_rate": 0.013513513513513487,
+        "class_counts": {
+          "0": 70,
+          "1": 4
+        },
+        "confusion_matrix_relevant_irrelevant": [
+          [
+            70,
+            0
+          ],
+          [
+            3,
+            0
+          ]
+        ],
+        "count": 74,
+        "irrelevant_precision": 0.0,
+        "irrelevant_recall": 0.0,
+        "macro_f1": 0.48951048951048953,
+        "quality_claim_eligible": false
+      }
+    },
+    "validation": {
+      "baseline": {
+        "abstention_rate": 0.7894736842105263,
+        "class_counts": {
+          "0": 19,
+          "1": 0
+        },
+        "confusion_matrix_relevant_irrelevant": [
+          [
+            4,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "count": 19,
+        "irrelevant_precision": null,
+        "irrelevant_recall": null,
+        "macro_f1": null,
+        "quality_claim_eligible": false
+      },
+      "candidate": {
+        "abstention_rate": 0.0,
+        "class_counts": {
+          "0": 19,
+          "1": 0
+        },
+        "confusion_matrix_relevant_irrelevant": [
+          [
+            19,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "count": 19,
+        "irrelevant_precision": null,
+        "irrelevant_recall": null,
+        "macro_f1": null,
+        "quality_claim_eligible": false
+      }
+    }
+  },
+  "pair_count": 102,
+  "pypdf": "6.21.1",
+  "reason": "No independently reviewed labels/families; machine extraction and labels are experimental only.",
+  "seed": 20261017,
+  "serving": "rules-cosine-baseline-v1",
+  "sklearn": "1.7.2",
+  "source_count": 11,
+  "split_groups": {
+    "test": [
+      "dairy"
+    ],
+    "train": [
+      "beauty",
+      "tea-and-unresolved-pooled",
+      "poultry"
+    ],
+    "validation": [
+      "tailoring"
+    ]
+  },
+  "split_policy": "hash-order class-aware groups; minority-only family retained in train; no test tuning",
+  "torch": "2.9.1+cu128"
+}

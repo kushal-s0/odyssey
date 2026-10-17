@@ -4,7 +4,8 @@ specifications and FREE_MODEL_HOSTING_PLAN.md. Inspect actual Git state first.
 Preserve branch second, original data, credentials and unrelated .tools entries.
 Latest request: T09 -> T09A -> T12 -> T08, sequentially. T09 English model run
 passes; translation/human review and remaining runtime acceptance are blocked.
-T09A is active. Finish it, then T12 and T08 with actual evidence and honest gates.
+T09A is done with a fitted but rejected candidate; baseline remains active.
+T12 is active. Finish T12 then T08 with actual evidence and honest gates.
 Both author AND committer: kushal-s0 <kushal.soni@somaiya.edu>; no trailers.
 Verify every local commit. Never push, PR, upload source or deploy without approval.
 Native PG loopback 55432; private DSN in ignored .local/test-database-url.

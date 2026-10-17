@@ -9,7 +9,11 @@ tasks, T09 → T09A → T12 → T08, with local commits as
 `kushal-s0 <kushal.soni@somaiya.edu>` for BOTH author and committer. This supersedes
 the earlier Kartik-only identity below; historical commits must remain unchanged.
 Actual current branch is `second`; preserve it. Publication remains unapproved.
-T09 is blocked after actual English inference passed; T09A is now active.
+T09 is blocked after actual English inference passed. T09A is done with an
+explicit rejected experimental candidate; the baseline remains selected. T12
+is now active. Read T09A.md/model card and evals/reports/relevance.json. Actual
+102 QA pairs/11 PDFs/5 families; zero reviewed labels. Export parity and grouped
+isolation pass; repeated artifact hash is stable. No validation-quality claim.
 See task-reports/T09.md and evals/reports/feasibility/owned-text.json. Both model
 downloads are hash-verified; .venv-model/CUDA are ready. English HTTP/worker
 structure: 23.601 s and 4.36 GB allocated VRAM. Mixed language stops on denied
