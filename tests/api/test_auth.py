@@ -14,7 +14,7 @@ from app.auth.access import ActorView, resource_access, submission_access
 from app.auth.jwt import AuthenticationUnavailable, InvalidIdentity, TokenVerifier
 from app.config import Settings
 from app.main import create_app
-from test_database import ROOT, database, seeded  # noqa: F401
+from test_database import ROOT, seeded
 
 
 @pytest.fixture(params=['RS256', 'ES256'])

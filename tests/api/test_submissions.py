@@ -16,7 +16,7 @@ from app.config import Settings
 from app.main import create_app
 from app.services.storage import LocalPrivateStorage
 from app.services.upload_cleanup import cleanup_abandoned
-from test_database import ROOT, database, seeded  # noqa: F401
+from test_database import ROOT, seeded
 
 
 def pdf(pages=11, encrypted=False):
@@ -33,7 +33,9 @@ def pdf(pages=11, encrypted=False):
 def wav(seconds=1):
     output = io.BytesIO()
     with wave.open(output, 'wb') as target:
-        target.setnchannels(1); target.setsampwidth(2); target.setframerate(16000)
+        target.setnchannels(1)
+        target.setsampwidth(2)
+        target.setframerate(16000)
         target.writeframes(b'\0\0'*(16000*seconds))
     return output.getvalue()
 

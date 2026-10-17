@@ -7,7 +7,7 @@ from uuid import uuid4
 
 import pytest
 
-from test_database import ROOT, database  # noqa: F401
+from test_database import ROOT
 from test_submissions import init_upload, submit, workspace
 
 

@@ -2,7 +2,6 @@ from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from pathlib import Path
 from threading import Barrier
-from urllib.parse import urlsplit
 from uuid import uuid4
 
 import psycopg
@@ -10,27 +9,10 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.config import Settings
-from app.db.pool import Database
 from app.repositories.stages import StageRepository
 from app.main import create_app
 
 ROOT = Path(__file__).resolve().parents[2]
-
-
-@pytest.fixture
-def database():
-    location = ROOT / ".local/test-database-url"
-    if not location.exists():
-        pytest.skip("Local PostgreSQL not configured; this is not a passed integration check")
-    url = location.read_text().strip()
-    if urlsplit(url).hostname not in {"127.0.0.1", "localhost"}:
-        raise RuntimeError("These tests must never use a public database")
-    instance = Database(Settings(app_env="test", database_url=url, _env_file=None))
-    instance.open()
-    try:
-        yield instance
-    finally:
-        instance.close()
 
 
 @contextmanager
