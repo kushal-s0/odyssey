@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import shutil
 import socket
@@ -13,6 +14,19 @@ from urllib.request import urlopen
 
 from configure import REQUIRED, ROOT, configure
 from stop_child import stop_child
+
+
+def existing_workspace() -> bool:
+    """Recognize the local app for a harmless repeated start; never stop a port owner."""
+    try:
+        with urlopen('http://127.0.0.1:8000/openapi.json', timeout=2) as response:
+            schema = json.loads(response.read(1_048_576))
+        with urlopen('http://127.0.0.1:5173/', timeout=2) as response:
+            page = response.read(65_536).decode('utf-8')
+        info = schema.get('info') if isinstance(schema, dict) else None
+        return isinstance(info, dict) and info.get('title') == 'Udyam Saathi API' and '<title>Udyam Saathi' in page
+    except (URLError, TimeoutError, OSError, ValueError):
+        return False
 
 
 def wait_for(url: str, process: subprocess.Popen[bytes], name: str) -> None:
@@ -44,10 +58,17 @@ def main() -> None:
     vite = ROOT/'apps/web/node_modules/vite/bin/vite.js'
     if not node or not vite.exists() or (not args.preview and not model_python.exists()):
         raise SystemExit('Dependencies are missing. Follow README setup; existing environments are reused.')
+    occupied = []
     for port in (8000, 5173):
         with socket.socket() as check:
             if check.connect_ex(('127.0.0.1', port)) == 0:
-                raise SystemExit(f'Port {port} is already occupied. Stop only your earlier app process, then retry.')
+                occupied.append(port)
+    if occupied == [8000, 5173] and existing_workspace():
+        print('Udyam Saathi is already running: http://127.0.0.1:5173', flush=True)
+        print('Use the existing browser workspace. No second API or worker was started.', flush=True)
+        return
+    if occupied:
+        raise SystemExit(f'Port {occupied[0]} is already occupied. Stop only your earlier app process, then retry.')
     logs = ROOT/'.local/run-logs'
     logs.mkdir(parents=True, exist_ok=True)
     children: list[subprocess.Popen[bytes]] = []

@@ -1,0 +1,13 @@
+{
+  "scope": "Real configured Supabase ES256 diagnostic sessions, selected existing test account, local API; no email sent or password changed",
+  "before": {"issued_seconds_ahead":1.102,"verification_error":"ImmatureSignatureError","immediate_api_http":401,"same_token_after_two_seconds_api_http":200},
+  "repair": {"clock_tolerance_seconds":5,"signature_issuer_audience_role_validation_retained":true},
+  "after": {"issued_seconds_ahead":0.428,"local_verifier":"passed","immediate_api_http":200,"repeated_api_http":200,"role":"applicant","cohorts":1,"diagnostic_sessions_revoked":true},
+  "focused_auth_tests":31,
+  "ruff":"passed",
+  "strict_mypy_files":87,
+  "repeated_start_cmd":"exit0; existing app recognized, no duplicate API or worker",
+  "password_entry_browser_automated":false,
+  "deployed":false,
+  "passed":true
+}

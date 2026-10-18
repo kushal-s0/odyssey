@@ -1,6 +1,6 @@
 {
-  "scope": "Staged files",
-  "files": 193,
+  "scope": "Changed and untracked non-ignored files",
+  "files": 8,
   "findings": [],
   "passed": true,
   "secret_values_printed": false

@@ -20,7 +20,7 @@ Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FRE
 | T02 | Scaffold application and local toolchain | done | `task-reports/T02.md` | None confirmed |
 | T03 | Define contracts, domain rules and rubric | done | `task-reports/T03.md` | None confirmed |
 | T04 | Implement database, durable stage leases and private storage | blocked | `task-reports/T04.md` | Actual Supabase migrations/private-object operations pass; hosted Free-plan quota/account and recovery gates unverified |
-| T05 | Implement authentication and authorization | blocked | `task-reports/T05.md` | Real Supabase login/ES256/reload/logout pass; full hosted cross-cohort access matrix and forced token refresh unverified |
+| T05 | Implement authentication and authorization | blocked | `task-reports/T05.md` | Fresh real Supabase sign-in timing fixed and immediate workspace200 verified; complete hosted cohort/forced-refresh matrix unverified |
 | T06 | Implement uploads and submission APIs | blocked | `task-reports/T06.md` | Actual hosted private PDF upload/download/delete pass; hosted retry/recovery matrix incomplete |
 | T07 | Implement durable Postgres jobs and free-runtime dispatch | blocked | `task-reports/T07.md` | Owned HTTP/native recovery verified; secondary HF provisioning/quota compatibility deferred and unverified |
 | T08 | Build applicant submission and recording UI | done | `task-reports/T08.md` | None confirmed |

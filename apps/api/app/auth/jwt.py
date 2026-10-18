@@ -10,6 +10,10 @@ import jwt
 
 from ..config import Settings
 
+# Supabase and laptop clocks can differ slightly at sign-in; keep timing
+# validation enabled with a small fixed bound for iat/nbf/expiry.
+CLOCK_SKEW_SECONDS = 5
+
 
 class AuthenticationUnavailable(Exception):
     pass
@@ -91,6 +95,7 @@ class TokenVerifier:
                 raise InvalidIdentity()
             claims = jwt.decode(token, key, algorithms=['RS256', 'ES256'],
                                 audience=self.settings.auth_audience, issuer=self.settings.auth_issuer,
+                                leeway=CLOCK_SKEW_SECONDS,
                                 options={'require': ['exp', 'iat', 'iss', 'aud', 'sub'], 'strict_aud': True})
             if any(type(claims[name]) is not int for name in ('exp', 'iat')):
                 raise InvalidIdentity()

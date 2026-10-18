@@ -57,6 +57,17 @@ def test_invalid_signed_claims_are_rejected(signing, overrides):
         verifier.verify(token(overrides=overrides))
 
 
+def test_small_issuer_clock_difference_is_accepted_but_future_and_expiry_remain_bounded(signing):
+    _, verifier, token, _ = signing
+    subject = uuid4()
+    assert verifier.verify(token(subject, overrides={'iat':int(time.time())+3})) == subject
+    assert verifier.verify(token(subject, overrides={'iat':int(time.time())-60,'exp':int(time.time())-3})) == subject
+    for claims in [{'iat':int(time.time())+30},
+                   {'iat':int(time.time())-60,'exp':int(time.time())-30}]:
+        with pytest.raises(InvalidIdentity):
+            verifier.verify(token(subject,overrides=claims))
+
+
 def test_tampering_and_unsigned_or_symmetric_tokens_rejected(signing):
     _, verifier, token, _ = signing
     signed = token()
