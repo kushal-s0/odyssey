@@ -1,5 +1,20 @@
 # Current checkpoint - judge functionality, 18 October 2026
 
+## Latest document: functionality and presenter PDF
+
+User requested one PDF to explain the complete application. Created
+docs/UDYAM_SAATHI_FUNCTIONALITY_GUIDE.pdf (15 A4 pages), with editable HTML beside
+it and a local renderer at apps/web/scripts/generate-functionality-guide.mjs.
+It covers intake/languages, evidence, architecture, rubric, financial examples,
+planning, similarity/context, assessor/clarifications, four comparisons,
+privacy/history/exports, prior model results, timing/readiness and a five-minute
+demo script with committee questions. Uses application checkpoint2e98570 and
+the prior evaluation only; no inference, app changes or publication. Verified
+15 nonblank pages, critical numbers/text, page bounds and four visual PDF pages;
+renderer made zero external requests. Render/check previews are ignored under
+.local/functionality-guide/. Regenerate from the repo root with
+node apps/web/scripts/generate-functionality-guide.mjs (local Edge required).
+
 ## Latest: two-hour PS/demo sprint and urgent processing repair
 
 Read docs/PS_REVIEW_AND_DEMO_PLAN.md, docs/PROJECT_SUMMARY.md and

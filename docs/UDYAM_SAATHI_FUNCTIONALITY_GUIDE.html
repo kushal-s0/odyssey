@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Udyam Saathi — Functionality and Presenter Guide</title>
+<style>
+@page { size: A4; margin: 14mm 13mm 16mm; }
+* { box-sizing: border-box; }
+html { background: #e9eef2; }
+body { margin: 0; color: #24354a; font: 13.5px/1.47 "Segoe UI", Arial, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.sheet { width: 184mm; min-height: 260mm; margin: 16px auto; padding: 0; background: white; break-after: page; }
+.sheet:last-child { break-after: auto; }
+.eyebrow { color: #0a716c; font-size: 10.5px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; border-bottom: 2px solid #dbe8e9; padding-bottom: 10px; margin-bottom: 20px; }
+h1,h2,h3,p { margin: 0 0 12px; }
+h1 { font-size: 44px; line-height: 1.08; letter-spacing: -1.3px; color: #162b45; }
+h2 { font-size: 28px; line-height: 1.18; letter-spacing: -.5px; color: #162b45; margin-bottom: 14px; }
+h3 { font-size: 16px; line-height: 1.3; color: #0a625e; margin: 17px 0 8px; }
+.lead { font-size: 16px; color: #465a70; margin-bottom: 18px; }
+.small { font-size: 11.5px; color: #52647a; }
+.micro { font-size: 10.5px; color: #52647a; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.grid.three { grid-template-columns: repeat(3, 1fr); }
+.card { background: #f2f6f8; border: 1px solid #dce5ec; border-radius: 10px; padding: 15px; }
+.card h3 { margin-top: 0; }
+.card p:last-child, .callout p:last-child { margin-bottom: 0; }
+.callout { margin: 15px 0; padding: 14px 16px; border-left: 4px solid #0a7771; background: #eaf5f2; border-radius: 0 8px 8px 0; }
+.warn { background: #fff4de; border-color: #b87814; }
+.risk { background: #fceeed; border-color: #bd4944; }
+.say { margin: 18px 0 0; padding: 14px 16px; background: #172e49; color: #f7fbfd; border-radius: 9px; font-size: 14px; }
+.say b { display: block; color: #9edbd3; font-size: 10px; letter-spacing: 1.1px; margin-bottom: 6px; text-transform: uppercase; }
+.tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; background: #e2f0ee; color: #065f5a; margin: 0 5px 6px 0; }
+table { border-collapse: collapse; width: 100%; margin: 12px 0 16px; font-size: 12.5px; line-height: 1.4; }
+th { text-align: left; background: #19334e; color: white; font-weight: 600; padding: 9px 10px; }
+td { padding: 9px 10px; border-bottom: 1px solid #dce5ec; vertical-align: top; }
+tbody tr:nth-child(even) { background: #f2f6f8; }
+thead { display: table-header-group; }
+tr, .card, .callout, .say { break-inside: avoid; }
+ul,ol { padding-left: 19px; margin: 8px 0 15px; }
+li { padding-left: 2px; margin-bottom: 6px; }
+strong { color: #142f49; }
+.say strong { color: white; }
+.number { font-size: 27px; font-weight: 700; color: #0a716c; line-height: 1.15; }
+.negative { color: #a43533; }
+.equation { font-size: 14px; font-weight: 600; padding: 13px; background: #eef3f7; border-radius: 8px; margin: 12px 0; }
+.flow { display: grid; gap: 8px; margin: 17px 0; }
+.flow .step { display: grid; grid-template-columns: 31px 1fr; gap: 10px; align-items: start; border: 1px solid #dce5ec; border-radius: 9px; padding: 11px 13px; background: #f6f9fa; }
+.bubble { width: 27px; height: 27px; border-radius: 50%; background: #0a716c; color: white; text-align: center; font-weight: 700; line-height: 27px; }
+.step p { margin: 2px 0 0; }
+.cover-hero { background: #172e49; color: white; padding: 35px 30px; border-radius: 14px; margin: 19px 0 22px; }
+.cover-hero h1 { color: white; font-size: 51px; margin-bottom: 20px; }
+.cover-hero .subtitle { color: #b8e4dd; font-size: 23px; line-height: 1.35; }
+.cover-hero p { color: #e1eaf2; margin-top: 18px; }
+.contents { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 22px; margin: 16px 0; }
+.contents div { border-bottom: 1px solid #dce5ec; padding: 5px 0; font-size: 12.5px; }
+.contents b { display: inline-block; width: 25px; color: #0a716c; }
+.divider { height: 1px; background: #dce5ec; margin: 17px 0; }
+code { font: 11.5px Consolas, monospace; overflow-wrap: anywhere; background: #edf2f5; padding: 1px 3px; }
+a { color: #066c66; text-decoration: none; }
+.compact td { padding: 7px 9px; }
+#demo { font-size: 12.5px; line-height: 1.42; }
+#demo table { font-size: 12px; line-height: 1.35; }
+#demo td { padding-top: 6px; padding-bottom: 6px; }
+@media print { html { background: white; } .sheet { margin: 0; } }
+</style>
+</head>
+<body>
+
+<section class="sheet" id="cover">
+<div class="eyebrow">Presenter handbook · verified repository checkpoint · 18 October 2026</div>
+<div class="cover-hero">
+<span class="tag">Tata STRIVE business idea screening</span>
+<h1>Udyam Saathi</h1>
+<div class="subtitle">From a business idea<br>to an informed first review.</div>
+<p>A practical guide to every main feature, the underlying workflow, recorded model results and a five-minute demonstration.</p>
+</div>
+<h2>The 30-second explanation</h2>
+<p class="lead">An applicant can describe a business through text, PDF or voice. Udyam Saathi organizes the original evidence, prepares English text, extracts business facts and proposes a structured review for a mentor.</p>
+<div class="grid">
+<div class="card"><h3>What makes it useful</h3><p>Source-linked facts, visible financial warnings, focused follow-up questions and one workspace for applicants and assessors.</p></div>
+<div class="card"><h3>Who decides</h3><p>The human mentor. The prototype supports investigation and mentoring; business success and funding suitability are not validated predictions.</p></div>
+</div>
+<h3>Use this document as your presentation notes</h3>
+<div class="contents">
+<div><b>02</b> Problem, roles and feature coverage</div><div><b>03</b> Architecture and processing stages</div>
+<div><b>04</b> Submission, language and progress</div><div><b>05</b> Evidence and structured understanding</div>
+<div><b>06</b> Ratings, coverage and completeness</div><div><b>07</b> Positive / negative financial examples</div>
+<div><b>08</b> Business plan and what-if calculations</div><div><b>09</b> Similar ideas and local market context</div>
+<div><b>10</b> Assessor review and next steps</div><div><b>11</b> Four comparison views</div>
+<div><b>12</b> Privacy, history and exports</div><div><b>13</b> Models and recorded quality results</div>
+<div><b>14</b> Timing, readiness and limitations</div><div><b>15</b> Five-minute demo and questions</div>
+</div>
+<p class="small">Scope: current local application at code checkpoint <b>2e98570</b>. Model figures reuse the earlier frozen evaluation; no inference was rerun for this guide. No public deployment is claimed. No credentials or private applicant records are included.</p>
+</section>
+
+<section class="sheet" id="problem">
+<div class="eyebrow">02 / Purpose and coverage</div>
+<h2>One first-review workspace,<br>several ways to express an idea.</h2>
+<p class="lead">The problem statement asks for initial screening of beneficiary ideas across document formats and regional languages, with useful context for a human assessor.</p>
+<table>
+<thead><tr><th style="width:31%">Problem-statement need</th><th>How the application addresses it</th></tr></thead>
+<tbody>
+<tr><td>Text, PDF and audio</td><td>Guided or free text; private PDF upload; voice recording and audio upload. Original files remain available.</td></tr>
+<tr><td>Regional language → English</td><td>Language identification and selected translation/speech adapters; original and English evidence remain separate. Quality is not validated equally across languages.</td></tr>
+<tr><td>Business understanding</td><td>Structured offer, customers, problem, location, demand, resources, competition, funding and economic facts with source references.</td></tr>
+<tr><td>Reasoned initial assessment</td><td>Six proposed domain ratings, reasons, gaps and risks; source uncertainty and exact arithmetic appear alongside them.</td></tr>
+<tr><td>Similar submitted ideas</td><td>Scoped semantic retrieval from authorized, indexed submissions; advisory similarity only.</td></tr>
+<tr><td>Nearby business context</td><td>OpenStreetMap listings for a confirmed coarse area, with source, radius, freshness and coverage caveats.</td></tr>
+<tr><td>Consolidated assessor view</td><td>Review queue, originals, translated evidence, proposed ratings, corrections, review outcomes and version history.</td></tr>
+<tr><td>Four comparisons</td><td>Domain, trade, cohort and across-cohort views with visible counts, exclusions and rubric version.</td></tr>
+</tbody>
+</table>
+<div class="grid three">
+<div class="card"><h3>Applicant</h3><p>Submit an idea, inspect the result, clarify missing facts and explore a separate business scenario.</p></div>
+<div class="card"><h3>Assessor</h3><p>Review authorized ideas, verify sources, correct evidence and select a reasoned next action.</p></div>
+<div class="card"><h3>Coordinator / admin</h3><p>Manage trusted access and program/cohort membership. Users cannot promote themselves.</p></div>
+</div>
+<div class="say"><b>What to say</b>“We reduce the work of organizing an initial review. We preserve the applicant’s words and help the mentor see what needs checking.”</div>
+<p class="small" style="margin-top:14px">This is a qualitative usefulness claim. Mentor time saved and livelihood outcomes have not been measured.</p>
+</section>
+
+<section class="sheet" id="architecture">
+<div class="eyebrow">03 / How the system works</div>
+<h2>Private input → durable processing<br>→ evidence → human review.</h2>
+<div class="flow">
+<div class="step"><span class="bubble">1</span><div><strong>React / Vite interface</strong><p>Supabase sign-in; applicant or assessor workspace; input, progress and saved results. Only public browser configuration is exposed.</p></div></div>
+<div class="step"><span class="bubble">2</span><div><strong>FastAPI + Supabase</strong><p>API validates identity, cohort access and file limits. Supabase supplies Auth, PostgreSQL records/jobs and private original storage.</p></div></div>
+<div class="step"><span class="bubble">3</span><div><strong>Owned-laptop worker</strong><p>Claims durable work through scoped API operations. One GPU model job at a time; checkpoints allow controlled recovery.</p></div></div>
+<div class="step"><span class="bubble">4</span><div><strong>Four processing stages</strong><p>Extract → translate → structure → assess. The exact extraction path depends on text, digital PDF, scan or audio.</p></div></div>
+<div class="step"><span class="bubble">5</span><div><strong>Saved result and human action</strong><p>Server recomputes totals and arithmetic. Reviewer sees sources, risks and questions; similarity, local context and comparisons add perspective.</p></div></div>
+</div>
+<table class="compact">
+<thead><tr><th>Stage</th><th>What happens</th><th>What survives for review</th></tr></thead>
+<tbody>
+<tr><td><strong>1. Extract</strong></td><td>Read text layer, OCR pages or transcribe audio.</td><td>Original, segments and source/page/time references.</td></tr>
+<tr><td><strong>2. Translate</strong></td><td>Identify language; prepare English. English passes through.</td><td>Original and translated evidence, uncertainty.</td></tr>
+<tr><td><strong>3. Structure</strong></td><td>Qwen proposes typed business facts with quotations.</td><td>Accepted facts, conflicts and missing fields.</td></tr>
+<tr><td><strong>4. Assess</strong></td><td>Propose six domain judgments; compute deterministic checks.</td><td>Reasons, coverage, rubric version and review flags.</td></tr>
+</tbody>
+</table>
+<div class="callout"><p><strong>Why jobs are durable:</strong> closing the tab does not erase an accepted submission. If the worker is offline, work stays queued instead of pretending to finish. Fenced leases prevent an old execution from overwriting a newer one.</p></div>
+<p class="small">Current operation is local UI/API + Supabase + an owned laptop. A hosted frontend/API with an outbound laptop worker is a deployment target, not an already verified public service. Foundation models are third-party open weights.</p>
+</section>
+
+<section class="sheet" id="submission">
+<div class="eyebrow">04 / Applicant studio</div>
+<h2>Submit naturally.<br>Keep the original intact.</h2>
+<div class="grid">
+<div class="card"><h3>Guide me</h3><p>A 12-question interview in three steps: <strong>idea, market, numbers</strong>. Covers offer, customers, problem, stage, location, demand, competition, difference and finances.</p><p>Preview the assembled source. Skip unknown answers rather than inventing them.</p></div>
+<div class="card"><h3>Free text / file / voice</h3><p>Paste a proposal, upload a PDF, record a voice note or upload audio. Playback helps applicants check recordings before submission.</p><p>Microphone tracks stop when leaving recording; delayed permission responses are cleaned up.</p></div>
+</div>
+<table>
+<thead><tr><th>Input</th><th>Current limit</th><th>Useful explanation</th></tr></thead>
+<tbody>
+<tr><td>Text</td><td>30,000 characters</td><td>Fastest way to avoid document/OCR overhead. No need for polished grammar.</td></tr>
+<tr><td>PDF</td><td>20 pages; 25 MiB</td><td>Digital text layer first. Scanned pages need OCR and may take much longer.</td></tr>
+<tr><td>Audio</td><td>10 minutes; 25 MiB</td><td>WAV, MP3, M4A, MP4, OGG and WebM. Transcription quality varies with language and recording conditions.</td></tr>
+</tbody>
+</table>
+<h3>Language and locality</h3>
+<p><strong>English / Hindi interface:</strong> menus and guidance can switch without discarding the current workspace. The interface choice is separate from the submission’s content language.</p>
+<p>Input options include English, Hindi, Marathi, Telugu, Bengali and Odia. An adapter existing does not establish accuracy. Other-language quality remains unvalidated; English/Hindi human review is available. A coarse locality is optional and must be confirmed before nearby-business lookup.</p>
+<h3>Upload recovery and honest progress</h3>
+<p>Size, media signature, decoding/page checks, owner binding and file hashes protect intake. Reusing the same accepted request avoids duplicate jobs. Transfer pause is separate from server cancellation; resume with the same input when offered. An attached original is protected from unattached-upload discard.</p>
+<div class="callout"><p><strong>“2/4” means the current stage, not 50% of time.</strong> Page/batch/domain counts and elapsed time show ongoing work. Visible tabs track for up to 30 minutes; hidden tabs pause polling. Use Refresh status after returning. Accepted work remains saved.</p></div>
+<p class="small">Use “Synthetic rehearsal input” and a scenario-family identifier for demo variants so they do not inflate ordinary comparisons. Unsent in-memory drafts survive navigation, but hard-refresh persistence is not guaranteed.</p>
+</section>
+
+<section class="sheet" id="evidence">
+<div class="eyebrow">05 / Understanding and evidence</div>
+<h2>Every useful answer starts<br>with “Where did this come from?”</h2>
+<p class="lead">The result connects business fields back to the applicant’s own material, instead of presenting a model paragraph as verified truth.</p>
+<table>
+<thead><tr><th style="width:28%">Information group</th><th>Examples of structured fields</th></tr></thead>
+<tbody>
+<tr><td>Business and customer</td><td>Business type, offer, target customers, problem, current operating state.</td></tr>
+<tr><td>Market and operations</td><td>Location, demand/research, raw materials, suppliers, competition and differentiation.</td></tr>
+<tr><td>Money</td><td>Investment, own funds, requested loan, selling price, revenue, expenses and stated profit.</td></tr>
+<tr><td>Evidence state</td><td>Present, unknown, ambiguous, conflicting or unreadable; source quote and source pointer.</td></tr>
+</tbody>
+</table>
+<div class="grid">
+<div class="card"><h3>Original and English</h3><p>Keep the source-language content beside the English evidence. This lets a reviewer notice a lost negation or an incorrect money period.</p><p>Translation is an aid; it can omit meaning. Financially important statements deserve source checking.</p></div>
+<div class="card"><h3>Source navigation</h3><p>PDF: page references.<br>Audio: chunk time ranges.<br>Text: character spans / quotations.</p><p>Audio ranges identify a chunk; they are not exact word alignment.</p></div>
+</div>
+<h3>What the validation layer contributes</h3>
+<ul>
+<li>Typed schemas and quotation checks reject unsupported structured claims.</li>
+<li>Explicit numerical statements can be recovered through source-span rules.</li>
+<li>Competing amounts stay as conflicts; the system does not silently select a convenient value.</li>
+<li>Unknown or unreadable information remains unresolved, rather than becoming a fabricated answer.</li>
+<li>Embedded instructions in a proposal are treated as input content, not permission to change scoring rules.</li>
+</ul>
+<div class="callout warn"><p><strong>Source verified ≠ business verified.</strong> Confirming that a transcript matches the recording does not prove the applicant has customers, a supplier or an approved loan. Self-reported demand stays self-reported.</p></div>
+<div class="say"><b>What to show</b>Open one extracted money fact, follow its source reference and explain whether the value and its period are actually supported.</div>
+</section>
+
+<section class="sheet" id="rubric">
+<div class="eyebrow">06 / T03 rubric explained</div>
+<h2>A proposed rubric,<br>with uncertainty kept separate.</h2>
+<p>T03 defines the project’s initial scoring contracts and rules. This rubric is proposed by the project; it is not an organizer-provided formula or a validated funding predictor.</p>
+<table class="compact">
+<thead><tr><th>Dimension</th><th>Weight</th><th>What the reviewer investigates</th></tr></thead>
+<tbody>
+<tr><td>Clarity</td><td>15%</td><td>Is the offer, customer and operating model understandable?</td></tr>
+<tr><td>Customer need</td><td>20%</td><td>What supports the claimed customer problem and demand?</td></tr>
+<tr><td>Market potential</td><td>20%</td><td>Is there a reachable segment and a plausible channel?</td></tr>
+<tr><td>Feasibility</td><td>25%</td><td>Do resources, supply, funding and economics fit together?</td></tr>
+<tr><td>Competition</td><td>10%</td><td>Are alternatives known, with a credible response?</td></tr>
+<tr><td>Differentiation</td><td>10%</td><td>Is the difference specific and relevant to customers?</td></tr>
+</tbody>
+</table>
+<p><strong>Anchors:</strong> 0 = evidenced weakness; 1 = weak support; 2 = plausible but limited; 3 = well-supported description; 4 = concrete independent validation. Current model judgments cannot claim level 4.</p>
+<div class="equation">Potential = 100 × Σ(weight × rating ÷ 4) ÷ Σ(assessed weights)</div>
+<div class="grid">
+<div class="card"><h3>Evidence coverage</h3><p>The share of rubric weight that can be assessed. Unknown, unreadable and unresolved conflicting domains are <strong>null</strong>, never automatic zeros.</p></div>
+<div class="card"><h3>Information completeness</h3><p>A separate 18-field applicable checklist. It measures usable information supplied, not business merit. Trusted exclusions need a reason.</p></div>
+</div>
+<h3>When the headline is withheld</h3>
+<p>Below 70% coverage, unresolved critical offer/customer/financial/location facts, or source-review flags can suppress the headline. The provisional arithmetic remains available for investigation. Ranking requires all six assessable domains, no critical issue and an authorized comparable population under the same rubric.</p>
+<div class="callout warn"><p><strong>50/100 is not a 50% chance of success.</strong> A score, coverage and completeness answer different questions. Grammar, language, accent, gender, schooling and social identity are excluded from the scoring payload; measured outcome fairness is still unvalidated.</p></div>
+<p class="small">Bars/radar summarize available ratings; missing values are omitted. A deterministic total can be mathematically correct while its underlying model judgments are poor.</p>
+</section>
+
+<section class="sheet" id="finance">
+<div class="eyebrow">07 / Financial warnings and examples</div>
+<h2>Show the risk before<br>you discuss the score.</h2>
+<p class="lead">The first-review summary prioritizes operating loss, funding gaps, incompatible figures, source review and missing facts. It reuses saved evidence and server arithmetic; opening it does not call another model.</p>
+<table>
+<thead><tr><th style="width:24%">Authored rehearsal</th><th>Constructive example</th><th>Weak example</th></tr></thead>
+<tbody>
+<tr><td>Customer evidence</td><td>18 of 30 workers would consider buying; no confirmed orders.</td><td>28 of 30 would not buy; three existing stalls; no stated advantage.</td></tr>
+<tr><td>Startup investment</td><td>₹20,000</td><td>₹50,000</td></tr>
+<tr><td>Own funds + requested loan</td><td>₹12,000 + ₹8,000</td><td>₹1,000 + ₹0</td></tr>
+<tr><td>Stated funding gap</td><td><strong>₹0</strong> if the requested loan becomes available.</td><td><strong class="negative">₹49,000 unresolved</strong></td></tr>
+<tr><td>Monthly revenue − expenses</td><td>₹30,000 − ₹22,000</td><td>₹20,000 − ₹28,000</td></tr>
+<tr><td>Operating surplus / loss</td><td><strong>+₹8,000 per month</strong></td><td><strong class="negative">−₹8,000 per month</strong></td></tr>
+<tr><td>Useful next question</td><td>Can interested workers commit to trial orders? What if the loan is unavailable?</td><td>How will you cover losses and close the funding gap? Why would workers switch?</td></tr>
+</tbody>
+</table>
+<p class="small">These are fictional quick-demo input expectations, not new measured model outputs. Files: <code>input/quick-demo/tea-positive-en.*</code> and <code>tea-loss-en.*</code>. “Constructive” means informative self-report; demand and profit are not independently verified.</p>
+<h3>What the arithmetic engine actually checks</h3>
+<p>Server-side Decimal arithmetic checks compatible revenue/expense periods, stated funding versus startup need, and price × stated units × operating days when all inputs are available. It does not assume missing currency, unit counts or working days. Requested credit is not approved financing; sales are not profit.</p>
+<div class="callout risk"><p><strong>The honest negative-case answer:</strong> in prior testing, a loss case produced the correct −₹8,000 calculation yet a provisional model score of 50. Across four weak-domain expectations, none received the expected low rating. The prominent risk summary helps reviewers notice this; it has not repaired or revalidated semantic grading.</p></div>
+<div class="say"><b>What to say</b>“A negative financial result must stay visible even when the model is too optimistic. The mentor follows the evidence rather than treating the score as a decision.”</div>
+</section>
+
+<section class="sheet" id="planning">
+<div class="eyebrow">08 / Business plan and scenario tools</div>
+<h2>Turn the review into<br>a practical planning conversation.</h2>
+<div class="grid">
+<div class="card"><h3>Business blueprint</h3><p>A six-group map organizes the current business facts and gaps. A Markdown business brief carries evidence forward into a readable plan.</p><p>This summarizes submitted information. It does not certify the claims or silently fill unknown answers.</p></div>
+<div class="card"><h3>Scenario planner</h3><p>Try explicit INR assumptions for unit price, variable cost, daily sales, operating days and fixed monthly expenses; startup investment is optional.</p><p>These are scratch assumptions, kept separate from the submitted facts and assessment score.</p></div>
+</div>
+<table>
+<thead><tr><th>Output</th><th>Meaning and conditions</th></tr></thead>
+<tbody>
+<tr><td>Monthly sales</td><td>Unit price × daily units × operating days.</td></tr>
+<tr><td>Costs and surplus</td><td>Variable costs + fixed monthly costs; sales minus these costs gives the scenario’s operating surplus.</td></tr>
+<tr><td>Margin</td><td>Surplus relative to sales when the denominator is valid.</td></tr>
+<tr><td>Break-even</td><td>Units needed to cover fixed costs when per-unit contribution is positive.</td></tr>
+<tr><td>Simple payback</td><td>Startup investment divided by positive monthly surplus; otherwise no meaningful positive payback.</td></tr>
+<tr><td>Stress test</td><td>Recalculate with 20% fewer sales. Pin a scenario for comparison, edit assumptions or reset.</td></tr>
+</tbody>
+</table>
+<h3>A small explanation example — calculated, not a model benchmark</h3>
+<p>Assume price ₹20, variable cost ₹10, 30 units/day, 25 days/month and ₹5,000 fixed costs. Sales are ₹15,000, variable costs ₹7,500 and operating surplus ₹2,500. At 20% fewer units, surplus falls to ₹1,000.</p>
+<div class="equation">Break-even = ₹5,000 ÷ (₹20 − ₹10) = 500 units/month<br>With ₹20,000 startup cost: simple payback = 8 months at the base assumptions.</div>
+<div class="callout warn"><p><strong>Planning estimates, not promises.</strong> Taxes, borrowing costs, owner wages or other missing expenses may change the result. Editing a scenario never rewrites the applicant’s saved evidence or increases a rating.</p></div>
+<div class="say"><b>What to show</b>Change one assumption, inspect the stress result, then return to the original facts to show that the assessment has stayed separate.</div>
+</section>
+
+<section class="sheet" id="context">
+<div class="eyebrow">09 / Explore market</div>
+<h2>Give an idea context<br>without inventing the market.</h2>
+<h3>Similar submitted ideas</h3>
+<p>MiniLM represents eligible business text as 384-dimensional vectors. PostgreSQL/pgvector retrieves related current submissions within the viewer’s authorized scope. The interface shows advisory matches and their similarity.</p>
+<table>
+<thead><tr><th>What a match can help with</th><th>What it cannot establish</th></tr></thead>
+<tbody>
+<tr><td>Find related business types or approaches for mentor discussion.</td><td>That a similar idea is a competitor, an original invention or a proven successful business.</td></tr>
+<tr><td>Compare how another authorized proposal describes customers or operations.</td><td>That a high cosine similarity is a high business-quality score.</td></tr>
+<tr><td>Surface relevant indexed records.</td><td>That an empty result means no related idea exists. Data may not be indexed or accessible.</td></tr>
+</tbody>
+</table>
+<p>Access filters and scenario-family exclusions avoid revealing unrelated cohorts or showing synthetic variants as independent neighbors. The tiny curated retrieval evaluation is encouraging, but real-corpus relevance remains unvalidated.</p>
+<h3>Nearby-business context</h3>
+<p>After the applicant confirms a coarse area, the app can show OpenStreetMap business-category listings around it. Context carries the source, lookup radius, date/freshness and OpenStreetMap attribution / ODbL licensing information.</p>
+<div class="grid">
+<div class="card"><h3>Useful question</h3><p>“These mapped listings suggest alternatives nearby. What do you know about their customers and your proposed difference?”</p></div>
+<div class="card"><h3>Safe interpretation</h3><p>No mapped listings means incomplete observed coverage, not “no competition.” Informal and rural businesses may be absent.</p></div>
+</div>
+<div class="callout"><p><strong>Context is optional and non-blocking.</strong> A lookup failure does not erase the assessment. A coarse confirmed area is enough; precise private GPS is not required. Do not claim that listings prove demand, footfall, sales or viability.</p></div>
+<div class="say"><b>What to say</b>“Similarity helps us find related submissions. Local listings help us ask better questions. Neither replaces field research.”</div>
+</section>
+
+<section class="sheet" id="review">
+<div class="eyebrow">10 / Assessor and clarification workflow</div>
+<h2>Human review is a workflow,<br>not a disclaimer at the end.</h2>
+<div class="flow">
+<div class="step"><span class="bubble">1</span><div><strong>Find the right idea</strong><p>Search/filter the authorized queue by program, status and other available criteria. The assessor sees only permitted records.</p></div></div>
+<div class="step"><span class="bubble">2</span><div><strong>Inspect one consolidated workspace</strong><p>Review original/English evidence, domain reasons, warnings, financial checks, business map, context and history.</p></div></div>
+<div class="step"><span class="bubble">3</span><div><strong>Record a reasoned outcome</strong><p>Mark reviewed, request clarification, send for deeper evaluation, or recommend mentoring/skilling. Keep the explanation.</p></div></div>
+<div class="step"><span class="bubble">4</span><div><strong>Correct or clarify, then reassess</strong><p>A source correction or linked clarification creates a versioned result; the prior original and assessment remain traceable.</p></div></div>
+</div>
+<h3>Focused next steps for the applicant</h3>
+<p>The system proposes up to three prioritized questions, with the issue, reason, hint and source context. Conflicts take priority over generic missing fields. Text or audio answers link to the existing idea and can trigger reassessment.</p>
+<table class="compact">
+<thead><tr><th>Issue</th><th>Useful clarification</th></tr></thead>
+<tbody>
+<tr><td>Conflicting expenses</td><td>“Which monthly expense amount is correct, and what does it include?”</td></tr>
+<tr><td>Unfunded startup need</td><td>“How will you obtain the remaining capital? Is the requested loan approved?”</td></tr>
+<tr><td>Uncertain demand</td><td>“Have any potential customers agreed to a trial order or payment?”</td></tr>
+</tbody>
+</table>
+<h3>Optional English/Hindi explanation</h3>
+<p>A user-requested Groq explanation can rephrase already-saved facts and ratings if free credentials and allowance are available. It shares those facts with an external provider, has a daily cap and does not change the score. The owned-model assessment path does not require it.</p>
+<div class="callout warn"><p><strong>A revision is not guaranteed to score higher.</strong> Better information may expose a risk. Reviewer verification checks source fidelity; it does not independently validate the applicant’s commercial claims.</p></div>
+</section>
+
+<section class="sheet" id="comparisons">
+<div class="eyebrow">11 / Four comparison views</div>
+<h2>Compare patterns<br>with the denominator visible.</h2>
+<p class="lead">The comparison workspace summarizes current, authorized assessments. It helps a program notice mentoring needs; it does not demonstrate which cohort will create more successful businesses.</p>
+<table>
+<thead><tr><th style="width:21%">View</th><th>Question answered</th><th>How to explain it</th></tr></thead>
+<tbody>
+<tr><td><strong>Domain</strong></td><td>Which of the six dimensions looks stronger or weaker?</td><td>Dimension averages on a 0–100 presentation scale, with rated counts and missing-data context.</td></tr>
+<tr><td><strong>Trade</strong></td><td>How do records group by the project’s controlled business-trade taxonomy?</td><td>Descriptive summaries under the selected scope and rubric. Trade is a classification aid, not ground truth.</td></tr>
+<tr><td><strong>Cohort / program</strong></td><td>What does this authorized learner group need?</td><td>Cohort means trusted membership, not a folder of language samples. Use coverage/completeness alongside scores.</td></tr>
+<tr><td><strong>Across cohorts</strong></td><td>How do cohorts compare within the same trade?</td><td>Keep trade and rubric comparable; inspect composition, counts and exclusions before drawing conclusions.</td></tr>
+</tbody>
+</table>
+<div class="grid">
+<div class="card"><h3>Ways to inspect</h3><p>Grouped bars, a scatter view and readable tables make differences visible. CSV export supports further authorized analysis.</p><p>Sample size, rated counts, rubric version and completeness/coverage explain what is actually being summarized.</p></div>
+<div class="card"><h3>Filters that matter</h3><p>Use current eligible records. Apply authorization and same-rubric rules. Synthetic examples are excluded from ordinary population charts unless explicitly included.</p><p>Scenario-family handling prevents text/PDF variants from inflating the sample.</p></div>
+</div>
+<h3>A concrete interpretation</h3>
+<p>If a cohort has low information completeness and many unassessable need ratings, the appropriate action is to collect better customer evidence. Calling it a cohort of “bad businesses” would confuse missing information with negative evidence.</p>
+<div class="callout warn"><p><strong>Small samples are descriptive only.</strong> These charts are not causal analysis, significance tests, fairness certification or business-success prediction. Averages inherit the limitations of the model judgments underneath them.</p></div>
+<div class="say"><b>What to show</b>Switch through all four views, point to sample counts and rubric version, then explain one useful mentoring action instead of announcing a winner.</div>
+</section>
+
+<section class="sheet" id="privacy">
+<div class="eyebrow">12 / Access, history and exports</div>
+<h2>Keep the evidence private.<br>Keep changes explainable.</h2>
+<table>
+<thead><tr><th style="width:28%">Capability</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td>Supabase login</td><td>Real Auth only. A trusted profile and cohort/role access are also required; signing in alone does not grant assessor access.</td></tr>
+<tr><td>Private originals</td><td>Owner-bound uploads, private storage and scoped source access preserve the submitted bytes and prevent cross-user retrieval.</td></tr>
+<tr><td>Restricted model work</td><td>A model-stage child receives a narrow stage capability, not unrestricted database or service-role credentials.</td></tr>
+<tr><td>Version history</td><td>Inspect current/historical evidence and assessments. Corrections and clarifications remain linked to earlier versions and their reasons.</td></tr>
+<tr><td>Reports</td><td>Open current or historical HTML assessment reports; print / save as PDF. Opening saved results does not rerun inference.</td></tr>
+<tr><td>Other exports</td><td>Download the original, a Markdown business brief or authorized comparison CSV where the corresponding tool is available.</td></tr>
+<tr><td>Deletion</td><td>Explicit idea deletion covers original and derived versions, reviews and context, with retryable storage cleanup. Discarding an unattached upload is a separate action.</td></tr>
+</tbody>
+</table>
+<h3>Convenience without hiding state</h3>
+<p>Saved ideas and cached recent results reduce needless rereads. The latest 20 ideas are listed and the recent three details retained in memory. Navigation keeps drafts; sign-in refresh/focus recovery handles an existing session. Cached display is followed by revalidation.</p>
+<div class="grid">
+<div class="card"><h3>Interface comfort</h3><p>Responsive layout; English/Hindi menus; light, dark and system themes; labelled controls and keyboard-friendly navigation.</p><p>Original and saved model prose keep their actual content language when menus switch.</p></div>
+<div class="card"><h3>During the presentation</h3><p>Use a coordinator-provided authorized account and fictional rehearsal material. Never project configuration files or credentials.</p><p>Local save/export is separate from permission to publish private source data.</p></div>
+</div>
+<div class="callout"><p><strong>Current verification has limits.</strong> Scoped access and failure-boundary tests exist, but the complete hosted cohort/recovery matrix remains unfinished. Do not present this prototype as a certified production or privacy-compliance system.</p></div>
+</section>
+
+<section class="sheet" id="models">
+<div class="eyebrow">13 / Models and prior evaluation</div>
+<h2>No single accuracy number<br>describes this pipeline.</h2>
+<p class="small">These are previously recorded measurements on small authored/synthetic challenges, reused without rerunning models. They are not population business-success accuracy.</p>
+<table class="compact" style="font-size:11.8px">
+<thead><tr><th style="width:25%">Component / model</th><th style="width:33%">Recorded result</th><th>Practical interpretation</th></tr></thead>
+<tbody>
+<tr><td><strong>Business pipeline</strong><br>Qwen3-VL-2B-Instruct</td><td>13/14 scenarios completed;<br><strong>89/99 checks passed (89.9%)</strong>;<br>8/14 passed every check.</td><td>Checks cover facts and expected behavior. This is not 89.9% accuracy at accepting/rejecting businesses.</td></tr>
+<tr><td>Money extraction</td><td><strong>31/34 amount/currency facts (91.2%)</strong></td><td>Periods, units and missed facts still require review.</td></tr>
+<tr><td><strong>Negative-domain ratings</strong></td><td><strong class="negative">0/4 expected low ratings achieved</strong>; 1 abstained, 3 too high.</td><td>Major weakness: the model can be overly optimistic even when arithmetic reveals a loss.</td></tr>
+<tr><td>Language identification</td><td>13/13 expected decisions;<br>11 automatic, 2 abstentions.</td><td>Tiny set; automatic coverage 84.62%, not general multilingual accuracy.</td></tr>
+<tr><td>NLLB-200-distilled-600M</td><td>10 translation cases;<br>chrF++ <strong>71.62</strong>;<br>numbers preserved 10/10.</td><td>Reference-text similarity, not semantic accuracy. One important Hindi loss clause was omitted.</td></tr>
+<tr><td>PaddleOCR-VL-1.5</td><td>3 synthetic rendered images;<br>WER / CER <strong>0%</strong>.</td><td>Typed / script-font images are not genuine handwriting. No handwriting accuracy claim.</td></tr>
+<tr><td>Whisper-large-v3-turbo</td><td>3 synthesized English clips;<br>word error rate <strong>6.52%</strong>;<br>real-time factor 0.043.</td><td>Clean synthetic speech from one voice. Not regional or noisy-speaker validation.</td></tr>
+<tr><td>VAANI Odia Whisper</td><td>Actual inference produced Odia text; no reviewed reference.</td><td>Accuracy unknown. Running successfully is not proof of transcription correctness.</td></tr>
+<tr><td>all-MiniLM-L6-v2</td><td>4 queries / 10 candidate ideas;<br>Recall@1 <strong>62.5%</strong>;<br>Recall@3 and @5 <strong>100%</strong>.</td><td>Small curated retrieval challenge, not real-corpus retrieval validation.</td></tr>
+<tr><td>Experimental relevance head<br>(<strong>not served</strong>)</td><td>16 challenge pairs: 50% accuracy; macro-F1 0.333; irrelevant recall 0.</td><td>Predicted everything relevant; rejected. Do not claim this model powers business grading.</td></tr>
+</tbody>
+</table>
+<p><strong>Other recorded failures:</strong> a Hindi example lost the customer field; imperfect grammar lost an investment fact; an implausible-revenue case failed structuring twice. Unknown/irrelevant inputs did abstain and embedded instructions were ignored.</p>
+<div class="callout warn"><p><strong>Model ownership and license:</strong> foundations are pretrained third-party open weights. Our contribution is the application, grounding/review workflow and deterministic checks. NLLB is CC-BY-NC-4.0; commercial use needs separate model/license review. Other licenses and source revisions are recorded in <code>models/PROVENANCE.md</code>.</p></div>
+</section>
+
+<section class="sheet" id="readiness">
+<div class="eyebrow">14 / Performance, repairs and readiness</div>
+<h2>Useful now for assisted review.<br>More validation still matters.</h2>
+<table class="compact">
+<thead><tr><th style="width:30%">Evidence</th><th>What is actually known</th></tr></thead>
+<tbody>
+<tr><td>Prior text end-to-end timing</td><td>RTX 3050 Laptop 6 GB, authored cases: <strong>median 60.698 s; p95 110.163 s</strong>. Queue, scans and longer audio add time. Median is not the mean.</td></tr>
+<tr><td>Recent PDF wall times</td><td>262 s, 279 s and 803 s (about 4m22s, 4m39s and 13m23s). Three-record mean 448 s / 7m28s, including queue/recovery; <strong>not a controlled post-fix benchmark</strong>.</td></tr>
+<tr><td>Processing defects repaired</td><td>Claim/heartbeat database deadlock, repeated lease recovery, transient API retry handling and a five-minute UI polling cutoff.</td></tr>
+<tr><td>Reduced avoidable work</td><td>English passthrough batches checkpoint writes: 20 segments → 3 writes. Actual translations and computed judgments still retain checkpoints.</td></tr>
+<tr><td>Accuracy preserved by design</td><td>No reduction to prompts, weights, precision, token limits, OCR resolution or input content. <strong>No new accuracy or optimized average was measured.</strong></td></tr>
+<tr><td>Software regression evidence</td><td>Recent 45 focused worker/transport/text/PDF checks; earlier 26 upload/workspace checks. Suites overlap. Six browser fixture groups passed; fixtures are not live inference evidence.</td></tr>
+</tbody>
+</table>
+<h3>Why some tasks say “blocked”</h3>
+<p>The tracker records <strong>13/29 done</strong>. A feature can exist while its human-quality, hosted recovery or publication acceptance gate is unfinished. This count is neither product usefulness nor model accuracy.</p>
+<div class="grid">
+<div class="card"><h3>What is ready to explain</h3><p>Private multimodal intake, structured evidence, proposed ratings, financial warnings, planning, reviews, context and comparisons. T06 intake checks are complete.</p></div>
+<div class="card"><h3>What is not established</h3><p>Reliable weak-business grading; genuine handwriting/regional speech quality; independent corpus/fairness labels; full public deployment and hosted recovery.</p></div>
+</div>
+<h3>Highest-value next improvements</h3>
+<ol>
+<li>Have an English/Hindi business mentor label positive, weak, uncertain and conflicting examples; calibrate false optimism and abstention.</li>
+<li>Fix meaning preservation for negation, money periods and customer fields; use the versioned correction workflow.</li>
+<li>After explicit publication approval, rehearse free hosting and owned-worker recovery with the actual application.</li>
+</ol>
+<p class="small">Owned hardware avoids an expiring inference-provider allowance, but has uptime, GPU, thermal, electricity and network limits. Supabase/free hosting has quotas. No unlimited, fully cloud-hosted or production-ready claim is supported.</p>
+</section>
+
+<section class="sheet" id="demo">
+<div class="eyebrow">15 / Your five-minute presentation</div>
+<h2>Tell the story through<br>one applicant and one mentor.</h2>
+<table class="compact">
+<thead><tr><th style="width:15%">Time</th><th style="width:42%">Show</th><th>Say</th></tr></thead>
+<tbody>
+<tr><td>0:00–0:30</td><td>Applicant studio; English/Hindi switch.</td><td>“A learner should not need polished English to explain an idea. Interface and content language are separate.”</td></tr>
+<tr><td>0:30–1:00</td><td>Guide me; text/PDF/voice choices. Open a previously processed result.</td><td>“The original stays private and traceable. This saved example was processed earlier; I am not pretending it is live.”</td></tr>
+<tr><td>1:00–1:50</td><td>Original/English, one extracted fact and its source; first-review warning.</td><td>“The reviewer can check the evidence. Here a monthly loss or funding gap matters more than a generous model score.”</td></tr>
+<tr><td>1:50–2:30</td><td>Six-domain rubric and separate completeness; next clarification.</td><td>“Unknown is not zero. This is a proposed assessment, not a success probability. One specific answer helps the next review.”</td></tr>
+<tr><td>2:30–3:15</td><td>Business map; change one scenario assumption; 20% sales stress.</td><td>“We can investigate operating viability without changing the applicant’s original facts.”</td></tr>
+<tr><td>3:15–4:00</td><td>Similar ideas and confirmed-area context; empty states if no real data.</td><td>“These are discussion aids. No mapped business is not proof of no competition.”</td></tr>
+<tr><td>4:00–4:35</td><td>Assessor review and all four comparison tabs; counts and export.</td><td>“Mentors can track outcomes and program patterns. Small samples and model limitations remain visible.”</td></tr>
+<tr><td>4:35–5:00</td><td>Version/report, then page 13 of this guide.</td><td>“89/99 checks is a small test result, not business accuracy. Negative-case grading is our main improvement priority.”</td></tr>
+</tbody>
+</table>
+<h3>Before you present</h3>
+<p>Start locally with <code>.\start.cmd</code>; open <code>http://127.0.0.1:5173</code>. Use an authorized account and keep the owned worker available. Prepare saved synthetic results in advance; do not wait for a fresh scanned PDF on stage. Use <code>input/quick-demo/</code> for compact fictional text/PDF inputs and keep originals unchanged.</p>
+<h3>Three likely committee questions</h3>
+<p><strong>Did you train the foundation models?</strong> No. They are third-party pretrained models. We built the screening, grounding, review and context workflow; an experimental relevance head was trained and rejected.</p>
+<p><strong>How accurate is it?</strong> There is no defensible single number. Cite the component denominators on page 13 and disclose 0/4 expected low negative-domain ratings.</p>
+<p><strong>Can it reject applicants automatically?</strong> It is intended for mentor-assisted first review. The current quality evidence does not support autonomous rejection or funding approval.</p>
+<div class="divider"></div>
+<p class="micro"><strong>Evidence trail:</strong> <code>docs/IMPLEMENTATION_AND_MODEL_EVALUATION.md</code>; <code>evals/reports/comprehensive/</code>; <code>docs/RUBRIC.md</code>; <code>docs/PS_REVIEW_AND_DEMO_PLAN.md</code>; <code>docs/PROCESSING_TIME_AND_RECOVERY.md</code>; <code>planning/TASK_STATUS.md</code>; <code>models/PROVENANCE.md</code>. Brief: original Tata STRIVE three-page problem statement, preserved in the organizer source directory. Runtime differences and historical measurements are retained in their reports. Guide generated locally from this HTML; no new model evaluation or publication.</p>
+</section>
+
+</body>
+</html>
