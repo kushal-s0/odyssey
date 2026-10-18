@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
 import { ZodError } from "zod";
 import multer from "multer";
+import { randomUUID } from "node:crypto";
 import { router } from "./routes.js";
 import { config } from "./config.js";
 import { ProviderError } from "./providers/gemini.js";
@@ -13,6 +14,10 @@ export function createApp() {
   const app = express();
   app.disable("x-powered-by");
   app.set("trust proxy", 1);
+  app.use((_req, res, next) => {
+    res.setHeader("X-Request-ID", randomUUID());
+    next();
+  });
   app.use(
     helmet({
       contentSecurityPolicy: {
@@ -20,7 +25,7 @@ export function createApp() {
           "default-src": ["'self'"],
           "script-src": ["'self'"],
           "style-src": ["'self'", "'unsafe-inline'"],
-          "img-src": ["'self'", "data:", "blob:"],
+          "img-src": ["'self'", "data:", "blob:", "https://tile.openstreetmap.org"],
           "font-src": ["'self'"],
           "connect-src": ["'self'"],
           "media-src": ["'self'", "blob:"],
@@ -31,6 +36,7 @@ export function createApp() {
         },
       },
       crossOriginEmbedderPolicy: false,
+      referrerPolicy: { policy: "strict-origin-when-cross-origin" },
     }),
   );
   app.use(express.json({ limit: "100kb" }));
@@ -38,6 +44,15 @@ export function createApp() {
   app.use("/api", (req, res, next) => {
     res.setHeader("Cache-Control", "no-store");
     if (["POST", "PUT", "PATCH", "DELETE"].includes(req.method)) {
+      if (req.get("Sec-Fetch-Site") === "cross-site") {
+        res
+          .status(403)
+          .json({
+            error: "Cross-site requests are not allowed.",
+            code: "CROSS_SITE_REQUEST",
+          });
+        return;
+      }
       const origin = req.headers.origin;
       if (
         origin &&
@@ -94,16 +109,20 @@ export function createApp() {
               .join("; ")
           : error instanceof multer.MulterError
             ? `Upload rejected: ${error.message}`
-            : status < 500 || error instanceof ProviderError
-              ? error.message
-              : "The request could not be completed. Please retry or check service configuration.";
+            : error?.code === 11000
+              ? "An account or record already exists with those details."
+              : status < 500 || error instanceof ProviderError
+                ? error.message
+                : "The request could not be completed. Please retry or check service configuration.";
       if (status >= 500)
         console.error(
           "Request failed:",
-          error instanceof Error ? error.message : "Unknown error",
+          res.getHeader("X-Request-ID"),
+          error instanceof ProviderError ? error.code : "INTERNAL_ERROR",
         );
       res.status(status).json({
         error: message,
+        requestId: res.getHeader("X-Request-ID"),
         ...(error instanceof ZodError
           ? {
               fields: Object.fromEntries(

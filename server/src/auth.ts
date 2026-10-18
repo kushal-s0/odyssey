@@ -3,7 +3,11 @@ import bcrypt from "bcryptjs";
 import type { Request, Response, NextFunction } from "express";
 import { config } from "./config.js";
 import { databaseReady, SessionModel, UserModel } from "./db.js";
-import { loginSchema, registrationSchema } from "../../shared/input-rules.js";
+import {
+  loginSchema,
+  registrationSchema,
+  changePasswordSchema,
+} from "../../shared/input-rules.js";
 import type { WorkspaceUser } from "../../shared/types.js";
 declare global {
   namespace Express {
@@ -35,6 +39,11 @@ export async function sessionUser(req: Request): Promise<WorkspaceUser | null> {
   }).lean();
   if (!session) return null;
   const user = await UserModel.findById(session.userId).lean();
+  if (
+    !user ||
+    Number(session.sessionVersion ?? 0) !== Number(user.sessionVersion ?? 0)
+  )
+    return null;
   return user && (user.role === "assessor" || user.role === "entrepreneur")
     ? {
         id: String(user._id),
@@ -91,14 +100,12 @@ async function issueSession(user: any, res: Response) {
   await SessionModel.create({
     tokenHash: digest(token),
     userId: user._id,
+    sessionVersion: Number(user.sessionVersion ?? 0),
     expiresAt,
   });
   res.cookie("strive_session", token, {
-    httpOnly: true,
-    sameSite: "strict",
-    secure: config.NODE_ENV === "production",
+    ...sessionCookieOptions(),
     expires: expiresAt,
-    path: "/",
   });
   res.json({
     user: {
@@ -108,6 +115,91 @@ async function issueSession(user: any, res: Response) {
       role: user.role,
     },
   });
+}
+export const sessionCookieOptions = () => ({
+  httpOnly: true,
+  sameSite: "strict" as const,
+  secure: config.NODE_ENV === "production",
+  path: "/",
+});
+async function revokePreviousCookie(req: Request) {
+  if (req.cookies?.strive_session)
+    await SessionModel.deleteOne({
+      tokenHash: digest(req.cookies.strive_session),
+    });
+}
+export async function logout(req: Request, res: Response) {
+  if (req.cookies?.strive_session && !databaseReady()) {
+    res.status(503).json({
+      error:
+        "Sign-out could not be confirmed because the database is unavailable. Please retry.",
+      code: "LOGOUT_UNAVAILABLE",
+    });
+    return;
+  }
+  if (databaseReady()) await revokePreviousCookie(req);
+  res.clearCookie("strive_session", sessionCookieOptions());
+  res.json({ ok: true });
+}
+async function removeOldSessions(userId: string, version: number) {
+  // The version check revokes access immediately even if asynchronous cleanup fails.
+  await SessionModel.deleteMany({
+    userId,
+    $or: [
+      { sessionVersion: { $lt: version } },
+      { sessionVersion: { $exists: false } },
+    ],
+  }).catch(() => {});
+}
+export async function logoutAll(req: Request, res: Response) {
+  const user = await UserModel.findByIdAndUpdate(
+    req.actor!.id,
+    { $inc: { sessionVersion: 1 } },
+    { new: true },
+  )
+    .select("sessionVersion")
+    .lean();
+  if (!user) {
+    res
+      .status(401)
+      .json({ error: "Please sign in again.", code: "UNAUTHENTICATED" });
+    return;
+  }
+  await removeOldSessions(req.actor!.id, Number(user.sessionVersion));
+  res.clearCookie("strive_session", sessionCookieOptions());
+  res.json({ ok: true });
+}
+export async function changePassword(req: Request, res: Response) {
+  const data = changePasswordSchema.parse(req.body);
+  const user = await UserModel.findById(req.actor!.id).lean();
+  if (
+    !user ||
+    !(await bcrypt.compare(data.currentPassword, String(user.passwordHash)))
+  ) {
+    res.status(400).json({
+      error: "Your current password is incorrect.",
+      code: "CURRENT_PASSWORD_INVALID",
+    });
+    return;
+  }
+  const passwordHash = await bcrypt.hash(data.newPassword, 12);
+  const updated = await UserModel.findOneAndUpdate(
+    { _id: user._id, passwordHash: user.passwordHash },
+    { $set: { passwordHash }, $inc: { sessionVersion: 1 } },
+    { new: true },
+  )
+    .select("sessionVersion")
+    .lean();
+  if (!updated) {
+    res.status(409).json({
+      error: "Your account changed during this request. Please sign in again.",
+      code: "ACCOUNT_CHANGED",
+    });
+    return;
+  }
+  await removeOldSessions(req.actor!.id, Number(updated.sessionVersion));
+  res.clearCookie("strive_session", sessionCookieOptions());
+  res.json({ ok: true, signInRequired: true });
 }
 export async function register(req: Request, res: Response) {
   if (!databaseReady()) {
@@ -134,6 +226,7 @@ export async function register(req: Request, res: Response) {
     passwordHash: await bcrypt.hash(data.password, 12),
     role: "entrepreneur",
   });
+  await revokePreviousCookie(req);
   await issueSession(user, res);
 }
 export async function login(req: Request, res: Response) {
@@ -151,5 +244,6 @@ export async function login(req: Request, res: Response) {
     res.status(401).json({ error: "Email or password is incorrect." });
     return;
   }
+  await revokePreviousCookie(req);
   await issueSession(user, res);
 }

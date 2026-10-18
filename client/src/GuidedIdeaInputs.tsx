@@ -105,34 +105,81 @@ export default function GuidedIdeaInputs({
         when you do not know; unknown amounts are different from zero.
       </p>
       <div className="guided-fields">
-        {fields.map((field) => (
-          <label key={field.key}>
-            {field.label}
-            {!("required" in field) && (
+        <div className="guided-section-heading" id="guided-section-business">
+          <span className="eyebrow">01 · BUSINESS & CUSTOMERS</span>
+          <h3>What will your business do?</h3>
+          <p>
+            Describe the offering, the people it serves, and the need it
+            addresses.
+          </p>
+        </div>
+        {fields
+          .filter(
+            (field) =>
+              !["materials", "suppliers", "experience"].includes(field.key),
+          )
+          .map((field) => (
+            <label key={field.key}>
+              {field.label}
+              {!("required" in field) && (
+                <span className="optional"> optional</span>
+              )}
+              <textarea
+                id={`guided-${field.key}`}
+                rows={field.key === "products" ? 3 : 2}
+                value={value[field.key]}
+                onChange={(event) => update(field.key, event.target.value)}
+                required={"required" in field}
+                minLength={"required" in field ? 10 : undefined}
+                maxLength={field.max}
+                placeholder={field.placeholder}
+                aria-invalid={!!errors[field.key]}
+                aria-describedby={
+                  errors[field.key] ? `guided-${field.key}-error` : undefined
+                }
+              />
+              <small className="hint">
+                {value[field.key].length} / {field.max}
+              </small>
+              {error(field.key)}
+            </label>
+          ))}
+        <div className="guided-section-heading" id="guided-section-operations">
+          <span className="eyebrow">02 · OPERATIONS</span>
+          <h3>How will you deliver it?</h3>
+          <p>Share the resources, sourcing and skills you know about.</p>
+        </div>
+        {fields
+          .filter((field) =>
+            ["materials", "suppliers", "experience"].includes(field.key),
+          )
+          .map((field) => (
+            <label key={field.key}>
+              {field.label}
               <span className="optional"> optional</span>
-            )}
-            <textarea
-              id={`guided-${field.key}`}
-              rows={field.key === "products" ? 3 : 2}
-              value={value[field.key]}
-              onChange={(event) => update(field.key, event.target.value)}
-              required={"required" in field}
-              minLength={"required" in field ? 10 : undefined}
-              maxLength={field.max}
-              placeholder={field.placeholder}
-              aria-invalid={!!errors[field.key]}
-              aria-describedby={
-                errors[field.key] ? `guided-${field.key}-error` : undefined
-              }
-            />
-            <small className="hint">
-              {value[field.key].length} / {field.max}
-            </small>
-            {error(field.key)}
-          </label>
-        ))}
+              <textarea
+                id={`guided-${field.key}`}
+                rows={2}
+                value={value[field.key]}
+                onChange={(event) => update(field.key, event.target.value)}
+                maxLength={field.max}
+                placeholder={field.placeholder}
+                aria-invalid={!!errors[field.key]}
+                aria-describedby={
+                  errors[field.key] ? `guided-${field.key}-error` : undefined
+                }
+              />
+              <small className="hint">
+                {value[field.key].length} / {field.max}
+              </small>
+              {error(field.key)}
+            </label>
+          ))}
       </div>
-      <h3>Financial assumptions</h3>
+      <div className="guided-section-heading" id="guided-section-finances">
+        <span className="eyebrow">03 · FINANCES</span>
+        <h3>Make your assumptions visible.</h3>
+      </div>
       <p className="hint">
         Amounts are in Indian rupees (INR). Sales and operating costs are
         monthly projections. Enter 0 only if the amount is genuinely zero.
@@ -169,17 +216,27 @@ export default function GuidedIdeaInputs({
             onChange={(event) => update("priceUnit", event.target.value)}
             placeholder="e.g. meal, garment or litre"
             aria-invalid={!!errors.priceUnit}
+            aria-describedby={
+              errors.priceUnit ? "guided-priceUnit-error" : undefined
+            }
           />
           {error("priceUnit")}
         </label>
       </div>
-      <h3>Market research</h3>
+      <div className="guided-section-heading" id="guided-section-research">
+        <span className="eyebrow">04 · MARKET RESEARCH</span>
+        <h3>What have you checked so far?</h3>
+      </div>
       <label>
         Research status
         <select
+          id="guided-researchStatus"
           value={value.researchStatus}
           onChange={(event) => update("researchStatus", event.target.value)}
           aria-invalid={!!errors.researchStatus}
+          aria-describedby={
+            errors.researchStatus ? "guided-researchStatus-error" : undefined
+          }
         >
           <option value="unknown">Not known yet</option>
           <option value="not_done">Not conducted</option>
@@ -196,6 +253,7 @@ export default function GuidedIdeaInputs({
             : "optional"}
         </span>
         <textarea
+          id="guided-researchDetails"
           rows={3}
           maxLength={1200}
           minLength={value.researchStatus === "done" ? 20 : undefined}
@@ -204,6 +262,9 @@ export default function GuidedIdeaInputs({
           onChange={(event) => update("researchDetails", event.target.value)}
           placeholder="If conducted, describe who you consulted, how and what you learned."
           aria-invalid={!!errors.researchDetails}
+          aria-describedby={
+            errors.researchDetails ? "guided-researchDetails-error" : undefined
+          }
         />
         {error("researchDetails")}
       </label>

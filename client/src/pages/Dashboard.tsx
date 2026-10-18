@@ -72,7 +72,7 @@ export default function Dashboard() {
           "Cohort",
           "Language",
           "Status",
-          "Provisional score",
+          "Information readiness",
           "Completeness",
         ],
         ...items.map((s) => [

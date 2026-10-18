@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import { config } from "./config.js";
+import { unresolvedQuestions } from "../../shared/repair-questions.js";
 const flexible = { strict: false, timestamps: true };
 const submissionSchema = new Schema(
   {
@@ -54,6 +55,7 @@ export const UserModel = mongoose.model(
       email: { type: String, unique: true },
       name: String,
       passwordHash: String,
+      sessionVersion: { type: Number, default: 0 },
       role: {
         type: String,
         enum: ["assessor", "entrepreneur"],
@@ -68,7 +70,8 @@ export const SessionModel = mongoose.model(
   new Schema(
     {
       tokenHash: { type: String, unique: true },
-      userId: Schema.Types.ObjectId,
+      userId: { type: Schema.Types.ObjectId, index: true },
+      sessionVersion: { type: Number, default: 0 },
       expiresAt: { type: Date, index: { expires: 0 } },
     },
     flexible,
@@ -113,6 +116,17 @@ export const CacheModel = mongoose.model(
     },
     flexible,
   ),
+);
+export const LocalContextModel = mongoose.model(
+  "LocalContext",
+  new Schema({
+    submissionId: { type: Schema.Types.ObjectId, required: true, unique: true },
+    place: Schema.Types.Mixed,
+    category: String,
+    radius: Number,
+    observations: { type: [Schema.Types.Mixed], default: [] },
+    revision: { type: Number, default: 0 },
+  }, flexible),
 );
 export const ClarificationModel = mongoose.model(
   "Clarification",
@@ -194,7 +208,16 @@ export function serializeSubmission(doc: any) {
     updatedAt: new Date(item.updatedAt).toISOString(),
     history: item.history ?? [],
     review: item.review ?? null,
-    assessment: item.assessment ?? null,
+    assessment: item.assessment
+      ? {
+          ...item.assessment,
+          questions: unresolvedQuestions(
+            item.assessment.fields,
+            item.assessment.version,
+            item.assessment.questions,
+          ),
+        }
+      : null,
     error: item.error ?? null,
   };
 }

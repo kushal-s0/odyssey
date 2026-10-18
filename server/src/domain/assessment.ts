@@ -6,6 +6,7 @@ import {
   type FieldKey,
   type SourceSegment,
 } from "../../../shared/types.js";
+import { unresolvedQuestions } from "../../../shared/repair-questions.js";
 export const RUBRIC_VERSION = "evidence-readiness-v1";
 const rules: {
   key: string;
@@ -241,36 +242,8 @@ export function assess(input: {
             coverage) *
             100,
         );
-  const priority: FieldKey[] = [
-    "businessName",
-    "products",
-    "customers",
-    "location",
-    "monthlyRevenue",
-    "investment",
-    "research",
-    "suppliers",
-    "competition",
-    "problem",
-    "differentiation",
-    "experience",
-  ];
-  const needs = priority
-    .map((key) => fields.find((f) => f.key === key)!)
-    .filter((f) => f.status !== "supported");
-  needs.sort(
-    (a, b) =>
-      (a.status === "ambiguous" ? -1 : 0) - (b.status === "ambiguous" ? -1 : 0),
-  );
-  const questions = needs.slice(0, 3).map((f) => ({
-    id: `repair-${input.version ?? 1}-${f.key}`,
-    field: f.key,
-    question:
-      f.status === "ambiguous"
-        ? `Please confirm ${FIELD_LABELS[f.key].toLowerCase()}. The source has conflicting or unclear values. If this is money, specify the amount, period, and whether it is sales, costs, or profit.`
-        : `What can you tell us about ${FIELD_LABELS[f.key].toLowerCase()} for this business? Please provide specific details, or say if you do not know yet.`,
-    reason: f.reason,
-  }));
+  const questions = unresolvedQuestions(fields, input.version ?? 1);
+  const needs = questions.map((q) => fields.find((f) => f.key === q.field)!);
   const warnings = [...(input.warnings ?? []), ...checked.warnings];
   if (input.segments.some((s) => !s.verified))
     warnings.push(

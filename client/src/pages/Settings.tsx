@@ -15,6 +15,7 @@ import { api } from "../api";
 import { PageIntro, Notice } from "../components";
 import { loginSchema, registrationSchema } from "../../../shared/input-rules";
 import type { WorkspaceUser } from "../../../shared/types";
+import AccountSecurity from "../AccountSecurity";
 export default function Settings() {
   const w = useWorkspace(),
     navigate = useNavigate();
@@ -56,8 +57,7 @@ export default function Settings() {
       );
       setPassword("");
       setConfirmation("");
-      w.setMode("live");
-      await w.refresh();
+      await w.sessionChanged();
       w.notify(
         mode === "register"
           ? "Entrepreneur account created. You can submit your first idea."
@@ -79,7 +79,7 @@ export default function Settings() {
       <PageIntro
         eyebrow="YOUR WORKSPACE"
         title="Connections & settings"
-        description="Create an entrepreneur account or sign in with the account provided by your programme."
+        description="Manage your account, sessions, and workspace connections."
         action={
           <button className="button secondary" onClick={() => void w.refresh()}>
             <RefreshCw size={14} />
@@ -88,6 +88,7 @@ export default function Settings() {
         }
       />
       <div className="settings-grid">
+        {w.session?.user && <AccountSecurity />}
         <section className="panel">
           <div className="panel-heading">
             <div>
@@ -116,23 +117,11 @@ export default function Settings() {
                 <button
                   className="button primary full-width"
                   onClick={() => {
-                    w.setMode("live");
                     navigate("/dashboard");
                   }}
                 >
                   Open live workspace <ArrowRight size={15} />
                 </button>
-                {!entrepreneur && (
-                  <button
-                    className="button secondary full-width"
-                    onClick={() => {
-                      w.setMode("examples");
-                      navigate("/");
-                    }}
-                  >
-                    Browse read-only examples
-                  </button>
-                )}
                 {entrepreneur && (
                   <p className="hint">
                     Your account owns the ideas you submit. Programme membership

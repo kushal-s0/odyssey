@@ -207,22 +207,34 @@ export async function buildAssessment(input: {
 let running = 0;
 let ticking = false;
 let timer: ReturnType<typeof setInterval> | null = null;
+const workerTasks = new Set<Promise<void>>();
+function trackWorkerTask(promise: Promise<void>) {
+  const task = promise
+    .catch(() =>
+      console.error(
+        "Processing worker: task interrupted; durable jobs remain recoverable.",
+      ),
+    )
+    .finally(() => workerTasks.delete(task));
+  workerTasks.add(task);
+}
+export async function drainWorker() {
+  while (workerTasks.size) await Promise.allSettled([...workerTasks]);
+}
 export function startWorker() {
   if (timer) return;
   timer = setInterval(() => {
-    void tick().catch((error) =>
-      console.error("Processing worker:", error.message),
-    );
+    trackWorkerTask(tick());
   }, 1800);
   timer.unref();
-  void tick();
+  trackWorkerTask(tick());
 }
 export function stopWorker() {
   if (timer) clearInterval(timer);
   timer = null;
 }
 async function tick() {
-  if (ticking || !databaseReady()) return;
+  if (ticking || !timer || !databaseReady()) return;
   ticking = true;
   try {
     const [geminiCooldown, groqCooldown] = await Promise.all(
@@ -354,7 +366,7 @@ async function tick() {
           },
         );
     }
-    while (running < config.PROCESSING_CONCURRENCY) {
+    while (timer && running < config.PROCESSING_CONCURRENCY) {
       const token = randomUUID();
       const now = new Date();
       const job = await JobModel.findOneAndUpdate(
@@ -377,9 +389,11 @@ async function tick() {
       );
       if (!job) break;
       running++;
-      void processJob(job, token).finally(() => {
-        running--;
-      });
+      trackWorkerTask(
+        processJob(job, token).finally(() => {
+          running--;
+        }),
+      );
     }
   } finally {
     ticking = false;

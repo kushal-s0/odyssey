@@ -26,9 +26,12 @@ import {
   ExternalLink,
   Mic,
   AlignLeft,
+  Download,
+  Search,
 } from "lucide-react";
 import {
   FIELD_LABELS,
+  FIELD_KEYS,
   LANGUAGES,
   type Submission,
   type Assessment,
@@ -36,9 +39,22 @@ import {
   type SimilarIdea,
   type LocalInsights,
   type EvidenceField,
+  type FieldKey,
 } from "../../../shared/types";
+import { PARAMETER_QUESTIONS } from "../../../shared/repair-questions";
 import { useWorkspace } from "../workspace";
-import { api } from "../api";
+import { api, download } from "../api";
+import {
+  preparationChecklist,
+  QUESTION_GROUPS,
+} from "../../../shared/input-assistance";
+import AssessorInsights from "../AssessorInsights";
+import LocationPanel from "../LocationPanel";
+import EvidencePanel from "../EvidencePanel";
+import CohortAssignment from "../CohortAssignment";
+import { PotentialReviewFields, PotentialReviewResult } from "../PotentialReview";
+import type { DomainRating } from "../../../shared/business-review";
+import { BUSINESS_CATEGORIES } from "../../../shared/business-categories";
 import {
   assessorReviewSchema,
   REVIEW_REASONS,
@@ -63,13 +79,16 @@ export default function Detail() {
   const [record, setRecord] = useState<Submission | null>(null),
     [error, setError] = useState(""),
     [tab, setTab] = useState("overview"),
-    [sourceTab, setSourceTab] = useState("translation"),
+    [sourceTab, setSourceTab] = useState("compare"),
     [selected, setSelected] = useState<string[]>([]),
     [repair, setRepair] = useState(false),
+    [repairField, setRepairField] = useState<FieldKey | undefined>(),
     [review, setReview] = useState(false),
     [busy, setBusy] = useState(false),
     [matches, setMatches] = useState<SimilarIdea[]>([]);
   const sourceRef = useRef<HTMLDivElement>(null);
+  const [questionGroup, setQuestionGroup] = useState("all"),
+    [questionSearch, setQuestionSearch] = useState("");
   const audioRef = useRef<HTMLAudioElement>(null);
   const reload = useCallback(async () => {
     try {
@@ -182,6 +201,17 @@ export default function Detail() {
     );
   if (!record) return <Busy label="Opening assessment" />;
   const a = record.assessment;
+  const visibleQuestions =
+    a?.questions.filter(
+      (q) =>
+        (questionGroup === "all" ||
+          QUESTION_GROUPS.find(
+            (group) => group.key === questionGroup,
+          )?.fields.includes(q.field)) &&
+        `${FIELD_LABELS[q.field]} ${q.question} ${PARAMETER_QUESTIONS[q.field].hint}`
+          .toLocaleLowerCase()
+          .includes(questionSearch.trim().toLocaleLowerCase()),
+    ) ?? [];
   return (
     <>
       <Link to="/submissions" className="back-link">
@@ -194,6 +224,7 @@ export default function Detail() {
             BUSINESS IDEA ASSESSMENT {a && <span>· VERSION {a.version}</span>}
           </div>
           <h1>{record.title}</h1>
+          {!entrepreneur && !record.example && <CohortAssignment key={record.id + (record.cohortId ?? "")} record={record} onSaved={setRecord} />}
           <div className="detail-meta">
             <span>{record.beneficiaryName}</span>
             <span>
@@ -301,7 +332,7 @@ export default function Detail() {
         <>
           <div className="assessment-summary">
             <div className="score-block">
-              <span className="eyebrow">PROVISIONAL ASSESSMENT</span>
+              <span className="eyebrow">INFORMATION READINESS</span>
               <div className="score-number">
                 {a.score ?? "—"}
                 <span>{a.score == null ? "Not assessable" : "/ 100"}</span>
@@ -310,11 +341,11 @@ export default function Detail() {
             </div>
             <div className="summary-measure">
               <div>
-                <span>Information completeness</span>
+                <span>Core information completeness</span>
                 <strong>{a.completeness}%</strong>
               </div>
               <Progress value={a.completeness} />
-              <p>{a.gaps.length} information areas need clarification</p>
+              <p>{a.questions.length} parameters need answers</p>
             </div>
             <div className="summary-measure">
               <div>
@@ -363,6 +394,141 @@ export default function Detail() {
           {tab === "overview" ? (
             <div className="assessment-layout">
               <section className="assessment-main">
+                {!entrepreneur && (
+                  <AssessorInsights
+                    record={record}
+                    onEvidence={(ids) => {
+                      setSelected(ids);
+                      setSourceTab("compare");
+                    }}
+                    onNearby={() => setTab("context")}
+                  />
+                )}
+                {(!entrepreneur || !!record.review?.domainRatings?.length) && <PotentialReviewResult record={record} onEvidence={ids => {setSelected(ids);setSourceTab("compare");}} />}
+                <section className="panel completion-panel">
+                  <div className="panel-heading">
+                    <div>
+                      <h2>Complete missing information</h2>
+                      <p>
+                        {FIELD_KEYS.length - a.questions.length} of{" "}
+                        {FIELD_KEYS.length} parameters answered. Only unanswered
+                        or unclear information is shown below.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      className="button secondary small"
+                      onClick={() =>
+                        download(
+                          `strive-checklist-v${a.version}.txt`,
+                          preparationChecklist(record),
+                        )
+                      }
+                    >
+                      <Download size={14} />
+                      Download checklist
+                    </button>
+                  </div>
+                  {a.questions.length ? (
+                    <>
+                      <div className="completion-tools">
+                        <div
+                          className="question-filters"
+                          role="group"
+                          aria-label="Question categories"
+                        >
+                          {[
+                            { key: "all", label: "All", fields: FIELD_KEYS },
+                            ...QUESTION_GROUPS,
+                          ].map((group) => (
+                            <button
+                              type="button"
+                              aria-pressed={questionGroup === group.key}
+                              key={group.key}
+                              onClick={() => setQuestionGroup(group.key)}
+                            >
+                              {group.label}
+                              <span>
+                                {
+                                  a.questions.filter((q) =>
+                                    group.fields.includes(q.field),
+                                  ).length
+                                }
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                        <div className="question-search">
+                          <Search size={16} />
+                          <input
+                            aria-label="Search missing information"
+                            placeholder="Find a question…"
+                            value={questionSearch}
+                            onChange={(event) =>
+                              setQuestionSearch(event.target.value)
+                            }
+                          />
+                        </div>
+                        <span className="hint" role="status">
+                          Showing {visibleQuestions.length} of{" "}
+                          {a.questions.length} open questions
+                        </span>
+                      </div>
+                      <div className="completion-questions">
+                        {visibleQuestions.map((q) => (
+                          <article
+                            className="completion-question"
+                            key={q.field}
+                          >
+                            <div>
+                              <span className="eyebrow">
+                                {FIELD_LABELS[q.field]}
+                              </span>
+                              <h3>{q.translatedQuestion ?? q.question}</h3>
+                              {q.translatedQuestion && <p>{q.question}</p>}
+                              <details className="question-guidance">
+                                <summary>Answer guidance</summary>
+                                <p>{PARAMETER_QUESTIONS[q.field].hint}</p>
+                              </details>
+                            </div>
+                            <button
+                              className="button secondary small"
+                              onClick={() => {
+                                setRepairField(q.field);
+                                setRepair(true);
+                              }}
+                              aria-label={`Answer ${FIELD_LABELS[q.field]}`}
+                            >
+                              Answer <ArrowRight size={14} />
+                            </button>
+                          </article>
+                        ))}
+                        {!visibleQuestions.length && (
+                          <div className="question-empty">
+                            <h3>No questions match these filters</h3>
+                            <button
+                              type="button"
+                              className="button secondary small"
+                              onClick={() => {
+                                setQuestionGroup("all");
+                                setQuestionSearch("");
+                              }}
+                            >
+                              Show all open questions
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="notes-body">
+                      <p>
+                        All parameters have answers in the available evidence.
+                        No additional questions are needed.
+                      </p>
+                    </div>
+                  )}
+                </section>
                 <section className="panel">
                   <div className="panel-heading">
                     <div>
@@ -383,7 +549,7 @@ export default function Detail() {
                           field={f}
                           onEvidence={(ids) => {
                             setSelected(ids);
-                            setSourceTab("translation");
+                            setSourceTab("compare");
                           }}
                         />
                       ))}
@@ -428,7 +594,7 @@ export default function Detail() {
                             className="evidence-link"
                             onClick={() => {
                               setSelected(d.evidenceIds);
-                              setSourceTab("translation");
+                              setSourceTab("compare");
                             }}
                           >
                             View supporting evidence <ArrowUpRight size={12} />
@@ -496,149 +662,7 @@ export default function Detail() {
                 </section>
               </section>
               <aside className="source-column">
-                <section className="panel source-panel" ref={sourceRef}>
-                  <div className="panel-heading">
-                    <div>
-                      <h2>
-                        <FileText size={17} />
-                        Source evidence
-                      </h2>
-                      <p>{a.segments.length} segments · original retained</p>
-                    </div>
-                  </div>
-                  <div className="source-tabs">
-                    <button
-                      className={sourceTab === "translation" ? "active" : ""}
-                      onClick={() => setSourceTab("translation")}
-                    >
-                      English
-                    </button>
-                    <button
-                      className={sourceTab === "original" ? "active" : ""}
-                      onClick={() => setSourceTab("original")}
-                    >
-                      Original language
-                    </button>
-                    {record.fileName && !record.example && (
-                      <button
-                        className={sourceTab === "file" ? "active" : ""}
-                        onClick={() => setSourceTab("file")}
-                      >
-                        Source file
-                      </button>
-                    )}
-                    {record.inputType === "text" && (
-                      <button
-                        className={sourceTab === "raw" ? "active" : ""}
-                        onClick={() => setSourceTab("raw")}
-                      >
-                        Submitted text
-                      </button>
-                    )}
-                  </div>
-                  {sourceTab === "raw" ? (
-                    <div className="raw-source">{record.originalText}</div>
-                  ) : sourceTab === "file" ? (
-                    <div className="original-file">
-                      {record.inputType === "pdf" ? (
-                        <iframe
-                          title="Original submitted PDF"
-                          src={`/api/submissions/${record.id}/source#page=${a.segments.find((s) => s.id === selected[0])?.page ?? 1}`}
-                        />
-                      ) : (
-                        <audio
-                          ref={audioRef}
-                          controls
-                          src={`/api/submissions/${record.id}/source`}
-                        />
-                      )}
-                      <a
-                        className="text-link"
-                        href={`/api/submissions/${record.id}/source`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Open original file <ExternalLink size={13} />
-                      </a>
-                    </div>
-                  ) : (
-                    <div className="source-segments">
-                      {a.segments.map((s, index) => (
-                        <article
-                          id={`source-${s.id}`}
-                          className={`source-segment ${selected.includes(s.id) ? "selected" : ""}`}
-                          key={s.id}
-                        >
-                          <div className="source-segment-meta">
-                            <span>
-                              {s.page
-                                ? `PAGE ${s.page}`
-                                : s.startSeconds != null
-                                  ? `${Math.floor(s.startSeconds / 60)}:${String(Math.floor(s.startSeconds % 60)).padStart(2, "0")}`
-                                  : `SEGMENT ${index + 1}`}
-                              {s.kind === "clarification"
-                                ? " · CLARIFICATION"
-                                : ""}
-                            </span>
-                            <span>
-                              {s.verified ? (
-                                <>
-                                  <Check size={11} />
-                                  Checked
-                                </>
-                              ) : (
-                                "Needs verification"
-                              )}
-                            </span>
-                          </div>
-                          <p lang={sourceTab === "original" ? undefined : "en"}>
-                            {sourceTab === "original"
-                              ? s.originalText
-                              : s.englishText}
-                          </p>
-                          {s.clarificationId && !record.example && (
-                            <a
-                              className="evidence-link"
-                              target="_blank"
-                              rel="noreferrer"
-                              href={`/api/submissions/${record.id}/clarifications/${s.clarificationId}/source`}
-                            >
-                              Original clarification <ExternalLink size={11} />
-                            </a>
-                          )}
-                          <button
-                            className="evidence-link"
-                            onClick={() => setSelected([s.id])}
-                          >
-                            {s.id}
-                            <ArrowUpRight size={11} />
-                          </button>
-                        </article>
-                      ))}
-                    </div>
-                  )}
-                  {!record.example && !entrepreneur && (
-                    <div className="source-verify">
-                      <p>
-                        Only confirm after comparing the transcript or
-                        translation with the original.
-                      </p>
-                      <button
-                        className="button secondary small"
-                        disabled={busy}
-                        onClick={() => void verify()}
-                      >
-                        {busy ? (
-                          <Loader2 size={14} className="spin" />
-                        ) : (
-                          <CheckCheck size={14} />
-                        )}
-                        Confirm{" "}
-                        {selected.length ? "selected evidence" : "all evidence"}
-                      </button>
-                    </div>
-                  )}
-                </section>
+                <EvidencePanel record={record} selected={selected} onSelect={setSelected} mode={sourceTab} onModeChange={setSourceTab} onVerify={() => void verify()} busy={busy} readOnly={!!entrepreneur} />
                 <section className="panel limits-panel">
                   <div className="panel-heading">
                     <h3>
@@ -715,6 +739,7 @@ export default function Detail() {
                 )}
               </section>
               <LocationPanel
+                submissionId={record.id}
                 example={!!record.example}
                 location={
                   a.fields.find((f) => f.key === "location")?.value ?? ""
@@ -785,10 +810,11 @@ export default function Detail() {
       {repair && a && (
         <RepairModal
           record={record}
+          initialField={repairField}
           onClose={() => setRepair(false)}
           onSaved={(updated) => {
             setRecord(updated);
-            setRepair(false);
+            if (!updated.assessment?.questions.length) setRepair(false);
             void w.refresh();
             w.notify(
               "Clarification saved. Review the evidence and updated assessment.",
@@ -813,22 +839,29 @@ export default function Detail() {
 }
 function RepairModal({
   record,
+  initialField,
   onClose,
   onSaved,
 }: {
   record: Submission;
+  initialField?: FieldKey;
   onClose: () => void;
   onSaved: (s: Submission) => void;
 }) {
-  const a = record.assessment!;
-  const [questionId, setQuestionId] = useState(a.questions[0]?.id ?? ""),
+  const [a, setAssessment] = useState(record.assessment!);
+  const stale = a.version !== record.assessment!.version;
+  const [questionId, setQuestionId] = useState(
+      a.questions.find((q) => q.field === initialField)?.id ??
+        a.questions[0]?.id ??
+        "",
+    ),
     [answer, setAnswer] = useState(""),
     [mode, setMode] = useState("text"),
     [file, setFile] = useState<File | null>(null),
     [language, setLanguage] = useState("auto"),
     [pending, setPending] = useState(false),
     [error, setError] = useState("");
-  const q = a.questions.find((q) => q.id === questionId);
+  const q = a.questions.find((q) => q.id === questionId) ?? a.questions[0];
   async function save(e: FormEvent) {
     e.preventDefault();
     if (!q) return;
@@ -846,6 +879,10 @@ function RepairModal({
         `/submissions/${record.id}/clarifications`,
         { method: "POST", body: form },
       );
+      setAnswer("");
+      setFile(null);
+      setAssessment(result.submission.assessment!);
+      setQuestionId(result.submission.assessment?.questions[0]?.id ?? "");
       onSaved(result.submission);
     } catch (e) {
       setError(
@@ -863,8 +900,9 @@ function RepairModal({
             <MessageSquare size={20} />
           </span>
           <p>
-            A few useful questions can make this proposal easier to understand.
-            Answers may change the assessment in either direction.
+            {a.questions.length} parameters still need answers. Information
+            already found in your input is not asked again. Answers may change
+            the assessment in either direction.
           </p>
         </div>
         {!q ? (
@@ -877,7 +915,8 @@ function RepairModal({
             <label>
               Information to clarify
               <select
-                value={questionId}
+                value={q.id}
+                disabled={pending}
                 onChange={(e) => {
                   setQuestionId(e.target.value);
                   setAnswer("");
@@ -896,11 +935,13 @@ function RepairModal({
               <h3>{q.translatedQuestion ?? q.question}</h3>
               {q.translatedQuestion && <p>{q.question}</p>}
               <small>{q.reason}</small>
+              <p>{PARAMETER_QUESTIONS[q.field].hint}</p>
             </div>
             <label>
               Answer language
               <select
                 value={language}
+                disabled={pending}
                 onChange={(e) => setLanguage(e.target.value)}
               >
                 {LANGUAGES.map((l) => (
@@ -914,6 +955,7 @@ function RepairModal({
               <button
                 type="button"
                 className={mode === "text" ? "active" : ""}
+                disabled={pending}
                 onClick={() => setMode("text")}
               >
                 <AlignLeft size={14} />
@@ -922,6 +964,7 @@ function RepairModal({
               <button
                 type="button"
                 className={mode === "audio" ? "active" : ""}
+                disabled={pending}
                 onClick={() => setMode("audio")}
               >
                 <Mic size={14} />
@@ -933,10 +976,11 @@ function RepairModal({
                 Your clarification
                 <textarea
                   required
-                  minLength={10}
+                  minLength={1}
                   maxLength={2000}
                   rows={5}
                   value={answer}
+                  disabled={pending}
                   onChange={(e) => setAnswer(e.target.value)}
                   placeholder="Provide the missing detail or explain which conflicting value is correct."
                 />
@@ -955,6 +999,12 @@ function RepairModal({
               </Notice>
             )}
             {error && <Notice type="error">{error}</Notice>}
+            {stale && (
+              <Notice>
+                This assessment has changed. Close and reopen these questions
+                before answering.
+              </Notice>
+            )}
             <div className="modal-actions">
               <button
                 type="button"
@@ -966,7 +1016,7 @@ function RepairModal({
               <button
                 type="submit"
                 className="button primary"
-                disabled={pending || record.example}
+                disabled={pending || record.example || stale}
               >
                 {pending ? (
                   <Loader2 size={15} className="spin" />
@@ -999,6 +1049,7 @@ function ReviewModal({
   const [evidence, setEvidence] = useState<string[]>([]);
   const [nextAction, setNextAction] = useState("");
   const [sourceReviewed, setSourceReviewed] = useState(false);
+  const [domainRatings,setDomainRatings]=useState<DomainRating[]>(record.review?.assessmentVersion===record.assessment?.version ? record.review?.domainRatings??[] : []);
   return (
     <Modal title="Record assessor review" onClose={onClose}>
       <form
@@ -1013,6 +1064,7 @@ function ReviewModal({
             reasonCodes: reasons,
             evidenceIds: evidence,
             sourceReviewed,
+            domainRatings,
             version: record.assessment!.version,
           });
           if (!parsed.success) {
@@ -1131,6 +1183,7 @@ function ReviewModal({
             </label>
           ))}
         </fieldset>
+        <PotentialReviewFields record={record} ratings={domainRatings} onChange={setDomainRatings} disabled={pending} />
         <label className="check-line">
           <input
             type="checkbox"
@@ -1157,198 +1210,5 @@ function ReviewModal({
         </div>
       </form>
     </Modal>
-  );
-}
-function LocationPanel({
-  example,
-  location,
-}: {
-  example: boolean;
-  location: string;
-}) {
-  const [query, setQuery] = useState(location),
-    [locations, setLocations] = useState<
-      { id: string; name: string; lat: number; lon: number }[]
-    >([]),
-    [selected, setSelected] = useState(""),
-    [category, setCategory] = useState("tailoring"),
-    [radius, setRadius] = useState(3000),
-    [result, setResult] = useState<LocalInsights | null>(null),
-    [error, setError] = useState(""),
-    [pending, setPending] = useState(false);
-  async function search() {
-    setPending(true);
-    setError("");
-    setResult(null);
-    try {
-      const r = await api<{ locations: typeof locations }>(
-        `/locations/search?q=${encodeURIComponent(query)}`,
-      );
-      setLocations(r.locations);
-      setSelected("");
-      if (!r.locations.length)
-        setError(
-          "No matching location found. Try including the district and state.",
-        );
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Location lookup failed.");
-    } finally {
-      setPending(false);
-    }
-  }
-  return (
-    <section className="panel location-panel">
-      <div className="panel-heading">
-        <div>
-          <h2>
-            <MapPin size={17} />
-            Local business context
-          </h2>
-          <p>Confirm the location before looking up mapped businesses.</p>
-        </div>
-      </div>
-      <div className="location-body">
-        <Notice>
-          Mapped listings are incomplete. They do not measure market demand,
-          profitability, or all competitors.
-        </Notice>
-        <label>
-          Business location
-          <div className="input-button">
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Village, district and state"
-            />
-            <button
-              className="button secondary"
-              disabled={example || pending || query.length < 3}
-              onClick={() => void search()}
-            >
-              Find location
-            </button>
-          </div>
-        </label>
-        {locations.length > 0 && (
-          <label>
-            Confirm the correct location
-            <select
-              value={selected}
-              onChange={(e) => setSelected(e.target.value)}
-            >
-              <option value="">Choose the correct place</option>
-              {locations.map((l) => (
-                <option key={l.id} value={l.id}>
-                  {l.name}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-        <div className="form-grid">
-          <label>
-            Business category
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              {[
-                ["tailoring", "Tailoring"],
-                ["food", "Food service"],
-                ["dairy", "Dairy"],
-                ["beauty", "Beauty"],
-                ["repair", "Phone repair"],
-                ["agriculture", "Agricultural inputs"],
-                ["poultry", "Poultry / farm products"],
-              ].map(([v, l]) => (
-                <option key={v} value={v}>
-                  {l}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Search radius
-            <select
-              value={radius}
-              onChange={(e) => setRadius(Number(e.target.value))}
-            >
-              <option value={1000}>1 km</option>
-              <option value={3000}>3 km</option>
-              <option value={5000}>5 km</option>
-            </select>
-          </label>
-        </div>
-        <button
-          className="button primary"
-          disabled={example || pending || !selected}
-          onClick={async () => {
-            const place = locations.find((l) => l.id === selected);
-            if (!place) return;
-            setPending(true);
-            setError("");
-            try {
-              setResult(
-                await api<LocalInsights>("/locations/businesses", {
-                  method: "POST",
-                  body: JSON.stringify({
-                    lat: place.lat,
-                    lon: place.lon,
-                    category,
-                    radius,
-                  }),
-                }),
-              );
-            } catch (e) {
-              setError(
-                e instanceof Error ? e.message : "Business lookup unavailable.",
-              );
-            } finally {
-              setPending(false);
-            }
-          }}
-        >
-          {pending ? (
-            <Loader2 size={15} className="spin" />
-          ) : (
-            <MapPin size={15} />
-          )}
-          Look up mapped businesses
-        </button>
-        {example && (
-          <p className="hint">
-            Live location requests are available in your connected workspace. No
-            competitor listings have been invented for this example.
-          </p>
-        )}
-        {error && <Notice type="error">{error}</Notice>}
-        {result && (
-          <div className="local-results">
-            <p>{result.message}</p>
-            {result.businesses.map((b) => (
-              <a
-                className="business-result"
-                key={b.id}
-                href={b.url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <span>
-                  <strong>{b.name}</strong>
-                  <small>
-                    {b.category} · {(b.distanceMeters / 1000).toFixed(1)} km
-                  </small>
-                </span>
-                <ExternalLink size={14} />
-              </a>
-            ))}
-            <small>
-              {result.attribution} · Retrieved{" "}
-              {new Date(result.retrievedAt).toLocaleString("en-IN")}
-            </small>
-          </div>
-        )}
-      </div>
-    </section>
   );
 }

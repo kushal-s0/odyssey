@@ -22,6 +22,8 @@ import Comparisons from "./pages/Comparisons";
 import Settings from "./pages/Settings";
 import ModelLab from "./pages/ModelLab";
 import "./styles.css";
+import "./experience.css";
+import "./assessment-workspace.css";
 function RequireAccount() {
   const w = useWorkspace(),
     location = useLocation();

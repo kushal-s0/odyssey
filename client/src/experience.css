@@ -1,0 +1,314 @@
+/* Shared interaction polish, form preparation and assessment follow-up tools. */
+:where(button, a, input, textarea, select, summary):focus-visible {
+  outline: 2px solid #202020;
+  outline-offset: 3px;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+.hint,
+.muted {
+  color: #666;
+}
+.submit-aside:has(.input-companion) {
+  position: sticky;
+  top: 90px;
+  padding-top: 0;
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
+}
+.input-companion {
+  padding: 24px;
+  border: 1px solid #e3e3df;
+  border-radius: 12px;
+  background: #fafaf8;
+}
+.input-companion h2 {
+  margin: 9px 0 20px;
+  font-size: 22px;
+}
+.input-companion > .hint {
+  font-size: 11px;
+  line-height: 1.8;
+  margin-top: 10px;
+}
+.preparation-count {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.preparation-count > strong {
+  font-size: 26px;
+  letter-spacing: -1px;
+}
+.preparation-count strong span {
+  color: #777;
+  font-size: 16px;
+  font-weight: 500;
+}
+.preparation-count > span {
+  font-size: 11px;
+  color: #666;
+}
+.input-section-nav {
+  display: grid;
+  margin: 18px 0;
+}
+.input-section-nav a {
+  padding: 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #e6e6e2;
+  font-size: 11px;
+}
+.input-section-nav a > span {
+  color: #777;
+  font-size: 10px;
+}
+.input-section-nav a > svg {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.draft-financials {
+  background: white;
+  border: 1px solid #e5e5e2;
+  border-radius: 8px;
+  padding: 15px;
+}
+.draft-financials h3 {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  margin-bottom: 15px;
+}
+.draft-financials > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 12px 0;
+}
+.draft-financials span {
+  font-size: 11px;
+  color: #666;
+}
+.draft-financials strong {
+  font-size: 15px;
+}
+.draft-financials p {
+  font-size: 10px;
+  line-height: 1.8;
+  color: #666;
+}
+.preparation-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 18px 0;
+  font-size: 11px;
+  line-height: 1.7;
+}
+.preparation-note > svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.input-companion .button {
+  font-size: 11px;
+  padding: 12px 10px;
+}
+.preparation-tools > summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  padding-top: 16px;
+}
+.preparation-tools > summary span {
+  display: block;
+  font-size: 10px;
+  color: #666;
+  font-weight: 400;
+  margin: 7px 0 0 14px;
+}
+.guided-section-heading {
+  grid-column: 1/-1;
+  padding: 26px 0 8px;
+  scroll-margin-top: 100px;
+}
+.guided-section-heading .eyebrow {
+  font-size: 10px;
+  color: #666;
+}
+.guided-section-heading h3 {
+  font-size: 19px;
+  letter-spacing: -0.4px;
+  margin: 9px 0;
+}
+.guided-section-heading p {
+  font-size: 12px;
+  line-height: 1.8;
+  color: #666;
+}
+.form-submit-bar {
+  flex-wrap: wrap;
+}
+.form-submit-bar > span {
+  flex: 1 1 200px;
+  color: #666;
+}
+.submission-preview > h3 {
+  margin-top: 12px;
+  font-size: 22px;
+}
+.submission-preview > p {
+  margin: 12px 0;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.submission-preview pre {
+  font-family: inherit;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  padding: 22px;
+  background: #f7f7f4;
+  border: 1px solid #e6e6e1;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.9;
+  max-height: 45vh;
+  overflow-y: auto;
+}
+.submission-preview .modal-actions {
+  flex-wrap: wrap;
+}
+.completion-panel > .panel-heading {
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.completion-tools {
+  padding: 0 24px 18px;
+}
+.question-filters {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+.question-filters button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid #deded9;
+  border-radius: 20px;
+  padding: 8px 12px;
+  font-size: 11px;
+  background: #fff;
+}
+.question-filters button[aria-pressed="true"] {
+  background: #222;
+  border-color: #222;
+  color: white;
+}
+.question-filters button > span {
+  font-size: 10px;
+  opacity: 0.75;
+}
+.question-search {
+  position: relative;
+  margin-bottom: 12px;
+}
+.question-search > svg {
+  position: absolute;
+  top: 14px;
+  left: 13px;
+  color: #777;
+}
+.question-search input {
+  padding-left: 38px;
+  min-height: 44px;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 7px;
+}
+.question-guidance {
+  margin-top: 9px;
+}
+.question-guidance summary {
+  font-size: 11px;
+  color: #666;
+  cursor: pointer;
+}
+.question-empty {
+  padding: 25px 0;
+}
+.question-empty h3 {
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+@media (max-width: 1050px) {
+  .submit-aside:has(.input-companion) {
+    position: static;
+    grid-row: 1;
+    display: block;
+    max-height: none;
+    overflow: visible;
+  }
+  .input-companion {
+    padding: 20px;
+  }
+  .input-section-nav {
+    grid-template-columns: 1fr 1fr;
+    gap: 0 20px;
+  }
+  .draft-financials {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 18px;
+  }
+  .draft-financials h3,
+  .draft-financials p {
+    grid-column: 1/-1;
+  }
+}
+@media (max-width: 600px) {
+  .input-companion h2 {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+  .input-section-nav a {
+    font-size: 10px;
+    gap: 6px;
+  }
+  .form-submit-bar .button {
+    flex: 1 1 180px;
+    margin-left: 0;
+    justify-content: center;
+  }
+  .completion-tools {
+    padding: 0 16px 18px;
+  }
+  .question-filters {
+    gap: 6px;
+  }
+  .question-filters button {
+    padding: 8px 10px;
+  }
+  .submission-preview pre {
+    padding: 15px;
+    font-size: 12px;
+  }
+  .submission-preview .modal-actions .button {
+    flex: 1 1 160px;
+    justify-content: center;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

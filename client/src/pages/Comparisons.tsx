@@ -9,6 +9,7 @@ import { PageIntro, Notice, Progress, Empty } from "../components";
 import { useWorkspace } from "../workspace";
 import { csvCell, download } from "../api";
 import type { Submission } from "../../../shared/types";
+import { reviewedPotential } from "../../../shared/business-review";
 const median = (a: number[]) => {
   if (!a.length) return null;
   const s = [...a].sort((a, b) => a - b);
@@ -46,7 +47,8 @@ export default function Comparisons() {
         const comparable = records.filter(
           (s) => s.assessment?.score != null && s.assessment.coverage >= 70,
         );
-        const dims = records[0]?.assessment?.dimensions ?? [];
+        const dims = records.find(s=>s.assessment)?.assessment?.dimensions ?? [];
+        const potential = records.map(reviewedPotential).filter(p=>p.score!==null);
         return {
           name: name!,
           version: version!,
@@ -56,6 +58,8 @@ export default function Comparisons() {
           completeness: median(
             records.map((s) => s.assessment?.completeness ?? 0),
           ),
+          potential:median(potential.map(p=>p.score!)),
+          potentialCount:potential.length,
           dimensions: dims.map((d) => ({
             key: d.key,
             label: d.label,
@@ -68,6 +72,7 @@ export default function Comparisons() {
                 )
                 .filter((n): n is number => n != null),
             ),
+            potential:median(records.flatMap(s=>reviewedPotential(s).ratings.filter(r=>r.key===d.key).map(r=>r.score))),
           })),
         };
       })
@@ -82,7 +87,9 @@ export default function Comparisons() {
           "Rubric",
           "Submissions",
           "Comparable",
-          "Median assessment",
+          "Median information readiness",
+          "Median assessor-rated potential",
+          "Fully domain-rated records",
           "Median completeness",
         ],
         ...groups.map((g) => [
@@ -91,6 +98,8 @@ export default function Comparisons() {
           g.records.length,
           g.comparable.length,
           g.median,
+          g.potential,
+          g.potentialCount,
           g.completeness,
         ]),
       ]
@@ -228,7 +237,8 @@ export default function Comparisons() {
                   </th>
                   <th>Ideas</th>
                   <th>Comparable</th>
-                  <th>Median assessment</th>
+                  <th>Median information readiness</th>
+                  <th>Assessor-rated potential</th>
                   <th>Completeness</th>
                   <th>Interpretation</th>
                 </tr>
@@ -251,6 +261,10 @@ export default function Comparisons() {
                       )}
                     </td>
                     <td>
+                      {g.potential===null?"Not rated":`${g.potential} / 100`}
+                      <div className="cell-secondary">{g.potentialCount} fully rated</div>
+                    </td>
+                    <td>
                       <div className="table-progress">
                         <span>{g.completeness ?? 0}%</span>
                         <Progress value={g.completeness ?? 0} />
@@ -270,7 +284,7 @@ export default function Comparisons() {
           </div>
         )}
         <div className="panel-footer">
-          <Info size={14} />A higher assessment reflects more supporting
+          <Info size={14} />A higher readiness score reflects more supporting
           information. It does not establish business viability.
         </div>
       </section>
@@ -304,6 +318,7 @@ export default function Comparisons() {
                 <p className="muted">No assessed dimensions yet.</p>
               )}
             </div>
+            <div className="human-domain-comparison"><h4>Assessor-rated domain quality</h4><p className="hint">Current human ratings only; unknowns are excluded. Values above show information readiness.</p>{g.dimensions.filter(d=>d.key!=="completeness").map(d=><p key={d.key}><span>{d.label}</span><strong>{d.potential===null?"Not rated":`${d.potential} / 4`}</strong></p>)}</div>
           </section>
         ))}
       </div>

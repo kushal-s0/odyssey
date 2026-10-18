@@ -7,6 +7,10 @@ import { z } from "zod";
 import { PDFDocument } from "pdf-lib";
 import { config, health } from "./config.js";
 import {
+  unresolvedQuestions,
+  PARAMETER_QUESTIONS,
+} from "../../shared/repair-questions.js";
+import {
   databaseReady,
   SubmissionModel,
   CohortModel,
@@ -25,6 +29,9 @@ import {
   sessionUser,
   login,
   register,
+  logout,
+  logoutAll,
+  changePassword,
   digest,
   submissionScope,
 } from "./auth.js";
@@ -46,6 +53,9 @@ import {
 import { geocode, localBusinesses } from "./providers/location.js";
 import { applyClassifier } from "./providers/classifier.js";
 import { dashboardSummary } from "./domain/dashboard.js";
+import { decisionSupport } from "./domain/decision-support.js";
+import { localContextRouter } from "./local-context-routes.js";
+import { BUSINESS_CATEGORIES } from "../../shared/business-categories.js";
 import {
   FIELD_KEYS,
   FIELD_LABELS,
@@ -105,14 +115,28 @@ router.post(
   }),
   register,
 );
-router.post("/auth/logout", async (req, res) => {
-  if (databaseReady() && req.cookies?.strive_session)
-    await SessionModel.deleteOne({
-      tokenHash: digest(req.cookies.strive_session),
-    });
-  res.clearCookie("strive_session", { path: "/" });
-  res.json({ ok: true });
-});
+router.post("/auth/logout", logout);
+router.post("/auth/logout-all", requireAccount, writableRate, logoutAll);
+router.post(
+  "/auth/password",
+  requireAccount,
+  rateLimit({
+    windowMs: 15 * 60000,
+    limit: 5,
+    message: {
+      error: "Too many password-change attempts. Please try again later.",
+      code: "PASSWORD_RATE_LIMITED",
+    },
+  }),
+  changePassword,
+);
+router.get("/health/live", (_req, res) => res.json({ status: "live" }));
+router.get("/health/ready", (_req, res) =>
+  res.status(databaseReady() ? 200 : 503).json({
+    status: databaseReady() ? "ready" : "not_ready",
+    database: databaseReady(),
+  }),
+);
 router.get("/examples", (_req, res) =>
   config.ENABLE_EXAMPLES
     ? res.json({ submissions: examples, cohorts: exampleCohorts })
@@ -124,6 +148,7 @@ router.get("/dashboard", async (req, res) =>
 );
 router.use("/training", requireAssessor);
 router.use("/locations", requireAssessor);
+router.use("/submissions/:id/local-context", requireAssessor, localContextRouter);
 router.get("/cohorts", requireAssessor, async (_req, res) =>
   res.json({
     cohorts: (await CohortModel.find().sort({ name: 1 }).lean()).map((c) => ({
@@ -295,6 +320,15 @@ router.get("/submissions/:id", async (req, res) => {
   }
   res.json({ submission: serializeSubmission(doc) });
 });
+router.post("/submissions/:id/cohort", requireAssessor, writableRate, async(req,res)=>{
+  const data=z.object({cohortId:id.nullable(),updatedAt:z.string().datetime()}).strict().parse(req.body);
+  const cohort=data.cohortId ? await CohortModel.findById(data.cohortId) : null;
+  if(data.cohortId&&!cohort){res.status(404).json({error:"Cohort not found."});return;}
+  const record=await SubmissionModel.findOneAndUpdate({_id:id.parse(req.params.id),updatedAt:new Date(data.updatedAt)},{$set:{cohortId:cohort?String(cohort._id):null,cohortName:cohort?.name??null,cohortSynthetic:!!cohort?.synthetic}},{new:true});
+  if(!record){res.status(409).json({error:"Submission changed or was not found. Refresh before assigning a cohort."});return;}
+  await AuditModel.create({submissionId:record._id,userId:req.actor!.id,action:"submission.cohort_assigned",details:{cohortId:data.cohortId}});
+  res.json({submission:serializeSubmission(record)});
+});
 router.get("/submissions/:id/source", async (req, res) => {
   const doc = await SubmissionModel.findOne({
     _id: id.parse(req.params.id),
@@ -402,7 +436,7 @@ router.post(
     const parsed = z
       .object({
         field: z.enum(FIELD_KEYS),
-        answer: textInput("Clarification", 10, 2000).optional(),
+        answer: textInput("Clarification", 1, 2000).optional(),
         language: z.enum(LANGUAGE_CODES).default("auto"),
         version: z.coerce.number().int().min(1),
       })
@@ -431,12 +465,16 @@ router.post(
       });
       return;
     }
-    if (!current.questions.some((question) => question.field === parsed.field))
+    if (
+      !unresolvedQuestions(current.fields, current.version).some(
+        (question) => question.field === parsed.field,
+      )
+    )
       throw Object.assign(
         new Error("Choose one of the current clarification questions."),
         { status: 400 },
       );
-    if (!req.file && (!parsed.answer || parsed.answer.length < 2))
+    if (!req.file && !parsed.answer)
       throw Object.assign(new Error("Enter or record your clarification."), {
         status: 400,
       });
@@ -469,6 +507,7 @@ router.post(
         kind: "audio",
         audioSegments: original,
         language: parsed.language,
+        contextQuestion: PARAMETER_QUESTIONS[parsed.field].question,
       });
       segments = translated.segments;
       language = translated.language;
@@ -478,6 +517,7 @@ router.post(
         text: parsed.answer,
         kind: "text",
         language: parsed.language,
+        contextQuestion: PARAMETER_QUESTIONS[parsed.field].question,
       });
       segments = source.segments;
       language = source.language;
@@ -737,6 +777,20 @@ export function keywordSimilarity(a: Submission, b: Submission) {
     common,
   };
 }
+router.get(
+  "/submissions/:id/decision-support",
+  requireAssessor,
+  async (req, res) => {
+    const record = await SubmissionModel.findOne({
+      _id: id.parse(req.params.id),
+    });
+    if (!record?.assessment) {
+      res.status(404).json({ error: "An assessed submission is required." });
+      return;
+    }
+    res.json({ support: decisionSupport(record.assessment as Assessment) });
+  },
+);
 router.get("/submissions/:id/similar", requireAssessor, async (req, res) => {
   const record = await SubmissionModel.findById(id.parse(req.params.id)).lean();
   if (!record) {
@@ -785,15 +839,12 @@ router.post("/locations/businesses", writableRate, async (req, res) => {
     .object({
       lat: z.number().min(-90).max(90),
       lon: z.number().min(-180).max(180),
-      category: z.enum([
-        "tailoring",
-        "food",
-        "dairy",
-        "beauty",
-        "repair",
-        "agriculture",
-        "poultry",
-      ]),
+      category: z
+        .string()
+        .refine(
+          (value) => BUSINESS_CATEGORIES.some(([key]) => key === value),
+          "Choose a supported business category.",
+        ),
       radius: z.number().int().min(500).max(5000).default(3000),
     })
     .parse(req.body);

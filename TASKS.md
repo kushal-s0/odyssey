@@ -2,6 +2,8 @@
 
 Updated: 18 October 2026. `[x]` implementation complete, `[-]` in progress, `[ ]` pending. Live account verification is tracked separately from implemented code.
 
+Current prioritized audit: [PROJECT_STATUS.md](PROJECT_STATUS.md). Older sections below retain historical test counts and connection/provider states; use the audit and latest verification entries for present status. In particular, current Atlas connectivity is healthy, nearby listings remain externally unreliable, the hosted classifier is not connected, and a successful full live clarification check remains unverified.
+
 ## Personal dashboards and external-data cloud training
 - [x] Add public home, dedicated authentication, protected role dashboards and automatic progress updates.
 - [x] Scope dashboard statistics in the database to each entrepreneur; verify cross-account isolation.
@@ -143,6 +145,14 @@ Local UI screenshots: `.planning/screenshots/overview-desktop.png` and `.plannin
 - Verification: 48 automated tests, 10 desktop/mobile browser tests, workspace type checks and the full production build passed. The quota waiting screen was visually inspected. Live recovery results are recorded in ignored `.planning/quota-recovery-check.json`.
 - Full live reprocessing remains pending the external provider's quota. No deployment was started.
 
+### Account security and system design - 18 October 2026
+
+- Made Sign out a labelled header button on desktop and mobile. Added browser sign-out, all-device sign-out and password changes under Settings → Account security.
+- Added atomic session-version revocation, cookie rotation, immediate expiry checks, password-change race protection and cross-tab workspace cleanup. Failed sign-out keeps the account available for retry rather than falsely confirming revocation.
+- Added server-generated request IDs, cross-site mutation rejection, liveness/readiness endpoints and bounded HTTP/worker shutdown with Atlas disconnection. Test-mode startup disables Atlas and background processing.
+- Documented authentication, ownership boundaries, durable jobs, evidence validation, operating limits and future scaling requirements in `SYSTEM_DESIGN.md`.
+- Verification: 74 application tests, 18 desktop/mobile browser tests and the full production build passed. Session-storage tests use controlled fixtures; live Atlas revocation was not exercised in this turn. No deployment or participant/model-provider calls were made.
+
 ### Groq fallback - 18 October 2026
 
 - At the user's request, added Groq as a hosted generation fallback for Gemini quota, configuration/access and temporary network/service failures. Stored the supplied key only in the ignored server-side `.env`; no client key or deployment was added.
@@ -152,3 +162,48 @@ Local UI screenshots: `.planning/screenshots/overview-desktop.png` and `.plannin
 - Added separate provider cooldowns, Groq retry/reset-header handling, queue resumption when a provider becomes available, accurate provider attribution and a Groq connection indicator. Added `npm.cmd run check:groq` for synthetic access checks.
 - Synthetic Groq access/strict JSON check passed. The previously blocked Marathi text submission completed through Groq: 15 segments and 10 supported fields. All accepted values match cited evidence; status is `needs_review`, with no processing error and no remaining checkpoint. This does not establish human-verified translation accuracy.
 - Verification: 61 automated tests, 10 browser tests, workspace type checks and the production build passed. No deployment was started.
+
+### Database availability recovery - 18 October 2026
+
+- Diagnosed the blocked sign-in and registration: the running API reports database unavailable. A direct read-only Atlas connection fails with `ECONNRESET`; DNS and TCP succeed for all three nodes but default and TLS 1.2 handshakes fail before password authentication. No credential failure or successful connection is claimed.
+- Added serial retries after initial Atlas connection/initialization failures with exponential backoff capped at 30 seconds, safe diagnostic categories, and cancellation/draining during shutdown. The API remains reachable during connection attempts.
+- Added automatic availability checks on signed-out pages and a manual Check connection action. Login and registration enable after recovery without losing typed form input.
+- Verification: 78 application tests, 21 browser tests and the full production build passed. Browser checks used a separate test-mode API with Atlas and the worker disabled. No participant content was sent to providers and no deployment was started.
+- The actual Atlas connection remains blocked by TLS resets. Requested confirmation of the current network IP in the same Atlas project's access list; a network/access-list correction remains necessary.
+
+### Development proxy startup and service recovery - 18 October 2026
+
+- Confirmed the user's ECONNREFUSED log indicates a period with no API listener. At inspection, direct and Vite-proxied liveness/session requests returned HTTP 200, with Atlas still unavailable.
+- Updated the single development command to wait for API liveness before starting Vite. The startup check and proxy share API port validation; occupied frontend ports fail clearly. The check does not require Atlas, so database outages do not prevent the public site starting.
+- Fixed recovery after an initial session request fails before any session exists. Account pages now distinguish service unavailability from database unavailability, recheck automatically, preserve typed input and retain manual retry.
+- Verified 81 application tests and 24 browser tests. Browser responses were mocked; direct and proxied live API requests were checked separately. No model-provider calls or deployment were made by these checks.
+
+### Atlas access restored - 18 October 2026
+
+- The supplied Atlas screenshot showed only `106.192.59.143/32` and `182.76.246.162/32`; the API machine's verified public IP was `223.228.59.139`. The user added that exact `/32` entry and confirmed it became Active.
+- Verified a successful authenticated Atlas connection and ping. The existing API reconnected automatically; direct and Vite-proxied session endpoints both returned HTTP 200 with database available.
+- Verified live entrepreneur registration, authenticated session, logout, subsequent login and logout through the frontend proxy using a generated temporary account. Every request returned HTTP 200 and the registered role was entrepreneur. Removed only that generated account and its sessions after the check.
+- No participant records, hosted model calls or deployment were involved in these verification checks. The unrestricted access-list diagnostic was declined and was not used.
+
+### Complete missing-parameter questions - 18 October 2026
+
+- Added specific questions and answer guidance for all 19 business parameters. Pending questions derive from validated field statuses, include unclear/off-topic answers, prioritize conflicts and exclude supported answers. Removed the previous three-question cap and omissions for trade, sector, materials, own investment, funding and monthly costs.
+- Added Complete missing information to the assessment page with a per-parameter Answer action and answer counts. The existing text/audio repair dialog selects the chosen parameter and continues after each successful answer; completed questions disappear. All-answered inputs show no follow-up fields. Short answers such as zero are allowed, and the prompt receives question context without treating it as evidence.
+- Expanded pending lists on reads for existing saved assessments and on server-side clarification eligibility without reprocessing originals or changing historical scores. Exact quotes, evidence links, account scoping and version checks remain enforced; provider-invented values cannot close questions.
+- Verification: 89 application tests and 29 desktop/mobile browser tests passed; production build passed. Integration tests use controlled storage/provider fixtures and verify zero answers, previously omitted fields, stale versions, source/history preservation and rejection of invented facts. The mobile dialog was visually inspected. No participant data uploads, model training or deployment were performed.
+
+### Assessor risk and nearby business support - 18 October 2026
+
+- Added an assessor-only decision-support API and assessment panel: explainable financial risk screening, coverage, source links, projected monthly surplus/margin, sales/cost stress, funding-plan gaps, evidence-review counts, conflicts and qualitative follow-up checks. Financial rules are disclosed and are not presented as calibrated failure probabilities or lending recommendations. Missing/unsupported figures remain unavailable.
+- Improved nearby-business lookup with 12 confirmed categories, place confirmation, distance/source links, radius selection, category-tag validation, result limits and stale-result clearing. Added a second bounded public Overpass endpoint. Partial/failed responses cannot masquerade as zero competition; mapped listings never change the financial risk score.
+- Verified 101 application tests and 33 desktop/mobile browser tests, including financial arithmetic, conservative amount handling, risk coverage, endpoint access, map validation/fallback and UI recovery. The mobile assessor panel was visually inspected.
+- A generic live Pune geocoder query succeeded. Actual Overpass listings were unavailable during live checks: the primary endpoint timed out and the fallback returned server errors. This external limitation remains visible as an error; no live competitor list or complete local-market coverage is claimed. The map behavior otherwise passed controlled provider/browser tests.
+- No participant content was sent to model providers, no local model ran and no deployment was started.
+
+### Guided preparation and follow-up usability - 18 October 2026
+
+- Reorganized guided input into business/customers, operations, financial assumptions and research sections. Added section links, a labelled entry counter, live surplus/funding-plan arithmetic and shared-schema feedback. Preparation tools stay open in the desktop sidebar and start collapsed on mobile/tablet. Unknown amounts remain distinct from zero.
+- Added normalized submission previews using the same serializer as the server, with continue-editing, text-summary download and submission through the existing validated flow. Previews do not call AI providers or save records. Invalid input focuses the first affected control and preserves entered values.
+- Added missing-question category filters, text search, reset actions and expandable answer guidance. Download checklist creates a version-labelled text worksheet containing outstanding questions, supported source-linked facts and saved assessor feedback. Downloads do not change the assessment and no drafts are stored in browser storage.
+- Improved keyboard focus, contrast, responsive action buttons and reduced-motion behavior while preserving the white/black/neutral design. Desktop and mobile screenshots were visually inspected; the mobile preparation panel was shortened after review.
+- Verification: 105 application tests, 38 browser tests and the production build passed. Tests cover arithmetic/unknowns, filtering, exports, preview without a write, error focus, editing preservation and a single submission from the preview. No deployment, model training or participant/provider uploads were performed.

@@ -227,7 +227,7 @@ export function SubmissionsTable({
               {personal ? "My business idea" : "Business idea / beneficiary"}
             </th>
             {!compact && !personal && <th>Trade / cohort</th>}
-            {personal && <th>My score</th>}
+            {personal && <th>My readiness</th>}
             <th>Submission</th>
             <th>Completeness</th>
             <th>Status</th>

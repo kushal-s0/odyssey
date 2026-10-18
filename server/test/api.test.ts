@@ -25,6 +25,24 @@ test("health exposes configuration status without secrets", async () => {
   assert.equal(typeof data.groq, "boolean");
   assert.match(r.headers.get("cache-control") ?? "", /no-store/);
 });
+test("liveness and readiness distinguish a running API from disconnected storage", async () => {
+  const live = await fetch(`${base}/api/health/live`),
+    ready = await fetch(`${base}/api/health/ready`);
+  assert.equal(live.status, 200);
+  assert.equal(ready.status, 503);
+  assert.match(live.headers.get("X-Request-ID") ?? "", /^[a-f0-9-]{36}$/);
+  assert.notEqual(
+    live.headers.get("X-Request-ID"),
+    ready.headers.get("X-Request-ID"),
+  );
+});
+test("cross-site browser metadata rejects mutations even without an Origin header", async () => {
+  const response = await fetch(`${base}/api/auth/logout`, {
+    method: "POST",
+    headers: { "Sec-Fetch-Site": "cross-site" },
+  });
+  assert.equal(response.status, 403);
+});
 test("example data is explicit and does not pretend to be actual model results", async () => {
   const r = await fetch(`${base}/api/examples`);
   assert.equal(r.status, 200);

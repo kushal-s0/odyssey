@@ -121,6 +121,7 @@ test("guided input rejects excess funding and serializes unknown amounts as null
 }) => {
   const writes = await workspace(page, "entrepreneur");
   await page.goto("/submit");
+  await page.getByRole("button", {name:"Guided form",exact:true}).click();
   await expect(page.getByLabel("Entrepreneur name")).toHaveValue(
     "Test Entrepreneur",
   );
@@ -201,6 +202,7 @@ test("guided entrepreneur form fits a mobile viewport", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await workspace(page, "entrepreneur");
   await page.goto("/submit");
+  await page.getByRole("button", {name:"Guided form",exact:true}).click();
   await expect(page.locator("#guided-products")).toBeVisible();
   expect(
     await page.evaluate(

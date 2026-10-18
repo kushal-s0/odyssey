@@ -159,6 +159,7 @@ export interface Submission {
     sourceReviewed?: boolean;
     assessorId?: string;
     assessmentVersion?: number;
+    domainRatings?: import("./business-review.js").DomainRating[];
   } | null;
   error: string | null;
   errorCode?: string | null;
@@ -207,4 +208,79 @@ export interface LocalInsights {
   radiusMeters: number;
   attribution: string;
   message: string;
+  truncated?: boolean;
+  category?: string;
+  center?: { lat: number; lon: number };
+  sourceEndpoint?: string;
+  cached?: boolean;
+  stale?: boolean;
+}
+
+export interface MapPlace { name: string; lat: number; lon: number }
+export interface LocalObservation {
+  id: string;
+  name: string;
+  category: string;
+  lat: number;
+  lon: number;
+  sourceUrl: string;
+  note: string;
+  checked: boolean;
+  recordedAt: string;
+}
+export interface SavedLocalContext {
+  place: MapPlace | null;
+  category: string;
+  radius: number;
+  observations: LocalObservation[];
+  revision: number;
+}
+
+export interface ScreeningSummary {
+  action: "clarification" | "financial_mentoring" | "skills_review" | "deeper_evaluation";
+  label: string;
+  reasons: { text: string; evidenceIds: string[] }[];
+  priorityFields: FieldKey[];
+  domains: { key: string; label: string; status: "missing" | "described" | "concern" | "not_validated"; explanation: string; evidenceIds: string[] }[];
+}
+
+export interface RiskFactor {
+  key: string;
+  label: string;
+  weight: number;
+  points: number | null;
+  explanation: string;
+  evidenceIds: string[];
+}
+export interface AssessorSupport {
+  screening: ScreeningSummary;
+  version: string;
+  assessmentVersion: number;
+  risk: {
+    score: number | null;
+    band: "lower" | "moderate" | "higher" | "insufficient_data";
+    coverage: number;
+    factors: RiskFactor[];
+    explanation: string;
+  };
+  financials: {
+    monthlySales: number | null;
+    monthlyCosts: number | null;
+    monthlySurplus: number | null;
+    marginPercent: number | null;
+    investment: number | null;
+    ownInvestment: number | null;
+    requestedFunding: number | null;
+    fundingPlanGap: number | null;
+    stressedSurplus: number | null;
+    evidenceIds: string[];
+  };
+  evidence: {
+    supported: number;
+    total: number;
+    conflicts: number;
+    verifiedSegments: number;
+    totalSegments: number;
+  };
+  followUps: { title: string; detail: string; fields: FieldKey[] }[];
 }

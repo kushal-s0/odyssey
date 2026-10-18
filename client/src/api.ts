@@ -2,14 +2,20 @@ export class ApiError extends Error {
   constructor(
     message: string,
     public status: number,
+    public requestId?: string,
   ) {
     super(message);
   }
+}
+let authEpoch = 0;
+export function invalidateAuthRequests() {
+  authEpoch++;
 }
 export async function api<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
+  const requestEpoch = authEpoch;
   const headers = new Headers(options.headers);
   if (options.body && !(options.body instanceof FormData))
     headers.set("Content-Type", "application/json");
@@ -23,9 +29,17 @@ export async function api<T>(
       "The API did not return valid data. Check that the server is running.",
   }));
   if (!response.ok) {
-    if (response.status === 401 && !path.startsWith("/auth/"))
+    if (
+      response.status === 401 &&
+      !path.startsWith("/auth/") &&
+      requestEpoch === authEpoch
+    )
       window.dispatchEvent(new Event("strive:session-expired"));
-    throw new ApiError(data.error ?? "The request failed.", response.status);
+    throw new ApiError(
+      data.error ?? "The request failed.",
+      response.status,
+      data.requestId ?? response.headers.get("X-Request-ID") ?? undefined,
+    );
   }
   return data as T;
 }

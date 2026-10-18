@@ -15,6 +15,7 @@ export default function Auth({ register = false }: { register?: boolean }) {
     [password, setPassword] = useState(""),
     [confirmation, setConfirmation] = useState("");
   const [busy, setBusy] = useState(false),
+    [checking, setChecking] = useState(false),
     [error, setError] = useState(""),
     [visible, setVisible] = useState(false);
   if (w.loading) return <Busy />;
@@ -43,7 +44,7 @@ export default function Auth({ register = false }: { register?: boolean }) {
       });
       setPassword("");
       setConfirmation("");
-      await w.refresh();
+      await w.sessionChanged();
       const requested = params.get("next");
       navigate(
         requested?.startsWith("/") &&
@@ -110,10 +111,39 @@ export default function Auth({ register = false }: { register?: boolean }) {
               {error}
             </div>
           )}
-          {!w.session?.health.database && (
-            <div className="notice">
-              The workspace database is currently unavailable. Please try again
-              when it reconnects.
+          {w.authNotice && (
+            <div className="notice" role="status">
+              {w.authNotice}
+            </div>
+          )}
+          {(w.serviceUnavailable || !w.session?.health.database) && (
+            <div className="notice auth-connection-notice" role="status">
+              <p>
+                {w.serviceUnavailable || !w.session ? (
+                  "The workspace service is temporarily unavailable. Rechecking automatically."
+                ) : (
+                  <>
+                    The workspace database is currently unavailable. Sign-in and
+                    registration will be available when it reconnects.
+                    Availability is checked automatically.
+                  </>
+                )}
+              </p>
+              <button
+                type="button"
+                className="button secondary small"
+                disabled={checking}
+                onClick={async () => {
+                  setChecking(true);
+                  try {
+                    await w.refresh();
+                  } finally {
+                    setChecking(false);
+                  }
+                }}
+              >
+                {checking ? "Checking connection…" : "Check connection"}
+              </button>
             </div>
           )}
           <form onSubmit={submit} className="auth-form">
@@ -177,7 +207,9 @@ export default function Auth({ register = false }: { register?: boolean }) {
             )}
             <button
               className="button primary full-width"
-              disabled={busy || !w.session?.health.database}
+              disabled={
+                busy || w.serviceUnavailable || !w.session?.health.database
+              }
             >
               {busy ? (
                 <Loader2 size={16} className="spin" />

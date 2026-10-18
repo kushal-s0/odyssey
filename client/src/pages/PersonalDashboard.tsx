@@ -55,7 +55,7 @@ export default function PersonalDashboard() {
       </div>
       <div className="personal-columns">
         <section className="panel personal-score">
-          <span className="eyebrow">MY LATEST ASSESSMENT</span>
+          <span className="eyebrow">MY LATEST INFORMATION READINESS</span>
           <h2>{latest?.title ?? "Your next step starts here."}</h2>
           {latest?.assessment ? (
             <>

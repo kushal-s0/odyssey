@@ -5,6 +5,7 @@ import type { Server } from "node:http";
 import { createApp } from "../src/app.js";
 import { digest } from "../src/auth.js";
 import { config } from "../src/config.js";
+import { assess } from "../src/domain/assessment.js";
 import {
   SessionModel,
   SubmissionModel,
@@ -201,6 +202,9 @@ test("entrepreneurs cannot review, verify, compare others, manage cohorts, or re
     [`/submissions/${recordId}/review`, "POST"],
     [`/submissions/${recordId}/verify`, "POST"],
     [`/submissions/${recordId}/similar`, "GET"],
+    [`/submissions/${recordId}/decision-support`, "GET"],
+    ["/locations/search?q=Pune", "GET"],
+    ["/locations/businesses", "POST"],
   ]) {
     const response = await fetch(base + path, {
       method,
@@ -208,6 +212,30 @@ test("entrepreneurs cannot review, verify, compare others, manage cohorts, or re
       ...(method === "POST" ? { body: "{}" } : {}),
     });
     assert.equal(response.status, 403, path);
+  }
+});
+
+test("assessor decision support uses the current assessment and does not disclose an invented risk score", async () => {
+  (record as any).assessment = assess({
+    fields: [],
+    segments: [],
+    language: "English",
+    providerModel: "test",
+    version: 3,
+  });
+  try {
+    const response = await fetch(
+      `${base}/submissions/${recordId}/decision-support`,
+      { headers: headers("assessor") },
+    );
+    assert.equal(response.status, 200);
+    const data: any = await response.json();
+    assert.equal(data.support.assessmentVersion, 3);
+    assert.equal(data.support.risk.score, null);
+    assert.equal(data.support.risk.coverage, 0);
+    assert.equal("ownerId" in data.support, false);
+  } finally {
+    delete (record as any).assessment;
   }
 });
 test("forged signup roles and ownership are rejected before they can write to the database", async () => {

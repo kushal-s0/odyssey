@@ -149,17 +149,6 @@ export default function App() {
                   : "Read-only preview"}
               </small>
             </span>
-            {w.session?.user && (
-              <button
-                className="icon-button"
-                aria-label="Sign out"
-                onClick={async () => {
-                  await w.signOut();
-                }}
-              >
-                <LogOut size={16} />
-              </button>
-            )}
           </div>
         </div>
       </aside>
@@ -195,7 +184,14 @@ export default function App() {
                   : "Connect workspace"}
               <ArrowUpRight size={14} />
             </Link>
-            <span className="top-avatar">TS</span>
+            <button
+              className="button secondary small signout-button"
+              disabled={w.signingOut}
+              onClick={() => void w.signOut().catch(() => {})}
+            >
+              <LogOut size={16} />
+              <span>{w.signingOut ? "Signing out…" : "Sign out"}</span>
+            </button>
           </div>
         </header>
         <main className="main-content">

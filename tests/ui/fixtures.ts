@@ -1,7 +1,8 @@
-import type { Page } from "@playwright/test";
+import type { Page, BrowserContext } from "@playwright/test";
 import { examples } from "../../server/src/examples";
+import { decisionSupport } from "../../server/src/domain/decision-support";
 export async function mockWorkspace(
-  page: Page,
+  page: Page | BrowserContext,
   role: "entrepreneur" | "assessor" | null = "assessor",
 ) {
   let user = role
@@ -43,7 +44,11 @@ export async function mockWorkspace(
         role: role ?? "entrepreneur",
       };
       json = { user };
-    } else if (path === "/auth/logout") {
+    } else if (
+      path === "/auth/logout" ||
+      path === "/auth/logout-all" ||
+      path === "/auth/password"
+    ) {
       user = null;
       json = { ok: true };
     } else if (path === "/cohorts") json = { cohorts: [] };
@@ -67,10 +72,16 @@ export async function mockWorkspace(
     else if (path === "/training/annotations") json = { annotations: [] };
     else if (path === "/training/model")
       json = { ready: false, reason: "Endpoint not configured" };
+    else if (path.endsWith("/local-context")) json={context:{place:null,category:"",radius:3000,observations:[],revision:0}};
     else if (path.endsWith("/similar")) json = { matches: [] };
-    else if (path.startsWith("/submissions/"))
+    else if (path.endsWith("/decision-support")) {
+      const assessment = records.find(
+        (s) => s.id === path.split("/")[2],
+      )?.assessment;
+      json = { support: assessment ? decisionSupport(assessment) : null };
+    } else if (path.startsWith("/submissions/"))
       json = { submission: records.find((s) => s.id === path.split("/")[2]) };
     await route.fulfill({ json });
   });
-  return { records, requests };
+  return { records, requests, health };
 }

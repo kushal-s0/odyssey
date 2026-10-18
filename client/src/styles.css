@@ -2022,6 +2022,70 @@ code {
   align-items: flex-start;
   margin-bottom: 23px;
 }
+.completion-questions {
+  padding: 0 24px;
+}
+.risk-summary {
+  padding: 24px;
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  gap: 24px;
+  background: #f7f7f5;
+}
+.risk-summary > div { display: flex; flex-direction: column; gap: 10px; }
+.risk-summary strong { font-size: 28px; letter-spacing: -1px; }
+.risk-summary p, .support-body p { font-size: 13px; line-height: 1.8; color: #777; }
+.risk-summary span { font-size: 12px; }
+.support-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 24px; border-bottom: 1px solid #eee; }
+.support-metrics > div { display: flex; flex-direction: column; gap: 9px; }
+.support-metrics span { font-size: 12px; color: #777; }
+.support-metrics strong { font-size: 20px; }
+.support-body { padding: 24px; }
+.support-body > h3 { margin-top: 24px; margin-bottom: 14px; font-size: 15px; }
+.risk-factor { padding: 15px 0; border-bottom: 1px solid #eee; }
+.risk-factor > div { display: flex; gap: 12px; flex-wrap: wrap; justify-content: space-between; font-size: 13px; }
+.risk-factor span { color: #777; }
+.risk-factor p { margin-top: 8px; }
+.assessor-checks { padding-left: 18px; }
+.assessor-checks li { padding: 8px 0; font-size: 13px; }
+.risk-method { margin-top: 20px; font-size: 12px; }
+.risk-method summary { cursor: pointer; }
+.risk-method p { margin: 12px 0; }
+.risk-method a { text-decoration: underline; }
+@media(max-width:600px) {
+  .risk-summary { grid-template-columns: 1fr; padding: 18px; gap: 16px; }
+  .support-body, .support-metrics { padding: 18px; }
+  .support-metrics { gap: 18px 12px; }
+  .support-metrics strong { font-size: 17px; overflow-wrap: anywhere; }
+}
+.completion-question {
+  display: flex;
+  gap: 18px;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 0;
+  border-top: 1px solid #eee;
+}
+.completion-question > div {
+  min-width: 0;
+}
+.completion-question h3 {
+  margin: 7px 0;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.completion-question p {
+  color: #777;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.completion-question .button {
+  flex-shrink: 0;
+}
+@media (max-width: 600px) {
+  .completion-questions { padding: 0 16px; }
+  .completion-question { flex-direction: column; gap: 10px; }
+}
 .repair-intro > p {
   font-size: 13px;
   color: #999;
@@ -3442,6 +3506,98 @@ code {
   margin-top: 3px;
   accent-color: #111;
 }
+.signout-button {
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-height: 36px;
+}
+.account-security {
+  grid-column: 1/-1;
+}
+.account-security .settings-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+}
+.session-actions > p {
+  font-size: 13px;
+  line-height: 1.9;
+  color: #777;
+  margin-top: 0;
+}
+.security-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+.password-change-form {
+  display: grid;
+  gap: 15px;
+  border-left: 1px solid #e8e8e8;
+  padding-left: 30px;
+}
+.password-change-form h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+.password-change-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+}
+.password-change-form input {
+  width: 100%;
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid #ddd;
+  border-radius: 7px;
+}
+.password-change-form .button {
+  justify-self: start;
+}
+@media (max-width: 700px) {
+  .topbar .workspace-tag {
+    display: none;
+  }
+  .topbar .breadcrumb > span:first-of-type {
+    display: none;
+  }
+  .topbar .breadcrumb-slash {
+    display: none;
+  }
+  .signout-button {
+    font-size: 12px;
+    padding: 8px 11px;
+    gap: 7px;
+  }
+  .topbar .breadcrumb {
+    min-width: 0;
+  }
+  .topbar .breadcrumb strong {
+    max-width: 165px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .account-security .settings-body {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+  .password-change-form {
+    border-left: 0;
+    border-top: 1px solid #e8e8e8;
+    padding-left: 0;
+    padding-top: 25px;
+  }
+  .security-buttons {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
 
 .public-site {
   background: #fff;
@@ -3701,6 +3857,12 @@ code {
   color: #777;
   line-height: 1.85;
   margin-bottom: 26px;
+}
+.auth-connection-notice {
+  display: block;
+}
+.auth-connection-notice p {
+  margin: 0 0 12px;
 }
 .auth-form {
   display: grid;
