@@ -20,7 +20,7 @@ test("assessor sees explainable financial risk with unknowns instead of invented
     support.getByRole("heading", { name: "Assessor decision support" }),
   ).toBeVisible();
   await expect(
-    support.getByText("Not assessable", { exact: true }),
+    support.getByText("Not enough details", { exact: true }),
   ).toBeVisible();
   await expect(support.getByText("Not available", { exact: true })).toHaveCount(
     4,
@@ -32,7 +32,7 @@ test("entrepreneurs do not receive assessor decision support or nearby business 
 }) => {
   const { records, requests } = await mockWorkspace(page, "entrepreneur");
   await page.goto(`/submissions/${records[0]!.id}`);
-  await expect(page.locator(".completion-panel")).toBeVisible();
+  await expect(page.locator(".idea-visualizer")).toBeVisible();
   await expect(page.locator(".assessor-insights")).toHaveCount(0);
   expect(
     requests.some(

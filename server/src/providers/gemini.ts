@@ -104,14 +104,16 @@ async function generateGemini(
             temperature: 0,
             responseMimeType: "application/json",
             responseJsonSchema: schema,
-            maxOutputTokens: 18000,
+            maxOutputTokens: config.GEMINI_MAX_OUTPUT_TOKENS,
             ...(/^gemini-[34]/.test(config.GEMINI_MODEL)
               ? {
                   thinkingConfig: {
                     thinkingLevel: config.GEMINI_THINKING_LEVEL,
                   },
                 }
-              : {}),
+              : /^gemini-2\.5-/.test(config.GEMINI_MODEL)
+                ? { thinkingConfig: { thinkingBudget: 0 } }
+                : {}),
           },
         }),
         signal: AbortSignal.timeout(150000),

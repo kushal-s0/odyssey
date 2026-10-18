@@ -1,180 +1,148 @@
-// localized-ui
-import { questionText, t, useLanguage } from "../i18n";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   Plus,
   FileText,
   Clock,
   MessageSquare,
-  ShieldCheck,
+  CheckCheck,
 } from "lucide-react";
+import { t, useLanguage } from "../i18n";
 import { useWorkspace } from "../workspace";
-import ScoreExplanation from "../ScoreExplanation";
-import { PageIntro, Status, Empty, Progress } from "../components";
+import { PageIntro, Status, Empty } from "../components";
+import IdeaVisualizer from "../IdeaVisualizer";
+import BusinessNextSteps from "../BusinessNextSteps";
 export default function PersonalDashboard() {
   useLanguage();
   const w = useWorkspace(),
-    stats = w.dashboard;
+    stats = w.dashboard,
+    navigate = useNavigate();
   const latest =
     w.submissions.find((s) => s.id === stats?.latestSubmissionId) ??
-    w.submissions.find((s) => s.assessment);
-  const questions = w.submissions.filter((s) => s.assessment?.questions.length);
+    w.submissions.find((s) => s.assessment) ??
+    w.submissions[0];
+  const assessed = latest?.assessment
+    ? latest
+    : w.submissions.find((s) => s.assessment);
+  const answer = (field?: string) => {
+    if (assessed)
+      navigate(
+        `/submissions/${assessed.id}?repair=1${field ? `&field=${encodeURIComponent(field)}` : ""}`,
+      );
+  };
   return (
-    <>
+    <div className="friendly-dashboard">
       <PageIntro
         eyebrow={t("YOUR PERSONAL WORKSPACE")}
         title={t("My dashboard")}
-        description={t(
-          "Welcome, {name}. Your ideas, progress, and next steps are here.",
-          { name: w.session?.user?.name.split(" ")[0] ?? "—" },
-        )}
+        description={t("Hello, {name}. Let's grow your idea.", {
+          name: w.session?.user?.name.split(" ")[0] ?? "",
+        })}
         action={
           <Link className="button primary" to="/submit">
-            <Plus size={16} /> {t("Submit an idea")}
+            <Plus size={16} />
+            {t("Submit an idea")}
           </Link>
         }
       />
-      <div className="personal-metrics">
-        <div className="metric-card">
-          <FileText size={18} />
-          <strong>{stats?.total ?? w.submissions.length}</strong>
-          <span>{t("My submissions")}</span>
-        </div>
-        <div className="metric-card">
-          <Clock size={18} />
-          <strong>{stats?.processing ?? 0}</strong>
-          <span>{t("Being processed")}</span>
-        </div>
-        <div className="metric-card">
-          <MessageSquare size={18} />
-          <strong>{stats?.needsClarification ?? questions.length}</strong>
-          <span>{t("Need my answers")}</span>
-        </div>
-        <div className="metric-card">
-          <ShieldCheck size={18} />
-          <strong>
-            {stats?.assessed ??
-              w.submissions.filter((s) => s.assessment).length}
-          </strong>
-          <span>{t("Assessments received")}</span>
-        </div>
-      </div>
-      <div className="personal-columns">
-        <section className="panel personal-score">
-          <span className="eyebrow">
-            {t("MY LATEST INFORMATION READINESS")}
-          </span>
-          <h2>{latest?.title ?? "Your next step starts here."}</h2>
-          {latest?.assessment ? (
-            <>
-              <div className="personal-score-number">
-                {latest.assessment.score ?? "—"}
-                <small>
-                  {latest.assessment.score == null
-                    ? t("More detail needed")
-                    : "/ 100"}
-                </small>
-              </div>
-              <p>
-                {t(
-                  "This score reflects the information you supplied, rather than a prediction of business success.",
-                )}
-              </p>
-              <ScoreExplanation assessment={latest.assessment} compact />
-              <div className="personal-progress">
-                <span>
-                  {t("Information completeness")}{" "}
-                  <strong>{latest.assessment.completeness}%</strong>
-                </span>
-                <Progress value={latest.assessment.completeness} />
-              </div>
-              <Link
-                className="button secondary"
-                to={`/submissions/${latest.id}`}
-              >
-                {t("View my assessment")} <ArrowRight size={15} />
-              </Link>
-            </>
-          ) : (
-            <>
-              <p>
-                {t(
-                  "Share your business idea to get a structured assessment and questions that help you develop it.",
-                )}
-              </p>
-              <Link className="button secondary" to="/submit">
-                {t("Submit my first idea")} <ArrowRight size={15} />
-              </Link>
-            </>
-          )}
-        </section>
-        <section className="panel personal-next">
-          <span className="eyebrow">{t("MY NEXT STEPS")}</span>
-          <h2>{t("Keep your idea moving.")}</h2>
-          {stats?.processing ? (
-            <p className="notice">
-              {t(
-                "Your submission is being processed. This dashboard updates automatically.",
-              )}
-            </p>
-          ) : null}
-          {questions.length ? (
-            questions.slice(0, 3).map((s) => (
-              <Link
-                className="personal-action"
-                key={s.id}
-                to={`/submissions/${s.id}?repair=1`}
-              >
-                <div>
-                  <strong>{s.title}</strong>
-                  <p>
-                    {s.assessment?.questions[0] &&
-                      questionText(s.assessment.questions[0])}
-                  </p>
-                  <small>
-                    {s.assessment?.questions.length} {t("questions to clarify")}
-                  </small>
-                </div>
-                <ArrowRight size={18} />
-              </Link>
-            ))
-          ) : (
-            <p>
-              {t(
-                "No clarification questions are waiting. Your assessor’s feedback will appear with your assessment.",
-              )}
-            </p>
-          )}
-          {w.submissions
-            .filter((s) => s.review?.nextAction)
-            .slice(0, 2)
-            .map((s) => (
-              <div className="personal-action" key={s.id}>
-                <div>
-                  <strong>
-                    {t("Assessor feedback:")} {s.title}
-                  </strong>
-                  <p>{s.review?.nextAction}</p>
-                  <Link to={`/submissions/${s.id}`}>{t("Read feedback")}</Link>
-                </div>
-              </div>
-            ))}
-        </section>
-      </div>
-      <section className="panel">
-        <div className="panel-heading">
-          <div>
-            <h2>{t("My recent ideas")}</h2>
-            <p>{t("Only submissions linked to your account appear here.")}</p>
+      <div className="friendly-stat-strip">
+        {[
+          {
+            label: "My ideas",
+            value: stats?.total ?? w.submissions.length,
+            icon: FileText,
+          },
+          {
+            label: "Being checked",
+            value: stats?.processing ?? 0,
+            icon: Clock,
+          },
+          {
+            label: "Need my answers",
+            value:
+              stats?.needsClarification ??
+              w.submissions.filter((s) => s.assessment?.questions.length)
+                .length,
+            icon: MessageSquare,
+          },
+          {
+            label: "Ideas checked",
+            value:
+              stats?.assessed ??
+              w.submissions.filter((s) => s.assessment).length,
+            icon: CheckCheck,
+          },
+        ].map(({ label, value, icon: Icon }) => (
+          <div key={label}>
+            <span className="friendly-stat-icon">
+              <Icon size={17} />
+            </span>
+            <strong>{value}</strong>
+            <span>{t(label)}</span>
           </div>
+        ))}
+      </div>
+      {latest && !latest.assessment && (
+        <div className="friendly-processing panel">
+          <Clock size={19} />
+          <span>
+            {t(
+              latest.status === "failed"
+                ? "Your latest idea needs a check."
+                : "Your latest idea is being checked.",
+            )}
+          </span>
+          <Link to={`/submissions/${latest.id}`} className="text-link">
+            {t("View progress")}
+            <ArrowRight size={14} />
+          </Link>
+        </div>
+      )}
+      {assessed ? (
+        <>
+          <div className="friendly-latest-title">
+            <div>
+              <span className="eyebrow">{t("MY LATEST IDEA")}</span>
+              <h2>{assessed.title}</h2>
+            </div>
+            <Status status={assessed.status} />
+          </div>
+          <IdeaVisualizer
+            key={assessed.id}
+            record={assessed}
+            onAnswer={answer}
+            onDetails={() => navigate(`/submissions/${assessed.id}?view=full`)}
+          />
+          <BusinessNextSteps
+            key={assessed.id + assessed.assessment!.version}
+            record={assessed}
+            onAnswer={answer}
+          />
+        </>
+      ) : (
+        <section className="friendly-first-idea panel">
+          <span className="friendly-first-icon">
+            <Plus size={28} />
+          </span>
+          <h2>{t("Start with one small idea.")}</h2>
+          <p>{t("Write it, upload a PDF, or use your voice.")}</p>
+          <Link className="button primary" to="/submit">
+            {t("Submit my first idea")}
+            <ArrowRight size={16} />
+          </Link>
+        </section>
+      )}
+      <section className="panel friendly-recent">
+        <div className="panel-heading">
+          <h2>{t("My recent ideas")}</h2>
           <Link className="text-link" to="/submissions">
-            {t("View all")} <ArrowRight size={14} />
+            {t("View all")}
+            <ArrowRight size={14} />
           </Link>
         </div>
         {w.submissions.length ? (
           <div className="personal-ideas">
-            {w.submissions.slice(0, 6).map((s) => (
+            {w.submissions.slice(0, 4).map((s) => (
               <Link
                 className="personal-idea"
                 key={s.id}
@@ -182,9 +150,7 @@ export default function PersonalDashboard() {
               >
                 <div>
                   <strong>{s.title}</strong>
-                  <small>
-                    {new Date(s.createdAt).toLocaleDateString()} · {s.language}
-                  </small>
+                  <small>{new Date(s.createdAt).toLocaleDateString()}</small>
                 </div>
                 <Status status={s.status} />
                 <span className="personal-idea-score">
@@ -199,12 +165,10 @@ export default function PersonalDashboard() {
         ) : (
           <Empty
             title={t("Your first idea belongs here")}
-            description={t(
-              "Use text, a PDF, or your voice. Your original submission stays available to you.",
-            )}
+            description={t("Only your own ideas appear here.")}
           />
         )}
       </section>
-    </>
+    </div>
   );
 }

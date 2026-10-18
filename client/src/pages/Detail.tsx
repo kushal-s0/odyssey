@@ -50,6 +50,8 @@ import AssessorInsights from "../AssessorInsights";
 import LocationPanel from "../LocationPanel";
 import EvidencePanel from "../EvidencePanel";
 import ScoreExplanation from "../ScoreExplanation";
+import IdeaVisualizer from "../IdeaVisualizer";
+import BusinessNextSteps from "../BusinessNextSteps";
 import CohortAssignment from "../CohortAssignment";
 import {
   PotentialReviewFields,
@@ -90,8 +92,10 @@ export default function Detail() {
     [matches, setMatches] = useState<SimilarIdea[]>([]);
   const [questionGroup, setQuestionGroup] = useState("all"),
     [questionSearch, setQuestionSearch] = useState("");
+  const [detailView, setDetailView] = useState("simple");
   const loadRevision = useRef(0);
   useEffect(() => {
+    setDetailView("simple");
     setRecord(null);
     setSelected([]);
     setSourceTab("compare");
@@ -142,7 +146,13 @@ export default function Detail() {
     return () => clearInterval(timer);
   }, [record?.status, reload]);
   useEffect(() => {
-    if (search.get("repair") === "1") setRepair(true);
+    if (search.get("view") === "full") setDetailView("full");
+    if (search.get("repair") === "1") {
+      const requestedField = search.get("field");
+      if (FIELD_KEYS.includes(requestedField as FieldKey))
+        setRepairField(requestedField as FieldKey);
+      setRepair(true);
+    }
   }, [search]);
   useEffect(() => {
     if (!record?.assessment) return;
@@ -286,6 +296,29 @@ export default function Detail() {
         </Notice>
       )}
       {error && <Notice type="error">{error}</Notice>}
+      {a && entrepreneur && (
+        <div
+          className="friendly-view-switch"
+          role="group"
+          aria-label={t("Choose a view")}
+        >
+          <button
+            type="button"
+            aria-pressed={detailView === "simple"}
+            onClick={() => setDetailView("simple")}
+          >
+            {t("Simple view")}
+          </button>
+          <button
+            type="button"
+            data-testid="open-full-view"
+            aria-pressed={detailView === "full"}
+            onClick={() => setDetailView("full")}
+          >
+            {t("Full details")}
+          </button>
+        </div>
+      )}
       {!a ? (
         <section className="panel processing-panel">
           <div className="processing-symbol">
@@ -347,6 +380,26 @@ export default function Detail() {
             </button>
           )}
         </section>
+      ) : entrepreneur && detailView === "simple" ? (
+        <div className="entrepreneur-simple">
+          <IdeaVisualizer
+            key={record.id}
+            record={record}
+            onAnswer={(field) => {
+              setRepairField(field);
+              setRepair(true);
+            }}
+            onDetails={() => setDetailView("full")}
+          />
+          <BusinessNextSteps
+            key={record.id + a.version}
+            record={record}
+            onAnswer={(field) => {
+              setRepairField(field);
+              setRepair(true);
+            }}
+          />
+        </div>
       ) : (
         <>
           <div className="assessment-summary">

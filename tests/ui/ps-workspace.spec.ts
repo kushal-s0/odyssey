@@ -50,7 +50,7 @@ test("switching submissions clears source selection and confirmation", async ({
   page,
 }) => {
   const { records } = await mockWorkspace(page, "assessor");
-  await page.goto(`/submissions/${records[0]!.id}`);
+  await page.goto(`/submissions/${records[0]!.id}?view=full`);
   const panel = page.locator(".evidence-panel");
   await panel.locator('.source-segment input[type="checkbox"]').first().check();
   await panel
@@ -117,7 +117,7 @@ test("evidence opens original and English together, follows citations and deep-l
     language: "mr-IN",
     providerModel: "synthetic-test",
   });
-  await page.goto(`/submissions/${records[0]!.id}`);
+  await page.goto(`/submissions/${records[0]!.id}?view=full`);
   const panel = page.locator(".evidence-panel");
   await expect(
     panel.getByRole("button", { name: "Side by side", exact: true }),
@@ -166,7 +166,7 @@ test("source evidence search, state filters and mobile layout remain readable", 
 }) => {
   const { records } = await mockWorkspace(page, "entrepreneur");
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto(`/submissions/${records[0]!.id}`);
+  await page.goto(`/submissions/${records[0]!.id}?view=full`);
   const panel = page.locator(".evidence-panel");
   await panel.scrollIntoViewIfNeeded();
   await panel

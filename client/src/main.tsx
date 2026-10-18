@@ -26,6 +26,7 @@ import ModelLab from "./pages/ModelLab";
 import "./styles.css";
 import "./experience.css";
 import "./assessment-workspace.css";
+import "./friendly.css";
 function RequireAccount() {
   useLanguage();
   const w = useWorkspace(),

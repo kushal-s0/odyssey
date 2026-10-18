@@ -194,3 +194,44 @@ test("embedding options are top-level and produce normalized 768-dimension featu
   assert.equal(result.length, 768);
   assert.ok(Math.abs(result.reduce((n, v) => n + v * v, 0) - 1) < 1e-10);
 });
+
+test("Gemini 2.5 Flash-Lite disables thinking and uses the configured output cap", async () => {
+  let sent: any;
+  const text = "Synthetic test tailoring business.";
+  respond({ language: "English", segments: [segment(text)] });
+  const reply = globalThis.fetch;
+  globalThis.fetch = async (url, options) => {
+    sent = JSON.parse(String(options?.body));
+    assert.match(String(url), /gemini-2\.5-flash-lite/);
+    return reply(url, options);
+  };
+  config.GEMINI_MODEL = "gemini-2.5-flash-lite";
+  await readSource({ kind: "text", language: "en-IN", text });
+  assert.deepEqual(sent.generationConfig.thinkingConfig, { thinkingBudget: 0 });
+  assert.equal(
+    sent.generationConfig.maxOutputTokens,
+    config.GEMINI_MAX_OUTPUT_TOKENS,
+  );
+});
+
+test("Gemini Flash-Lite uses minimal thinking without weakening the output schema", async () => {
+  let sent: any;
+  const text = "Synthetic business evidence.";
+  respond({ language: "English", segments: [segment(text)] });
+  const reply = globalThis.fetch;
+  globalThis.fetch = async (url, options) => {
+    sent = JSON.parse(String(options?.body));
+    return reply(url, options);
+  };
+  config.GEMINI_MODEL = "gemini-3.1-flash-lite";
+  config.GEMINI_THINKING_LEVEL = "MINIMAL";
+  await readSource({ kind: "text", language: "en-IN", text });
+  assert.deepEqual(sent.generationConfig.thinkingConfig, {
+    thinkingLevel: "MINIMAL",
+  });
+  assert.equal(
+    sent.generationConfig.responseJsonSchema.additionalProperties,
+    false,
+  );
+  assert.equal(sent.generationConfig.temperature, 0);
+});

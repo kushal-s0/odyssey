@@ -1,0 +1,15 @@
+# CPU-only llama.cpp, built from a verified fixed revision.
+FROM ubuntu:24.04 AS build
+ARG LLAMA_CPP_REVISION=547208dca250ceb3e4c8615598d043f2b602a527
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates git cmake build-essential gcc-14 g++-14 libssl-dev && rm -rf /var/lib/apt/lists/*
+ENV CC=gcc-14 CXX=g++-14
+WORKDIR /src
+RUN git init . && git remote add origin https://github.com/ggml-org/llama.cpp.git && git fetch --depth 1 origin "$LLAMA_CPP_REVISION" && git checkout --detach FETCH_HEAD && cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DGGML_NATIVE=OFF -DGGML_CUDA=OFF -DGGML_BACKEND_DL=ON -DGGML_CPU_ALL_VARIANTS=ON -DLLAMA_BUILD_TESTS=OFF -DLLAMA_BUILD_EXAMPLES=OFF && cmake --build build --target llama-server -j 2 && mkdir /out && cp build/bin/llama-server /out/ && find build -name '*.so*' -exec cp -P {} /out/ \;
+FROM ubuntu:24.04
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates libgomp1 libstdc++6 libssl3t64 curl && rm -rf /var/lib/apt/lists/* && useradd --create-home --uid 10001 strive && mkdir /models && chown strive:strive /models
+COPY --from=build /out/ /app/
+ENV LD_LIBRARY_PATH=/app LLAMA_CACHE=/models
+USER strive
+WORKDIR /app
+EXPOSE 8000
+ENTRYPOINT ["/app/llama-server"]

@@ -12,6 +12,6 @@ function collect(source,file) {
 }
 async function walk(dir){for(const item of await readdir(dir,{withFileTypes:true})){const f=path.join(dir,item.name);if(item.isDirectory()){if(item.name!=='locales')await walk(f);}else if(/\.tsx?$/.test(f))collect(await readFile(f,'utf8'),f);}}
 await walk('client/src');
-for(const file of ['shared/business-review.ts','shared/repair-questions.ts','shared/input-rules.ts','server/src/domain/assessment.ts','server/src/domain/decision-support.ts','server/src/providers/quota.ts','server/src/providers/cloud.ts'])collect(await readFile(file,'utf8'),file);
+for(const file of ['shared/entrepreneur-guide.ts','shared/business-review.ts','shared/repair-questions.ts','shared/input-rules.ts','server/src/domain/assessment.ts','server/src/domain/decision-support.ts','server/src/providers/quota.ts','server/src/providers/cloud.ts'])collect(await readFile(file,'utf8'),file);
 await writeFile('client/src/locales/en.json',JSON.stringify(Object.fromEntries(Object.entries(result).sort(([a],[b])=>a.localeCompare(b))),null,2)+'\n');
 console.log(JSON.stringify({staticMessages:Object.keys(result).length}));

@@ -1,64 +1,83 @@
-# Prepare your own cloud inference
+# Qwen3.5-9B with Docker on a remote CPU server
 
-The app can use models on your own cloud server for text extraction/translation, PDF reading/OCR and audio transcription. This removes Gemini/Groq/Sarvam inference quotas from that path. It still uses a private HTTP API between MERN and your server, and cloud compute is not free. Nothing in this package starts during `npm install`, `npm run dev` or `npm run build`.
+This is the original Qwen3.5-9B model, using the pinned [Unsloth Q4_K_M GGUF conversion](https://huggingface.co/unsloth/Qwen3.5-9B-GGUF) from Hugging Face through CPU-only llama.cpp. It does not substitute the smaller 1.7B model. No NVIDIA GPU or driver is required. Docker provides packaging; it does not provide hosting or make compute free.
 
-**Prepared, not deployed:** the integration and HTTP/PDF contracts are tested without loading models. GPU boot, memory use, real ASR/OCR accuracy, throughput and all six language-quality checks still need validation on the actual cloud machine. No model weights were downloaded to this computer. Existing hosted API settings remain active until you configure the new address.
+Run this on a **remote Linux CPU server**, respecting the requirement that models do not run on your development computer. No containers, models, or deployments have been started here. Docker is not installed in the current development environment, so an actual image build and model startup remain unverified.
 
-## Model choices
+Plan for **24 GB RAM, 6+ CPU cores and 40 GB free disk** for generation plus speech/OCR. This is a conservative planning estimate, not a measured requirement. CPU generation and audio can take minutes. Tiny free web-hosting instances cannot run this complete package.
 
-| Task | Cloud component | Why / limitation |
-| --- | --- | --- |
-| Extract facts and translate source passages | [Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B), served by [vLLM](https://docs.vllm.ai/en/v0.31.0/features/structured_outputs/) | Open weights, Apache-2.0; structured JSON decoding. The publisher reports broad multilingual support; this does not establish accuracy on your dataset. Thinking is disabled; the existing schema, quotations, page references and numeric checks remain required. |
-| Hindi, Marathi, Telugu, Bengali, Odia speech | [AI4Bharat IndicConformer 600M multilingual](https://huggingface.co/ai4bharat/indic-conformer-600m-multilingual) | MIT model with all five regional input languages, including Odia (`or`). Its files are gated: accept access conditions in your own HF account. This package pins the revision because the model uses custom Python code. |
-| English speech | [faster-whisper](https://github.com/SYSTRAN/faster-whisper), small model | CPU inference on the cloud VM; voice-activity filtering and no previous-chunk text conditioning. This is a functional starting point, not a measured accuracy improvement. |
-| PDFs | pypdf + cloud Poppler/Tesseract OCR | Selectable text is kept by page; scanned pages use the six installed OCR languages. Unreadable/blank pages stop processing. Handwriting needs a clearer source or human correction. OCR citations match OCR text, not independently verified pixels. |
+## 1. Configure the remote server
 
-The smaller ASR models run on the cloud CPU; only vLLM receives the GPU. This avoids competing GPU allocations. All speech is marked unverified. Single-speaker recordings and an explicit input-language selection are required. Audio is decoded into existing 25-second mono WAV chunks; timestamps are approximate chunk boundaries. Silence and strongly repetitive output are withheld, but these checks cannot guarantee perfect transcription.
+Install Docker Engine and the Compose plugin using the [official Linux instructions](https://docs.docker.com/engine/install/). Copy only the `cloud-inference` folder to that server; keep participant records and the MERN root `.env` off it.
 
-## Three steps when you choose to deploy
+In `cloud-inference/.env`, set:
 
-1. **Prepare the cloud VM.** Use Linux with NVIDIA Container Toolkit and Docker Compose GPU support. Start with an NVIDIA GPU with **32 GB or more VRAM**, 8 CPU cores, 32–64 GB RAM and about 80 GB disk. These are planning estimates for a 9B BF16 model with a 16K context and one concurrent generation; actual requirements must be measured. A free 16 GB Colab session is not a reliable fit for this configuration and is not persistent hosting.
+```dotenv
+CLOUD_SERVICE_TOKEN=your-separate-random-secret-at-least-32-characters
+HF_TOKEN=hf_your_read_token
+```
 
-   Copy only `cloud-inference/` to the cloud machine. No dataset upload is needed to boot. On Hugging Face, accept the IndicConformer access conditions and create a read-only token. Copy `.env.example` to `.env` **inside the cloud folder**, generate a separate random 32+ character `CLOUD_SERVICE_TOKEN`, and put the HF token in `HF_TOKEN`. Keep these out of chat and Git. The model gate asks to share your HF contact information with its owner; this is done through HF, not automatically by this project.
+Get a read token at [Hugging Face tokens](https://huggingface.co/settings/tokens). Accept access to [IndicConformer](https://huggingface.co/ai4bharat/indic-conformer-600m-multilingual) with the same account. HF_TOKEN is needed for gated speech weights; Qwen's GGUF is public. Never commit or share these secrets.
 
-2. **Start the cloud service yourself.** From that folder, run:
+## 2. Build and start
 
-   ```bash
-   docker compose --env-file .env up -d --build
-   ```
+In the remote server terminal:
 
-   This command has **not** been run by Codex. It downloads model weights on the cloud VM. First initialization can take several minutes. vLLM is internal-only; the authenticated gateway binds to the VM's loopback port 8080. Use an SSH tunnel from the MERN API machine, or your existing private network/TLS proxy. Do not publish the raw GPU engine. Example tunnel:
+```bash
+cd cloud-inference
+export STRIVE_CLOUD_SETUP=yes
+docker compose config --quiet
+docker compose up -d --build
+docker compose ps
+docker compose logs --tail=40 gateway
+```
 
-   ```bash
-   ssh -N -L 8080:127.0.0.1:8080 your-user@your-cloud-host
-   ```
+`config --quiet` validates without printing interpolated secrets. The first build compiles a pinned llama.cpp CPU server and installs CPU speech/OCR dependencies. First startup downloads approximately 6 GB of Qwen weights plus speech weights; allow time for downloads and initialization. Health checks stay unready until generation and speech are ready. A failed health check alone does not restart containers.
 
-   The gateway authenticates before parsing request bodies, bounds uploads, serializes generation/PDF work, keeps temporary originals only for a request and suppresses access logs. Model code and tokenizer files are downloaded from HF during initialization. Participant data is sent only to this private service; the service does not call a hosted inference provider. Persistent volumes contain model assets, not uploaded participant originals.
+The two services are:
 
-3. **Connect MERN after readiness passes.** In the project's existing root `.env`, set:
+- `llm`: Qwen3.5-9B Q4_K_M generation on CPU. Model URL and llama.cpp source commit are pinned. One request runs at a time; thinking is disabled. No host port is published.
+- `gateway`: authenticated generation, pypdf/Tesseract OCR in all six input languages, and the existing CPU speech models (IndicConformer for five regional languages, Whisper for English). Qwen is the only generative language model; dedicated speech tools remain necessary for recordings.
 
-   ```dotenv
-   CLOUD_AI_URL=http://127.0.0.1:8080
-   CLOUD_AI_TOKEN=the-same-private-service-token
-   CLOUD_AI_MODEL=Qwen/Qwen3.5-9B
-   ```
+Secrets are injected at runtime and excluded from the Docker build context. Model caches use named volumes. Containers run without root, with dropped Linux capabilities. The gateway is bound only to the cloud host's `127.0.0.1:8080`.
 
-   The loopback URL above assumes the SSH tunnel is on the API machine. Use HTTPS for a public address. Restart the MERN API yourself. A nonempty `CLOUD_AI_URL` selects exclusive cloud generation, PDF and speech processing. It also bypasses saved Gemini/Groq cooldowns. The old keys may remain in `.env` for rollback but are not called by this path. Never silently fall back to an external provider when the private service fails.
+## 3. Connect the MERN app
 
-   Run `npm.cmd run check:cloud`. It checks authenticated readiness, strict JSON, a synthetic selectable PDF and generated silence, without reading participant records. Then submit one reviewed example per language and format, compare all accepted facts with the originals, and measure transcription/numeric fidelity before processing the rest of the dataset.
+On your development computer, keep this SSH tunnel open:
 
-## Expected differences
+```bash
+ssh -N -L 8080:127.0.0.1:8080 your-user@your-cloud-host
+```
 
-- Remote Qwen produces the same source/field schemas. Node still checks every accepted quoted value and citation. Numeric translation drift is withheld. Readiness and financial scores remain deterministic; model output cannot choose a score.
-- A cloud OCR result stays explicitly unverified and links back to the uploaded original. Human review remains necessary for ambiguous or overwritten answers.
-- External Gemini embeddings are disabled in cloud mode, so the app uses keyword-related ideas. The old cloud-trained relevance classifier uses Gemini embeddings and will remain unavailable in this mode. Replacing its embeddings requires separate cloud retraining and evaluation; incompatible vectors are never substituted.
-- Quota is replaced by finite server capacity. Busy responses use bounded waits and the durable queue/checkpoints. One API worker and one GPU generation at a time are the starting configuration.
-- No automatic retries of existing participant records, billing changes, VM creation, port publishing or deployment occur when you edit these files. Start with the synthetic check, then explicitly retry a selected record.
+Set the MERN project's root `.env`:
 
-To roll back, clear `CLOUD_AI_URL` and restart the API. Existing source records and scores remain in Atlas.
+```dotenv
+CLOUD_AI_URL=http://127.0.0.1:8080
+CLOUD_AI_TOKEN=the-same-CLOUD_SERVICE_TOKEN
+CLOUD_AI_MODEL=Qwen/Qwen3.5-9B
+CLOUD_AI_TIMEOUT_MS=930000
+```
 
-## Verification before operational use
+Restart MERN with `npm.cmd run dev`, then run:
 
-The prepared image pins vLLM and the two critical Qwen/IndicConformer revisions. The gateway's dependency ranges should be resolved and locked after the first successful cloud build. GPU driver compatibility, model custom-code compatibility and gated downloads cannot be established by local unit tests. Test those before treating the service as ready; `/health/ready` returns 503 until both generation and speech are ready.
+```powershell
+npm.cmd run check:cloud
+```
 
-Review a small held-out set in all six languages with a fluent reviewer, especially Odia, code-switching, money amounts and handwriting. Do not promise that self-hosting raises accuracy: it changes availability and who operates inference. Keep the better result only after a fair comparison on the same reviewed cases.
+This checks authenticated readiness, strict JSON, a synthetic selectable PDF and generated silence; it does not upload participant files or demonstrate real speech accuracy. CPU requests can wait up to 15 minutes in the gateway; the app's timeout is slightly longer. The durable processing queue continues heartbeating while waiting. Short inputs work best. Inputs exceeding the 16K context fail explicitly instead of being silently truncated.
+
+## Stop, restart and troubleshoot
+
+```bash
+docker compose logs --tail=60 gateway
+docker compose ps
+docker compose down
+# Later, with STRIVE_CLOUD_SETUP=yes still exported:
+docker compose up -d
+```
+
+`down` retains cached models. Do not add `-v` unless you intend to remove them. LLM request logs are disabled to avoid retaining submitted evidence. Use container status and the gateway readiness check to diagnose generation startup. If speech initialization fails, verify HF access and server memory. If the gateway rejects access, check that both service tokens match and contain at least 32 characters. A host port conflict on 8080 must be resolved before startup.
+
+Strict schema validation, quotation/page checks, numeric checks and refusal of incomplete output remain active. These reduce unsupported output but cannot guarantee factual accuracy. Quantization and CPU performance need a real multilingual evaluation; no improvement in accuracy or throughput is claimed. Cloud mode exclusively uses this service, with no silent Gemini/Groq/Sarvam fallback. To restore the existing providers, clear `CLOUD_AI_URL` and restart MERN.
+
+The older `setup_cloud.sh` and `start_cloud.sh` files remain an optional native **GPU** path. They are not used by this Docker CPU setup.

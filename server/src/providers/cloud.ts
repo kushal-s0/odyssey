@@ -60,7 +60,7 @@ export async function cloudPost(path: string, body: unknown) {
           : { "Content-Type": "application/json" }),
       },
       body: body instanceof FormData ? body : JSON.stringify(body),
-      signal: AbortSignal.timeout(150000),
+      signal: AbortSignal.timeout(config.CLOUD_AI_TIMEOUT_MS),
     });
   } catch {
     throw new ProviderError(

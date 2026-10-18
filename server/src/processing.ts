@@ -1,6 +1,7 @@
 import { randomUUID, createHash } from "node:crypto";
 import { PDFDocument } from "pdf-lib";
 import { config } from "./config.js";
+import { reconcileQueuedSubmissions } from "./queue-recovery.js";
 import {
   JobModel,
   SubmissionModel,
@@ -243,6 +244,7 @@ async function tick() {
   if (ticking || !timer || !databaseReady()) return;
   ticking = true;
   try {
+    await reconcileQueuedSubmissions();
     const [geminiCooldown, groqCooldown] = config.CLOUD_AI_URL
       ? [null, null]
       : await Promise.all(
@@ -389,7 +391,10 @@ async function tick() {
       );
       if (claimed.modifiedCount)
         await SubmissionModel.updateOne(
-          { _id: stale.submissionId, status: "processing" },
+          {
+            _id: stale.submissionId,
+            status: { $in: ["processing", "queued"] },
+          },
           {
             $set: {
               status: "failed",

@@ -198,7 +198,7 @@ export function groqResponseError(
     /response_format|json_schema|structured output|strict/.test(upstreamMessage)
   )
     return new ProviderError(
-      "The configured Groq model rejected the structured-output settings. Use a model supporting strict JSON schema, such as openai/gpt-oss-120b, and retry.",
+      "The configured Groq model rejected the structured-output settings. Use a model supporting strict JSON schema, such as openai/gpt-oss-20b, and retry.",
       false,
       "PROVIDER_CONFIGURATION",
       0,

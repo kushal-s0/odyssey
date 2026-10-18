@@ -66,5 +66,55 @@ class GatewayTests(unittest.TestCase):
         self.assertIsNone(gateway.speech["indic"])
 
 
+    def test_generation_forwards_strict_schema_and_cpu_timeout(self):
+        observed = {}
+        class FakeClient:
+            def __init__(self, **kwargs): observed.update(kwargs)
+            async def __aenter__(self): return self
+            async def __aexit__(self, *args): pass
+            async def post(self, url, **kwargs):
+                observed.update(kwargs)
+                class Response:
+                    status_code = 200
+                    def json(self):
+                        return {"choices": [{"finish_reason": "stop", "message": {"content": '{"ok":true}'}}]}
+                return Response()
+        body = {"model": "Qwen/Qwen3.5-9B", "messages": [{"role": "user", "content": "synthetic"}],
+            "response_format": {"type": "json_schema", "json_schema": {"strict": True, "schema": {
+                "type": "object", "properties": {"ok": {"type": "boolean"}}, "required": ["ok"], "additionalProperties": False}}}}
+        with patch("gateway.httpx.AsyncClient", FakeClient), patch("gateway.LLM_TIMEOUT", 900):
+            result = self.client.post("/v1/chat/completions", json=body, headers=self.headers)
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(observed["timeout"], 900)
+        self.assertEqual(observed["json"]["chat_template_kwargs"], {"enable_thinking": False})
+        self.assertTrue(observed["json"]["response_format"]["json_schema"]["strict"])
+
+    def test_generation_withholds_invalid_schema_output_and_truncation(self):
+        body = {"model": "Qwen/Qwen3.5-9B", "messages": [{"role": "user", "content": "synthetic"}],
+            "response_format": {"type": "json_schema", "json_schema": {"strict": True, "schema": {
+                "type": "object", "properties": {"ok": {"type": "boolean"}}, "required": ["ok"], "additionalProperties": False}}}}
+        for content, finish in [('{"ok":"invented"}', 'stop'), ('{"ok":true,"extra":1}', 'stop'), ('{"ok":true}', 'length'), ('not JSON', 'stop')]:
+            class FakeClient:
+                def __init__(self, **kwargs): pass
+                async def __aenter__(self): return self
+                async def __aexit__(self, *args): pass
+                async def post(self, url, **kwargs):
+                    class Response:
+                        status_code = 200
+                        def json(self):
+                            return {"choices": [{"finish_reason": finish, "message": {"content": content}}]}
+                    return Response()
+            with self.subTest(content=content, finish=finish), patch("gateway.httpx.AsyncClient", FakeClient):
+                result = self.client.post("/v1/chat/completions", json=body, headers=self.headers)
+                self.assertEqual(result.status_code, 422)
+
+    def test_missing_or_invalid_schema_is_rejected_before_inference(self):
+        for schema in [None, {}, {"type": "imaginary"}]:
+            result = self.client.post("/v1/chat/completions", json={"model": "Qwen/Qwen3.5-9B",
+                "messages": [{"role": "user", "content": "synthetic"}],
+                "response_format": {"type": "json_schema", "json_schema": {"strict": True, "schema": schema}}}, headers=self.headers)
+            self.assertEqual(result.status_code, 422)
+
+
 if __name__ == "__main__":
     unittest.main()

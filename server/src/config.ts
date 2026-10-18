@@ -28,11 +28,25 @@ export const config = z
     CLOUD_AI_URL: optional,
     CLOUD_AI_TOKEN: optional,
     CLOUD_AI_MODEL: z.string().default("Qwen/Qwen3.5-9B"),
-    GEMINI_MODEL: z.string().default("gemini-3.8-flash"),
-    GEMINI_THINKING_LEVEL: z.enum(["LOW", "MEDIUM", "HIGH"]).default("LOW"),
+    CLOUD_AI_TIMEOUT_MS: z.coerce
+      .number()
+      .int()
+      .min(15000)
+      .max(1800000)
+      .default(150000),
+    GEMINI_MODEL: z.string().default("gemini-3-flash-preview"),
+    GEMINI_MAX_OUTPUT_TOKENS: z.coerce
+      .number()
+      .int()
+      .min(512)
+      .max(32768)
+      .default(8192),
+    GEMINI_THINKING_LEVEL: z
+      .enum(["MINIMAL", "LOW", "MEDIUM", "HIGH"])
+      .default("LOW"),
     GEMINI_EMBEDDING_MODEL: z.string().default("gemini-embedding-001"),
     GROQ_API_KEY: optional,
-    GROQ_MODEL: z.string().default("openai/gpt-oss-120b"),
+    GROQ_MODEL: z.string().default("openai/gpt-oss-20b"),
     GROQ_MIN_REQUEST_INTERVAL_MS: z.coerce
       .number()
       .int()

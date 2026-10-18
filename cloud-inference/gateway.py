@@ -3,6 +3,7 @@ import asyncio
 import base64
 import hmac
 import io
+import json
 import logging
 import os
 import subprocess
@@ -12,12 +13,14 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 import httpx
+from jsonschema import Draft202012Validator, SchemaError, ValidationError
 from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
 TOKEN = os.environ.get("CLOUD_SERVICE_TOKEN", "")
-LLM_URL = os.environ.get("LLM_URL", "http://llm:8000").rstrip("/")
+LLM_URL = os.environ.get("LLM_URL", "http://127.0.0.1:8000").rstrip("/")
+LLM_TIMEOUT = float(os.environ.get("LLM_TIMEOUT_SECONDS", "145"))
 MAX_FILE = 12 * 1024 * 1024
 asr_lock = threading.Lock()
 speech = {"indic": None, "english": None, "ready": False}
@@ -29,7 +32,7 @@ def authorized(authorization: str = Header(default="")):
 
 
 def load_speech():
-    # These packages and model files exist only in the cloud container.
+    # These packages and model files exist only in the cloud Python environment.
     import torch
     from transformers import AutoModel
     from faster_whisper import WhisperModel
@@ -108,6 +111,13 @@ async def chat(body: ChatRequest):
         raise HTTPException(422, "The configured model and strict schema are required")
     if body.response_format.get("json_schema", {}).get("strict") is not True:
         raise HTTPException(422, "Strict schema is required")
+    schema = body.response_format["json_schema"].get("schema")
+    if not isinstance(schema, dict) or not schema:
+        raise HTTPException(422, "A nonempty JSON schema is required")
+    try:
+        Draft202012Validator.check_schema(schema)
+    except SchemaError:
+        raise HTTPException(422, "Invalid JSON schema")
     if len(str(body.messages)) > 150000:
         raise HTTPException(413, "Input is too long")
     if generation_lock.locked():
@@ -116,13 +126,22 @@ async def chat(body: ChatRequest):
         payload = body.model_dump()
         payload["chat_template_kwargs"] = {"enable_thinking": False}
         try:
-            async with httpx.AsyncClient(timeout=145) as client:
+            async with httpx.AsyncClient(timeout=LLM_TIMEOUT) as client:
                 response = await client.post(LLM_URL + "/v1/chat/completions", json=payload,
                     headers={"Authorization": "Bearer " + TOKEN})
             if response.status_code != 200:
                 status = response.status_code if response.status_code in (400, 413, 422, 429, 503) else 503
                 raise HTTPException(status, "Cloud generation could not complete", headers={"Retry-After": "30"})
-            return response.json()
+            result = response.json()
+            choice = result["choices"][0]
+            if choice.get("finish_reason") != "stop" or choice["message"].get("refusal"):
+                raise HTTPException(422, "Incomplete generation was withheld")
+            value = json.loads(choice["message"]["content"])
+            # Constrained decoding does not replace output validation.
+            Draft202012Validator(schema).validate(value)
+            return result
+        except (ValidationError, json.JSONDecodeError, KeyError, IndexError, TypeError):
+            raise HTTPException(422, "Invalid structured generation was withheld")
         except (httpx.HTTPError, ValueError):
             raise HTTPException(503, "Cloud generation is temporarily unavailable", headers={"Retry-After": "30"})
 

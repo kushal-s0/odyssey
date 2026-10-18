@@ -1,6 +1,6 @@
-.env
-.env.*
-__pycache__/
-*.pyc
-test_gateway.py
-CLOUD_SETUP.md
+*
+!Dockerfile
+!Dockerfile.llm
+!requirements.txt
+!gateway.py
+!healthcheck.py

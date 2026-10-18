@@ -46,10 +46,10 @@ for (const role of ["entrepreneur", "assessor"] as const) {
   }) => {
     const { records } = await mockWorkspace(page, role);
     records[0]!.assessment = assessment();
-    await page.goto(`/submissions/${records[0]!.id}`);
+    await page.goto(`/submissions/${records[0]!.id}?view=full`);
     const panel = page.locator(".completion-panel");
     await expect(
-      panel.getByRole("heading", { name: "Complete missing information" }),
+      panel.getByRole("heading", { name: "Fill the missing details" }),
     ).toBeVisible();
     await expect(panel.locator(".completion-question")).toHaveCount(
       FIELD_KEYS.length - 3,
@@ -113,7 +113,7 @@ test("saving a short answer removes only that question and continues to the rema
     });
     await route.fulfill({ json: { submission: records[0] } });
   });
-  await page.goto(`/submissions/${records[0]!.id}`);
+  await page.goto(`/submissions/${records[0]!.id}?view=full`);
   await page
     .getByRole("button", { name: "Answer Own investment", exact: true })
     .click();
@@ -160,7 +160,7 @@ test("a fully answered input has no follow-up fields or answer buttons", async (
     language: "English",
     providerModel: "test",
   });
-  await page.goto(`/submissions/${records[0]!.id}`);
+  await page.goto(`/submissions/${records[0]!.id}?view=full`);
   await expect(
     page.getByText(
       "All parameters have answers in the available evidence. No additional questions are needed.",
@@ -168,7 +168,7 @@ test("a fully answered input has no follow-up fields or answer buttons", async (
   ).toBeVisible();
   await expect(page.locator(".completion-question")).toHaveCount(0);
   await expect(
-    page.getByRole("button", { name: "Resolve gaps" }),
+    page.getByRole("button", { name: "Add answers" }),
   ).toBeDisabled();
 });
 
@@ -178,7 +178,7 @@ test("missing questions and the answer dialog fit on mobile", async ({
   const { records } = await mockWorkspace(page, "entrepreneur");
   records[0]!.assessment = assessment();
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto(`/submissions/${records[0]!.id}`);
+  await page.goto(`/submissions/${records[0]!.id}?view=full`);
   await expect(page.locator(".completion-question")).toHaveCount(
     FIELD_KEYS.length - 3,
   );

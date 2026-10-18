@@ -244,3 +244,22 @@ Local UI screenshots: `.planning/screenshots/overview-desktop.png` and `.plannin
 - A configured cloud address routes generation, PDFs and speech exclusively to that service and bypasses Gemini/Groq cooldowns. External embeddings are disabled in this mode; keyword matching remains. An explicit audio input language is required. Settings exposes configuration status, not claimed model readiness.
 - Added private bearer authentication, transport validation, request bounds, CPU ASR, internal-only GPU engine, loopback-bound gateway, pinned generation/IndicConformer revisions, a gated-model setup guide and `npm.cmd run check:cloud` using only synthetic inputs.
 - Seven Node cloud adapter tests and five Python HTTP/PDF contracts passed. Compose structure passed checks. Python tests confirmed that torch/transformers/Whisper modules were not loaded. GPU runtime, gated model startup and actual OCR/ASR/language quality remain pending the user's cloud setup. No model downloads, deployment, billing changes or participant uploads were performed for this preparation.
+
+### Final UI verification and native cloud launchers - 18 October 2026
+
+- Confirmed rating notes wrap without clipping or changing their text. Six cards stay contained at 1528, 1280, 1024, 768 and 390 px. Desktop/mobile screenshots were captured and the desktop layout inspected.
+- Removed Dockerfile/Compose and replaced cloud instructions with explicit cloud-only Python setup/start scripts using the existing pinned Hugging Face models. Both services bind to loopback; Ctrl+C stops the launcher-owned processes. No model runs through npm or on the development PC.
+- Five gateway HTTP/PDF contracts passed again without loading torch or transformers locally. Embedded launcher Python snippets parse. Actual cloud installation, GPU boot and speech quality remain pending user deployment.
+
+- Docker CPU Qwen3.5-9B: added pinned GGUF and llama.cpp builds, private Compose services, persistent caches, CPU speech/OCR, strict gateway output validation, and configurable long-request timeout. No deployment or model startup performed.
+
+- Added Docker CPU packaging for original Qwen3.5-9B: pinned GGUF/llama.cpp, private Compose services, caches, speech/OCR, strict output validation, configurable timeout. No deployment or inference performed.
+- Verified Docker follow-up: 10 gateway/static packaging tests and 7 Node cloud integration tests passed; server typecheck passed. No torch/transformers were imported during verification.
+
+- Restored Gemini primary and Groq fallback. Active models: Gemini 3.1 Flash-Lite with MINIMAL thinking, GPT-OSS 20B with strict JSON and low reasoning. Lowered Gemini output cap to 8192; retained existing queue, checkpoints and quota waits. Existing API keys preserved. Older Gemini 2.5 Flash/Lite returned 404 in live access checks.
+
+Final hosted-provider verification: 133 application tests passed; server typecheck passed; live synthetic strict JSON passed for both Gemini 3.1 Flash-Lite with MINIMAL thinking and Groq GPT-OSS 20B. Existing refusal, truncation, numeric and citation checks remain active.
+
+Queue recovery fix: reconciles stale queued submissions with their durable job state, preserves active jobs and retry limits, and exposes Retry processing for interrupted work. Expired exhausted leases now update queued as well as processing submissions. Four regression cases added; all 137 application tests and server typecheck passed. The identified stuck submission was explicitly retried, retained its original, and completed through Gemini 3.1 Flash-Lite with needs_review status and no processing error.
+
+Active provider update: Gemini 3 Flash (`gemini-3-flash-preview`) is primary, using MINIMAL thinking; Groq GPT-OSS 20B remains fallback. Cloud override is blank. A synthetic live Gemini 3 Flash request returned HTTP 200 with complete valid JSON; originals were not reprocessed.

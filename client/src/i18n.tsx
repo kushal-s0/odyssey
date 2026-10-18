@@ -1,4 +1,5 @@
 import { useState, useSyncExternalStore } from "react";
+import { SIMPLE_ENGLISH } from "./simple-copy";
 import { LANGUAGES } from "../../shared/types";
 import { PARAMETER_QUESTIONS } from "../../shared/repair-questions";
 import type { RepairQuestion } from "../../shared/types";
@@ -88,7 +89,10 @@ export function t(
         "This rates the supporting information, not predicted business success.",
       )
     );
-  const template = dictionaries[language.split("-")[0]!]?.[text] ?? text;
+  const template =
+    dictionaries[language.split("-")[0]!]?.[text] ??
+    SIMPLE_ENGLISH[text] ??
+    text;
   return template.replace(/\{(\w+)\}/g, (match, name) =>
     String(values[name] ?? match),
   );

@@ -40,8 +40,10 @@ test("score explanation reconciles weighted points and leaves source quotations 
 }) => {
   const { records } = await mockWorkspace(page, "entrepreneur");
   const original = records[0]!.assessment!.segments[0]!.originalText;
-  await page.goto(`/submissions/${records[0]!.id}`);
+  await page.goto(`/submissions/${records[0]!.id}?view=full`);
   const score = page.locator(".score-explanation");
+  await score.locator(":scope > summary").click();
+  await score.locator("details > summary").click();
   await expect(score).toContainText("75/100");
   const a = records[0]!.assessment!;
   const weighted = a.dimensions

@@ -189,7 +189,9 @@ export default function AssessorInsights({
               </div>
             ))}
           </div>
-          <div className="support-body">
+          <details className="support-body friendly-assessor-details">
+            <summary>{t("Checks for the assessor")}</summary>
+            <div className="friendly-assessor-details-body">
             <p className="hint">
               {t(
                 "Surplus = stated monthly sales − stated monthly costs. It may exclude tax, owner pay and debt payments. Funding-plan gap = setup investment − own funds − requested external funding; requested funding is not secured funding.",
@@ -268,7 +270,8 @@ export default function AssessorInsights({
                 <ExternalLink size={12} />
               </a>
             </details>
-          </div>
+            </div>
+          </details>
         </>
       )}
     </section>

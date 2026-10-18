@@ -57,7 +57,7 @@ test("assessor dashboard navigation and filtering use authenticated records", as
     .getByRole("link", { name: "Small-scale poultry farming", exact: true })
     .click();
   await expect(
-    page.getByText("Not assessable", { exact: true }).first(),
+    page.getByText("Not enough details", { exact: true }).first(),
   ).toBeVisible();
   await page.getByRole("button", { name: "Version history" }).click();
   await expect(
@@ -102,7 +102,7 @@ test("entrepreneur dashboard exposes personal metrics and sign-out clears privat
     page.getByRole("heading", { name: "My dashboard", exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByText("MY LATEST INFORMATION READINESS", { exact: true }),
+    page.getByText("MY LATEST IDEA", { exact: true }),
   ).toBeVisible();
   await expect(
     page.getByRole("link", { name: "Comparisons", exact: true }),
