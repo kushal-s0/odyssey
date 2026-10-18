@@ -21,7 +21,6 @@ playwright-report/
 test-results/
 *.log
 .tools/
-output/
 tmp/
 models/cache/
 evals/private/
