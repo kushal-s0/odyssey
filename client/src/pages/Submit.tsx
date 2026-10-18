@@ -22,6 +22,7 @@ import {
   submissionSchema,
   serializeGuidedIdea,
 } from "../../../shared/input-rules";
+import ReadMore from "../ReadMore";
 import InputCompanion from "../InputCompanion";
 import GuidedIdeaInputs, { EMPTY_GUIDED_INPUT } from "../GuidedIdeaInputs";
 export default function Submit() {
@@ -528,66 +529,85 @@ export default function Submit() {
             <InputCompanion value={guided} onPreview={previewInput} />
           ) : (
             <>
-              <div className="eyebrow">{t("WHAT HAPPENS NEXT")}</div>
-              <h2>{t("An idea is a starting point.")}</h2>
-              <p>
-                {t(
-                  "You don’t need a polished business plan. Share what you know, and we’ll help identify what needs a closer look.",
-                )}
-              </p>
-              <ol className="process-list">
-                <li>
-                  <span>1</span>
-                  <div>
-                    <strong>{t("Understand your submission")}</strong>
+              <div className="submit-quick-guide">
+                <span className="eyebrow">{t("WHAT HAPPENS NEXT")}</span>
+                <h2>{t("Share. Check. Improve.")}</h2>
+                <div>
+                  <span>01</span>
+                  {t("Share your business idea")}
+                </div>
+                <div>
+                  <span>02</span>
+                  {t("See your assessment")}
+                </div>
+                <div>
+                  <span>03</span>
+                  {t("Build on the feedback")}
+                </div>
+                <ReadMore title="How it works">
+                  {" "}
+                  <div className="eyebrow">{t("WHAT HAPPENS NEXT")}</div>
+                  <h2>{t("An idea is a starting point.")}</h2>
+                  <p>
+                    {t(
+                      "You don’t need a polished business plan. Share what you know, and we’ll help identify what needs a closer look.",
+                    )}
+                  </p>
+                  <ol className="process-list">
+                    <li>
+                      <span>1</span>
+                      <div>
+                        <strong>{t("Understand your submission")}</strong>
+                        <p>
+                          {t(
+                            "Read or transcribe your original and translate it into English.",
+                          )}
+                        </p>
+                      </div>
+                    </li>
+                    <li>
+                      <span>2</span>
+                      <div>
+                        <strong>{t("Bring the details together")}</strong>
+                        <p>
+                          {t(
+                            "Organise the business, customers, resources, and financial assumptions.",
+                          )}
+                        </p>
+                      </div>
+                    </li>
+                    <li>
+                      <span>3</span>
+                      <div>
+                        <strong>{t("Ask useful questions")}</strong>
+                        <p>
+                          {t(
+                            "Clarify gaps and conflicting answers without filling them in for you.",
+                          )}
+                        </p>
+                      </div>
+                    </li>
+                    <li>
+                      <span>4</span>
+                      <div>
+                        <strong>{t("Support the assessor")}</strong>
+                        <p>
+                          {t(
+                            "Provide a consistent first review for the programme team.",
+                          )}
+                        </p>
+                      </div>
+                    </li>
+                  </ol>
+                  <div className="aside-note">
+                    <ShieldCheck size={20} />
                     <p>
                       {t(
-                        "Read or transcribe your original and translate it into English.",
+                        "This is a first assessment. It does not predict business success or determine funding eligibility.",
                       )}
                     </p>
                   </div>
-                </li>
-                <li>
-                  <span>2</span>
-                  <div>
-                    <strong>{t("Bring the details together")}</strong>
-                    <p>
-                      {t(
-                        "Organise the business, customers, resources, and financial assumptions.",
-                      )}
-                    </p>
-                  </div>
-                </li>
-                <li>
-                  <span>3</span>
-                  <div>
-                    <strong>{t("Ask useful questions")}</strong>
-                    <p>
-                      {t(
-                        "Clarify gaps and conflicting answers without filling them in for you.",
-                      )}
-                    </p>
-                  </div>
-                </li>
-                <li>
-                  <span>4</span>
-                  <div>
-                    <strong>{t("Support the assessor")}</strong>
-                    <p>
-                      {t(
-                        "Provide a consistent first review for the programme team.",
-                      )}
-                    </p>
-                  </div>
-                </li>
-              </ol>
-              <div className="aside-note">
-                <ShieldCheck size={20} />
-                <p>
-                  {t(
-                    "This is a first assessment. It does not predict business success or determine funding eligibility.",
-                  )}
-                </p>
+                </ReadMore>
               </div>
             </>
           )}

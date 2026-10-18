@@ -1,4 +1,4 @@
-﻿export const SIMPLE_ENGLISH: Record<string, string> = {
+export const SIMPLE_ENGLISH: Record<string, string> = {
   "Information readiness": "Details score",
   "INFORMATION READINESS": "DETAILS SCORE",
   "Core information completeness": "Details added",
@@ -33,4 +33,70 @@
   "Validate evidence": "Check answers",
   "Assess & compare": "Make the summary",
   "Bringing the evidence together": "Reading your idea",
+  "What is your business idea or business name?":
+    "What is your business called?",
+  "What trade or business activity will you carry out?":
+    "What work will your business do?",
+  "Which industry or sector does your business belong to?":
+    "What type of business is it?",
+  "What products or services will you offer?":
+    "What will you sell or do for customers?",
+  "Who are your target customers?": "Who will buy from you?",
+  "What customer problem or need will your business address?":
+    "What problem will you help customers solve?",
+  "Where will you operate your business?": "Where will you run your business?",
+  "What materials, equipment, or facilities will you need?":
+    "What supplies and tools do you need?",
+  "Where will you obtain your materials, stock, or equipment?":
+    "Who will you buy supplies from?",
+  "How much total investment will you need to start the business?":
+    "How much money do you need to start?",
+  "How much of your own money will you invest?":
+    "How much of your own money will you use?",
+  "How much external funding or borrowing will you need?":
+    "How much money do you need from others?",
+  "What price will you charge for each product or service?":
+    "What price will you charge for one item or service?",
+  "What monthly sales revenue do you expect?":
+    "How much do you expect to sell each month?",
+  "What will your monthly operating costs be?":
+    "How much will running your business cost each month?",
+  "What market research have you done, and what did you learn?":
+    "Have you spoken to customers or checked the market? What did you learn?",
+  "Who are your competitors or the alternatives customers use?":
+    "Which other businesses do your customers use?",
+  "Why would customers choose your business over the alternatives?":
+    "Why would customers choose you?",
+  "What relevant skills, training, or experience do you have?":
+    "What skills or experience do you have for this work?",
+  "Evidence Repair Loop": "Add an answer",
+  "Information to clarify": "Choose a question",
+  "Your clarification": "Your answer",
+  "Save & reassess": "Save answer",
+  "QUESTION FOR THE BENEFICIARY": "YOUR QUESTION",
+  "parameters still need answers. Information already found in your input is not asked again. Answers may change the assessment in either direction.":
+    "answers are missing. Add one at a time.",
+  "Answer guidance": "Need a hint?",
+  "Entrepreneurs and assessors sign in with their own account. Your access is set by the programme.":
+    "Sign in with your own email and password.",
+  "Create your account to submit an idea and track your own progress.":
+    "Create an account to share your idea and see your progress.",
+  "Track your ideas, assessments, and next steps.":
+    "Your ideas and next steps.",
+  "Understand proposals. Find the gaps. Help the next business take shape.":
+    "See ideas. Check answers. Help people take the next step.",
+  "Compare the supporting information across sectors, trades, and cohorts.":
+    "Compare details across business types and groups.",
+  Sector: "Business type",
+  Differentiation: "What makes it different",
+  "Market research": "What customers told you",
+  "Projected monthly sales": "Expected monthly sales",
+  "Relevant experience": "Your skills and experience",
+  "Investment required": "Money needed to start",
+  "Funding needed": "Money needed from others",
+  "parameters need answers": "answers to add",
+  "Human verification or clarification required":
+    "A person needs to check these answers",
+  "Supporting information, not predicted success.":
+    "This checks details, not future success.",
 };

@@ -46,6 +46,7 @@ export const config = z
       .default("LOW"),
     GEMINI_EMBEDDING_MODEL: z.string().default("gemini-embedding-001"),
     GROQ_API_KEY: optional,
+    GROQ_SPEECH_MODEL: z.string().default("whisper-large-v3-turbo"),
     GROQ_MODEL: z.string().default("openai/gpt-oss-20b"),
     GROQ_MIN_REQUEST_INTERVAL_MS: z.coerce
       .number()

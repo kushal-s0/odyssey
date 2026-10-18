@@ -1,4 +1,5 @@
 // localized-ui
+import ReadMore from "../ReadMore";
 import { t, useLanguage, LanguageControl } from "../i18n";
 import { Link, Navigate } from "react-router-dom";
 import {
@@ -44,10 +45,16 @@ export default function Home() {
               {t("A place to grow.")}
             </h1>
             <p>
-              {t(
-                "Share your idea in your own words. Get a structured assessment, understand what needs more detail, and take the next step with your programme assessor.",
-              )}
+              {t("Share your idea. See what is missing. Plan your next step.")}
             </p>
+            <ReadMore title="How it works">
+              {" "}
+              <p>
+                {t(
+                  "Share your idea in your own words. Get a structured assessment, understand what needs more detail, and take the next step with your programme assessor.",
+                )}
+              </p>
+            </ReadMore>
             <div className="home-actions">
               <Link className="button primary" to="/register">
                 {t("Create your account")} <ArrowRight size={16} />

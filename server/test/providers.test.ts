@@ -235,3 +235,40 @@ test("Gemini Flash-Lite uses minimal thinking without weakening the output schem
   );
   assert.equal(sent.generationConfig.temperature, 0);
 });
+
+test("speech translation never loses omitted chunks or accepts rewritten originals", async () => {
+  respond({
+    language: "English",
+    segments: [segment("Rewritten invented content")],
+  });
+  const original = {
+    id: "a1",
+    originalText: "I sell tea for 15 rupees.",
+    englishText: "I sell tea for 15 rupees.",
+    page: null,
+    startSeconds: 0,
+    endSeconds: 4,
+    kind: "audio" as const,
+    verified: false,
+    transcriptionModel: "groq/whisper-large-v3-turbo",
+  };
+  const result = await readSource({
+    kind: "audio",
+    language: "en-IN",
+    audioSegments: [
+      original,
+      { ...original, id: "a2", startSeconds: 25, endSeconds: 29 },
+    ],
+  });
+  assert.equal(result.segments.length, 2);
+  assert.deepEqual(
+    result.segments.map((s) => s.startSeconds),
+    [0, 25],
+  );
+  assert.ok(
+    result.segments.every(
+      (s) => s.originalText === original.originalText && !s.verified,
+    ),
+  );
+  assert.ok(result.warnings.some((w) => w.includes("retained for review")));
+});

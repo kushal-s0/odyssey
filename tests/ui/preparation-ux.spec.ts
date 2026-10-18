@@ -75,6 +75,7 @@ test("missing questions can be filtered and reset, and the checklist downloads",
     providerModel: "test",
   });
   await page.goto(`/submissions/${records[0]!.id}?view=full`);
+  await page.getByRole("button",{name:"All questions",exact:true}).click();
   const panel = page.locator(".completion-panel");
   await panel.getByRole("button", { name: /Finances/ }).click();
   await expect(panel.locator(".completion-question")).toHaveCount(6);

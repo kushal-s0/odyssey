@@ -1,4 +1,5 @@
 // localized-ui
+import ReadMore from "../ReadMore";
 import { t, useLanguage } from "../i18n";
 import { useMemo, useState } from "react";
 import {
@@ -209,12 +210,15 @@ export default function Comparisons() {
           </span>
           <span>{t("assessments with sufficient coverage")}</span>
         </div>
-        <p>
-          <Info size={16} />
-          {t("Small groups show descriptive values.")}
-          <br />
-          {t("Percentile rankings require at least five comparable ideas.")}
-        </p>
+        <ReadMore title="How to read this">
+          {" "}
+          <p>
+            <Info size={16} />
+            {t("Small groups show descriptive values.")}
+            <br />
+            {t("Percentile rankings require at least five comparable ideas.")}
+          </p>
+        </ReadMore>
       </div>
       <section className="panel">
         <div className="panel-heading">

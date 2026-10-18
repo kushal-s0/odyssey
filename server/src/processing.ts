@@ -89,6 +89,7 @@ export async function buildAssessment(input: {
         config.CLOUD_AI_MODEL,
         config.AUDIO_PROVIDER,
         config.SARVAM_MODEL,
+        config.GROQ_SPEECH_MODEL,
       ]),
     )
     .update(input.buffer ?? input.text ?? "")
@@ -115,14 +116,35 @@ export async function buildAssessment(input: {
       );
     }
   }
-  const audioSegments =
-    checkpoint.audioSegments ??
-    (input.kind === "audio" &&
+  let audioSegments = checkpoint.audioSegments;
+  let speechFallback = false;
+  if (
+    !audioSegments &&
+    input.kind === "audio" &&
     (config.CLOUD_AI_URL ||
       config.AUDIO_PROVIDER === "sarvam" ||
       config.AUDIO_PROVIDER === "cloud")
-      ? await transcribe(input.buffer!, input.language)
-      : undefined);
+  ) {
+    try {
+      audioSegments = await transcribe(
+        input.buffer!,
+        input.language,
+        input.onStage,
+      );
+    } catch (error) {
+      if (
+        !config.CLOUD_AI_URL &&
+        config.GEMINI_API_KEY &&
+        error instanceof ProviderError &&
+        /^SPEECH_(UNAVAILABLE|CREDITS_UNAVAILABLE|RATE_LIMITED)$/.test(
+          error.code,
+        )
+      ) {
+        speechFallback = true;
+        await input.onStage?.("Reading recording with backup speech service");
+      } else throw error;
+    }
+  }
   if (audioSegments && !checkpoint.audioSegments) {
     checkpoint.audioSegments = audioSegments;
     await input.onCheckpoint?.(checkpoint);
@@ -136,6 +158,10 @@ export async function buildAssessment(input: {
       pageCount,
       audioSegments,
     }));
+  if (speechFallback && !checkpoint.source)
+    source.warnings.push(
+      "The recording was read by the hosted document model because speech services were unavailable. Check every transcript against the original audio.",
+    );
   if (!checkpoint.source) {
     checkpoint.source = source;
     await input.onCheckpoint?.(checkpoint);
@@ -173,6 +199,21 @@ export async function buildAssessment(input: {
   )
     assessment.warnings.push(
       "Groq hosted fallback performed fact extraction. Source citations and evidence checks still apply.",
+    );
+  const speechModels = [
+    ...new Set(
+      audioSegments
+        ?.map((s) => s.transcriptionModel)
+        .filter((s): s is string => !!s) ?? [],
+    ),
+  ];
+  if (speechModels.length)
+    assessment.providerModel = [...speechModels, assessment.providerModel].join(
+      " + ",
+    );
+  if (speechModels.some((model) => model.startsWith("groq/")))
+    assessment.warnings.push(
+      "Backup speech transcription was used. Compare the transcript with the original recording before relying on it.",
     );
   try {
     const translated = await translateQuestions(

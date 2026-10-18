@@ -259,7 +259,8 @@ export default function Settings() {
         </section>
         {administration && (
           <section className="panel">
-            <div className="notice quota-help">
+            <details className="notice quota-help friendly-inline-details">
+              <summary>{t("When AI limits are reached")}</summary>
               <div>
                 <strong>{t("When AI limits are reached")}</strong>
                 <p>
@@ -288,7 +289,7 @@ export default function Settings() {
                   {t("Gemini usage")}
                 </a>
               </div>
-            </div>
+            </details>
             <div className="panel-heading">
               <div>
                 <h2>

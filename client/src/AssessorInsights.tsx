@@ -1,4 +1,5 @@
 // localized-ui
+import HelpTip from "./HelpTip";
 import { t, useLanguage } from "./i18n";
 import { useEffect, useState } from "react";
 import { ArrowRight, ExternalLink, RefreshCw, ShieldCheck } from "lucide-react";
@@ -95,27 +96,30 @@ export default function AssessorInsights({
               <span className="eyebrow">
                 {t("PROVISIONAL NEXT ACTION · ASSESSOR CONFIRMS")}
               </span>
-              <h3>{support.screening.label}</h3>
-              <p>
-                {t(
-                  "Information readiness measures how well the idea is described. The concerns below assess the implications of the available statements.",
-                )}
-              </p>
-              <ul>
-                {support.screening.reasons.map((reason, index) => (
-                  <li key={index}>
-                    {reason.text}
-                    {reason.evidenceIds.length > 0 && (
-                      <button
-                        className="evidence-link"
-                        onClick={() => onEvidence(reason.evidenceIds)}
-                      >
-                        {t("Inspect reason sources")}
-                      </button>
-                    )}
-                  </li>
-                ))}
-              </ul>
+              <h3>{t(support.screening.label)}</h3>
+              <details className="screening-reasons">
+                <summary>{t("Why this step?")}</summary>
+                <p>
+                  {t(
+                    "Information readiness measures how well the idea is described. The concerns below assess the implications of the available statements.",
+                  )}
+                </p>
+                <ul>
+                  {support.screening.reasons.map((reason, index) => (
+                    <li key={index}>
+                      {reason.text}
+                      {reason.evidenceIds.length > 0 && (
+                        <button
+                          className="evidence-link"
+                          onClick={() => onEvidence(reason.evidenceIds)}
+                        >
+                          {t("Inspect reason sources")}
+                        </button>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </details>
               <details>
                 <summary>
                   {t("Business potential: what is established?")}
@@ -163,7 +167,9 @@ export default function AssessorInsights({
                 {t("% rule coverage")}
               </span>
             </div>
-            <p>{support.risk.explanation}</p>
+            <HelpTip label={t("FINANCIAL RISK SCORE")}>
+              {t(support.risk.explanation)}
+            </HelpTip>
           </div>
           <div className="support-metrics">
             {[
@@ -189,87 +195,91 @@ export default function AssessorInsights({
               </div>
             ))}
           </div>
+          <div className="friendly-nearby-action">
+            <button className="button secondary" onClick={onNearby}>
+              {t("Find nearby similar businesses")}
+              <ArrowRight size={15} />
+            </button>
+          </div>
           <details className="support-body friendly-assessor-details">
             <summary>{t("Checks for the assessor")}</summary>
             <div className="friendly-assessor-details-body">
-            <p className="hint">
-              {t(
-                "Surplus = stated monthly sales − stated monthly costs. It may exclude tax, owner pay and debt payments. Funding-plan gap = setup investment − own funds − requested external funding; requested funding is not secured funding.",
-              )}
-            </p>
-            {support.financials.evidenceIds.length > 0 && (
-              <button
-                className="evidence-link"
-                onClick={() => onEvidence(support.financials.evidenceIds)}
-              >
-                {t("View financial source evidence")} <ArrowRight size={13} />
-              </button>
-            )}
-            <h3>{t("What drives the risk score")}</h3>
-            {support.risk.factors.map((f) => (
-              <article className="risk-factor" key={f.key}>
-                <div>
-                  <strong>{t(f.label)}</strong>
-                  <span>
-                    {f.points === null
-                      ? t("Unknown")
-                      : `${f.points} / 4 concern`}{" "}
-                    · {f.weight}
-                    {t("% weight")}
-                  </span>
-                </div>
-                <p>{t(f.explanation)}</p>
-                {f.evidenceIds.length > 0 && (
-                  <button
-                    className="evidence-link"
-                    onClick={() => onEvidence(f.evidenceIds)}
-                  >
-                    {t("View evidence")} <ArrowRight size={12} />
-                  </button>
-                )}
-              </article>
-            ))}
-            <h3>{t("Evidence quality")}</h3>
-            <p>
-              {support.evidence.supported} / {support.evidence.total}{" "}
-              {t("parameters supported ·")} {support.evidence.conflicts}{" "}
-              {t("conflicting parameters ·")}{" "}
-              {support.evidence.verifiedSegments} /{" "}
-              {support.evidence.totalSegments}{" "}
-              {t(
-                "source segments reviewed. Source review does not independently verify business claims.",
-              )}
-            </p>
-            <h3>{t("Checks for the assessor")}</h3>
-            <ul className="assessor-checks">
-              {support.followUps.map((item, i) => (
-                <li key={i}>
-                  <strong>{t(item.title)}</strong>
-                  <p>{item.detail}</p>
-                </li>
-              ))}
-            </ul>
-            <button className="button secondary" onClick={onNearby}>
-              {t("Find nearby similar businesses")} <ArrowRight size={15} />
-            </button>
-            <details className="risk-method">
-              <summary>
-                {t("Method and limits ·")} {support.version}
-              </summary>
-              <p>
+              <p className="hint">
                 {t(
-                  "Operating margin contributes 50%: nonpositive surplus = 4 concern points, positive margin below 10% = 3, below 20% = 2, otherwise 0. Stress contributes 25%: nonpositive scenario surplus = 4, surplus below 10% of original sales = 2, otherwise 0. Funding contributes 25%: positive gap = 4, over-allocation = 3, balanced = 0. Available points are normalized to 100; at least 50% coverage is required. Lower: 0–24; moderate: 25–59; higher: 60–100. These are product rules, not learned or calibrated failure estimates. No break-even units are calculated because fixed and per-unit variable costs are not separately collected.",
+                  "Surplus = stated monthly sales − stated monthly costs. It may exclude tax, owner pay and debt payments. Funding-plan gap = setup investment − own funds − requested external funding; requested funding is not secured funding.",
                 )}
               </p>
-              <a
-                href="https://www.sba.gov/counseling/plan-your-business/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                {t("SBA business planning reference")}{" "}
-                <ExternalLink size={12} />
-              </a>
-            </details>
+              {support.financials.evidenceIds.length > 0 && (
+                <button
+                  className="evidence-link"
+                  onClick={() => onEvidence(support.financials.evidenceIds)}
+                >
+                  {t("View financial source evidence")} <ArrowRight size={13} />
+                </button>
+              )}
+              <h3>{t("What drives the risk score")}</h3>
+              {support.risk.factors.map((f) => (
+                <article className="risk-factor" key={f.key}>
+                  <div>
+                    <strong>{t(f.label)}</strong>
+                    <span>
+                      {f.points === null
+                        ? t("Unknown")
+                        : `${f.points} / 4 concern`}{" "}
+                      · {f.weight}
+                      {t("% weight")}
+                    </span>
+                  </div>
+                  <p>{t(f.explanation)}</p>
+                  {f.evidenceIds.length > 0 && (
+                    <button
+                      className="evidence-link"
+                      onClick={() => onEvidence(f.evidenceIds)}
+                    >
+                      {t("View evidence")} <ArrowRight size={12} />
+                    </button>
+                  )}
+                </article>
+              ))}
+              <h3>{t("Evidence quality")}</h3>
+              <p>
+                {support.evidence.supported} / {support.evidence.total}{" "}
+                {t("parameters supported ·")} {support.evidence.conflicts}{" "}
+                {t("conflicting parameters ·")}{" "}
+                {support.evidence.verifiedSegments} /{" "}
+                {support.evidence.totalSegments}{" "}
+                {t(
+                  "source segments reviewed. Source review does not independently verify business claims.",
+                )}
+              </p>
+              <h3>{t("Checks for the assessor")}</h3>
+              <ul className="assessor-checks">
+                {support.followUps.map((item, i) => (
+                  <li key={i}>
+                    <strong>{t(item.title)}</strong>
+                    <p>{item.detail}</p>
+                  </li>
+                ))}
+              </ul>
+
+              <details className="risk-method">
+                <summary>
+                  {t("Method and limits ·")} {support.version}
+                </summary>
+                <p>
+                  {t(
+                    "Operating margin contributes 50%: nonpositive surplus = 4 concern points, positive margin below 10% = 3, below 20% = 2, otherwise 0. Stress contributes 25%: nonpositive scenario surplus = 4, surplus below 10% of original sales = 2, otherwise 0. Funding contributes 25%: positive gap = 4, over-allocation = 3, balanced = 0. Available points are normalized to 100; at least 50% coverage is required. Lower: 0–24; moderate: 25–59; higher: 60–100. These are product rules, not learned or calibrated failure estimates. No break-even units are calculated because fixed and per-unit variable costs are not separately collected.",
+                  )}
+                </p>
+                <a
+                  href="https://www.sba.gov/counseling/plan-your-business/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {t("SBA business planning reference")}{" "}
+                  <ExternalLink size={12} />
+                </a>
+              </details>
             </div>
           </details>
         </>

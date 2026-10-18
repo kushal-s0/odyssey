@@ -9,6 +9,7 @@ import {
 } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import {
+  FileText,
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
@@ -49,6 +50,9 @@ import {
 import AssessorInsights from "../AssessorInsights";
 import LocationPanel from "../LocationPanel";
 import EvidencePanel from "../EvidencePanel";
+import { flushSync } from "react-dom";
+import AssessmentPrint from "../AssessmentPrint";
+import MissingAnswers from "../MissingAnswers";
 import ScoreExplanation from "../ScoreExplanation";
 import IdeaVisualizer from "../IdeaVisualizer";
 import BusinessNextSteps from "../BusinessNextSteps";
@@ -93,9 +97,24 @@ export default function Detail() {
   const [questionGroup, setQuestionGroup] = useState("all"),
     [questionSearch, setQuestionSearch] = useState("");
   const [detailView, setDetailView] = useState("simple");
+  const [printing, setPrinting] = useState(false);
+  useEffect(() => {
+    const before = () => flushSync(() => setPrinting(true)),
+      after = () => setPrinting(false);
+    window.addEventListener("beforeprint", before);
+    window.addEventListener("afterprint", after);
+    return () => {
+      window.removeEventListener("beforeprint", before);
+      window.removeEventListener("afterprint", after);
+    };
+  }, []);
+  const [allQuestions, setAllQuestions] = useState(false),
+    [sourceOpen, setSourceOpen] = useState(false);
   const loadRevision = useRef(0);
   useEffect(() => {
     setDetailView("simple");
+    setAllQuestions(false);
+    setSourceOpen(false);
     setRecord(null);
     setSelected([]);
     setSourceTab("compare");
@@ -231,6 +250,7 @@ export default function Detail() {
     ) ?? [];
   return (
     <>
+      {printing && <AssessmentPrint record={record} />}
       <Link to="/submissions" className="back-link">
         <ArrowLeft size={14} />
         {t("All submissions")}
@@ -475,6 +495,7 @@ export default function Detail() {
                     onEvidence={(ids) => {
                       setSelected(ids);
                       setSourceTab("compare");
+                      setSourceOpen(true);
                     }}
                     onNearby={() => setTab("context")}
                   />
@@ -485,149 +506,177 @@ export default function Detail() {
                     onEvidence={(ids) => {
                       setSelected(ids);
                       setSourceTab("compare");
+                      setSourceOpen(true);
                     }}
                   />
                 )}
-                <section className="panel completion-panel">
-                  <div className="panel-heading">
-                    <div>
-                      <h2>{t("Complete missing information")}</h2>
-                      <p>
-                        {FIELD_KEYS.length - a.questions.length} {t("of")}{" "}
-                        {FIELD_KEYS.length}{" "}
-                        {t(
-                          "parameters answered. Only unanswered or unclear information is shown below.",
-                        )}
-                      </p>
-                      {a.questions.length > 0 && (
-                        <p className="hint">
-                          {t("Start with")}{" "}
-                          {a.questions
-                            .slice(0, 3)
-                            .map((q) => FIELD_LABELS[q.field])
-                            .join(", ")}
-                          {t(
-                            ". You can answer in stages; missing information is not a judgement of business quality.",
+                <MissingAnswers
+                  assessment={a}
+                  onAnswer={(field) => {
+                    setRepairField(field);
+                    setRepair(true);
+                  }}
+                  onBrowse={() => setAllQuestions(true)}
+                  onSources={() => setSourceOpen(true)}
+                />
+                {allQuestions && (
+                  <Modal
+                    title={t("All questions")}
+                    onClose={() => setAllQuestions(false)}
+                    wide
+                  >
+                    {" "}
+                    <section className="panel completion-panel">
+                      <div className="panel-heading">
+                        <div>
+                          <h2>{t("Complete missing information")}</h2>
+                          <p>
+                            {FIELD_KEYS.length - a.questions.length} {t("of")}{" "}
+                            {FIELD_KEYS.length}{" "}
+                            {t(
+                              "parameters answered. Only unanswered or unclear information is shown below.",
+                            )}
+                          </p>
+                          {a.questions.length > 0 && (
+                            <p className="hint">
+                              {t("Start with")}{" "}
+                              {a.questions
+                                .slice(0, 3)
+                                .map((q) => FIELD_LABELS[q.field])
+                                .join(", ")}
+                              {t(
+                                ". You can answer in stages; missing information is not a judgement of business quality.",
+                              )}
+                            </p>
                           )}
-                        </p>
-                      )}
-                    </div>
-                    <button
-                      type="button"
-                      className="button secondary small"
-                      onClick={() =>
-                        download(
-                          `strive-checklist-v${a.version}.txt`,
-                          preparationChecklist(record),
-                        )
-                      }
-                    >
-                      <Download size={14} />
-                      {t("Download checklist")}
-                    </button>
-                  </div>
-                  {a.questions.length ? (
-                    <>
-                      <div className="completion-tools">
-                        <div
-                          className="question-filters"
-                          role="group"
-                          aria-label={t("Question categories")}
+                        </div>
+                        <button
+                          type="button"
+                          className="button secondary small"
+                          onClick={() =>
+                            download(
+                              `strive-checklist-v${a.version}.txt`,
+                              preparationChecklist(record),
+                            )
+                          }
                         >
-                          {[
-                            { key: "all", label: "All", fields: FIELD_KEYS },
-                            ...QUESTION_GROUPS,
-                          ].map((group) => (
-                            <button
-                              type="button"
-                              aria-pressed={questionGroup === group.key}
-                              key={group.key}
-                              onClick={() => setQuestionGroup(group.key)}
+                          <Download size={14} />
+                          {t("Download checklist")}
+                        </button>
+                      </div>
+                      {a.questions.length ? (
+                        <>
+                          <div className="completion-tools">
+                            <div
+                              className="question-filters"
+                              role="group"
+                              aria-label={t("Question categories")}
                             >
-                              {t(group.label)}
-                              <span>
+                              {[
                                 {
-                                  a.questions.filter((q) =>
-                                    group.fields.includes(q.field),
-                                  ).length
-                                }
-                              </span>
-                            </button>
-                          ))}
-                        </div>
-                        <div className="question-search">
-                          <Search size={16} />
-                          <input
-                            aria-label={t("Search missing information")}
-                            placeholder={t("Find a question…")}
-                            value={questionSearch}
-                            onChange={(event) =>
-                              setQuestionSearch(event.target.value)
-                            }
-                          />
-                        </div>
-                        <span className="hint" role="status">
-                          {t("Showing")} {visibleQuestions.length} {t("of")}{" "}
-                          {a.questions.length} {t("open questions")}
-                        </span>
-                      </div>
-                      <div className="completion-questions">
-                        {visibleQuestions.map((q) => (
-                          <article
-                            className="completion-question"
-                            key={q.field}
-                          >
-                            <div>
-                              <span className="eyebrow">
-                                {t(FIELD_LABELS[q.field])}
-                              </span>
-                              <h3>{questionText(q)}</h3>
-
-                              <details className="question-guidance">
-                                <summary>{t("Answer guidance")}</summary>
-                                <p>{t(PARAMETER_QUESTIONS[q.field].hint)}</p>
-                              </details>
+                                  key: "all",
+                                  label: "All",
+                                  fields: FIELD_KEYS,
+                                },
+                                ...QUESTION_GROUPS,
+                              ].map((group) => (
+                                <button
+                                  type="button"
+                                  aria-pressed={questionGroup === group.key}
+                                  key={group.key}
+                                  onClick={() => setQuestionGroup(group.key)}
+                                >
+                                  {t(group.label)}
+                                  <span>
+                                    {
+                                      a.questions.filter((q) =>
+                                        group.fields.includes(q.field),
+                                      ).length
+                                    }
+                                  </span>
+                                </button>
+                              ))}
                             </div>
-                            <button
-                              className="button secondary small"
-                              onClick={() => {
-                                setRepairField(q.field);
-                                setRepair(true);
-                              }}
-                              aria-label={`Answer ${t(FIELD_LABELS[q.field])}`}
-                            >
-                              {t("Answer")} <ArrowRight size={14} />
-                            </button>
-                          </article>
-                        ))}
-                        {!visibleQuestions.length && (
-                          <div className="question-empty">
-                            <h3>{t("No questions match these filters")}</h3>
-                            <button
-                              type="button"
-                              className="button secondary small"
-                              onClick={() => {
-                                setQuestionGroup("all");
-                                setQuestionSearch("");
-                              }}
-                            >
-                              {t("Show all open questions")}
-                            </button>
+                            <div className="question-search">
+                              <Search size={16} />
+                              <input
+                                aria-label={t("Search missing information")}
+                                placeholder={t("Find a question…")}
+                                value={questionSearch}
+                                onChange={(event) =>
+                                  setQuestionSearch(event.target.value)
+                                }
+                              />
+                            </div>
+                            <span className="hint" role="status">
+                              {t("Showing")} {visibleQuestions.length} {t("of")}{" "}
+                              {a.questions.length} {t("open questions")}
+                            </span>
                           </div>
-                        )}
-                      </div>
-                    </>
-                  ) : (
-                    <div className="notes-body">
-                      <p>
-                        {t(
-                          "All parameters have answers in the available evidence. No additional questions are needed.",
-                        )}
-                      </p>
-                    </div>
-                  )}
-                </section>
-                <section className="panel">
+                          <div className="completion-questions">
+                            {visibleQuestions.map((q) => (
+                              <article
+                                className="completion-question"
+                                key={q.field}
+                              >
+                                <div>
+                                  <span className="eyebrow">
+                                    {t(FIELD_LABELS[q.field])}
+                                  </span>
+                                  <h3>{questionText(q)}</h3>
+
+                                  <details className="question-guidance">
+                                    <summary>{t("Answer guidance")}</summary>
+                                    <p>
+                                      {t(PARAMETER_QUESTIONS[q.field].hint)}
+                                    </p>
+                                  </details>
+                                </div>
+                                <button
+                                  className="button secondary small"
+                                  onClick={() => {
+                                    setAllQuestions(false);
+                                    setRepairField(q.field);
+                                    setRepair(true);
+                                  }}
+                                  aria-label={`Answer ${t(FIELD_LABELS[q.field])}`}
+                                >
+                                  {t("Answer")} <ArrowRight size={14} />
+                                </button>
+                              </article>
+                            ))}
+                            {!visibleQuestions.length && (
+                              <div className="question-empty">
+                                <h3>{t("No questions match these filters")}</h3>
+                                <button
+                                  type="button"
+                                  className="button secondary small"
+                                  onClick={() => {
+                                    setQuestionGroup("all");
+                                    setQuestionSearch("");
+                                  }}
+                                >
+                                  {t("Show all open questions")}
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        <div className="notes-body">
+                          <p>
+                            {t(
+                              "All parameters have answers in the available evidence. No additional questions are needed.",
+                            )}
+                          </p>
+                        </div>
+                      )}
+                    </section>
+                  </Modal>
+                )}
+
+                <details className="panel friendly-detail-group">
+                  <summary>{t("The business, at a glance")}</summary>
                   <div className="panel-heading">
                     <div>
                       <h2>{t("The business, at a glance")}</h2>
@@ -649,12 +698,14 @@ export default function Detail() {
                           onEvidence={(ids) => {
                             setSelected(ids);
                             setSourceTab("compare");
+                            setSourceOpen(true);
                           }}
                         />
                       ))}
                   </div>
-                </section>
-                <section className="panel">
+                </details>
+                <details className="panel friendly-detail-group">
+                  <summary>{t("Assessment dimensions")}</summary>
                   <div className="panel-heading">
                     <div>
                       <h2>{t("Assessment dimensions")}</h2>
@@ -711,7 +762,7 @@ export default function Detail() {
                       ". Weights are product rules, not learned business-outcome predictions.",
                     )}
                   </div>
-                </section>
+                </details>
                 <section className="panel">
                   <div className="panel-heading">
                     <h2>{t("Assessor notes & next steps")}</h2>
@@ -766,18 +817,55 @@ export default function Detail() {
                 </section>
               </section>
               <aside className="source-column">
-                <EvidencePanel
-                  key={record.id}
-                  record={record}
-                  selected={selected}
-                  onSelect={setSelected}
-                  mode={sourceTab}
-                  onModeChange={setSourceTab}
-                  onVerify={() => void verify()}
-                  busy={busy}
-                  readOnly={!!entrepreneur}
-                />
-                <section className="panel limits-panel">
+                {entrepreneur ? (
+                  <section className="panel source-launcher">
+                    <FileText size={25} />
+                    <h3>{t("Original sources")}</h3>
+                    <button
+                      type="button"
+                      className="button secondary"
+                      onClick={() => setSourceOpen(true)}
+                    >
+                      {t("Open sources")}
+                      <ArrowUpRight size={15} />
+                    </button>
+                  </section>
+                ) : (
+                  <EvidencePanel
+                    key={record.id}
+                    record={record}
+                    selected={selected}
+                    onSelect={setSelected}
+                    mode={sourceTab}
+                    onModeChange={setSourceTab}
+                    onVerify={() => void verify()}
+                    busy={busy}
+                    readOnly={!!entrepreneur}
+                  />
+                )}
+                {entrepreneur && sourceOpen && (
+                  <Modal
+                    title={t("Original sources")}
+                    onClose={() => setSourceOpen(false)}
+                    wide
+                  >
+                    {" "}
+                    <EvidencePanel
+                      key={record.id}
+                      record={record}
+                      selected={selected}
+                      onSelect={setSelected}
+                      mode={sourceTab}
+                      onModeChange={setSourceTab}
+                      onVerify={() => void verify()}
+                      busy={busy}
+                      readOnly={!!entrepreneur}
+                    />
+                  </Modal>
+                )}
+
+                <details className="panel limits-panel friendly-detail-group">
+                  <summary>{t("What to keep in mind")}</summary>
                   <div className="panel-heading">
                     <h3>
                       <ShieldCheck size={16} />
@@ -796,7 +884,7 @@ export default function Detail() {
                       )}
                     </li>
                   </ul>
-                </section>
+                </details>
               </aside>
             </div>
           ) : tab === "context" ? (
@@ -1061,8 +1149,11 @@ function RepairModal({
               <div className="eyebrow">{t("QUESTION FOR THE BENEFICIARY")}</div>
               <h3>{questionText(q)}</h3>
 
-              <small>{t(q.reason)}</small>
-              <p>{t(PARAMETER_QUESTIONS[q.field].hint)}</p>
+              <details className="question-guidance">
+                <summary>{t("Answer guidance")}</summary>
+                <small>{t(q.reason)}</small>
+                <p>{t(PARAMETER_QUESTIONS[q.field].hint)}</p>
+              </details>
             </div>
             <label>
               {t("Answer language")}

@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { SIMPLE_ENGLISH } from "../../client/src/simple-copy";
 import { mockWorkspace } from "./fixtures";
 import { assess } from "../../server/src/domain/assessment";
 import {
@@ -47,6 +48,9 @@ for (const role of ["entrepreneur", "assessor"] as const) {
     const { records } = await mockWorkspace(page, role);
     records[0]!.assessment = assessment();
     await page.goto(`/submissions/${records[0]!.id}?view=full`);
+    await page
+      .getByRole("button", { name: "All questions", exact: true })
+      .click();
     const panel = page.locator(".completion-panel");
     await expect(
       panel.getByRole("heading", { name: "Fill the missing details" }),
@@ -57,7 +61,7 @@ for (const role of ["entrepreneur", "assessor"] as const) {
     for (const field of ["products", "customers", "location"] as const)
       await expect(
         panel.getByRole("button", {
-          name: `Answer ${FIELD_LABELS[field]}`,
+          name: `Answer ${SIMPLE_ENGLISH[FIELD_LABELS[field]] ?? FIELD_LABELS[field]}`,
           exact: true,
         }),
       ).toHaveCount(0);
@@ -71,7 +75,7 @@ for (const role of ["entrepreneur", "assessor"] as const) {
     ] as const)
       await expect(
         panel.getByRole("button", {
-          name: `Answer ${FIELD_LABELS[field]}`,
+          name: `Answer ${SIMPLE_ENGLISH[FIELD_LABELS[field]] ?? FIELD_LABELS[field]}`,
           exact: true,
         }),
       ).toBeVisible();
@@ -115,22 +119,23 @@ test("saving a short answer removes only that question and continues to the rema
   });
   await page.goto(`/submissions/${records[0]!.id}?view=full`);
   await page
+    .getByRole("button", { name: "All questions", exact: true })
+    .click();
+  await page
     .getByRole("button", { name: "Answer Own investment", exact: true })
     .click();
   const dialog = page.getByRole("dialog");
-  await expect(dialog.getByLabel("Information to clarify")).toHaveValue(
+  await expect(dialog.getByLabel("Choose a question")).toHaveValue(
     "repair-1-selfInvestment",
   );
-  await dialog.getByLabel("Your clarification").fill("0");
-  await dialog.getByRole("button", { name: "Save & reassess" }).click();
-  await expect(page.locator(".completion-question")).toHaveCount(
-    FIELD_KEYS.length - 4,
-  );
+  await dialog.getByLabel("Your answer").fill("0");
+  await dialog.getByRole("button", { name: "Save answer" }).click();
+  await expect(page.locator(".completion-question")).toHaveCount(0);
   await expect(dialog).toBeVisible();
   await expect(
     dialog.locator("option", { hasText: "Own investment" }),
   ).toHaveCount(0);
-  await expect(dialog.getByLabel("Your clarification")).toHaveValue("");
+  await expect(dialog.getByLabel("Your answer")).toHaveValue("");
   expect(calls).toBe(1);
 });
 
@@ -161,14 +166,21 @@ test("a fully answered input has no follow-up fields or answer buttons", async (
     providerModel: "test",
   });
   await page.goto(`/submissions/${records[0]!.id}?view=full`);
+  await page
+    .getByRole("button", { name: "All questions", exact: true })
+    .click();
   await expect(
     page.getByText(
       "All parameters have answers in the available evidence. No additional questions are needed.",
     ),
   ).toBeVisible();
   await expect(page.locator(".completion-question")).toHaveCount(0);
+  await page
+    .getByRole("dialog")
+    .getByRole("button", { name: "Close dialog" })
+    .click();
   await expect(
-    page.getByRole("button", { name: "Add answers" }),
+    page.getByRole("button", { name: "Add answers", exact: true }),
   ).toBeDisabled();
 });
 
@@ -179,6 +191,9 @@ test("missing questions and the answer dialog fit on mobile", async ({
   records[0]!.assessment = assessment();
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(`/submissions/${records[0]!.id}?view=full`);
+  await page
+    .getByRole("button", { name: "All questions", exact: true })
+    .click();
   await expect(page.locator(".completion-question")).toHaveCount(
     FIELD_KEYS.length - 3,
   );

@@ -47,7 +47,9 @@ export default function IdeaVisualizer({
           <h2>{t("Your idea at a glance")}</h2>
         </div>
         <span className="friendly-badge">
-          {a.questions.length ? t("{count} answers to add", { count: a.questions.length }) : t("Ready for review")}
+          {a.questions.length
+            ? t("{count} answers to add", { count: a.questions.length })
+            : t("Ready for review")}
         </span>
       </div>
       <div className="visualizer-body">
@@ -56,7 +58,11 @@ export default function IdeaVisualizer({
             <svg
               viewBox="0 0 180 180"
               role="img"
-              aria-label={a.score == null ? t("Not enough details") : t("Details score: {score} out of 100", {score:a.score})}
+              aria-label={
+                a.score == null
+                  ? t("Not enough details")
+                  : t("Details score: {score} out of 100", { score: a.score })
+              }
             >
               <circle className="orbit-track" cx="90" cy="90" r="76" />
               <circle

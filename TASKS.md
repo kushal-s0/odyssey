@@ -263,3 +263,18 @@ Final hosted-provider verification: 133 application tests passed; server typeche
 Queue recovery fix: reconciles stale queued submissions with their durable job state, preserves active jobs and retry limits, and exposes Retry processing for interrupted work. Expired exhausted leases now update queued as well as processing submissions. Four regression cases added; all 137 application tests and server typecheck passed. The identified stuck submission was explicitly retried, retained its original, and completed through Gemini 3.1 Flash-Lite with needs_review status and no processing error.
 
 Active provider update: Gemini 3 Flash (`gemini-3-flash-preview`) is primary, using MINIMAL thinking; Groq GPT-OSS 20B remains fallback. Cloud override is blank. A synthetic live Gemini 3 Flash request returned HTTP 200 with complete valid JSON; originals were not reprocessed.
+
+
+## Simpler screens and speech recovery - 18 October 2026
+
+- [x] Entrepreneur overview uses a score ring and four visual groups covering all 19 business details. A missing score stays unknown. Help opens with hover, keyboard or tap.
+- [x] The full assessment shows one unanswered question at a time. All questions, filters and checklist downloads stay in a popup. Extracted answers, score calculations and warnings stay in expandable sections. Entrepreneurs open originals in a separate source panel; assessor source inspection stays available.
+- [x] Page introductions, submission guidance, comparison help, training workflow and provider-limit guidance now open only when requested. Fixed interface wording and questions are shorter in English, Hindi, Marathi, Telugu, Bengali and Odia. User text, quotations and reviewer notes stay unchanged.
+- [x] Next steps use missing details and current-version reviewer advice. Optional Udyam, JanSamarth and MUDRA links point to official resources; eligibility and loan approval are never inferred.
+- [x] Audio failure traced to Sarvam HTTP 402. Hosted Groq Whisper Large v3 Turbo is now the speech fallback. Explicit Odia bypasses Whisper; Gemini can read the recording when speech services are unavailable. Private-cloud mode never sends audio to public fallback providers.
+- [x] Speech conversion reads WAV headers for timing, rejects silence before upload and filters backup segments flagged as silence or low confidence. Omitted or rewritten translation chunks cannot erase the original transcript. All speech remains unverified until reviewed.
+- [x] Recording again no longer submits the form. Popup focus trapping handles nested panels. Printable reports retain full original passages and question lists even when the screen is compact.
+
+Verification: 147 application tests passed. Live fictional English audio completed transcription through Groq and extraction through Gemini 3 Flash; 3 supported fields, 16 unanswered questions, score withheld, all audio unverified. No participant recording was uploaded during this verification. The production client build and workspace type checks passed. Regional phrasing is machine translated and still needs native-speaker review; this test does not establish six-language transcription accuracy.
+
+Final browser verification: all 57 unique UI cases passed across the full run and targeted reruns after updating changed labels and panel interactions. This includes six-language switching, original-source preservation, mobile layouts, authentication, maps, one-question navigation, recording controls and print output. Final client production build passed; 26 focused speech/provider/localization tests passed after the final source-timing change. No deployment was started.

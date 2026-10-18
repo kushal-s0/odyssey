@@ -1,4 +1,5 @@
 // localized-ui
+import ReadMore from "./ReadMore";
 import { t, useLanguage } from "./i18n";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
@@ -120,7 +121,9 @@ export function PageIntro({
       <div>
         {eyebrow && <div className="eyebrow">{t(eyebrow)}</div>}
         <h1>{t(title)}</h1>
-        <p>{t(description)}</p>
+        <ReadMore title="About this page">
+          <p>{t(description)}</p>
+        </ReadMore>
       </div>
       {action && <div className="intro-action">{action}</div>}
     </div>
@@ -135,6 +138,8 @@ export function Busy({ label = "Loading workspace" }: { label?: string }) {
     </div>
   );
 }
+const modalStack:HTMLElement[]=[];
+let savedBodyOverflow="";
 export function Modal({
   title,
   children,
@@ -148,17 +153,20 @@ export function Modal({
 }) {
   useLanguage();
   const ref = useRef<HTMLDivElement>(null);
+  const closeRef=useRef(onClose);closeRef.current=onClose;
   useEffect(() => {
     const previous = document.activeElement as HTMLElement;
-    const bodyOverflow = document.body.style.overflow;
+    if (!modalStack.length) savedBodyOverflow=document.body.style.overflow;
+    if(ref.current)modalStack.push(ref.current);
     document.body.style.overflow = "hidden";
     ref.current?.focus();
     const listener = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if(modalStack.at(-1)!==ref.current)return;
+      if (e.key === "Escape") closeRef.current();
       if (e.key === "Tab") {
-        const items = ref.current?.querySelectorAll<HTMLElement>(
-          "button:not(:disabled),input,textarea,select,a[href]",
-        );
+        const items = Array.from(ref.current?.querySelectorAll<HTMLElement>(
+          "button:not(:disabled),input:not(:disabled),textarea:not(:disabled),select:not(:disabled),a[href]",
+        )??[]).filter(item=>item.getClientRects().length>0);
         if (!items?.length) return;
         const first = items[0]!,
           last = items[items.length - 1]!;
@@ -173,11 +181,12 @@ export function Modal({
     };
     document.addEventListener("keydown", listener);
     return () => {
-      document.body.style.overflow = bodyOverflow;
+      const index=modalStack.indexOf(ref.current!);if(index>=0)modalStack.splice(index,1);
+      if(!modalStack.length)document.body.style.overflow=savedBodyOverflow;
       document.removeEventListener("keydown", listener);
       previous?.focus();
     };
-  }, [onClose]);
+  }, []);
   return createPortal(
     <div
       className="modal-backdrop"
@@ -464,6 +473,7 @@ export function Recorder({
           <audio controls src={url} />
           <button
             className="button subtle"
+            type="button"
             onClick={() => {
               setFile(null);
               onFile(null);

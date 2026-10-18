@@ -81,6 +81,7 @@ export interface EvidenceField {
   reason: string;
 }
 export interface SourceSegment {
+  transcriptionModel?: string;
   id: string;
   originalText: string;
   englishText: string;

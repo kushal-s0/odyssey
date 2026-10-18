@@ -58,6 +58,7 @@ test("visual overview opens help and original answers without exposing assessor 
     "aria-pressed",
     "true",
   );
+  await page.getByRole("button", { name: "Open sources", exact: true }).click();
   await expect(page.locator(".source-segment").first()).toContainText(
     records[0]!.assessment!.segments[0]!.originalText,
   );
@@ -136,7 +137,7 @@ test("missing details keep score unknown, show one useful action and open the ri
     .getByRole("button", { name: "Add this answer", exact: true })
     .click();
   await expect(page.getByRole("dialog")).toBeVisible();
-  await expect(page.getByLabel("Information to clarify")).toHaveValue(
+  await expect(page.getByLabel("Choose a question")).toHaveValue(
     records[0]!.assessment!.questions[0]!.id,
   );
 });

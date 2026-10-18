@@ -1,4 +1,5 @@
 // localized-ui
+import ReadMore from "../ReadMore";
 import { t, useLanguage } from "../i18n";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -110,11 +111,14 @@ export default function ModelLab() {
             {t("CLOUD-TRAINED RESPONSE RELEVANCE")}
           </span>
           <h2>{t("Does this answer address the question?")}</h2>
-          <p>
-            {t(
-              "A supervised classifier flags potentially off-topic responses for review. Business outcomes and funding decisions remain outside its scope.",
-            )}
-          </p>
+          <ReadMore title="How it works">
+            {" "}
+            <p>
+              {t(
+                "A supervised classifier flags potentially off-topic responses for review. Business outcomes and funding decisions remain outside its scope.",
+              )}
+            </p>
+          </ReadMore>
         </div>
         <span className="outline-label">
           {remoteModel?.ready
@@ -329,7 +333,8 @@ export default function ModelLab() {
             </button>
           </form>
         </section>
-        <section className="panel">
+        <details className="panel friendly-detail-group">
+          <summary>{t("Cloud training workflow")}</summary>
           <div className="panel-heading">
             <div>
               <h2>{t("Cloud training workflow")}</h2>
@@ -402,7 +407,7 @@ export default function ModelLab() {
               {t("Instructions: README.md")}
             </p>
           </div>
-        </section>
+        </details>
       </div>
     </>
   );

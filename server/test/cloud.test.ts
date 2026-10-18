@@ -196,6 +196,12 @@ test("cloud audio preserves chunk timing and sends the WAV only to the private s
   audio.writeUInt16LE(16, 34);
   audio.write("data", 36);
   audio.writeUInt32LE(32000, 40);
+  // Non-silent synthetic PCM exercises private transport; silence is rejected locally.
+  for (let offset = 44; offset < audio.length; offset += 2)
+    audio.writeInt16LE(
+      Math.round(3000 * Math.sin((offset - 44) * 0.04)),
+      offset,
+    );
   let calls = 0;
   globalThis.fetch = async (url, options) => {
     calls++;

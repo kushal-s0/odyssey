@@ -19,7 +19,7 @@
     "Who are your competitors or the alternatives customers use?": "आपके प्रतियोगी कौन हैं या ग्राहक कौन से विकल्प उपयोग करते हैं?",
     "Why would customers choose your business over the alternatives?": "ग्राहक विकल्पों के बजाय आपके व्यवसाय को क्यों चुनेंगे?",
     "What relevant skills, training, or experience do you have?": "आपके पास कौन से प्रासंगिक कौशल, प्रशिक्षण या अनुभव हैं?",
-    "The input contains conflicting or unclear answers. Please confirm:": "इनपुट में विरोधाभासी या अस्पष्ट उत्तर हैं। कृपया पुष्टि करें:"
+    "The input contains conflicting or unclear answers. Please confirm:": "कुछ उत्तर अस्पष्ट हैं या सहमत नहीं हैं। कृपया जांचें:"
   },
   "mr": {
     "What is your business idea or business name?": "तुमची व्यवसाय कल्पना किंवा व्यवसायाचे नाव काय आहे?",
@@ -41,7 +41,7 @@
     "Who are your competitors or the alternatives customers use?": "तुमचे प्रतिस्पर्धी किंवा ग्राहक कोणते पर्याय वापरतात?",
     "Why would customers choose your business over the alternatives?": "पर्यायांपेक्षा ग्राहक तुमचा व्यवसाय का निवडतील?",
     "What relevant skills, training, or experience do you have?": "तुमच्याकडे कोणती संबंधित कौशल्ये, प्रशिक्षण किंवा अनुभव आहे?",
-    "The input contains conflicting or unclear answers. Please confirm:": "इनपुटमध्ये परस्परविरोधी किंवा अस्पष्ट उत्तरे आहेत. कृपया पुष्टी करा:"
+    "The input contains conflicting or unclear answers. Please confirm:": "काही उत्तरे अस्पष्ट आहेत किंवा सहमत नाहीत. कृपया तपासा:"
   },
   "te": {
     "What is your business idea or business name?": "మీ వ్యాపార ఆలోచన లేదా వ్యాపారం పేరు ఏమిటి?",
@@ -63,7 +63,7 @@
     "Who are your competitors or the alternatives customers use?": "మీ పోటీదారులు ఎవరు లేదా కస్టమర్‌లు ఉపయోగించే ప్రత్యామ్నాయాలు?",
     "Why would customers choose your business over the alternatives?": "కస్టమర్‌లు మీ వ్యాపారాన్ని ప్రత్యామ్నాయాల కంటే ఎందుకు ఎంచుకుంటారు?",
     "What relevant skills, training, or experience do you have?": "మీకు ఏ సంబంధిత నైపుణ్యాలు, శిక్షణ లేదా అనుభవం ఉన్నాయి?",
-    "The input contains conflicting or unclear answers. Please confirm:": "ఇన్‌పుట్ విరుద్ధమైన లేదా అస్పష్టమైన సమాధానాలను కలిగి ఉంది. దయచేసి నిర్ధారించండి:"
+    "The input contains conflicting or unclear answers. Please confirm:": "కొన్ని సమాధానాలు అస్పష్టంగా ఉన్నాయి లేదా అంగీకరించవు. దయచేసి తనిఖీ చేయండి:"
   },
   "bn": {
     "What is your business idea or business name?": "আপনার ব্যবসার ধারণা বা ব্যবসার নাম কি?",
@@ -85,7 +85,7 @@
     "Who are your competitors or the alternatives customers use?": "আপনার প্রতিযোগী কে বা বিকল্প গ্রাহকরা ব্যবহার করেন?",
     "Why would customers choose your business over the alternatives?": "কেন গ্রাহকরা বিকল্প থেকে আপনার ব্যবসা বেছে নেবেন?",
     "What relevant skills, training, or experience do you have?": "আপনার কি প্রাসঙ্গিক দক্ষতা, প্রশিক্ষণ বা অভিজ্ঞতা আছে?",
-    "The input contains conflicting or unclear answers. Please confirm:": "ইনপুটটিতে পরস্পরবিরোধী বা অস্পষ্ট উত্তর রয়েছে। অনুগ্রহ করে নিশ্চিত করুন:"
+    "The input contains conflicting or unclear answers. Please confirm:": "কিছু উত্তর অস্পষ্ট বা একমত নয়। অনুগ্রহ করে চেক করুন:"
   },
   "od": {
     "What is your business idea or business name?": "ଆପଣଙ୍କର ବ୍ୟବସାୟ ଧାରଣା କିମ୍ବା ବ୍ୟବସାୟ ନାମ କ’ଣ?",
@@ -107,6 +107,6 @@
     "Who are your competitors or the alternatives customers use?": "ଆପଣଙ୍କର ପ୍ରତିଯୋଗୀ କିଏ କିମ୍ବା ବିକଳ୍ପ ଗ୍ରାହକ ବ୍ୟବହାର କରନ୍ତି?",
     "Why would customers choose your business over the alternatives?": "ବିକଳ୍ପଗୁଡ଼ିକ ଅପେକ୍ଷା ଗ୍ରାହକମାନେ ଆପଣଙ୍କର ବ୍ୟବସାୟ କାହିଁକି ବାଛିବେ?",
     "What relevant skills, training, or experience do you have?": "ଆପଣଙ୍କର କେଉଁ ପ୍ରାସଙ୍ଗିକ କ skills ଶଳ, ତାଲିମ, କିମ୍ବା ଅଭିଜ୍ଞତା ଅଛି?",
-    "The input contains conflicting or unclear answers. Please confirm:": "ଇନପୁଟ୍ ବିବାଦୀୟ କିମ୍ବା ଅସ୍ପଷ୍ଟ ଉତ୍ତର ଧାରଣ କରେ | ଦୟାକରି ନିଶ୍ଚିତ କରନ୍ତୁ:"
+    "The input contains conflicting or unclear answers. Please confirm:": "କିଛି ଉତ୍ତର ଅସ୍ପଷ୍ଟ କିମ୍ବା ସହମତ ନୁହେଁ | ଦୟାକରି ଯାଞ୍ଚ କରନ୍ତୁ:"
   }
 }

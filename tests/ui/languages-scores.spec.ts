@@ -64,16 +64,21 @@ test("score explanation reconciles weighted points and leaves source quotations 
     await expect(score.locator(".score-explanation-total")).toContainText(
       String(a.score),
     );
-    await expect(page.locator(".source-segment").first()).toContainText(
-      original,
-    );
+    await page.locator(".source-launcher button").click();
+    await expect(page.locator(".source-segment").first()).toContainText(original);
+    await page.getByRole("dialog").locator(".modal-heading button").first().click();
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     ).toBe(true);
   }
+  await page.getByRole("button", { name: "Open sources", exact: true }).click();
   await expect(page.locator(".source-segment").first()).toContainText(original);
+  await page
+    .getByRole("dialog")
+    .getByRole("button", { name: "Close dialog" })
+    .click();
   await score.scrollIntoViewIfNeeded();
   await page.screenshot({
     path: ".planning/screenshots/score-explanation-mobile.png",

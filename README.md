@@ -257,3 +257,12 @@ npm start
 Set `NODE_ENV=production`, `APP_URL` to the deployed HTTPS origin, Atlas and provider secrets, and the bootstrap assessor configuration. Express binds to all interfaces in production. Sessions use secure HTTP-only cookies; the API checks mutation origins. Uploaded files and job state persist in Atlas, not the hosting filesystem. Free hosting can sleep; verify readiness before presenting. No deployment has been created automatically.
 
 Review `TASKS.md` for completed implementation and external steps still awaiting credentials/cloud access. `IMPLEMENTATION_PLAN.md` retains the detailed design decisions.
+
+
+### Compact screens and audio fallback
+
+Entrepreneurs start with a visual overview. Full details shows one missing answer at a time. **All questions**, **Open sources**, **How this score works** and **About this page** reveal the full material on request. Original statements and notes are never rewritten by the UI. Print/export still includes the complete assessment and source passages.
+
+Speech uses Sarvam first, then hosted Groq `whisper-large-v3-turbo` through the existing `GROQ_API_KEY` when Sarvam is unavailable. Optional `GROQ_SPEECH_MODEL` changes the speech model separately from the Groq text model. Explicit Odia does not use Whisper; Gemini can read audio when the speech providers are unavailable. Gemini 3 Flash remains the primary extraction/translation model. Private cloud mode remains isolated from public speech fallbacks.
+
+For a recording that already failed, open it and choose **Retry processing** after restarting the API; no new upload is needed. Speech and translation still need comparison with the original. The six bundled UI languages do not consume runtime translation quota. Regional wording has not yet had a native-speaker review.

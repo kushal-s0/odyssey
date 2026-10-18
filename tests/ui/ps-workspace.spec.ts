@@ -33,7 +33,10 @@ test("a delayed previous assessment cannot replace the source of the current rec
       exact: true,
     }),
   ).toBeVisible();
-  const oldResponse = page.waitForResponse(response => new URL(response.url()).pathname === `/api/submissions/${records[0]!.id}`);
+  const oldResponse = page.waitForResponse(
+    (response) =>
+      new URL(response.url()).pathname === `/api/submissions/${records[0]!.id}`,
+  );
   release();
   await (await oldResponse).finished();
   await expect(
@@ -124,8 +127,13 @@ test("evidence opens original and English together, follows citations and deep-l
   ).toHaveAttribute("aria-pressed", "true");
   await expect(panel.locator(".evidence-passages section")).toHaveCount(4);
   await page
+    .locator(".friendly-detail-group")
+    .filter({ has: page.locator(".facts-grid") })
+    .locator(":scope > summary")
+    .click();
+  await page
     .locator(".fact")
-    .filter({ hasText: "Projected monthly sales" })
+    .filter({ hasText: "Expected monthly sales" })
     .getByRole("button", { name: "1 source reference" })
     .click();
   await expect(panel.locator(".source-segment")).toHaveCount(1);
@@ -167,6 +175,7 @@ test("source evidence search, state filters and mobile layout remain readable", 
   const { records } = await mockWorkspace(page, "entrepreneur");
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(`/submissions/${records[0]!.id}?view=full`);
+  await page.getByRole("button", { name: "Open sources", exact: true }).click();
   const panel = page.locator(".evidence-panel");
   await panel.scrollIntoViewIfNeeded();
   await panel
