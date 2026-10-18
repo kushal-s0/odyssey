@@ -3,6 +3,8 @@
 Business ideas: extracted facts, original evidence and reasoned assessments.
 React + FastAPI + Supabase + free open-weight models on your NVIDIA laptop.
 
+[Quick project/model summary](docs/PROJECT_SUMMARY.md) · [Problem-statement review and demo plan](docs/PS_REVIEW_AND_DEMO_PLAN.md)
+
 [Implementation and measured model results](docs/IMPLEMENTATION_AND_MODEL_EVALUATION.md) · [Excel results workbook](evals/reports/comprehensive/EVALUATION_WORKBOOK.xlsx) · [Searchable local report](evals/reports/comprehensive/IMPLEMENTATION_AND_MODEL_EVALUATION.html)
 
 ## Setup once
@@ -22,6 +24,10 @@ Setup reuses existing environments/model downloads. All local settings live in *
 ```
 
 Apply migrations and create your Supabase account/profile once using [account setup](docs/ACCOUNT_SETUP.md). Open **http://127.0.0.1:5173** and sign in through Supabase. An Auth account needs an application profile; creating only a login is insufficient. API, frontend and model worker run together; Ctrl+C stops them. Startup checks the database before printing the link. After changing `.env.local`, restart `start.cmd`. `start.cmd --preview` shows the landing page without inference.
+
+Use the topbar language selector for English/Hindi menus and guidance. Originals and saved model prose retain their own language. The first-review summary highlights financial losses/gaps before the proposed rubric score; a mentor still checks demand and feasibility. No score is a probability of business success.
+
+[Short demo inputs](input/quick-demo/README.md) · [Processing times and recovery](docs/PROCESSING_TIME_AND_RECOVERY.md). Refresh an older browser tab to load stage-level progress; completed ideas open from saved results without inference.
 
 The app includes a guided idea builder, contextual missing/conflicting-field questions, a business map and downloadable brief, a separate what-if/break-even/stress planner, applicant/assessor workspaces, evidence-linked assessments, localized text/audio follow-ups, immutable history, related ideas, sourced OSM context, four comparisons with grouped bars/scatter/table/CSV, assessment radar and evidence confidence, financial checks, reports, private-source deletion and light/dark/system themes. Open **New idea → Guide me** to build an idea with questions, or select a saved idea and open **Business plan** to explore assumptions without changing its assessment. Add only `GROQ_API_KEY` for optional English/Hindi explanations; its other variables are prepared in root `.env.local`. Standard public OSM endpoints need no API key. [Positive/negative rehearsal inputs and answer keys](input/README.md) cover text, digital/scanned PDF and synthetic audio; select **Synthetic rehearsal input** before submitting them.
 

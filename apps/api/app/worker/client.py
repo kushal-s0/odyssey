@@ -41,7 +41,9 @@ class WorkerClient:
         for attempt in range(3):
             try:
                 response = self.http.request(method, path, headers={'Authorization': 'Bearer '+token}, json=payload)
-                if response.status_code not in {502, 503, 504} or attempt == 2:
+                # Operations carry stable execution IDs, hashes or lease fencing.
+                # A rolled-back database deadlock must not tear down inference.
+                if response.status_code not in {500, 502, 503, 504} or attempt == 2:
                     response.raise_for_status()
                     return response
             except httpx.TransportError:

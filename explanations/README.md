@@ -32,3 +32,4 @@ This directory explains the implementation as it is built. It is a companion to 
 Each implemented module gets an explanation of its purpose, main files/functions, input/output, data flow, security boundaries, failure handling, verification and tradeoffs. Add a link here when a guide exists. The prepared T27 instructions are in [docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md); public deployment is still unapproved and unverified.
 
 External models, libraries and permitted public data may be used. Their licenses/provenance belong in the model manifests and source records; required attribution is retained. Our own code, our trained candidate and pretrained models are described accurately.
+- [28 — English/Hindi interface, review summary and upload recovery](28-demo-readiness.md)

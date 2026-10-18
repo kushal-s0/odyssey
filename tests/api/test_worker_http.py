@@ -1,4 +1,6 @@
 import hashlib
+import threading
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from uuid import uuid4
 
@@ -8,6 +10,8 @@ from app.auth.access import ActorView, require_actor
 from app.config import Settings
 from app.main import create_app
 from app.worker.manifest import MANIFEST_HASH
+from app.services.jobs import Jobs
+from app.worker.capabilities import Capabilities
 from app.pipeline.normalize import normalize_text
 from app.contracts.models import LanguageResult
 from uuid import UUID
@@ -146,3 +150,54 @@ def test_capability_and_source_failure_do_not_disclose_tokens(database, tmp_path
         response = client.get(stage_url(work,'input'),headers={'Authorization':'Bearer '+work['capability']+'bad'})
         assert response.status_code == 401 and work['capability'] not in response.text
         assert client.post(stage_url(work,'checkpoint'),headers=headers(work),json={'payload':{'large':'x'*460000}}).status_code == 422
+
+
+def test_claim_replay_and_heartbeat_do_not_deadlock(database, tmp_path, monkeypatch):
+    """Reproduce runtime-row -> stage vs stage -> runtime contention without a GPU."""
+    with worker_workspace(database, tmp_path) as (client, _, app, worker):
+        submit(client, {'text': 'Synthetic tea business.'})
+        work = claim(client, worker).json()['claim']
+        jobs = Jobs(database, app.state.settings)
+        claims = Capabilities(app.state.settings.stage_capability_signing_key).verify(
+            work['capability'], UUID(work['stage_id']))
+        stage_locked = threading.Event()
+        original = jobs.guard
+
+        def guarded(*args, **kwargs):
+            result = original(*args, **kwargs)
+            stage_locked.set()
+            return result
+
+        monkeypatch.setattr(jobs, 'guard', guarded)
+        with ThreadPoolExecutor(max_workers=1) as executor:
+            with database.transaction() as connection:
+                connection.execute('SELECT worker_id FROM public.worker_runtimes WHERE worker_id=%s FOR UPDATE',
+                                   (worker,)).fetchone()
+                heartbeat = executor.submit(jobs.heartbeat, claims)
+                # Old order obtains the stage, then blocks on our runtime row.
+                # Fixed order waits before locking a stage, so replay can finish.
+                stage_locked.wait(.3)
+                replay = connection.execute('SELECT * FROM public.claim_compatible_stage(%s,%s,%s,%s,%s)',
+                    (worker, 'owned_worker', 600, 3, ['extract:text'])).fetchone()
+                assert str(replay['id']) == work['stage_id']
+            assert heartbeat.result(timeout=5).lease_generation == work['lease_generation']
+
+
+def test_progress_shows_page_checkpoint_counts_without_private_payload(database, tmp_path):
+    with worker_workspace(database, tmp_path) as (client, _, _, worker):
+        content = pdf(11)
+        attachment = init_upload(client, content)
+        uploaded = client.put(attachment['upload_path'], content=content,
+                              headers={'Content-Type': 'application/pdf'})
+        assert uploaded.status_code == 200
+        created = submit(client, {'attachment_ids': [attachment['attachment_id']]}).json()
+        work = claim(client, worker, ['extract:pdf']).json()['claim']
+        response = client.post(stage_url(work, 'checkpoint'), headers=headers(work), json={'payload': {
+            'next_page': 3, 'page_count': 11, 'private_text': 'synthetic-not-for-progress'}})
+        assert response.status_code == 204
+        response = client.get('/v1/jobs/'+created['job_id'])
+        assert response.status_code == 200
+        assert response.json()['stage_progress'] == {
+            'stage': 'extract:pdf', 'completed': 3, 'total': 11, 'unit': 'pages'}
+        assert response.json()['elapsed_seconds'] >= 0
+        assert 'synthetic-not-for-progress' not in response.text

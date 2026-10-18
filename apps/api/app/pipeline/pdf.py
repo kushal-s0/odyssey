@@ -163,7 +163,7 @@ def handler(context: dict[str,Any]) -> Iterator[dict[str,Any]]:
             if len(bundle.evidence)>200 or sum(len(s.original_text) for s in bundle.evidence)>60_000:
                 raise ValueError('Document evidence exceeds supported budget; review in smaller documents')
             bundle.warnings=list(dict.fromkeys(bundle.warnings))
-            yield {'checkpoint':{'next_page':index+1,'source_hash':value.source_hash,
+            yield {'checkpoint':{'next_page':index+1,'page_count':len(reader.pages),'source_hash':value.source_hash,
                 'bundle':bundle.model_dump(mode='json'),'measurements':measurements+(model.measurements if model else [])}}
         if not bundle.evidence:
             yield {'failure':{'code':'needs_review'}}

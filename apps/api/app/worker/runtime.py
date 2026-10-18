@@ -8,6 +8,8 @@ import sys
 import tempfile
 import threading
 import time
+import httpx
+from collections.abc import Callable
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -34,12 +36,35 @@ def execute(client: WorkerClient, work: StageWork, handler: str, *, max_seconds:
     # The API verifies capability, current lease and duplicate-delivery exclusion
     # BEFORE the handler is imported or the GPU model process is created.
     client.stage(work, 'begin', {'execution_id': str(uuid4())})
+    current = work
+    def renewed(value: StageWork) -> None:
+        nonlocal current
+        current = value
+    try:
+        _execute_started(client, work, handler, max_seconds=max_seconds,
+                         heartbeat_seconds=heartbeat_seconds, temp_root=temp_root, on_renew=renewed)
+    except (httpx.HTTPError, RuntimeError):
+        # The model child has already stopped in _execute_started.finally.
+        # Release only this accepted execution's still-current lease, keeping its
+        # durable checkpoints. Never wait ten minutes replaying /begin with a new
+        # execution ID after a temporary transport/database failure. A stale or
+        # already-published claim is rejected by the API and is never reset.
+        try:
+            client.stage(current, 'failure', {'code': 'runtime_unavailable', 'retry_after_seconds': 5})
+        except (httpx.HTTPError, ValueError, RuntimeError):
+            pass  # Expiry/fencing remains the safe recovery if the API is offline.
+        raise
+
+
+def _execute_started(client: WorkerClient, work: StageWork, handler: str, *, max_seconds: float,
+                     heartbeat_seconds: float, temp_root: Path | None, on_renew: Callable[[StageWork], None]) -> None:
     value = client.input(work)
     with tempfile.TemporaryDirectory(prefix='udyam-stage-', dir=temp_root) as folder:
         source = Path(folder)/'original'
         if value.attachment_id and value.input_kind != 'text':
             client.source(work, source, 25*1024*1024)
         work = StageWork.model_validate(client.stage(work, 'heartbeat').json())
+        on_renew(work)
         safe_work = work.model_dump(mode='json', exclude={'capability','worker_id','lease_expires_at'})
         context = {'work':safe_work, 'input':value.model_dump(mode='json'),
                    'source_path':str(source) if source.exists() else None}
@@ -86,6 +111,7 @@ def execute(client: WorkerClient, work: StageWork, handler: str, *, max_seconds:
                     return
                 if now-heartbeat_at >= heartbeat_seconds:
                     work = StageWork.model_validate(client.stage(work, 'heartbeat').json())
+                    on_renew(work)
                     heartbeat_at = time.monotonic()
                 if work.lease_expires_at <= datetime.now(timezone.utc):
                     raise RuntimeError('Lease expired during model execution')

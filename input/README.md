@@ -1,5 +1,10 @@
 # Judge rehearsal inputs
 
+For a short presentation, start with [quick-demo/](quick-demo/README.md): four
+compact text/digital-PDF files and a separate manifest. The original18 files and
+their expectations below remain unchanged. Queue one example at a time; opening
+a saved result does not run the models again.
+
 18 input files: 8 text proposals (English/Hindi), 4 digital PDFs, 2 image-only scanned PDFs, 3 English synthetic speech WAVs and 1 silent WAV. Every business is fictional. Positive means usable supplied detail; negative means missing, conflicting, irrelevant or adversarial input, not a prediction about an entrepreneur.
 
 1. Start the app with `start.cmd` and sign in normally with Supabase.

@@ -30,14 +30,14 @@ export function guidedSource(answers: GuidedAnswers): string {
 }
 
 export function GuidedIdea({ answers, onChange }: { answers: GuidedAnswers; onChange: (answers: GuidedAnswers) => void }) {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   const [step, setStep] = useState(0)
   const current = steps[step]
   const count = steps.reduce((total, item) => total + item.fields.filter(([key]) => answers[key]?.trim()).length, 0)
   return <div className="guided-idea">
     <div className="builder-intro"><Compass size={24} /><div><strong>{t("A little help to shape your idea")}</strong><p>{t("Answer in your own words. Skip anything you don’t know; we’ll ask about useful gaps after assessment.")}</p></div><span className="badge">{count} {t("/ 12 answered")}</span></div>
     <nav className="builder-steps" aria-label={t("Guided idea steps")}>{steps.map((item, index) => <button key={t(item.title)} type="button" aria-pressed={step === index} onClick={() => setStep(index)}><span>{item.fields.every(([key]) => answers[key]?.trim()) ? <Check size={14} /> : `0${index + 1}`}</span>{t(item.title)}</button>)}</nav>
-    <div className="builder-stage"><h3>{t(current.title)}</h3><p className="field-note">{t(current.description)}</p><div className="guided-fields">{current.fields.map(([key, label, question]) => <label key={key}>{t(label)}<span className="optional"> {t("· optional")}</span><textarea aria-label={`Guided ${label.toLowerCase()}`} rows={2} maxLength={1500} value={answers[key] || ''} onChange={event => onChange({ ...answers, [key]: event.target.value })} placeholder={t(question)} /></label>)}</div></div>
+    <div className="builder-stage"><h3>{t(current.title)}</h3><p className="field-note">{t(current.description)}</p><div className="guided-fields">{current.fields.map(([key, label, question]) => <label key={key}>{t(label)}<span className="optional"> {t("· optional")}</span><textarea aria-label={locale === 'hi' ? `${t('Guided question')}: ${t(label)}` : `Guided ${label.toLowerCase()}`} rows={2} maxLength={1500} value={answers[key] || ''} onChange={event => onChange({ ...answers, [key]: event.target.value })} placeholder={t(question)} /></label>)}</div></div>
     <div className="builder-controls"><button type="button" className="secondary-button" disabled={step === 0} onClick={() => setStep(step - 1)}><ArrowLeft size={15} />{t("Back")}</button><span>{step + 1} {t("of")} {steps.length}</span>{step < steps.length - 1 ? <button type="button" className="secondary-button" onClick={() => setStep(step + 1)}>{t("Next questions")}<ArrowRight size={15} /></button> : <span className="field-note">{t("Review your source below, then submit.")}</span>}</div>
     <details><summary>{t("Preview the text you will submit")}</summary><p className="original-text">{guidedSource(answers) || t("Your answers will appear here. Nothing is filled in for you.")}</p><p className="field-note">{t("Unanswered fields remain missing. There is no invented price, demand estimate or sector standard.")}</p></details>
   </div>

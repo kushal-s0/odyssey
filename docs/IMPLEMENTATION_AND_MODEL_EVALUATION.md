@@ -2,6 +2,13 @@
 
 Generated 2026-10-18T07:57:56.786216+05:30. Code audited at `aa89991f5fe5c2a6bf8ccecdee644ec3daf83c7a` on branch `second`. This is an evaluation of implemented behavior, not a public release or a validated funding/business-success model.
 
+> Later implementation note (18 October): this report and its workbook retain the
+> original measured results. The [current PS review](PS_REVIEW_AND_DEMO_PLAN.md),
+> [short summary](PROJECT_SUMMARY.md) and [processing repair](PROCESSING_TIME_AND_RECOVERY.md)
+> document later English/Hindi UI, financial-review, T06 status and runtime fixes.
+> Normal Supabase configuration is now filled; this report's missing-config row
+> describes the earlier evaluation environment. No new accuracy is claimed.
+
 ## Read this first
 
 | Question | Measured answer |

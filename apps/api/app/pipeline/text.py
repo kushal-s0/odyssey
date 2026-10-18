@@ -147,7 +147,13 @@ def handler(context: dict[str,Any]) -> Iterator[dict[str,Any]]:
             bundle=EvidenceBundle.model_validate(checkpoint.get('bundle') or value.previous_outputs['extract:'+value.input_kind])
             start=int(checkpoint.get('next_segment',0))
             for index,bundle in translated(bundle,LocalTranslator(),start):
-                yield {'checkpoint':{'next_segment':index,'bundle':bundle.model_dump(mode='json')}}
+                segment = bundle.evidence[index-1]
+                # English passthrough does not run a model. Batch its cheap,
+                # repeatable checkpoints instead of a hosted DB round trip for
+                # every PDF line. Keep each actual translation's checkpoint.
+                expensive = segment.language.code != 'en' and not segment.origin_segment_id
+                if expensive or index % 8 == 0 or index == len(bundle.evidence):
+                    yield {'checkpoint':{'next_segment':index,'bundle':bundle.model_dump(mode='json')}}
             yield {'publish':bundle.model_dump(mode='json')}
         elif stage=='structure':
             bundle=EvidenceBundle.model_validate(value.previous_outputs['translate'])
@@ -164,7 +170,7 @@ def handler(context: dict[str,Any]) -> Iterator[dict[str,Any]]:
                 candidate=ExtractionDraft.model_validate(model.json(EXTRACT_SYSTEM,source,validator=validate_draft))
                 draft=grounded_draft(bundle,candidate,group)
                 drafts.append(draft)
-                yield {'checkpoint':{'drafts':[item.model_dump(mode='json') for item in drafts],
+                yield {'checkpoint':{'total_groups':len(groups),'drafts':[item.model_dump(mode='json') for item in drafts],
                     'measurements':saved_measurements+model.measurements,'warnings':bundle.warnings}}
             labelled = explicit_statements(bundle)
             if labelled:

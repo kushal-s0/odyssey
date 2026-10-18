@@ -19,6 +19,7 @@ import { ScreeningBrief } from '../components/ScreeningBrief'
 export type Submission = components['schemas']['SubmissionView']
 const finished = new Set(['completed', 'partial', 'needs_review', 'failed', 'cancelled'])
 const waiting = new Set(['waiting_for_worker', 'waiting_for_runtime', 'quota_exhausted'])
+const stageNames: Record<string, string> = { 'extract:pdf': 'Reading the original', translate: 'Preparing the English rendering', structure: 'Organizing business facts', assess: 'Assessing the evidence' }
 const names: Record<string, string> = { queued: 'Saved · queued', extracting: 'Reading the original', translating: 'Preparing the English rendering',
   structuring: 'Organizing business facts', assessing: 'Assessing the evidence', enriching: 'Adding context', completed: 'Assessment saved',
   partial: 'Partial result saved', needs_review: 'Needs review', waiting_for_worker: 'Waiting for the owned worker', waiting_for_runtime: 'Waiting for processing capacity',
@@ -66,7 +67,7 @@ export function SubmissionDetail({ id, token, onFinished, canClarify = true, act
       inFlight = true
       if (!disposed) setChecking(true)
       try {
-        if (document.hidden || Date.now() - started > 300_000) {
+        if (document.hidden || Date.now() - started > 30 * 60_000) {
           if (!disposed) setNote(t("Automatic updates paused. Use Refresh status when you are ready."))
           return
         }
@@ -148,6 +149,8 @@ export function SubmissionDetail({ id, token, onFinished, canClarify = true, act
   return <div className="submission-detail"><details className="processing-disclosure" open={!assessment}><summary>{t("Saved processing status ·")} {job ? t(names[job.status] || job.status) : submission ? t(names[submission.status] || submission.status) : t("Loading…")}</summary><div className="detail-heading"><h3>{t("Processing journey")}</h3><button className="secondary-button" type="button" disabled={busy || checking} onClick={() => setRefresh(value => value + 1)}>{t("Refresh status")}</button></div>
     <p className="processing-status" role="status">{job ? t(names[job.status] || job.status) : t("Loading…")}</p>
     {job && <><progress aria-label={t("Completed processing stages")} value={job.completed_stages} max={job.total_stages} /><p className="field-note">{job.completed_stages} {t("of")} {job.total_stages} {t("processing stages saved.")} {job.error?.message}</p></>}
+    {job?.stage_progress && <div className="stage-progress" role="status"><strong>{t(stageNames[job.stage_progress.stage] || job.stage_progress.stage)}</strong><p>{job.stage_progress.completed}{job.stage_progress.total ? ` / ${job.stage_progress.total}` : ''} {t(job.stage_progress.unit)} {t('saved within this stage')}. {t('Steps take different amounts of time. The counter advances after a safe checkpoint, not every generated word.')}</p></div>}
+    {job && <p className="field-note">{t('Time since saved, including queue')}: {Math.floor((job.elapsed_seconds ?? 0) / 60)}m {(job.elapsed_seconds ?? 0) % 60}s. {t('Digital PDFs with many short lines can require more model batches than plain text. Scans require extra OCR time per page.')}</p>}
     <p className="field-note">{note}</p>
     {error && <p role="alert" className="form-error">{error}</p>}
     {submission && <div className="job-actions">{!finished.has(job?.status || submission.status) && <button className="secondary-button" type="button" disabled={busy} onClick={() => { void control(false) }}>{t("Cancel processing")}</button>}

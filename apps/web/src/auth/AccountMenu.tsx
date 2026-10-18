@@ -15,7 +15,7 @@ export function AccountMenu() {
   }
   function close() { setPassword(''); dialog.current?.close() }
   return <>
-    <div className="account-controls">{auth.actor && <span className="account-role">{auth.actor.role}</span>}
+    <div className="account-controls">{auth.actor && <span className="account-role">{t({ applicant: 'Applicant', assessor: 'Assessor', admin: 'Administrator' }[auth.actor.role])}</span>}
       {auth.session ? <button className="account-button" onClick={() => { void auth.signOut() }}>{t("Sign out")}</button>
         : <button className="account-button" onClick={() => dialog.current?.showModal()}>{t("Sign in")}</button>}</div>
     <dialog ref={dialog} className="login-dialog" aria-labelledby="login-title" onCancel={() => setPassword('')}>

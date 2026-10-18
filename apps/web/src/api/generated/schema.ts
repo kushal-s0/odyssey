@@ -1352,6 +1352,12 @@ export interface components {
             error?: components["schemas"]["ErrorEnvelope"] | null;
             /** Retry After Seconds */
             retry_after_seconds?: number | null;
+            /**
+             * Elapsed Seconds
+             * @default 0
+             */
+            elapsed_seconds: number;
+            stage_progress?: components["schemas"]["StageProgress"] | null;
         };
         /** LanguageResult */
         LanguageResult: {
@@ -1915,6 +1921,20 @@ export interface components {
             checkpoint?: {
                 [key: string]: unknown;
             } | null;
+        };
+        /** StageProgress */
+        StageProgress: {
+            /** Stage */
+            stage: string;
+            /** Completed */
+            completed: number;
+            /** Total */
+            total?: number | null;
+            /**
+             * Unit
+             * @enum {string}
+             */
+            unit: "pages" | "segments" | "batches" | "dimensions";
         };
         /** StagePublish */
         StagePublish: {

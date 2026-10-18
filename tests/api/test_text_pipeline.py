@@ -5,10 +5,10 @@ from fastapi import HTTPException
 
 from app.contracts.models import LanguageResult
 from app.contracts.pipeline import EvidenceBundle, ExtractionDraft
-from app.contracts.worker import StagePublish, WorkerRequest
+from app.contracts.worker import StagePublish, WorkerRequest, StageInput
 from app.pipeline.normalize import normalize_text, numeric_tokens
 from app.pipeline.structure import assemble, quoted_money
-from app.pipeline.text import grounded_draft, structure_groups, translated
+from app.pipeline.text import grounded_draft, structure_groups, translated, handler
 from app.providers.local_models import ModelUnavailable, Qwen
 from app.services.jobs import Jobs
 from app.worker.capabilities import Capabilities
@@ -140,6 +140,20 @@ def test_api_persists_validated_sources_and_business_atomically(database,tmp_pat
 def test_bundle_does_not_accept_unknown_schema_fields():
     with pytest.raises(ValueError):
         EvidenceBundle.model_validate({'evidence':[],'pretend_verified':True})
+
+
+def test_english_passthrough_batches_writes_without_changing_evidence():
+    value = bundle('\n'.join(f'Synthetic business line {i}' for i in range(20)))
+    expected = list(translated(value.model_copy(deep=True), None))[-1][1].model_dump(mode='json')
+    source = StageInput(submission_id=value.evidence[0].submission_id,
+        input_revision_id=value.evidence[0].input_revision_id,input_kind='text',source_hash='a'*64,
+        source_text='Synthetic',preferred_language='en',attachment_id=None,media_type=None,
+        bytes=None,pages=None,duration_seconds=None,previous_outputs={'extract:text':value.model_dump(mode='json')})
+    events = list(handler({'work':{'pipeline_version':'screening-v1','stage_key':'translate'},
+                           'input':source.model_dump(mode='json')}))
+    checkpoints = [event['checkpoint']['next_segment'] for event in events if 'checkpoint' in event]
+    assert checkpoints == [8, 16, 20]
+    assert events[-1]['publish'] == expected
 
 
 @pytest.mark.parametrize('text',['loss INR -1000','profit 20%','INR 12,50','INR 1 lakh','INR 30k'])

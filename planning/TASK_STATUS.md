@@ -6,7 +6,23 @@
 **Application state:** Supabase-backed applicant and assessor workspaces, guided business interview, contextual conflict/gap questions, business map/brief, explicit what-if/stress planner, reviews/corrections, current/historical reports, similarity, four comparison views, financial checks, confirmed-area OSM and optional Groq explanations implemented. Modern light/dark/system responsive studio UI. Local regression: 192 API tests and 15 browser journeys pass, including focus/token refresh, retained drafts and immediate cached results during delayed revalidation; browser Auth/model outputs are fixtures. A real Supabase test-account saved read improved from19.683s (three requests) to4.519s (one snapshot), one sample only; local healthy worker polling caps at5s. Actual Groq English/Hindi, OSM, local translation/Hindi/Odia speech and full scan processing measured separately with limits; see [current checkpoint](../evals/reports/product-completion.json). No public application deployment.
 **Budget:** zero paid API or hosting dependencies.  
 **Active application task:** none. **Current scope:** full implementation, explanations/ and final T27 deployment walkthrough; local commits only.
-**Last update:** 2026-10-18, Asia/Calcutta. **Progress:** 12 / 29 tasks done.
+**Last update:** 2026-10-18, Asia/Calcutta. **Progress:** 13 / 29 tasks done.
+
+**Two-hour demo sprint:** English/Hindi interface, original/draft preservation,
+review summary with financial risks before scores, inline rubric and safer upload
+recovery implemented. Existing model measurements were reused, not rerun.
+Urgent processing follow-up fixes the observed claim/heartbeat deadlock, fenced
+worker recovery and five-minute progress cutoff; batches cheap passthrough writes
+and adds page/batch/domain detail. [Timings and limits](../docs/PROCESSING_TIME_AND_RECOVERY.md).
+Read [PS review and shortest plan](../docs/PS_REVIEW_AND_DEMO_PLAN.md) and
+[one-page project/model summary](../docs/PROJECT_SUMMARY.md).
+
+**How to read “blocked”:** several features work but their human-quality,
+hosted-validation or publication gates are unfinished. This is not a broken-feature
+count. T06 is now done against its written criteria; broader hosted outage/recovery
+coverage belongs to T25. T09/T10/T11/T14/T20 retain real quality-evidence limits;
+deployment tasks retain their unverified gates. A done implementation task such as
+T12 does not mean its LLM judgments are accurate enough for funding decisions.
 
 **Deadline:** 2026-10-18 06:00 Asia/Calcutta, working deployed demo included. Read [SESSION_HANDOFF.md](SESSION_HANDOFF.md), [HACKATHON_DELIVERY_PLAN.md](HACKATHON_DELIVERY_PLAN.md) and [PROJECT_REVIEW.md](PROJECT_REVIEW.md). Prefer verified laptop inference; English/Hindi human review only. Implementation is authorized by the latest user request; publication remains unapproved.
 
@@ -21,7 +37,7 @@ Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FRE
 | T03 | Define contracts, domain rules and rubric | done | `task-reports/T03.md` | None confirmed |
 | T04 | Implement database, durable stage leases and private storage | blocked | `task-reports/T04.md` | Actual Supabase migrations/private-object operations pass; hosted Free-plan quota/account and recovery gates unverified |
 | T05 | Implement authentication and authorization | blocked | `task-reports/T05.md` | Fresh real Supabase sign-in timing fixed and immediate workspace200 verified; complete hosted cohort/forced-refresh matrix unverified |
-| T06 | Implement uploads and submission APIs | blocked | `task-reports/T06.md` | Actual hosted private PDF upload/download/delete pass; hosted retry/recovery matrix incomplete |
+| T06 | Implement uploads and submission APIs | done | `task-reports/T06.md` | Written format/privacy/idempotency criteria pass; broader hosted recovery remains T25 |
 | T07 | Implement durable Postgres jobs and free-runtime dispatch | blocked | `task-reports/T07.md` | Owned recovery and local 5-second polling verified; secondary HF provisioning/quota compatibility deferred and unverified |
 | T08 | Build applicant submission and recording UI | done | `task-reports/T08.md` | None confirmed |
 | T09 | Implement self-hosted extraction and Indic translation | blocked | `task-reports/T09.md` | Actual positive/missing/conflicting source checks pass under v7; corpus and regional human-reference quality remain unvalidated |

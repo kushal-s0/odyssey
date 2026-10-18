@@ -49,3 +49,37 @@ def test_stage_transport_does_not_follow_redirects_with_capability():
         assert len(calls)==1
     finally:
         client.close()
+
+
+def test_temporary_database_500_retries_the_same_fenced_request():
+    calls = []
+    def respond(request):
+        calls.append(request.headers['Authorization'])
+        return httpx.Response(500 if len(calls) < 3 else 200, json={})
+    client = WorkerClient('https://synthetic.example', transport=httpx.MockTransport(respond))
+    try:
+        assert client.stage(work(), 'heartbeat').status_code == 200
+        assert len(calls) == 3 and len(set(calls)) == 1
+    finally:
+        client.close()
+
+
+def test_failed_accepted_execution_releases_only_its_latest_lease(monkeypatch):
+    calls = []
+    def respond(request):
+        calls.append((request.url.path.rsplit('/', 1)[-1], request.headers['Authorization']))
+        return httpx.Response(200, json={})
+    current = work()
+    renewed = current.model_copy(update={'capability': 'synthetic-newly-renewed-capability'})
+    def interrupted(*_args, **options):
+        options['on_renew'](renewed)
+        raise httpx.ReadError('Synthetic exhausted network failure')
+    monkeypatch.setattr('app.worker.runtime._execute_started', interrupted)
+    client = WorkerClient('https://synthetic.example', transport=httpx.MockTransport(respond))
+    try:
+        with pytest.raises(httpx.ReadError):
+            execute(client, current, 'app.worker.handler:probe')
+        assert calls == [('begin', 'Bearer '+current.capability),
+                         ('failure', 'Bearer '+renewed.capability)]
+    finally:
+        client.close()

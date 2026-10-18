@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-18T04:04:02.265Z",
+  "scope": "Software checks only; intercepted Auth/API, replayed existing saved synthetic model outputs; no new model inference, hosted writes or model accuracy measurement.",
+  "checks": [
+    "English/Hindi menus, localized sign-in, persistent locale, unchanged text/guided drafts and translated question hints.",
+    "Previously recorded N01: the existing INR 8,000 loss is prominent ahead of unchanged model scores, in both interface languages; rubric explained inline.",
+    "Previously recorded N03/U01: funding shortage displayed; unknown information is clarification, not an invented negative business rating.",
+    "2/4 processing view shows current batch counts and elapsed time; visible-page polling continues past the former five-minute freeze cutoff.",
+    "Hindi mobile at 390px fits without horizontal overflow; comparisons are localized.",
+    "T06 browser recovery: expired intent replaced; paused transfer releases form and retains file; retry reuses intent; discard handles HTTP 204; lost submit response reuses the same idempotency key."
+  ],
+  "page_errors": [],
+  "put_attempts": 4,
+  "discarded_uploads": 1,
+  "status": "pass"
+}

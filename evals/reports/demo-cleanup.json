@@ -1,0 +1,41 @@
+{
+  "scope": "Disposable checker caches, test scratch files and localization scratch helpers only. Credentials, sources, models, environments, runtime logs and evaluation evidence retained.",
+  "removed": [
+    {
+      "target": ".pytest_cache",
+      "files": 4,
+      "bytes": 1033
+    },
+    {
+      "target": "apps/api/.pytest_cache",
+      "files": 5,
+      "bytes": 28488
+    },
+    {
+      "target": ".ruff_cache",
+      "files": 8,
+      "bytes": 2683
+    },
+    {
+      "target": ".mypy_cache",
+      "files": 1813,
+      "bytes": 43626393
+    },
+    {
+      "target": ".local/pytest-runs",
+      "files": 852,
+      "bytes": 680643711
+    },
+    {
+      "target": ".local/ui-copy.json",
+      "files": 1,
+      "bytes": 29301
+    },
+    {
+      "target": ".local/localize-ui.mjs",
+      "files": 1,
+      "bytes": 2532
+    }
+  ],
+  "total_bytes": 724334141
+}

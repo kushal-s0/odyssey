@@ -12,7 +12,7 @@ from psycopg.rows import DictRow
 from psycopg.types.json import Jsonb
 
 from ..config import Settings
-from ..contracts.models import ErrorEnvelope, JobView
+from ..contracts.models import ErrorEnvelope, JobView, StageProgress
 from ..contracts.worker import SourceAccess, StageFailure, StageInput, StagePublish, StageWork, WorkerRequest
 from ..db.pool import Database
 from ..repositories.idempotency import canonical_hash
@@ -166,6 +166,10 @@ class Jobs:
 
     def heartbeat(self, claims: dict[str, Any]) -> StageWork:
         with self.database.transaction() as c:
+            # claim() locks runtime -> stage -> job. Use the same order here:
+            # stage -> runtime can deadlock a retried claim and kill live inference.
+            c.execute('SELECT worker_id FROM public.worker_runtimes WHERE worker_id=%s FOR UPDATE',
+                      (claims['sub'],)).fetchone()
             stage, job = self.guard(c, claims)
             renewed = c.execute('''UPDATE public.job_stages SET lease_until=clock_timestamp()+make_interval(secs=>%s)
                 WHERE id=%s RETURNING *''', (self.settings.lease_seconds, stage['id'])).fetchone()
@@ -270,7 +274,21 @@ class Jobs:
         with self.database.transaction() as c:
             row = c.execute('''SELECT j.id,j.submission_id,j.status,j.backend,j.error_code,j.error_message,j.request_id,
                 count(st.id) FILTER(WHERE st.status='completed') AS completed_stages,count(st.id) AS total_stages,
-                coalesce(max(st.attempts),0) AS attempt FROM public.processing_jobs j
+                coalesce(max(st.attempts),0) AS attempt,
+                greatest(0,extract(epoch FROM ((CASE WHEN j.status IN ('completed','partial','failed','cancelled','needs_review')
+                    THEN j.updated_at ELSE clock_timestamp() END)-j.created_at))::int) AS elapsed_seconds,
+                (SELECT jsonb_build_object('stage',a.stage_key,
+                    'next_page',a.checkpoint->'next_page','page_count',a.checkpoint->'page_count',
+                    'next_segment',a.checkpoint->'next_segment','total_groups',a.checkpoint->'total_groups',
+                    'segments',CASE WHEN jsonb_typeof(a.checkpoint#>'{bundle,evidence}')='array'
+                        THEN jsonb_array_length(a.checkpoint#>'{bundle,evidence}') END,
+                    'drafts',CASE WHEN jsonb_typeof(a.checkpoint->'drafts')='array'
+                        THEN jsonb_array_length(a.checkpoint->'drafts') END,
+                    'domains',CASE WHEN jsonb_typeof(a.checkpoint->'domains')='array'
+                        THEN jsonb_array_length(a.checkpoint->'domains') END)
+                 FROM public.job_stages a WHERE a.job_id=j.id AND a.status='running'
+                 ORDER BY a.stage_order LIMIT 1) AS detail
+                FROM public.processing_jobs j
                 JOIN public.job_stages st ON st.job_id=j.id WHERE j.id=%s GROUP BY j.id''', (job_id,)).fetchone()
         if not row:
             raise HTTPException(404, 'Job not found')
@@ -279,5 +297,19 @@ class Jobs:
         row.pop('error_code', None)
         row.pop('error_message', None)
         row.pop('request_id', None)
-        return JobView(**row, error=error,
+        detail = row.pop('detail', None)
+        progress = None
+        if detail and detail['stage'] in {'extract:pdf', 'translate', 'structure', 'assess'}:
+            completed_key, total_key, unit = {
+                'extract:pdf': ('next_page', 'page_count', 'pages'),
+                'translate': ('next_segment', 'segments', 'segments'),
+                'structure': ('drafts', 'total_groups', 'batches'),
+                'assess': ('domains', '', 'dimensions'),
+            }[detail['stage']]
+            total = 6 if detail['stage'] == 'assess' else detail.get(total_key)
+            total = total if isinstance(total, int) and total > 0 else None
+            done = detail.get(completed_key) or 0
+            progress = StageProgress.model_validate({'stage':detail['stage'],
+                'completed':min(done,total) if total else done,'total':total,'unit':unit})
+        return JobView(**row, error=error, stage_progress=progress,
             retry_after_seconds=10 if row['status'] not in {'completed','failed','cancelled','partial'} else None)

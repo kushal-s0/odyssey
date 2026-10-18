@@ -1,0 +1,37 @@
+{
+  "synthetic": true,
+  "scope": "Compact demo inputs; authored expectations, not new model-evaluation results.",
+  "artifacts": [
+    {
+      "path": "tea-positive-en.txt",
+      "sha256": "5421a8855eb22cc90420f0a8aacf230716dc0e017be4295e83d329994a43b1ab",
+      "bytes": 399
+    },
+    {
+      "path": "tea-positive-en.pdf",
+      "sha256": "042d7183a0d8e75aa19a0af9f16bee45091075e92bb9dcd269c99561a208c6eb",
+      "bytes": 1115
+    },
+    {
+      "path": "tea-loss-en.txt",
+      "sha256": "e0bfdfe14065585c4ae88c4fee22d394877a37d10d2c20b2768783726d7f8802",
+      "bytes": 337
+    },
+    {
+      "path": "tea-loss-en.pdf",
+      "sha256": "7fa81843f63ff1921a7ace101e930cf1c9b6d98448ca109a705b9b6dd6979c92",
+      "bytes": 1037
+    }
+  ],
+  "expected_arithmetic": {
+    "tea-positive": {
+      "funding_total": "20000.00",
+      "operating_surplus_per_month": "8000.00"
+    },
+    "tea-loss": {
+      "funding_gap": "49000.00",
+      "operating_surplus_per_month": "-8000.00"
+    }
+  },
+  "note": "Positive has useful self-reported detail, not verified success. Negative must expose risks; unknown must not become zero."
+}

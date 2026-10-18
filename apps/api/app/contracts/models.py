@@ -367,6 +367,13 @@ class JobStatus(StrEnum):
     cancelled = "cancelled"
 
 
+class StageProgress(Contract):
+    stage: str
+    completed: int = Field(ge=0)
+    total: int | None = Field(default=None, gt=0)
+    unit: Literal['pages', 'segments', 'batches', 'dimensions']
+
+
 class JobView(Contract):
     id: UUID
     submission_id: UUID
@@ -377,6 +384,8 @@ class JobView(Contract):
     attempt: int = Field(ge=0)
     error: ErrorEnvelope | None = None
     retry_after_seconds: int | None = Field(default=None, ge=0)
+    elapsed_seconds: int = Field(default=0, ge=0)
+    stage_progress: StageProgress | None = None
 
 
 class StageClaim(Contract):

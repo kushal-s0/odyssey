@@ -7,8 +7,9 @@ export type Finding = { code: 'loss' | 'funding_gap' | 'number_conflict' | 'sour
 /** Review routing, never a business-success classifier or an automatic funding decision. */
 export function screeningFindings(value: Assessment, numbers: Economics | null): Finding[] {
   const findings: Finding[] = []
-  if (numbers?.assessment_id === value.id) {
-    for (const check of numbers.checks) {
+  const currentNumbers = numbers?.assessment_id === value.id ? numbers : null
+  if (currentNumbers) {
+    for (const check of currentNumbers.checks) {
       const calculated = check.calculated_amount === null ? NaN : Number(check.calculated_amount)
       const stated = check.stated_amount === null ? NaN : Number(check.stated_amount)
       if (check.kind === 'profit' && Number.isFinite(calculated) && calculated < 0) {
@@ -27,7 +28,7 @@ export function screeningFindings(value: Assessment, numbers: Economics | null):
   }
   const weak = value.domains.filter(domain => domain.rating !== null && domain.rating <= 1)
   if (weak.length) findings.push({ code: 'weak_dimension', fields: [] })
-  if (value.scores.needs_clarification || numbers?.checks.some(check => check.status === 'needs_clarification')) {
+  if (!currentNumbers || value.scores.needs_clarification || currentNumbers.checks.some(check => check.status === 'needs_clarification')) {
     findings.push({ code: 'missing_information', fields: ['offer', 'target_customers', 'revenue', 'expenses'].filter(name => {
       const field = value.business[name as keyof typeof value.business]
       return field && typeof field === 'object' && 'status' in field && field.status !== 'present'

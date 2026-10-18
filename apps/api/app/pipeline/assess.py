@@ -91,9 +91,12 @@ def handler(context: dict[str,Any]) -> Iterator[dict[str,Any]]:
             # Validate completed judgments with absent domains filled as null.
             rest=[DomainRating(domain=d,rating=None,reason='Insufficient evidence.',basis='insufficient') for d in list(Domain)[len(ratings):]]
             validate_ratings(bundle,ratings+rest)
-            yield {'checkpoint':{'domains':[r.model_dump(mode='json') for r in ratings],
-                'relevance':[r.model_dump(mode='json') for r in relevance],
-                'measurements':saved+(model.measurements if model else [])}}
+            # Preserve every model judgment. Consecutive deterministic missing
+            # dimensions need no individual network write and are cheap to redo.
+            if facts or len(ratings) == len(Domain):
+                yield {'checkpoint':{'domains':[r.model_dump(mode='json') for r in ratings],
+                    'relevance':[r.model_dump(mode='json') for r in relevance],
+                    'measurements':saved+(model.measurements if model else [])}}
         if SELECTED_RELEVANCE!='rules-cosine-baseline-v1':
             raise ValueError('Candidate promotion is not authorized')
         artifact=MANIFEST['qwen']

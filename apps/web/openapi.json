@@ -4269,6 +4269,22 @@
               }
             ],
             "title": "Retry After Seconds"
+          },
+          "elapsed_seconds": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Elapsed Seconds",
+            "default": 0
+          },
+          "stage_progress": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/StageProgress"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "additionalProperties": false,
@@ -5818,6 +5834,49 @@
           "previous_outputs"
         ],
         "title": "StageInput"
+      },
+      "StageProgress": {
+        "properties": {
+          "stage": {
+            "type": "string",
+            "title": "Stage"
+          },
+          "completed": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Completed"
+          },
+          "total": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "pages",
+              "segments",
+              "batches",
+              "dimensions"
+            ],
+            "title": "Unit"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "stage",
+          "completed",
+          "unit"
+        ],
+        "title": "StageProgress"
       },
       "StagePublish": {
         "properties": {

@@ -1,5 +1,74 @@
 # Current checkpoint - judge functionality, 18 October 2026
 
+## Latest: two-hour PS/demo sprint and urgent processing repair
+
+Read docs/PS_REVIEW_AND_DEMO_PLAN.md, docs/PROJECT_SUMMARY.md and
+docs/PROCESSING_TIME_AND_RECOVERY.md. User requested PS usefulness review,
+English/Hindi website, fewer high-impact tasks, T06 completion, prior-metrics-only
+summary and waste cleanup; then prioritized slow/stuck PDF processing.
+
+English/Hindi context/catalog and language picker are implemented across the
+main journeys; original/model prose stays in its own language. Drafts and locale
+persist appropriately. ScreeningBrief foregrounds existing negative surplus,
+funding gap and source/unknown flags, ahead of unchanged model scores. RubricGuide
+explains T03 weights and unknown handling. Workspace arithmetic is derived from
+the same scoped saved assessment, with no extra SQL or inference.
+
+Actual worker/API logs showed PostgreSQL deadlocks in claim/heartbeat, followed by
+500 errors and repeated begin409 until lease expiry. Heartbeat now takes the
+runtime-row lock before stage/job, matching claim. Worker transport retries500
+with its stable request; an accepted execution that fails stops its child before
+releasing only its latest still-fenced lease for checkpoint recovery. Denied
+duplicate begin calls never release another execution. Added real Postgres
+contention and transport/recovery regressions. English passthrough writes batches
+of8checkpoints; actual translations and computed judgments retain checkpoints.
+20segments yield identical final evidence with3writes instead of20. Model prompts,
+weights, grouping, token limits, precision and OCR resolution were not reduced.
+
+Frontend had stopped status polling after5minutes, leaving long work visually
+at2/4. It now follows visible work for30minutes and shows stage batch/page/domain
+counts and save-to-now time. Added compact fictional inputs under input/quick-demo
+(two text/two text-layer PDF files, separate SHA manifest), preserving all original
+18samples and organizer data. No original business text is shortened by the app.
+
+The latest affected PDF was already completed4/4:803seconds including retry.
+Two other recent PDF record durations262/279seconds; these wall times include
+queue/network and are not a controlled new benchmark. No post-fix model accuracy
+or speed average was measured. Prior14-case/89-of99results remain unchanged and
+negative grading remains unreliable. T20/human-quality blockers stay open.
+
+At verified active-stage count0, stopped only prior launcher36756 and restarted
+with repaired code as hidden launcher32940. API/workspace/frontend200; OpenAPI
+has workspace economics and JobView stage_progress; worker claims200 with no
+new409/500observed in current idle logs. Recheck process ownership/jobs before
+any future restart. Supabase schema, accounts, passwords and filled env values
+were not changed. Publication remains unapproved.
+
+Normal .venv-model now aligns with the evaluated recipe: Transformers5.0.0,
+hub1.33.0, PDFium5.14.0; Torch2.9.1+cu128/weights retained. uvdependency check and
+offline Qwen/Paddle config recognition pass, without inference. Installed package
+copies/cache in workspace to avoid sandbox-inaccessible global-cache hardlinks.
+Private before/after version snapshots are under .local/. Evaluation .venv-eval
+still references base Torch packages; keep it and the actual frozen evidence.
+
+Verification:26focused upload/workspace/corpus tests passed earlier, then45focused
+worker/transport/text/PDF tests passed after the processing repair; suites overlap,
+do not add them as a unique total. Ruff, mypy87, frontend type/lint/build pass.
+Six fixture browser groups pass with0pageerrors,390px Hindi layout, unchanged
+drafts, replayed existing loss/gap/unknown results, upload recovery and a virtual
+six-minute progress regression. Browser fixtures are not live provider evidence.
+Report: evals/reports/demo-readiness.json; screenshots ignored .local/demo-readiness/.
+T06 re-audited against its written criteria and marked done (13of29done); broader
+hosted interruption/recovery remains T25. Other implemented tasks retain their
+actual human/hosting validation blockers rather than false completion.
+
+Cleanup removed2684generated checker/test/scratch files,724334141logical bytes.
+Exact allowlist/report: evals/reports/demo-cleanup.json. Original data, credentials,
+model cache, environments, runtime logs and measured evidence were retained.
+User-created commit2d4be79 captured the initial evaluation/UI work mid-session;
+preserve its historical attribution. New commits must still use Kartik for both
+author and committer. No new accuracy evaluation, paid service or publication.
+
 ## Latest local startup repair, 18 October 2026
 
 The user's root `.env.local` had empty database/service settings while their

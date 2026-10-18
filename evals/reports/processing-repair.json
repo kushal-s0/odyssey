@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-18",
+  "scope": "Observed processing failures and software repair; no new model accuracy benchmark or post-fix speed mean.",
+  "observed_failures": [
+    "PostgreSQL claim/heartbeat lock-order deadlock with HTTP500",
+    "begin409 replay of an already-executed lease after child termination",
+    "five-minute visible-page polling cutoff"
+  ],
+  "recent_saved_pdf_wall_seconds_before_repair": [
+    262,
+    279,
+    803
+  ],
+  "recent_saved_pdf_wall_mean_seconds": 448,
+  "timing_caveat": "Queue, network and recovery included; not a controlled GPU benchmark; do not treat as post-fix mean.",
+  "latest_affected_pdf_status": "completed",
+  "latest_affected_pdf_completed_stages": 4,
+  "prior_controlled_text_seconds": {
+    "p50": 60.698,
+    "p95": 110.163
+  },
+  "post_fix_mean_seconds": null,
+  "passthrough_check": {
+    "segments": 20,
+    "checkpoint_writes_before": 20,
+    "checkpoint_writes_after": 3,
+    "identical_published_evidence": true
+  },
+  "focused_software_tests": {
+    "passed": 45,
+    "skipped": 0
+  },
+  "browser_fixture_groups": 6,
+  "worker_runtime": {
+    "transformers": "5.0.0",
+    "huggingface_hub": "1.33.0",
+    "torch": "2.9.1+cu128",
+    "pypdfium2": "5.14.0",
+    "weights_changed": false,
+    "model_prompt_changed": false,
+    "new_inference_run": false
+  },
+  "public_deployment": false
+}

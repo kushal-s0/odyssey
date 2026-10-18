@@ -661,4 +661,13 @@ export const hindi: Record<string, string> = {
   'offer': 'उत्पाद या सेवा',
   'target customers': 'ग्राहक',
   'Proposed rubric score': 'प्रस्तावित मानदंड के अंक',
+  'Guided question': 'मार्गदर्शक सवाल',
+  'pages': 'पृष्ठ',
+  'segments': 'हिस्से',
+  'batches': 'पाठ समूह',
+  'dimensions': 'मूल्यांकन पहलू',
+  'saved within this stage': 'इस चरण में सुरक्षित',
+  'Steps take different amounts of time. The counter advances after a safe checkpoint, not every generated word.': 'हर चरण में अलग समय लगता है। गिनती सुरक्षित प्रगति सहेजने पर बढ़ती है, हर शब्द बनने पर नहीं।',
+  'Time since saved, including queue': 'सहेजने के बाद का समय, कतार सहित',
+  'Digital PDFs with many short lines can require more model batches than plain text. Scans require extra OCR time per page.': 'कई छोटी पंक्तियों वाली PDF में लिखित पाठ से अधिक मॉडल समूह लग सकते हैं। स्कैन के हर पृष्ठ को पढ़ने में अतिरिक्त समय लगता है।',
 }

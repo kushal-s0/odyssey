@@ -1,5 +1,19 @@
 Continue Udyam Saathi in this existing repository on branch second. Read AGENTS.md, planning/SESSION_HANDOFF.md, HACKATHON_RESET.md, TASK_STATUS.md and latest task reports, then inspect actual Git/process/code state without printing secrets. Preserve user changes and original source archives.
 
+Latest scope supersedes the historical continuation notes below: PS/demo review,
+English/Hindi UI, financial-risk-first review summary, upload recovery and urgent
+PDF processing repair. Read docs/PS_REVIEW_AND_DEMO_PLAN.md,
+docs/PROJECT_SUMMARY.md and docs/PROCESSING_TIME_AND_RECOVERY.md. T06 is done
+against its written criteria;13/29done. Other quality/deployment blockers remain.
+Actual deadlock/worker lease retry and five-minute UI polling cutoff were fixed;
+45focused worker/pipeline checks and6browser fixture groups pass. No model accuracy
+benchmark rerun. Root Supabase settings are filled/healthy. Normal model env now
+matches evaluated Transformers5.0.0/hub1.33.0; Torch/weights retained. Local app
+is running (last launcher32940; verify actual ownership and active jobs first).
+Input quick-demo adds compact positive/loss examples; existing sources/evaluation
+evidence retained. Cleanup removed only allowlisted generated caches/test scratch.
+Do not repeat completed GPU experiments; negative model ratings remain unreliable.
+
 Latest request was comprehensive implementation/model evaluation, now completed.
 Read docs/IMPLEMENTATION_AND_MODEL_EVALUATION.md and evals/reports/comprehensive/
 EVALUATION_WORKBOOK.xlsx before acting on older continuation notes below. Fresh
