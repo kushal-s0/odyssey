@@ -36,7 +36,7 @@ Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FRE
 | T17 | Implement clarification and reassessment | done | `task-reports/T17.md` | None confirmed |
 | T18 | Implement business arithmetic checks | done | `task-reports/T18.md` | None confirmed |
 | T19 | Implement reports and version history | done | `task-reports/T19.md` | None confirmed |
-| T20 | Evaluate dataset and our model with real measurements | blocked | `task-reports/T20.md` | 18 synthetic rehearsal inputs accepted locally; original-corpus human annotations, transcript references and retrieval labels still missing |
+| T20 | Evaluate dataset and our model with real measurements | blocked | `task-reports/T20.md` | Fresh 14 authored scenarios: 89/99 checks, negative grading counterexamples; independent original-corpus, regional transcript, retrieval and fairness labels still absent |
 | T21 | Harden access, uploads and failure boundaries | done | `task-reports/T21.md` | None confirmed |
 | T22 | Measure portable API and model scalability | done | `task-reports/T22.md` | None confirmed |
 | T23 | Package zero-spend application deployment | blocked | `task-reports/T23.md` | Local image/packages pass; provider Free-plan/account limits and clean hosted deployment/recovery unverified |

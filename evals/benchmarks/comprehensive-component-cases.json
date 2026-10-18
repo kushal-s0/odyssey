@@ -1,0 +1,369 @@
+{
+  "scope": "Small authored synthetic component references. Not independent human corpus evaluation. Script font is not real handwriting.",
+  "translations": [
+    {
+      "id": "T01",
+      "source_language": "hi",
+      "target_language": "en",
+      "source": "मैं कार्यालय के कर्मचारियों को चाय बेचता हूँ। एक कप चाय की कीमत 10 रुपये है।",
+      "reference": "I sell tea to office workers. A cup of tea costs 10 rupees.",
+      "required_terms": [
+        "tea",
+        "10"
+      ]
+    },
+    {
+      "id": "T02",
+      "source_language": "hi",
+      "target_language": "en",
+      "source": "मेरी मासिक आय 10000 रुपये है और खर्च 18000 रुपये है। इसलिए व्यवसाय घाटे में है।",
+      "reference": "My monthly income is 10000 rupees and expenses are 18000 rupees. Therefore the business is making a loss.",
+      "required_terms": [
+        "10000",
+        "18000"
+      ]
+    },
+    {
+      "id": "T03",
+      "source_language": "hi",
+      "target_language": "en",
+      "source": "किसी भी ग्राहक ने खरीदने के लिए सहमति नहीं दी है।",
+      "reference": "None of the customers has agreed to buy.",
+      "required_terms": [
+        "__negation__"
+      ]
+    },
+    {
+      "id": "T04",
+      "source_language": "hi",
+      "target_language": "en",
+      "source": "पहले जवाब में कीमत 10 रुपये है और दूसरे जवाब में कीमत 15 रुपये है।",
+      "reference": "The price in the first answer is 10 rupees and in the second answer is 15 rupees.",
+      "required_terms": [
+        "10",
+        "15"
+      ]
+    },
+    {
+      "id": "T05",
+      "source_language": "hi",
+      "target_language": "en",
+      "source": "निवेश की राशि अभी तय नहीं है।",
+      "reference": "The investment amount has not yet been decided.",
+      "required_terms": [
+        "__unknown__"
+      ]
+    },
+    {
+      "id": "T06",
+      "source_language": "mr",
+      "target_language": "en",
+      "source": "मी कार्यालयातील कर्मचाऱ्यांना चहा विकतो. एका कप चहाची किंमत 10 रुपये आहे.",
+      "reference": "I sell tea to office workers. A cup of tea costs 10 rupees.",
+      "required_terms": [
+        "tea",
+        "10"
+      ]
+    },
+    {
+      "id": "T07",
+      "source_language": "te",
+      "target_language": "en",
+      "source": "నేను కార్యాలయ ఉద్యోగులకు టీ అమ్ముతాను. ఒక కప్పు టీ ధర 10 రూపాయలు.",
+      "reference": "I sell tea to office workers. A cup of tea costs 10 rupees.",
+      "required_terms": [
+        "tea",
+        "10"
+      ]
+    },
+    {
+      "id": "T08",
+      "source_language": "bn",
+      "target_language": "en",
+      "source": "আমি অফিসের কর্মীদের চা বিক্রি করি। এক কাপ চায়ের দাম 10 টাকা।",
+      "reference": "I sell tea to office workers. A cup of tea costs 10 taka.",
+      "required_terms": [
+        "tea",
+        "10"
+      ]
+    },
+    {
+      "id": "T09",
+      "source_language": "or",
+      "target_language": "en",
+      "source": "ମୁଁ ଅଫିସ କର୍ମଚାରୀମାନଙ୍କୁ ଚା ବିକ୍ରି କରେ। ଗୋଟିଏ କପ୍ ଚାର ଦାମ 10 ଟଙ୍କା।",
+      "reference": "I sell tea to office workers. A cup of tea costs 10 rupees.",
+      "required_terms": [
+        "tea",
+        "10"
+      ]
+    },
+    {
+      "id": "T10",
+      "source_language": "en",
+      "target_language": "hi",
+      "source": "Revenue is not the same as profit. Monthly expenses are 18000 rupees.",
+      "reference": "आय और लाभ एक जैसे नहीं हैं। मासिक खर्च 18000 रुपये है।",
+      "required_terms": [
+        "18000"
+      ]
+    }
+  ],
+  "languages": [
+    {
+      "id": "T01",
+      "expected_language": "hi",
+      "text": "मैं कार्यालय के कर्मचारियों को चाय बेचता हूँ। एक कप चाय की कीमत 10 रुपये है।"
+    },
+    {
+      "id": "T02",
+      "expected_language": "hi",
+      "text": "मेरी मासिक आय 10000 रुपये है और खर्च 18000 रुपये है। इसलिए व्यवसाय घाटे में है।"
+    },
+    {
+      "id": "T03",
+      "expected_language": "hi",
+      "text": "किसी भी ग्राहक ने खरीदने के लिए सहमति नहीं दी है।"
+    },
+    {
+      "id": "T04",
+      "expected_language": "hi",
+      "text": "पहले जवाब में कीमत 10 रुपये है और दूसरे जवाब में कीमत 15 रुपये है।"
+    },
+    {
+      "id": "T05",
+      "expected_language": "hi",
+      "text": "निवेश की राशि अभी तय नहीं है।"
+    },
+    {
+      "id": "T06",
+      "expected_language": "mr",
+      "text": "मी कार्यालयातील कर्मचाऱ्यांना चहा विकतो. एका कप चहाची किंमत 10 रुपये आहे."
+    },
+    {
+      "id": "T07",
+      "expected_language": "te",
+      "text": "నేను కార్యాలయ ఉద్యోగులకు టీ అమ్ముతాను. ఒక కప్పు టీ ధర 10 రూపాయలు."
+    },
+    {
+      "id": "T08",
+      "expected_language": "bn",
+      "text": "আমি অফিসের কর্মীদের চা বিক্রি করি। এক কাপ চায়ের দাম 10 টাকা।"
+    },
+    {
+      "id": "T09",
+      "expected_language": "or",
+      "text": "ମୁଁ ଅଫିସ କର୍ମଚାରୀମାନଙ୍କୁ ଚା ବିକ୍ରି କରେ। ଗୋଟିଏ କପ୍ ଚାର ଦାମ 10 ଟଙ୍କା।"
+    },
+    {
+      "id": "L10",
+      "expected_language": "en",
+      "text": "I sell tea to office workers. A cup of tea costs 10 rupees."
+    },
+    {
+      "id": "L11",
+      "expected_language": "en",
+      "text": "My monthly revenue is 10000 rupees and expenses are 18000 rupees. The business is losing money."
+    },
+    {
+      "id": "L12",
+      "expected_language": "und",
+      "text": "Tea"
+    },
+    {
+      "id": "L13",
+      "expected_language": "und",
+      "text": "10"
+    }
+  ],
+  "qa": [
+    {
+      "id": "A01",
+      "question": "What will you sell?",
+      "answer": "I will repair mobile phone screens.",
+      "gold": 0
+    },
+    {
+      "id": "A02",
+      "question": "Who are your customers?",
+      "answer": "Local school teachers.",
+      "gold": 0
+    },
+    {
+      "id": "A03",
+      "question": "What is your selling price?",
+      "answer": "INR 275 per repair.",
+      "gold": 0
+    },
+    {
+      "id": "A04",
+      "question": "What are your monthly expenses?",
+      "answer": "My monthly expenses are INR 18000.",
+      "gold": 0
+    },
+    {
+      "id": "A05",
+      "question": "What is your expected monthly revenue?",
+      "answer": "I expect INR 99999999 of monthly revenue.",
+      "gold": 0
+    },
+    {
+      "id": "A06",
+      "question": "Which materials do you need?",
+      "answer": "Needles and thread.",
+      "gold": 0
+    },
+    {
+      "id": "A07",
+      "question": "Where will you operate?",
+      "answer": "A market stall in Jaipur.",
+      "gold": 0
+    },
+    {
+      "id": "A08",
+      "question": "Who supplies your milk?",
+      "answer": "The nearby dairy cooperative.",
+      "gold": 0
+    },
+    {
+      "id": "A09",
+      "question": "What will you sell?",
+      "answer": "I enjoyed the cricket final yesterday.",
+      "gold": 1
+    },
+    {
+      "id": "A10",
+      "question": "What is your selling price?",
+      "answer": "Customers are school teachers.",
+      "gold": 1
+    },
+    {
+      "id": "A11",
+      "question": "Who are your customers?",
+      "answer": "A sewing machine costs INR 18000.",
+      "gold": 1
+    },
+    {
+      "id": "A12",
+      "question": "What are your monthly expenses?",
+      "answer": "My shop name is Blue Moon Tailors.",
+      "gold": 1
+    },
+    {
+      "id": "A13",
+      "question": "What is your expected monthly revenue?",
+      "answer": "The tea supplier closes at six.",
+      "gold": 1
+    },
+    {
+      "id": "A14",
+      "question": "Which materials do you need?",
+      "answer": "The village school cricket team won.",
+      "gold": 1
+    },
+    {
+      "id": "A15",
+      "question": "Where will you operate?",
+      "answer": "The price is INR 275 per repair.",
+      "gold": 1
+    },
+    {
+      "id": "A16",
+      "question": "Who supplies your milk?",
+      "answer": "My expected sales revenue is INR 20000.",
+      "gold": 1
+    }
+  ],
+  "retrieval_corpus": [
+    {
+      "id": "R01",
+      "text": "Tea stall selling morning drinks to office commuters."
+    },
+    {
+      "id": "R02",
+      "text": "Ginger tea cart with pre-order pickup near a bus station."
+    },
+    {
+      "id": "R03",
+      "text": "Tailor providing blouse alterations and garment stitching."
+    },
+    {
+      "id": "R04",
+      "text": "Clothing repair shop for office uniforms and trouser alterations."
+    },
+    {
+      "id": "R05",
+      "text": "Mobile phone screen and battery repair service."
+    },
+    {
+      "id": "R06",
+      "text": "Smartphone repair kiosk doing charging-port replacements."
+    },
+    {
+      "id": "R07",
+      "text": "Dairy selling milk to village households."
+    },
+    {
+      "id": "R08",
+      "text": "Poultry farm supplying eggs and chickens."
+    },
+    {
+      "id": "R09",
+      "text": "Solar panel installation and maintenance for rooftops."
+    },
+    {
+      "id": "R10",
+      "text": "Manufacturer of reusable shopping bags."
+    }
+  ],
+  "retrieval_queries": [
+    {
+      "id": "Q01",
+      "text": "A tea kiosk for commuters needing hot drinks before work.",
+      "relevant_ids": [
+        "R01",
+        "R02"
+      ]
+    },
+    {
+      "id": "Q02",
+      "text": "Stitching and alteration service for customer garments.",
+      "relevant_ids": [
+        "R03",
+        "R04"
+      ]
+    },
+    {
+      "id": "Q03",
+      "text": "A shop replacing broken smartphone screens and batteries.",
+      "relevant_ids": [
+        "R05",
+        "R06"
+      ]
+    },
+    {
+      "id": "Q04",
+      "text": "Installing and maintaining solar power equipment on homes.",
+      "relevant_ids": [
+        "R09"
+      ]
+    }
+  ],
+  "ocr": [
+    {
+      "id": "O01",
+      "style": "clean_print",
+      "reference": "Business idea: Tea for office workers.\nPrice: INR 10 per cup.\nStartup investment: INR 20000."
+    },
+    {
+      "id": "O02",
+      "style": "numeric_loss",
+      "reference": "Monthly revenue: INR 10000.\nMonthly expenses: INR 18000.\nOperating loss: INR 8000.\nProfit is not known."
+    },
+    {
+      "id": "O03",
+      "style": "rendered_script_font",
+      "reference": "My customers are local office workers.\nI sell tea for INR 10 per cup.\nI need INR 20000 to start."
+    }
+  ]
+}

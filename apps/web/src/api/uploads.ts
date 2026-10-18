@@ -1,3 +1,5 @@
+import { ApiError } from './client'
+
 export function upload(path: string, file: File, mime: string, token: string, signal: AbortSignal, progress: (n: number) => void) {
   return new Promise<void>((resolve, reject) => {
     const base = import.meta.env.VITE_API_BASE_URL as string | undefined
@@ -19,7 +21,7 @@ export function upload(path: string, file: File, mime: string, token: string, si
       else {
         let message = 'Upload could not be saved. Check the file and try again.'
         try { message = (JSON.parse(request.responseText) as { message?: string }).message || message } catch { /* generic safe error */ }
-        reject(new Error(message))
+        reject(new ApiError('upload_failed', message, request.status >= 500 || request.status === 408, undefined, request.status))
       }
     }
     request.onerror = request.ontimeout = () => { cleanup(); reject(new Error('Upload interrupted. Keep this file selected and retry.')) }

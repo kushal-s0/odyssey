@@ -1,8 +1,10 @@
 .venv/
 .venv-model/
+.venv-eval/
 .cache/
 .local/
 .env
+env.download
 .env.*
 !.env.example
 __pycache__/

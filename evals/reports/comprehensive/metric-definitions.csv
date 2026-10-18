@@ -1,0 +1,9 @@
+﻿Metric,Meaning
+WER / CER,Edit errors divided by reference words/characters; lower better; may exceed100%; empty reference is not measured.
+chrF++,"Lexical character/word n-gram F score0-100; higher lexical agreement, not expert semantic correctness."
+Recall@k,Fraction of authored relevant IDs found among firstk; tiny synthetic gallery only.
+Macro-F1,"Mean per-class F1; balanced QA relevance check, not business prediction."
+Strict vs selective accuracy,"Strict uses all examples including abstentions as incorrect; selective uses only decisions, so read coverage."
+Scenario pass rate,Passed frozen authored checks /requested checks; no independently reviewed population accuracy.
+Unassessed / null,"No sufficiently grounded judgment. Never substitute zero, bad business or failure probability."
+Negative economics,"Calculated deficit or discrepancy, separate from model domain ratings. No automatic score mutation."

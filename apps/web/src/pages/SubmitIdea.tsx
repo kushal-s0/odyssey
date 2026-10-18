@@ -1,3 +1,4 @@
+import { useI18n } from '../i18n/I18nProvider'
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { Upload, Send, FileText, AudioLines, WandSparkles } from 'lucide-react'
 import { apiRequest, ApiError } from '../api/client'
@@ -11,13 +12,14 @@ type Accepted = components['schemas']['SubmissionAccepted']
 type UploadResult = components['schemas']['UploadInitiated']
 type Mode = 'text' | 'pdf' | 'audio'
 type Language = components['schemas']['SubmissionCreate']['preferred_language']
-type Pending = { fingerprint: string; submitKey: string; uploadKey: string; attachmentId?: string }
+type Pending = { fingerprint: string; submitKey: string; uploadKey: string; uploadId?: string; attachmentId?: string }
 const MAX_BYTES = 25 * 1024 * 1024
 const mediaTypes: Record<string, string> = { pdf: 'application/pdf', wav: 'audio/wav', mp3: 'audio/mpeg',
   m4a: 'audio/mp4', mp4: 'video/mp4', webm: 'audio/webm', ogg: 'audio/ogg' }
 
 
 export function SubmitIdea({ actor, token, onAccepted, active = true }: { actor: Actor; token: string; onAccepted: (value: Accepted) => void; active?: boolean }) {
+  const { t } = useI18n()
   const [mode, setMode] = useState<Mode>('text')
   const [text, setText] = useState('')
   const [guided, setGuided] = useState(false)
@@ -52,11 +54,11 @@ export function SubmitIdea({ actor, token, onAccepted, active = true }: { actor:
   }, [file, mode])
   function pickFile(next: File | null) {
     setError(''); setFile(null)
-    if (next && (next.size === 0 || next.size > MAX_BYTES)) { setError('Choose a nonempty file smaller than 25 MB.'); return }
+    if (next && (next.size === 0 || next.size > MAX_BYTES)) { setError(t("Choose a nonempty file smaller than 25 MB.")); return }
     if (next) {
       const mime = next.type.split(';')[0] || mediaTypes[next.name.split('.').pop()?.toLowerCase() || '']
       if (mode === 'pdf' ? mime !== 'application/pdf' : !Object.values(mediaTypes).filter(value => value !== 'application/pdf').includes(mime)) {
-        setError(mode === 'pdf' ? 'Choose a PDF document.' : 'Choose WAV, MP3, M4A, MP4, OGG or WebM audio.'); return
+        setError(mode === 'pdf' ? t("Choose a PDF document.") : t("Choose WAV, MP3, M4A, MP4, OGG or WebM audio.")); return
       }
     }
     setFile(next)
@@ -64,9 +66,9 @@ export function SubmitIdea({ actor, token, onAccepted, active = true }: { actor:
   async function submit(event: FormEvent) {
     event.preventDefault()
     if (lock.current) return
-    if (recordingActive.current) { setError('Finish microphone permission or stop recording before submitting.'); return }
-    if (!consent || (mode === 'text' ? !sourceText.trim() : !file)) { setError('Add your idea and give consent before submitting.'); return }
-    lock.current = true; setBusy(true); setError(''); setMessage('Preparing your private submission…'); setProgress(null)
+    if (recordingActive.current) { setError(t("Finish microphone permission or stop recording before submitting.")); return }
+    if (!consent || (mode === 'text' ? !sourceText.trim() : !file)) { setError(t("Add your idea and give consent before submitting.")); return }
+    lock.current = true; setBusy(true); setError(''); setMessage(t("Preparing your private submission…")); setProgress(null)
     const controller = new AbortController()
     operation.current = controller
     try {
@@ -84,12 +86,14 @@ export function SubmitIdea({ actor, token, onAccepted, active = true }: { actor:
       if (mode !== 'text' && file && !intent.attachmentId) {
         const result = await apiRequest<UploadResult>('/v1/uploads', { token, method: 'POST',
           body: { filename: file.name, media_type: mime, bytes: file.size }, idempotencyKey: intent.uploadKey, signal: controller.signal })
-        setMessage('Uploading your original file…'); setProgress(0)
+        intent.uploadId = result.attachment_id
+        remember()
+        setMessage(t("Uploading your original file…")); setProgress(0)
         await upload(result.upload_path, file, mime, token, controller.signal, setProgress)
         intent.attachmentId = result.attachment_id
         remember()
       }
-      setMessage('Saving your idea and processing request…')
+      setMessage(t("Saving your idea and processing request…"))
       const accepted = await apiRequest<Accepted>('/v1/submissions', { token, method: 'POST', idempotencyKey: intent.submitKey, signal: controller.signal,
         body: { ...(mode === 'text' ? { text: sourceText } : { attachment_ids: [intent.attachmentId] }), preferred_language: language,
           synthetic, scenario_family: synthetic && family.trim() ? family.trim() : null,
@@ -97,11 +101,11 @@ export function SubmitIdea({ actor, token, onAccepted, active = true }: { actor:
       if (controller.signal.aborted) return
       try { sessionStorage.removeItem(storageKey) } catch { /* private storage disabled */ }
       pending.current = null
-      setMessage(mode === 'text' ? 'Your idea is saved. Follow its progress below.' : 'Your original upload is saved. Follow its progress below.'); setText(''); setGuidedAnswers({}); setFile(null); setConsent(false)
+      setMessage(mode === 'text' ? t("Your idea is saved. Follow its progress below.") : t("Your original upload is saved. Follow its progress below.")); setText(''); setGuidedAnswers({}); setFile(null); setConsent(false)
       onAccepted(accepted)
     } catch (failure) {
       if (!controller.signal.aborted) {
-        setError(failure instanceof Error ? failure.message : 'Submission interrupted. Try again with the same idea.')
+        setError(failure instanceof Error ? failure.message : t("Submission interrupted. Try again with the same idea."))
         if (failure instanceof ApiError && failure.status === 410) {
           pending.current = null
           try { sessionStorage.removeItem(storageKey) } catch { /* storage disabled */ }
@@ -109,38 +113,59 @@ export function SubmitIdea({ actor, token, onAccepted, active = true }: { actor:
       }
     } finally {
       lock.current = false
-      if (!controller.signal.aborted) { setBusy(false); setProgress(null) }
+      setBusy(false); setProgress(null)
     }
   }
+  function stopWaiting() {
+    operation.current?.abort()
+    setMessage(t('Transfer stopped in this browser. Your file stays selected. A request already received by the server may still be saved; check Saved ideas before retrying with the same input.'))
+  }
+  async function discardUpload() {
+    const draft = pending.current
+    if (busy || !draft?.uploadId) return
+    setBusy(true); setError('')
+    try {
+      await apiRequest<void>(`/v1/uploads/${draft.uploadId}`, { token, method: 'DELETE' })
+      pending.current = null
+      try { sessionStorage.removeItem(storageKey) } catch { /* storage optional */ }
+      setMessage(t('Unsubmitted upload removed. Your local file is unchanged; sending it again creates a fresh upload.'))
+    } catch (failure) {
+      setError(failure instanceof ApiError && failure.status === 409
+        ? t('This original is already attached to a saved idea. Open Saved ideas; it was not deleted.')
+        : failure instanceof Error ? failure.message : t('Could not discard the upload. Try again.'))
+    } finally { setBusy(false) }
+  }
   return <section className="submission-panel" aria-labelledby="submit-title">
-    <div className="panel-heading"><span className="eyebrow">A LITTLE CONTEXT GOES A LONG WAY</span><h2 id="submit-title">Share your business idea</h2><p>Tell us what you offer, who it helps, and what you already know. Unknown details can stay unknown.</p></div>
-    <div className="format-choices" role="group" aria-label="Idea format">{[
-      { id: 'guided', icon: WandSparkles, title: 'Guide me', detail: 'Build it with questions' },
-      { id: 'text', icon: FileText, title: 'Text', detail: 'Write in your own words' },
-      { id: 'pdf', icon: Upload, title: 'PDF', detail: 'Bring your business plan' },
-      { id: 'audio', icon: AudioLines, title: 'Audio', detail: 'Speak or upload a recording' },
+    <div className="panel-heading"><span className="eyebrow">{t("A LITTLE CONTEXT GOES A LONG WAY")}</span><h2 id="submit-title">{t("Share your business idea")}</h2><p>{t("Tell us what you offer, who it helps, and what you already know. Unknown details can stay unknown.")}</p></div>
+    <div className="format-choices" role="group" aria-label={t("Idea format")}>{[
+      { id: 'guided', icon: WandSparkles, title: t("Guide me"), detail: t("Build it with questions") },
+      { id: 'text', icon: FileText, title: t("Text"), detail: t("Write in your own words") },
+      { id: 'pdf', icon: Upload, title: 'PDF', detail: t("Bring your business plan") },
+      { id: 'audio', icon: AudioLines, title: t("Audio"), detail: t("Speak or upload a recording") },
     ].map(({ id, icon: Icon, title, detail }) => <button key={id} type="button" aria-pressed={id === 'guided' ? mode === 'text' && guided : mode === id && !guided} disabled={busy} onClick={() => { setMode(id === 'guided' ? 'text' : id as Mode); setGuided(id === 'guided'); setFile(null); setError('') }}><Icon size={22} /><strong>{title}</strong><span>{detail}</span></button>)}</div>
     <form onSubmit={event => { void submit(event) }}>
       <fieldset disabled={busy}>
-        {mode === 'text' ? guided ? <GuidedIdea answers={guidedAnswers} onChange={setGuidedAnswers} /> : <label>Your idea<textarea aria-label="Your idea" required maxLength={30000} rows={7} value={text} onChange={event => setText(event.target.value)} placeholder="I plan to sell… My customers are…" /><small>{text.length.toLocaleString()} / 30,000 characters</small></label> : <>
+        {mode === 'text' ? guided ? <GuidedIdea answers={guidedAnswers} onChange={setGuidedAnswers} /> : <label>{t("Your idea")}<textarea aria-label={t("Your idea")} required maxLength={30000} rows={7} value={text} onChange={event => setText(event.target.value)} placeholder="I plan to sell… My customers are…" /><small>{text.length.toLocaleString()} {t("/ 30,000 characters")}</small></label> : <>
           {mode === 'audio' && <AudioRecorder onFile={pickFile} disabled={busy} onActivityChange={onRecordingActivity} active={active} />}
-          <label className="file-picker"><Upload size={20} />{mode === 'pdf' ? 'Choose a PDF' : 'Upload an audio file'}<input ref={fileInput} aria-label={mode === 'pdf' ? 'PDF file' : 'Audio file'} type="file" accept={mode === 'pdf' ? 'application/pdf,.pdf' : 'audio/*,video/mp4,.m4a,.mp4,.ogg,.webm,.wav,.mp3'} onChange={event => pickFile(event.target.files?.[0] || null)} /></label>
-          <p className="field-note">{mode === 'pdf' ? 'Maximum 20 pages and 25 MB. Digital PDFs are processed by the owned worker; scanned handwriting needs human review.' : 'Maximum 10 minutes and 25 MB. The owned speech worker transcribes supported languages after model provisioning. For Odia, select Odia explicitly; it uses a separate model. All transcriptions need review.'} Your file is saved privately. Uploading does not mean assessment is complete.</p>
+          <label className="file-picker"><Upload size={20} />{mode === 'pdf' ? t("Choose a PDF") : t("Upload an audio file")}<input ref={fileInput} aria-label={mode === 'pdf' ? t("PDF file") : t("Audio file")} type="file" accept={mode === 'pdf' ? 'application/pdf,.pdf' : 'audio/*,video/mp4,.m4a,.mp4,.ogg,.webm,.wav,.mp3'} onChange={event => pickFile(event.target.files?.[0] || null)} /></label>
+          <p className="field-note">{mode === 'pdf' ? t("Maximum 20 pages and 25 MB. Digital PDFs are processed by the owned worker; scanned handwriting needs human review.") : t("Maximum 10 minutes and 25 MB. The owned speech worker transcribes supported languages after model provisioning. For Odia, select Odia explicitly; it uses a separate model. All transcriptions need review.")} {t("Your file is saved privately. Uploading does not mean assessment is complete.")}</p>
           {file && <p className="selected-file">{file.name} · {(file.size / 1024).toFixed(1)} KB</p>}
-          {playback && <audio controls src={playback} aria-label="Recording playback" />}
+          {playback && <audio controls src={playback} aria-label={t("Recording playback")} />}
         </>}
-        <div className="form-grid"><label>Preferred language<select value={language} onChange={event => setLanguage(event.target.value as Language)}>{[['en', 'English'], ['hi', 'Hindi — translation review pending'], ['mr', 'Marathi — unvalidated'], ['te', 'Telugu — unvalidated'], ['bn', 'Bengali — unvalidated'], ['or', 'Odia — unvalidated']].map(([code, name]) => <option key={code} value={code}>{name}</option>)}</select></label>
-          <label>Program / cohort<select value={cohort} onChange={event => setCohort(event.target.value)}><option value="">Personal submission</option>{actor.cohorts.filter(value => value.role === 'applicant' || actor.role === 'admin').map(value => <option key={value.id} value={value.id}>{value.name}</option>)}</select></label></div>
-        <label>Known business location <span className="optional">(optional)</span><input maxLength={200} value={location} onChange={event => setLocation(event.target.value)} placeholder="Village, locality or district you know" /></label>
-        <p className="field-note">Regional text uses an owned translation model when provisioned. Originals remain available for review. Language and transcription quality must be checked before decisions.</p>
-        <label className="inline-check"><input type="checkbox" checked={synthetic} onChange={event => setSynthetic(event.target.checked)} />Synthetic rehearsal input</label>
-        {synthetic && <><p className="field-note">This fictional example is excluded from ordinary population charts. Enable labelled examples in Comparisons to show it.</p><label>Scenario family (optional)<input value={family} maxLength={100} pattern="[a-zA-Z0-9_-]+" onChange={event => setFamily(event.target.value)} placeholder="tea-001" /><small>Use the same identifier for text, PDF and audio versions of this fictional idea.</small></label></>}
-        <label className="consent"><input type="checkbox" checked={consent} required onChange={event => setConsent(event.target.checked)} /><span>I consent to my idea and original file being stored privately and used for this assessment and authorized human review.</span></label>
-        <button className="primary-link submit-button" type="submit"><Send size={16} />{busy ? 'Saving…' : 'Submit idea'}</button>
+        <div className="form-grid"><label>{t("Preferred language")}<select value={language} onChange={event => setLanguage(event.target.value as Language)}>{[['en', t("English")], ['hi', t("Hindi — translation review pending")], ['mr', t("Marathi — unvalidated")], ['te', t("Telugu — unvalidated")], ['bn', t("Bengali — unvalidated")], ['or', t("Odia — unvalidated")]].map(([code, name]) => <option key={code} value={code}>{name}</option>)}</select></label>
+          <label>{t("Program / cohort")}<select value={cohort} onChange={event => setCohort(event.target.value)}><option value="">{t("Personal submission")}</option>{actor.cohorts.filter(value => value.role === 'applicant' || actor.role === 'admin').map(value => <option key={value.id} value={value.id}>{value.name}</option>)}</select></label></div>
+        <label>{t("Known business location")} <span className="optional">{t("(optional)")}</span><input maxLength={200} value={location} onChange={event => setLocation(event.target.value)} placeholder={t("Village, locality or district you know")} /></label>
+        <p className="field-note">{t("Regional text uses an owned translation model when provisioned. Originals remain available for review. Language and transcription quality must be checked before decisions.")}</p>
+        <label className="inline-check"><input type="checkbox" checked={synthetic} onChange={event => setSynthetic(event.target.checked)} />{t("Synthetic rehearsal input")}</label>
+        {synthetic && <><p className="field-note">{t("This fictional example is excluded from ordinary population charts. Enable labelled examples in Comparisons to show it.")}</p><label>{t("Scenario family (optional)")}<input value={family} maxLength={100} pattern="[a-zA-Z0-9_-]+" onChange={event => setFamily(event.target.value)} placeholder="tea-001" /><small>{t("Use the same identifier for text, PDF and audio versions of this fictional idea.")}</small></label></>}
+        <label className="consent"><input type="checkbox" checked={consent} required onChange={event => setConsent(event.target.checked)} /><span>{t("I consent to my idea and original file being stored privately and used for this assessment and authorized human review.")}</span></label>
+        <button className="primary-link submit-button" type="submit"><Send size={16} />{busy ? t("Saving…") : t("Submit idea")}</button>
       </fieldset>
-      {progress !== null && <div className="upload-progress"><label htmlFor="upload-progress">Upload {progress}% — waiting for server validation</label><progress id="upload-progress" value={progress} max={100} /></div>}
+      {busy && <button type="button" className="secondary-button" onClick={stopWaiting}>{t('Stop waiting / pause transfer')}</button>}
+      {!busy && pending.current?.uploadId && error && <button type="button" className="secondary-button" onClick={() => { void discardUpload() }}>{t('Discard unsubmitted upload')}</button>}
+      {progress !== null && <div className="upload-progress"><label htmlFor="upload-progress">{t("Upload")} {progress}{t("% — waiting for server validation")}</label><progress id="upload-progress" value={progress} max={100} /></div>}
       {message && !error && <p role="status" className="form-message">{message}</p>}
-      {error && <p role="alert" className="form-error">{error} Your submitted work can be recovered from My submissions. Keep the same input to retry safely.</p>}
+      {error && <p role="alert" className="form-error">{error} {t("Your submitted work can be recovered from My submissions. Keep the same input to retry safely.")}</p>}
     </form>
   </section>
 }

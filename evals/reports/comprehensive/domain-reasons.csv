@@ -1,0 +1,79 @@
+﻿Case,Domain,Rating,Reason,Evidence refs
+P01,clarity,2,The offer is described as 'tea stall' but lacks clear details on how it operates or what the customer experience entails. The target customers are identified as 'office workers' but no operational details are provided.,"[""69546582-45fa-5a49-b0a5-f398f163ca4b""]"
+P01,customer_need,2,"Evidence shows a customer need for quick morning tea, but only 18 out of 30 office workers expressed interest in buying it, and no confirmed orders were recorded. This indicates a potential gap between stated need and actual purchase intent.","[""9446b425-e478-54cd-a10f-c3a139352c2a"", ""0db70b07-fa27-55bf-b321-fa0aa3d57dc2""]"
+P01,market_potential,2,"Market research indicates interest from office workers in tea, but no confirmed orders; limited evidence of demand.","[""69546582-45fa-5a49-b0a5-f398f163ca4b""]"
+P01,feasibility,Unassessed / not measured,A model judgment could not be grounded in the supplied evidence; human review is required.,[]
+P01,competition,Unassessed / not measured,A model judgment could not be grounded in the supplied evidence; human review is required.,[]
+P01,differentiation,2,"The business offers a tea stall with pre-order pickup and reusable cups, which addresses the customer need for quick morning tea. This distinction is customer-relevant and supported by the provided facts.","[""69546582-45fa-5a49-b0a5-f398f163ca4b""]"
+P02,clarity,2,"The offer is described as 'tailoring service' but lacks clear details on what this entails, and the target customers are specified as 'office workers' without further explanation. The business type is also not fully clarified in the context of the offer.","[""81ede3a8-c4bb-5be3-9a55-8717b5d9e944""]"
+P02,customer_need,2,"Evidence shows a need for alterations before work, with 8 requests from 20 interviews, targeting office workers. However, no specific details about the nature of the problem or the extent of the need are provided.","[""c7033a10-3869-5274-a807-6f5badfdff36"", ""b1bd210b-33d0-5c98-bef6-5e68603c2245""]"
+P02,market_potential,2,"Limited market research: only 20 customers interviewed, 8 alteration requests, and no evidence of broader demand. No data on channel reach or market size in Mysuru.","[""81ede3a8-c4bb-5be3-9a55-8717b5d9e944""]"
+P02,feasibility,2,"Investment and own funds are present, but the requested loan is not confirmed. The revenue and expenses are consistent with a monthly profit of 15,000 INR, but the unit price and revenue are not clearly tied to the investment or funding. The funding is insufficient to cover the investment, and the economic model is not fully coherent without a clear timeline or validation of the supply chain or market demand.","[""660bd866-c8d0-5c42-b1bf-1648f0d99bcd"", ""da0f24f8-7589-56c0-8bbc-a19da3f83a7c"", ""e8e672ae-ce80-5740-84d4-f8c098e94a8f"", ""d849d2cf-6c47-57b2-862d-117223371548"", ""ded769fc-f423-57ca-bbbd-e1469403df2e"", ""77c6645f-393e-5b29-932e-38c9ae4fe846"", ""c4d0e54a-f022-59aa-8f41-512164ab3ed9""]"
+P02,competition,2,"The business identifies two nearby tailors as alternatives, but no specific response is provided for how it will address competition. The differentiation claim is about early pickup and same-day repairs, which is a service differentiator but does not indicate a direct response to competitors.","[""bb9660c1-0511-53b0-81f8-a27422a77d17"", ""0cbade7a-7526-5997-ad4d-a9c7011c124b""]"
+P02,differentiation,2,"The service offers tailoring and early pickup with same-day repairs, which addresses the customer need for alterations before work. This is a specific customer-relevant distinction that supports the differentiation.","[""81ede3a8-c4bb-5be3-9a55-8717b5d9e944""]"
+N01,clarity,2,"The offer is clearly identified as tea, and the target customers are office workers, but the operating model is not explicitly described in the provided facts.","[""cd515ecb-6230-5171-af24-4cc2363ba1fa""]"
+N01,customer_need,2,"Evidence shows a customer need for morning tea among office workers, but no specific details about the problem or demand are provided in the segments.","[""a8609a99-6705-5772-b47e-abd1ccac63de""]"
+N01,market_potential,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+N01,feasibility,Unassessed / not measured,A model judgment could not be grounded in the supplied evidence; human review is required.,[]
+N01,competition,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+N01,differentiation,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+N02,clarity,2,"Offer is clearly identified as tea, and target customers are office workers, but no details on the operating model are provided.","[""02a84901-e89b-5483-a08f-91597437de5c""]"
+N02,customer_need,2,"Survey of 30 office workers indicates demand for tea at INR 10 per cup, but no evidence of actual purchase or customer satisfaction.","[""327105a9-4f72-59f7-ba1f-c841972aea3b""]"
+N02,market_potential,2,"Survey of 30 office workers shows interest in tea at INR 10 per cup, targeting office workers; however, no evidence of broader market reach or validation beyond this segment.","[""327105a9-4f72-59f7-ba1f-c841972aea3b""]"
+N02,feasibility,2,"Investment of 20,000 INR is present but period and unit are unknown; unit price of 10 INR per cup is consistent with supply, but no evidence of production scale or economic viability.","[""faa1ed4a-3ba0-56d7-b9a7-e84a807a2e82"", ""316a1a78-f3cf-51b9-97da-338e52c2add2"", ""c2f4f115-78b7-5ed8-a493-0eed01f0534f""]"
+N02,competition,0,"No alternatives are identified in the evidence; the business claims no competition but the fact states nearby stalls already provide the same tea, indicating a direct competitive threat.","[""98995822-fc4d-5520-aef5-cf748ef39650""]"
+N02,differentiation,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+N03,clarity,2,"The offer is described as a tea stall, and the target customers are office workers, but the details about the operating model are not clearly explained in the provided segments.","[""30a27fc9-f5d3-551c-a2b0-91ae5ea3976d""]"
+N03,customer_need,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+N03,market_potential,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+N03,feasibility,2,"Investment of 50,000 INR is present, but no funding source is specified for the investment. The unit price is 10 INR per cup, but no supply or production capacity is mentioned. The requested loan is 0 INR, which may indicate no external funding, but the lack of supply details makes the economic feasibility uncertain.","[""0139f8a2-c20b-5c2f-b510-b0af9b9dea60"", ""077472b0-7449-5a8a-aac9-23949aacca57"", ""1386156b-193b-59e9-8355-1a19a3828bc3"", ""aa5e1d3e-f2a1-58d4-81df-5b64eeaedb69""]"
+N03,competition,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+N03,differentiation,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+N04,clarity,2,"The offer is clearly identified as tea, and the target customers are office workers, but no details about the operating model are provided.","[""8ec4c58e-234d-52d9-8530-4f12fa75446e""]"
+N04,customer_need,0,Missing evidence for customer problem; market research is unverified and no competitor analysis provided.,"[""8ec4c58e-234d-52d9-8530-4f12fa75446e""]"
+N04,market_potential,2,"Target customers are identified as office workers, but market research is not conducted, so demand evidence is insufficient.","[""8ec4c58e-234d-52d9-8530-4f12fa75446e""]"
+N04,feasibility,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+N04,competition,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+N04,differentiation,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+U01,clarity,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+U01,customer_need,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+U01,market_potential,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+U01,feasibility,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+U01,competition,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+U01,differentiation,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+I01,clarity,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+I01,customer_need,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+I01,market_potential,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+I01,feasibility,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+I01,competition,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+I01,differentiation,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+S01,clarity,2,"The offer is clearly identified as tea, and the target customers are office workers, but the operating model is not explicitly described in the provided segments.","[""0a788ad9-e49d-5cf5-af9a-1dca42900f16"", ""20ab2b14-5b54-5803-9b0a-facd2952d42a""]"
+S01,customer_need,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+S01,market_potential,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+S01,feasibility,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+S01,competition,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+S01,differentiation,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+G01,clarity,2,"Offer is clearly identified as tea, but customer segment (office workers) is not fully explained in the context of the offer or model; no details on how the offer is delivered or operated.","[""81633d39-9569-53e4-93fa-868840269886""]"
+G01,customer_need,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+G01,market_potential,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+G01,feasibility,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+G01,competition,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+G01,differentiation,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+B01,clarity,2,Offer is described as 'tea stall' but no details on how it operates or how it is marketed to office workers; customer segment is clear but lack of operational details limits clarity.,"[""4272eae3-3189-5e10-9d28-f60d053e5cbe"", ""254c3065-b50f-5078-a178-994cbfc4ae76""]"
+B01,customer_need,2,"Evidence shows a need for quick morning tea among office workers, but only 18 out of 30 respondents indicated they would consider buying it; no confirmed orders are present.","[""254c3065-b50f-5078-a178-994cbfc4ae76"", ""c9380a8f-a594-5582-9f10-f371b19670fe""]"
+B01,market_potential,2,"Limited evidence of demand; 18 out of 30 office workers said they would consider buying tea, but no confirmed orders. Market research is not validated by independent data or external validation.","[""4272eae3-3189-5e10-9d28-f60d053e5cbe""]"
+B01,feasibility,2,"Investment of 20,000 INR is present, but expenses of 22,000 INR exceed available funds (12,000 own + 8,000 loan), suggesting financial strain. The supply of tea leaves and milk is confirmed, but unit price is not specified, and no clear economic model is provided.","[""82e9e207-3aba-5376-b267-10856be99fe9"", ""0699f7f8-43ed-5f12-a135-059a2f7be6e8"", ""7a5cbb2f-3f4f-5927-8d4b-8731bf10d1e3"", ""e75b0404-73f1-5451-994a-39710b47c400""]"
+B01,competition,Unassessed / not measured,A model judgment could not be grounded in the supplied evidence; human review is required.,[]
+B01,differentiation,2,"The business offers a tea stall with pre-order pickup and reusable cups, which addresses the customer need for quick morning tea. This distinction is plausible but not explicitly tied to customer experience or satisfaction.","[""4272eae3-3189-5e10-9d28-f60d053e5cbe"", ""254c3065-b50f-5078-a178-994cbfc4ae76"", ""ba60759f-fa1f-5979-982f-e43a1edc6446""]"
+B02,clarity,2,Offer is described as 'tea stall' but no details on how it operates or what the customer experience is. Customer segment is 'office workers' but no clear explanation of the business model or how the stall serves them.,"[""cf27593e-d194-5031-ba89-020a002dddad"", ""f5398212-94d1-52e7-9ab5-09c6ba311abc""]"
+B02,customer_need,2,"Evidence shows a customer need for quick morning tea, but only 18 out of 30 office workers expressed interest in buying it, and no confirmed orders were recorded. This indicates a gap between stated need and actual purchase intent.","[""f5398212-94d1-52e7-9ab5-09c6ba311abc"", ""2c2e28cf-7604-59c7-87fe-491450f067d5""]"
+B02,market_potential,2,"Market research indicates 18 out of 30 office workers expressed interest in buying tea, but no confirmed orders. This suggests a reachable segment (office workers) with limited demand evidence.","[""cf27593e-d194-5031-ba89-020a002dddad""]"
+B02,feasibility,2,"Investment of 20,000 INR is present, but the total expenses of 22,000 INR exceed the available funds (12,000 INR from own funds + 8,000 INR from loan), suggesting a potential funding shortfall. The supply of tea leaves and milk is confirmed, but the unit price is not specified in terms of cost per unit, making it unclear if the supply is economically viable. The business is not currently operating, which may affect the feasibility of the project.","[""c4a2df36-3e6c-5bfe-b994-98c82b484d0e"", ""dc27f7c6-2f52-5a25-be9b-66ce9b7184cb"", ""68157a91-edd7-52ca-85bf-8595920b5017"", ""a50c2cfa-da45-5f14-8fa7-91bbe5c3b4c1""]"
+B02,competition,Unassessed / not measured,A model judgment could not be grounded in the supplied evidence; human review is required.,[]
+B02,differentiation,2,"The business offers a tea stall with pre-order pickup and reusable cups, which addresses the customer need for quick morning tea. This distinction is plausible but not explicitly tied to customer experience or satisfaction.","[""146c587b-0dda-5258-8858-0b154fbc79ca""]"
+H01,clarity,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+H01,customer_need,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+H01,market_potential,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+H01,feasibility,2,"Investment of 20,000 INR is present, but unit price is not specified for the investment, making it unclear if the investment is sufficient to cover the unit price of 10 INR. The supply and funding are not fully coherent without a clear economic model.","[""09cbbfcc-348c-50ba-9153-9925aa3c6f48"", ""7b32ae0b-a706-5a29-832c-21dc14a98b81""]"
+H01,competition,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]
+H01,differentiation,Unassessed / not measured,Insufficient usable evidence; clarification required.,[]

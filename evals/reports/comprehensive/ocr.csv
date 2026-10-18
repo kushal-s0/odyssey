@@ -1,0 +1,18 @@
+﻿ID,Style,Reference,Actual OCR,WER,CER,Numbers,Seconds
+O01,clean_print,"Business idea: Tea for office workers.
+Price: INR 10 per cup.
+Startup investment: INR 20000.","Business idea: Tea for office workers.
+Price: INR 10 per cup.
+Startup investment: INR 20000.",0.0,0.0,True,2.812
+O02,numeric_loss,"Monthly revenue: INR 10000.
+Monthly expenses: INR 18000.
+Operating loss: INR 8000.
+Profit is not known.","Monthly revenue: INR 10000.
+Monthly expenses: INR 18000.
+Operating loss: INR 8000.
+Profit is not known.",0.0,0.0,True,3.273
+O03,rendered_script_font,"My customers are local office workers.
+I sell tea for INR 10 per cup.
+I need INR 20000 to start.","My customers are local office workers.
+I sell tea for INR 10 per cup.
+I need INR 20000 to start.",0.0,0.0,True,1.802

@@ -1,0 +1,50 @@
+{
+  "assessment": null,
+  "result": {
+    "case": "F01",
+    "perspective": "Implausible on-topic revenue",
+    "expected_interpretation": "Retain the claim as self-report and flag arithmetic discrepancy; implausible does not mean irrelevant.",
+    "source": "I sell tea to office workers. My customers are office workers. My selling price is INR 10 per cup. I plan to sell 100 cups per day and operate 25 days per month. My monthly revenue is INR 9000000. My monthly expenses are INR 20000. My startup investment is INR 10000. These figures are my estimates.",
+    "language": "en",
+    "status": "needs_review",
+    "seconds": 29.938,
+    "error_code": "needs_review",
+    "checks": [
+      {
+        "kind": "present",
+        "field": "offer",
+        "expected": null,
+        "passed": false,
+        "observed": "No completed assessment",
+        "abstained": false
+      },
+      {
+        "kind": "money",
+        "field": "revenue",
+        "expected": "9000000",
+        "passed": false,
+        "observed": "No completed assessment",
+        "abstained": false
+      },
+      {
+        "kind": "money",
+        "field": "unit_price",
+        "expected": "10",
+        "passed": false,
+        "observed": "No completed assessment",
+        "abstained": false
+      },
+      {
+        "kind": "economic_status",
+        "field": "revenue",
+        "expected": "discrepancy",
+        "passed": false,
+        "observed": "No completed assessment",
+        "abstained": false
+      }
+    ],
+    "measurements": [],
+    "passed": false
+  },
+  "note": "No assessment was published in the original frozen run. Diagnostic repeat is stored separately."
+}

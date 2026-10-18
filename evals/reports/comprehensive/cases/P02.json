@@ -1,0 +1,685 @@
+{
+  "assessment": {
+    "id": "4c81968b-e9bc-4073-9b67-797301591b78",
+    "submission_id": "65c428b1-bbe5-46cd-9875-eb9344a871a8",
+    "input_revision_id": "bb69a636-3367-41a1-9fa9-c869fc8efb26",
+    "parent_revision_id": null,
+    "version": 1,
+    "created_at": "2026-10-18T02:06:04.689045Z",
+    "pipeline_version": "screening-v1",
+    "model_manifest_hash": "b3a08182e8e2cb1c1287fcbbc964436e48ebdabd8bed668520cf2c5d9e8a176c",
+    "business": {
+      "schema_version": "1",
+      "summary": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "business_type": {
+        "value": "tailoring",
+        "status": "present",
+        "source_segment_ids": [
+          "81ede3a8-c4bb-5be3-9a55-8717b5d9e944"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "offer": {
+        "value": "tailoring service",
+        "status": "present",
+        "source_segment_ids": [
+          "81ede3a8-c4bb-5be3-9a55-8717b5d9e944"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "target_customers": {
+        "value": "office workers",
+        "status": "present",
+        "source_segment_ids": [
+          "c7033a10-3869-5274-a807-6f5badfdff36"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "problem": {
+        "value": "need alterations before work",
+        "status": "present",
+        "source_segment_ids": [
+          "c7033a10-3869-5274-a807-6f5badfdff36"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "location": {
+        "value": {
+          "locality": "Mysuru",
+          "block": null,
+          "district": null,
+          "state": null,
+          "pin": null,
+          "latitude": null,
+          "longitude": null,
+          "precision": "locality",
+          "applicant_confirmed": false
+        },
+        "status": "present",
+        "source_segment_ids": [
+          "81ede3a8-c4bb-5be3-9a55-8717b5d9e944"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "market_research": {
+        "value": "I interviewed 20 customers and received 8 alteration requests",
+        "status": "present",
+        "source_segment_ids": [
+          "b1bd210b-33d0-5c98-bef6-5e68603c2245"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "raw_materials": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "suppliers": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "investment": {
+        "value": {
+          "amount": "30000",
+          "currency": "INR",
+          "period": "unknown",
+          "unit": null
+        },
+        "status": "present",
+        "source_segment_ids": [
+          "660bd866-c8d0-5c42-b1bf-1648f0d99bcd"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "own_funds": {
+        "value": {
+          "amount": "20000",
+          "currency": "INR",
+          "period": "unknown",
+          "unit": null
+        },
+        "status": "present",
+        "source_segment_ids": [
+          "da0f24f8-7589-56c0-8bbc-a19da3f83a7c"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "requested_loan": {
+        "value": {
+          "amount": "10000",
+          "currency": "INR",
+          "period": "unknown",
+          "unit": null
+        },
+        "status": "present",
+        "source_segment_ids": [
+          "e8e672ae-ce80-5740-84d4-f8c098e94a8f"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "unit_price": {
+        "value": {
+          "amount": "400",
+          "currency": "INR",
+          "period": "unknown",
+          "unit": "piece"
+        },
+        "status": "present",
+        "source_segment_ids": [
+          "d849d2cf-6c47-57b2-862d-117223371548"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "revenue": {
+        "value": {
+          "amount": "40000",
+          "currency": "INR",
+          "period": "month",
+          "unit": null
+        },
+        "status": "present",
+        "source_segment_ids": [
+          "ded769fc-f423-57ca-bbbd-e1469403df2e"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "expenses": {
+        "value": {
+          "amount": "25000",
+          "currency": "INR",
+          "period": "month",
+          "unit": null
+        },
+        "status": "present",
+        "source_segment_ids": [
+          "77c6645f-393e-5b29-932e-38c9ae4fe846"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "profit": {
+        "value": {
+          "amount": "15000",
+          "currency": "INR",
+          "period": "unknown",
+          "unit": null
+        },
+        "status": "present",
+        "source_segment_ids": [
+          "c4d0e54a-f022-59aa-8f41-512164ab3ed9"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "competition": {
+        "value": "Two nearby tailors are alternatives",
+        "status": "present",
+        "source_segment_ids": [
+          "bb9660c1-0511-53b0-81f8-a27422a77d17"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "differentiation": {
+        "value": "early pickup and same-day repairs",
+        "status": "present",
+        "source_segment_ids": [
+          "0cbade7a-7526-5997-ad4d-a9c7011c124b"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "existing_business": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "sector": "services",
+      "trade": "tailoring",
+      "additional_facts": []
+    },
+    "evidence": [
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "81ede3a8-c4bb-5be3-9a55-8717b5d9e944",
+        "submission_id": "65c428b1-bbe5-46cd-9875-eb9344a871a8",
+        "input_revision_id": "bb69a636-3367-41a1-9fa9-c869fc8efb26",
+        "original_text": "I run a tailoring service in Mysuru.",
+        "english_text": "I run a tailoring service in Mysuru.",
+        "language": {
+          "code": "en",
+          "provenance": "declared",
+          "model_id": null,
+          "model_confidence": null,
+          "needs_confirmation": true
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 0,
+        "end_character": 36
+      },
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "c7033a10-3869-5274-a807-6f5badfdff36",
+        "submission_id": "65c428b1-bbe5-46cd-9875-eb9344a871a8",
+        "input_revision_id": "bb69a636-3367-41a1-9fa9-c869fc8efb26",
+        "original_text": "My customers are office workers who need alterations before work.",
+        "english_text": "My customers are office workers who need alterations before work.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 1.0,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 37,
+        "end_character": 102
+      },
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "b1bd210b-33d0-5c98-bef6-5e68603c2245",
+        "submission_id": "65c428b1-bbe5-46cd-9875-eb9344a871a8",
+        "input_revision_id": "bb69a636-3367-41a1-9fa9-c869fc8efb26",
+        "original_text": "I interviewed 20 customers and received 8 alteration requests.",
+        "english_text": "I interviewed 20 customers and received 8 alteration requests.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 0.9999969005584717,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 103,
+        "end_character": 165
+      },
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "9e482b6e-6e0b-529c-98fc-f4765470a6d3",
+        "submission_id": "65c428b1-bbe5-46cd-9875-eb9344a871a8",
+        "input_revision_id": "bb69a636-3367-41a1-9fa9-c869fc8efb26",
+        "original_text": "I use a sewing machine and cloth from a local wholesaler.",
+        "english_text": "I use a sewing machine and cloth from a local wholesaler.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 1.0,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 166,
+        "end_character": 223
+      },
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "660bd866-c8d0-5c42-b1bf-1648f0d99bcd",
+        "submission_id": "65c428b1-bbe5-46cd-9875-eb9344a871a8",
+        "input_revision_id": "bb69a636-3367-41a1-9fa9-c869fc8efb26",
+        "original_text": "My startup investment is INR 30000.",
+        "english_text": "My startup investment is INR 30000.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 0.9998469352722168,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 224,
+        "end_character": 259
+      },
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "da0f24f8-7589-56c0-8bbc-a19da3f83a7c",
+        "submission_id": "65c428b1-bbe5-46cd-9875-eb9344a871a8",
+        "input_revision_id": "bb69a636-3367-41a1-9fa9-c869fc8efb26",
+        "original_text": "My own funds are INR 20000.",
+        "english_text": "My own funds are INR 20000.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 0.9999982118606567,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 260,
+        "end_character": 287
+      },
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "e8e672ae-ce80-5740-84d4-f8c098e94a8f",
+        "submission_id": "65c428b1-bbe5-46cd-9875-eb9344a871a8",
+        "input_revision_id": "bb69a636-3367-41a1-9fa9-c869fc8efb26",
+        "original_text": "My requested loan is INR 10000.",
+        "english_text": "My requested loan is INR 10000.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 0.9951663017272949,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 288,
+        "end_character": 319
+      },
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "d849d2cf-6c47-57b2-862d-117223371548",
+        "submission_id": "65c428b1-bbe5-46cd-9875-eb9344a871a8",
+        "input_revision_id": "bb69a636-3367-41a1-9fa9-c869fc8efb26",
+        "original_text": "My selling price is INR 400 per piece.",
+        "english_text": "My selling price is INR 400 per piece.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 0.9990371465682983,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 320,
+        "end_character": 358
+      },
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "ded769fc-f423-57ca-bbbd-e1469403df2e",
+        "submission_id": "65c428b1-bbe5-46cd-9875-eb9344a871a8",
+        "input_revision_id": "bb69a636-3367-41a1-9fa9-c869fc8efb26",
+        "original_text": "My monthly revenue is INR 40000.",
+        "english_text": "My monthly revenue is INR 40000.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 0.9994786381721497,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 359,
+        "end_character": 391
+      },
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "77c6645f-393e-5b29-932e-38c9ae4fe846",
+        "submission_id": "65c428b1-bbe5-46cd-9875-eb9344a871a8",
+        "input_revision_id": "bb69a636-3367-41a1-9fa9-c869fc8efb26",
+        "original_text": "My monthly expenses are INR 25000.",
+        "english_text": "My monthly expenses are INR 25000.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 0.9999902248382568,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 392,
+        "end_character": 426
+      },
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "c4d0e54a-f022-59aa-8f41-512164ab3ed9",
+        "submission_id": "65c428b1-bbe5-46cd-9875-eb9344a871a8",
+        "input_revision_id": "bb69a636-3367-41a1-9fa9-c869fc8efb26",
+        "original_text": "My monthly profit is INR 15000.",
+        "english_text": "My monthly profit is INR 15000.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 0.9997449517250061,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 427,
+        "end_character": 458
+      },
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "bb9660c1-0511-53b0-81f8-a27422a77d17",
+        "submission_id": "65c428b1-bbe5-46cd-9875-eb9344a871a8",
+        "input_revision_id": "bb69a636-3367-41a1-9fa9-c869fc8efb26",
+        "original_text": "Two nearby tailors are alternatives.",
+        "english_text": "Two nearby tailors are alternatives.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 0.9999998807907104,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 459,
+        "end_character": 495
+      },
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "0cbade7a-7526-5997-ad4d-a9c7011c124b",
+        "submission_id": "65c428b1-bbe5-46cd-9875-eb9344a871a8",
+        "input_revision_id": "bb69a636-3367-41a1-9fa9-c869fc8efb26",
+        "original_text": "My difference is early pickup and same-day repairs.",
+        "english_text": "My difference is early pickup and same-day repairs.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 1.0,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 496,
+        "end_character": 547
+      }
+    ],
+    "domains": [
+      {
+        "domain": "clarity",
+        "rating": 2,
+        "reason": "The offer is described as 'tailoring service' but lacks clear details on what this entails, and the target customers are specified as 'office workers' without further explanation. The business type is also not fully clarified in the context of the offer.",
+        "source_segment_ids": [
+          "81ede3a8-c4bb-5be3-9a55-8717b5d9e944"
+        ],
+        "basis": "self_reported"
+      },
+      {
+        "domain": "customer_need",
+        "rating": 2,
+        "reason": "Evidence shows a need for alterations before work, with 8 requests from 20 interviews, targeting office workers. However, no specific details about the nature of the problem or the extent of the need are provided.",
+        "source_segment_ids": [
+          "c7033a10-3869-5274-a807-6f5badfdff36",
+          "b1bd210b-33d0-5c98-bef6-5e68603c2245"
+        ],
+        "basis": "self_reported"
+      },
+      {
+        "domain": "market_potential",
+        "rating": 2,
+        "reason": "Limited market research: only 20 customers interviewed, 8 alteration requests, and no evidence of broader demand. No data on channel reach or market size in Mysuru.",
+        "source_segment_ids": [
+          "81ede3a8-c4bb-5be3-9a55-8717b5d9e944"
+        ],
+        "basis": "self_reported"
+      },
+      {
+        "domain": "feasibility",
+        "rating": 2,
+        "reason": "Investment and own funds are present, but the requested loan is not confirmed. The revenue and expenses are consistent with a monthly profit of 15,000 INR, but the unit price and revenue are not clearly tied to the investment or funding. The funding is insufficient to cover the investment, and the economic model is not fully coherent without a clear timeline or validation of the supply chain or market demand.",
+        "source_segment_ids": [
+          "660bd866-c8d0-5c42-b1bf-1648f0d99bcd",
+          "da0f24f8-7589-56c0-8bbc-a19da3f83a7c",
+          "e8e672ae-ce80-5740-84d4-f8c098e94a8f",
+          "d849d2cf-6c47-57b2-862d-117223371548",
+          "ded769fc-f423-57ca-bbbd-e1469403df2e",
+          "77c6645f-393e-5b29-932e-38c9ae4fe846",
+          "c4d0e54a-f022-59aa-8f41-512164ab3ed9"
+        ],
+        "basis": "self_reported"
+      },
+      {
+        "domain": "competition",
+        "rating": 2,
+        "reason": "The business identifies two nearby tailors as alternatives, but no specific response is provided for how it will address competition. The differentiation claim is about early pickup and same-day repairs, which is a service differentiator but does not indicate a direct response to competitors.",
+        "source_segment_ids": [
+          "bb9660c1-0511-53b0-81f8-a27422a77d17",
+          "0cbade7a-7526-5997-ad4d-a9c7011c124b"
+        ],
+        "basis": "self_reported"
+      },
+      {
+        "domain": "differentiation",
+        "rating": 2,
+        "reason": "The service offers tailoring and early pickup with same-day repairs, which addresses the customer need for alterations before work. This is a specific customer-relevant distinction that supports the differentiation.",
+        "source_segment_ids": [
+          "81ede3a8-c4bb-5be3-9a55-8717b5d9e944"
+        ],
+        "basis": "self_reported"
+      }
+    ],
+    "scores": {
+      "rubric_version": "rubric-v1",
+      "provisional_potential": "50.00",
+      "headline_potential": null,
+      "evidence_coverage": "1",
+      "completeness_percent": "83.33",
+      "usable_fields": 15,
+      "applicable_fields": 18,
+      "excluded_fields": {},
+      "needs_clarification": true,
+      "ranking_eligible": false,
+      "withheld_reason": "source_requires_review"
+    },
+    "strengths": [],
+    "gaps": [],
+    "risks": [
+      "Self-reported proposal; source claims and model judgments require human verification.",
+      "Relevance baseline is advisory and has not been independently validated.",
+      "Source extraction/language uncertainty requires human review.",
+      "Source transcription or language needs verification; check the original before using these suggestions."
+    ],
+    "assessment_policy_version": "grounded-domain-v1",
+    "relevance_model": "rules-cosine-baseline-v1",
+    "relevance": [
+      {
+        "domain": "clarity",
+        "classifier": "rules-cosine-baseline-v1",
+        "result": "uncertain",
+        "cosine_similarity": 0.0933680534362793,
+        "advisory_only": true,
+        "independently_validated": false
+      },
+      {
+        "domain": "customer_need",
+        "classifier": "rules-cosine-baseline-v1",
+        "result": "uncertain",
+        "cosine_similarity": 0.17374010384082794,
+        "advisory_only": true,
+        "independently_validated": false
+      },
+      {
+        "domain": "market_potential",
+        "classifier": "rules-cosine-baseline-v1",
+        "result": "uncertain",
+        "cosine_similarity": 0.15260910987854004,
+        "advisory_only": true,
+        "independently_validated": false
+      },
+      {
+        "domain": "feasibility",
+        "classifier": "rules-cosine-baseline-v1",
+        "result": "uncertain",
+        "cosine_similarity": 0.11703629791736603,
+        "advisory_only": true,
+        "independently_validated": false
+      },
+      {
+        "domain": "competition",
+        "classifier": "rules-cosine-baseline-v1",
+        "result": "uncertain",
+        "cosine_similarity": 0.21110646426677704,
+        "advisory_only": true,
+        "independently_validated": false
+      },
+      {
+        "domain": "differentiation",
+        "classifier": "rules-cosine-baseline-v1",
+        "result": "uncertain",
+        "cosine_similarity": 0.0405646413564682,
+        "advisory_only": true,
+        "independently_validated": false
+      }
+    ]
+  },
+  "economics": {
+    "assessment_id": "4c81968b-e9bc-4073-9b67-797301591b78",
+    "checks": [
+      {
+        "kind": "funding",
+        "title": "Startup funding balance",
+        "status": "consistent",
+        "explanation": "Own funds plus the requested loan match the stated startup investment (one rupee rounding tolerance). Other funding, if any, needs clarification.",
+        "formula": "20000.00 + 10000.00 = 30000.00",
+        "calculated_amount": "30000.00",
+        "stated_amount": "30000.00",
+        "currency": "INR",
+        "period": "once",
+        "source_segment_ids": [
+          "660bd866-c8d0-5c42-b1bf-1648f0d99bcd",
+          "da0f24f8-7589-56c0-8bbc-a19da3f83a7c",
+          "e8e672ae-ce80-5740-84d4-f8c098e94a8f"
+        ],
+        "assumptions": [
+          "Startup funding is a one-time capital requirement; no recurring periods or other funding sources are assumed."
+        ]
+      },
+      {
+        "kind": "profit",
+        "title": "Revenue versus operating surplus",
+        "status": "calculated",
+        "explanation": "Revenue minus the supplied expenses gives an estimated operating surplus, not verified net profit. Unlisted costs, tax, debt service and owner pay may change it.",
+        "formula": "40000.00 − 25000.00 = 15000.00",
+        "calculated_amount": "15000.00",
+        "stated_amount": null,
+        "currency": "INR",
+        "period": "month",
+        "source_segment_ids": [
+          "ded769fc-f423-57ca-bbbd-e1469403df2e",
+          "77c6645f-393e-5b29-932e-38c9ae4fe846",
+          "c4d0e54a-f022-59aa-8f41-512164ab3ed9"
+        ],
+        "assumptions": [
+          "Uses supplied expense categories only.",
+          "Month/year conversion uses twelve months; week/day conversion uses seven calendar days. No month-to-day conversion is assumed."
+        ]
+      },
+      {
+        "kind": "revenue",
+        "title": "Sales-based revenue estimate",
+        "status": "needs_clarification",
+        "explanation": "Supply one clear daily sales quantity, matching unit price and operating days per month. Conflicting quantities, missing days or unknown currency are not guessed.",
+        "formula": null,
+        "calculated_amount": null,
+        "stated_amount": null,
+        "currency": null,
+        "period": null,
+        "source_segment_ids": [
+          "d849d2cf-6c47-57b2-862d-117223371548"
+        ],
+        "assumptions": []
+      }
+    ],
+    "note": "Arithmetic checks use supplied figures and explicit periods. Calculated estimates do not overwrite claims or alter assessment scores. Revenue is not profit."
+  }
+}

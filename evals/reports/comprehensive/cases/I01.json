@@ -1,0 +1,380 @@
+{
+  "assessment": {
+    "id": "62c46ddc-d3a9-49a4-a73e-47e756ece7d7",
+    "submission_id": "35a1a222-720c-4763-9334-b3d23e8e1202",
+    "input_revision_id": "cc3edca2-1ef7-4c24-bc19-26c0921270d7",
+    "parent_revision_id": null,
+    "version": 1,
+    "created_at": "2026-10-18T02:11:51.676681Z",
+    "pipeline_version": "screening-v1",
+    "model_manifest_hash": "b3a08182e8e2cb1c1287fcbbc964436e48ebdabd8bed668520cf2c5d9e8a176c",
+    "business": {
+      "schema_version": "1",
+      "summary": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "business_type": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "offer": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "target_customers": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "problem": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "location": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "market_research": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "raw_materials": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "suppliers": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "investment": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "own_funds": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "requested_loan": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "unit_price": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "revenue": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "expenses": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "profit": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "competition": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "differentiation": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "existing_business": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "sector": "unknown",
+      "trade": "unknown",
+      "additional_facts": []
+    },
+    "evidence": [
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "4417b0a1-4eb3-565b-8ef8-ae46939728f0",
+        "submission_id": "35a1a222-720c-4763-9334-b3d23e8e1202",
+        "input_revision_id": "cc3edca2-1ef7-4c24-bc19-26c0921270d7",
+        "original_text": "I watched a cricket match yesterday.",
+        "english_text": "I watched a cricket match yesterday.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 0.9997269511222839,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 0,
+        "end_character": 36
+      },
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "ca80b040-d861-5abb-9f55-a2dab24cc402",
+        "submission_id": "35a1a222-720c-4763-9334-b3d23e8e1202",
+        "input_revision_id": "cc3edca2-1ef7-4c24-bc19-26c0921270d7",
+        "original_text": "The team won by five wickets.",
+        "english_text": "The team won by five wickets.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 1.0,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 37,
+        "end_character": 66
+      },
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "5949a192-6813-54f8-a3ed-46ddd2aca2ce",
+        "submission_id": "35a1a222-720c-4763-9334-b3d23e8e1202",
+        "input_revision_id": "cc3edca2-1ef7-4c24-bc19-26c0921270d7",
+        "original_text": "The movie I watched afterwards had excellent songs.",
+        "english_text": "The movie I watched afterwards had excellent songs.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 1.0,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 67,
+        "end_character": 118
+      }
+    ],
+    "domains": [
+      {
+        "domain": "clarity",
+        "rating": null,
+        "reason": "Insufficient usable evidence; clarification required.",
+        "source_segment_ids": [],
+        "basis": "insufficient"
+      },
+      {
+        "domain": "customer_need",
+        "rating": null,
+        "reason": "Insufficient usable evidence; clarification required.",
+        "source_segment_ids": [],
+        "basis": "insufficient"
+      },
+      {
+        "domain": "market_potential",
+        "rating": null,
+        "reason": "Insufficient usable evidence; clarification required.",
+        "source_segment_ids": [],
+        "basis": "insufficient"
+      },
+      {
+        "domain": "feasibility",
+        "rating": null,
+        "reason": "Insufficient usable evidence; clarification required.",
+        "source_segment_ids": [],
+        "basis": "insufficient"
+      },
+      {
+        "domain": "competition",
+        "rating": null,
+        "reason": "Insufficient usable evidence; clarification required.",
+        "source_segment_ids": [],
+        "basis": "insufficient"
+      },
+      {
+        "domain": "differentiation",
+        "rating": null,
+        "reason": "Insufficient usable evidence; clarification required.",
+        "source_segment_ids": [],
+        "basis": "insufficient"
+      }
+    ],
+    "scores": {
+      "rubric_version": "rubric-v1",
+      "provisional_potential": null,
+      "headline_potential": null,
+      "evidence_coverage": "0",
+      "completeness_percent": "0.00",
+      "usable_fields": 0,
+      "applicable_fields": 18,
+      "excluded_fields": {},
+      "needs_clarification": true,
+      "ranking_eligible": false,
+      "withheld_reason": "offer_or_customers_unresolved"
+    },
+    "strengths": [],
+    "gaps": [
+      "clarity: Insufficient usable evidence; clarification required.",
+      "customer_need: Insufficient usable evidence; clarification required.",
+      "market_potential: Insufficient usable evidence; clarification required.",
+      "feasibility: Insufficient usable evidence; clarification required.",
+      "competition: Insufficient usable evidence; clarification required.",
+      "differentiation: Insufficient usable evidence; clarification required."
+    ],
+    "risks": [
+      "Self-reported proposal; source claims and model judgments require human verification.",
+      "Relevance baseline is advisory and has not been independently validated."
+    ],
+    "assessment_policy_version": "grounded-domain-v1",
+    "relevance_model": "rules-cosine-baseline-v1",
+    "relevance": [
+      {
+        "domain": "clarity",
+        "classifier": "rules-cosine-baseline-v1",
+        "result": "missing",
+        "cosine_similarity": null,
+        "advisory_only": true,
+        "independently_validated": false
+      },
+      {
+        "domain": "customer_need",
+        "classifier": "rules-cosine-baseline-v1",
+        "result": "missing",
+        "cosine_similarity": null,
+        "advisory_only": true,
+        "independently_validated": false
+      },
+      {
+        "domain": "market_potential",
+        "classifier": "rules-cosine-baseline-v1",
+        "result": "missing",
+        "cosine_similarity": null,
+        "advisory_only": true,
+        "independently_validated": false
+      },
+      {
+        "domain": "feasibility",
+        "classifier": "rules-cosine-baseline-v1",
+        "result": "missing",
+        "cosine_similarity": null,
+        "advisory_only": true,
+        "independently_validated": false
+      },
+      {
+        "domain": "competition",
+        "classifier": "rules-cosine-baseline-v1",
+        "result": "missing",
+        "cosine_similarity": null,
+        "advisory_only": true,
+        "independently_validated": false
+      },
+      {
+        "domain": "differentiation",
+        "classifier": "rules-cosine-baseline-v1",
+        "result": "missing",
+        "cosine_similarity": null,
+        "advisory_only": true,
+        "independently_validated": false
+      }
+    ]
+  },
+  "economics": {
+    "assessment_id": "62c46ddc-d3a9-49a4-a73e-47e756ece7d7",
+    "checks": [
+      {
+        "kind": "funding",
+        "title": "Startup funding balance",
+        "status": "needs_clarification",
+        "explanation": "Supply startup investment, own funds and loan (including an explicit zero where applicable) in a known currency. Recurring amounts cannot be compared as startup capital.",
+        "formula": null,
+        "calculated_amount": null,
+        "stated_amount": null,
+        "currency": null,
+        "period": null,
+        "source_segment_ids": [],
+        "assumptions": []
+      },
+      {
+        "kind": "profit",
+        "title": "Revenue versus operating surplus",
+        "status": "needs_clarification",
+        "explanation": "Revenue is not profit. Supply revenue and expenses in a known currency and compatible periods before calculating a surplus.",
+        "formula": null,
+        "calculated_amount": null,
+        "stated_amount": null,
+        "currency": null,
+        "period": null,
+        "source_segment_ids": [],
+        "assumptions": []
+      },
+      {
+        "kind": "revenue",
+        "title": "Sales-based revenue estimate",
+        "status": "needs_clarification",
+        "explanation": "Supply one clear daily sales quantity, matching unit price and operating days per month. Conflicting quantities, missing days or unknown currency are not guessed.",
+        "formula": null,
+        "calculated_amount": null,
+        "stated_amount": null,
+        "currency": null,
+        "period": null,
+        "source_segment_ids": [],
+        "assumptions": []
+      }
+    ],
+    "note": "Arithmetic checks use supplied figures and explicit periods. Calculated estimates do not overwrite claims or alter assessment scores. Revenue is not profit."
+  }
+}

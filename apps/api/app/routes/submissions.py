@@ -11,6 +11,7 @@ from ..auth.access import ActorDep, DatabaseDep, submission_access
 from ..auth.scope import submission_scope
 from ..contracts.models import SubmissionAccepted, SubmissionCreate
 from ..contracts.uploads import SubmissionView, SubmissionWorkspace
+from ..domain.economics import economics
 from ..repositories.idempotency import begin_idempotent, finish_idempotent
 from ..worker.manifest import initial_stages
 from ..services.jobs import Jobs
@@ -119,4 +120,8 @@ def saved_workspace(submission_id: UUID, actor: ActorDep, database: DatabaseDep)
             (submission_id,)).fetchone()
     if not row:
         raise HTTPException(404, 'Submission not found')
-    return SubmissionWorkspace.model_validate(row)
+    result = SubmissionWorkspace.model_validate(row)
+    if result.assessment is not None:
+        # Reuse the saved facts and existing arithmetic; no extra query or model call.
+        result.economics = economics(result.assessment)
+    return result

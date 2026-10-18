@@ -1,0 +1,89 @@
+{
+  "scope": "Actual pinned model + local HTTP/API/PostgreSQL on frozen authored synthetic scenarios; operator identity is a test fixture",
+  "started_utc": "2026-10-18T02:20:10.144709+00:00",
+  "manifest_hash": "b3a08182e8e2cb1c1287fcbbc964436e48ebdabd8bed668520cf2c5d9e8a176c",
+  "data_sha256": "33b954a478c6e12241b20b6cc783baaf5576a4a945242b7c83eadeaaba514fed",
+  "human_quality_validated": false,
+  "deployed": false,
+  "runtime": {
+    "torch": "2.9.1+cu128",
+    "transformers": "5.0.0",
+    "numpy": "2.2.6",
+    "fastapi": "0.143.3"
+  },
+  "cases": [
+    {
+      "case": "F01",
+      "perspective": "Implausible on-topic revenue",
+      "expected_interpretation": "Retain the claim as self-report and flag arithmetic discrepancy; implausible does not mean irrelevant.",
+      "source": "I sell tea to office workers. My customers are office workers. My selling price is INR 10 per cup. I plan to sell 100 cups per day and operate 25 days per month. My monthly revenue is INR 9000000. My monthly expenses are INR 20000. My startup investment is INR 10000. These figures are my estimates.",
+      "language": "en",
+      "status": "needs_review",
+      "seconds": 31.068,
+      "error_code": "needs_review",
+      "checks": [
+        {
+          "kind": "present",
+          "field": "offer",
+          "expected": null,
+          "passed": false,
+          "observed": "No completed assessment",
+          "abstained": false
+        },
+        {
+          "kind": "money",
+          "field": "revenue",
+          "expected": "9000000",
+          "passed": false,
+          "observed": "No completed assessment",
+          "abstained": false
+        },
+        {
+          "kind": "money",
+          "field": "unit_price",
+          "expected": "10",
+          "passed": false,
+          "observed": "No completed assessment",
+          "abstained": false
+        },
+        {
+          "kind": "economic_status",
+          "field": "revenue",
+          "expected": "discrepancy",
+          "passed": false,
+          "observed": "No completed assessment",
+          "abstained": false
+        }
+      ],
+      "measurements": [],
+      "stage_states": [
+        {
+          "stage_key": "extract:text",
+          "status": "completed",
+          "error_code": null,
+          "attempts": 1
+        },
+        {
+          "stage_key": "translate",
+          "status": "completed",
+          "error_code": null,
+          "attempts": 1
+        },
+        {
+          "stage_key": "structure",
+          "status": "blocked",
+          "error_code": "needs_review",
+          "attempts": 1
+        },
+        {
+          "stage_key": "assess",
+          "status": "pending",
+          "error_code": null,
+          "attempts": 0
+        }
+      ],
+      "passed": false
+    }
+  ],
+  "finished_utc": "2026-10-18T02:20:41.758959+00:00"
+}

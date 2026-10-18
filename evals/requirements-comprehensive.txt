@@ -1,0 +1,9 @@
+# Evaluation-only environment; reuse the existing verified Torch2.9.1+cu128 runtime.
+# Install the repository API[dev] package as well. Do not replace the normal app environments.
+transformers==5.0.0
+huggingface-hub==1.33.0
+numpy==2.2.6
+sacrebleu==2.5.1
+openpyxl==3.1.5
+Markdown==3.7
+pypdfium2==5.14.0

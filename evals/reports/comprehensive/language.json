@@ -1,0 +1,209 @@
+{
+  "component": "language",
+  "scope": "Actual local pinned model on authored fixtures; original Odia sample has no reviewed transcript",
+  "started_utc": "2026-10-18T02:17:46.454728+00:00",
+  "manifest_hash": "b3a08182e8e2cb1c1287fcbbc964436e48ebdabd8bed668520cf2c5d9e8a176c",
+  "data_sha256": "8897ab986f5ac467ea9383c9bad0ec9e053dc392007d1cf2df3bab800aaaa2c6",
+  "human_quality_validated": false,
+  "deployed": false,
+  "runtime": {
+    "torch": "2.9.1+cu128",
+    "transformers": "5.0.0",
+    "numpy": "2.2.6",
+    "sacrebleu": "2.5.1"
+  },
+  "cases": [
+    {
+      "id": "T01",
+      "expected_language": "hi",
+      "text": "मैं कार्यालय के कर्मचारियों को चाय बेचता हूँ। एक कप चाय की कीमत 10 रुपये है।",
+      "result": {
+        "code": "hi",
+        "provenance": "detected",
+        "model_id": "py3langid-0.3.0",
+        "model_confidence": 0.9999971389770508,
+        "needs_confirmation": false
+      },
+      "correct": true,
+      "seconds": 0.002299
+    },
+    {
+      "id": "T02",
+      "expected_language": "hi",
+      "text": "मेरी मासिक आय 10000 रुपये है और खर्च 18000 रुपये है। इसलिए व्यवसाय घाटे में है।",
+      "result": {
+        "code": "hi",
+        "provenance": "detected",
+        "model_id": "py3langid-0.3.0",
+        "model_confidence": 0.9999985694885254,
+        "needs_confirmation": false
+      },
+      "correct": true,
+      "seconds": 0.000759
+    },
+    {
+      "id": "T03",
+      "expected_language": "hi",
+      "text": "किसी भी ग्राहक ने खरीदने के लिए सहमति नहीं दी है।",
+      "result": {
+        "code": "hi",
+        "provenance": "detected",
+        "model_id": "py3langid-0.3.0",
+        "model_confidence": 0.999993085861206,
+        "needs_confirmation": false
+      },
+      "correct": true,
+      "seconds": 0.000592
+    },
+    {
+      "id": "T04",
+      "expected_language": "hi",
+      "text": "पहले जवाब में कीमत 10 रुपये है और दूसरे जवाब में कीमत 15 रुपये है।",
+      "result": {
+        "code": "hi",
+        "provenance": "detected",
+        "model_id": "py3langid-0.3.0",
+        "model_confidence": 1.0,
+        "needs_confirmation": false
+      },
+      "correct": true,
+      "seconds": 0.000493
+    },
+    {
+      "id": "T05",
+      "expected_language": "hi",
+      "text": "निवेश की राशि अभी तय नहीं है।",
+      "result": {
+        "code": "hi",
+        "provenance": "detected",
+        "model_id": "py3langid-0.3.0",
+        "model_confidence": 0.9910184144973755,
+        "needs_confirmation": false
+      },
+      "correct": true,
+      "seconds": 0.000403
+    },
+    {
+      "id": "T06",
+      "expected_language": "mr",
+      "text": "मी कार्यालयातील कर्मचाऱ्यांना चहा विकतो. एका कप चहाची किंमत 10 रुपये आहे.",
+      "result": {
+        "code": "mr",
+        "provenance": "detected",
+        "model_id": "py3langid-0.3.0",
+        "model_confidence": 0.9975192546844482,
+        "needs_confirmation": true
+      },
+      "correct": true,
+      "seconds": 0.00038
+    },
+    {
+      "id": "T07",
+      "expected_language": "te",
+      "text": "నేను కార్యాలయ ఉద్యోగులకు టీ అమ్ముతాను. ఒక కప్పు టీ ధర 10 రూపాయలు.",
+      "result": {
+        "code": "te",
+        "provenance": "detected",
+        "model_id": "py3langid-0.3.0",
+        "model_confidence": 1.0,
+        "needs_confirmation": true
+      },
+      "correct": true,
+      "seconds": 0.000378
+    },
+    {
+      "id": "T08",
+      "expected_language": "bn",
+      "text": "আমি অফিসের কর্মীদের চা বিক্রি করি। এক কাপ চায়ের দাম 10 টাকা।",
+      "result": {
+        "code": "bn",
+        "provenance": "detected",
+        "model_id": "py3langid-0.3.0",
+        "model_confidence": 0.9999915361404419,
+        "needs_confirmation": true
+      },
+      "correct": true,
+      "seconds": 0.000382
+    },
+    {
+      "id": "T09",
+      "expected_language": "or",
+      "text": "ମୁଁ ଅଫିସ କର୍ମଚାରୀମାନଙ୍କୁ ଚା ବିକ୍ରି କରେ। ଗୋଟିଏ କପ୍ ଚାର ଦାମ 10 ଟଙ୍କା।",
+      "result": {
+        "code": "or",
+        "provenance": "detected",
+        "model_id": "py3langid-0.3.0",
+        "model_confidence": 1.0,
+        "needs_confirmation": true
+      },
+      "correct": true,
+      "seconds": 0.000358
+    },
+    {
+      "id": "L10",
+      "expected_language": "en",
+      "text": "I sell tea to office workers. A cup of tea costs 10 rupees.",
+      "result": {
+        "code": "en",
+        "provenance": "detected",
+        "model_id": "py3langid-0.3.0",
+        "model_confidence": 1.0,
+        "needs_confirmation": false
+      },
+      "correct": true,
+      "seconds": 0.000349
+    },
+    {
+      "id": "L11",
+      "expected_language": "en",
+      "text": "My monthly revenue is 10000 rupees and expenses are 18000 rupees. The business is losing money.",
+      "result": {
+        "code": "en",
+        "provenance": "detected",
+        "model_id": "py3langid-0.3.0",
+        "model_confidence": 1.0,
+        "needs_confirmation": false
+      },
+      "correct": true,
+      "seconds": 0.000417
+    },
+    {
+      "id": "L12",
+      "expected_language": "und",
+      "text": "Tea",
+      "result": {
+        "code": "und",
+        "provenance": "unknown",
+        "model_id": null,
+        "model_confidence": null,
+        "needs_confirmation": true
+      },
+      "correct": true,
+      "seconds": 0.000254
+    },
+    {
+      "id": "L13",
+      "expected_language": "und",
+      "text": "10",
+      "result": {
+        "code": "und",
+        "provenance": "unknown",
+        "model_id": null,
+        "model_confidence": null,
+        "needs_confirmation": true
+      },
+      "correct": true,
+      "seconds": 0.000211
+    }
+  ],
+  "model": "py3langid-0.3.0",
+  "metrics": {
+    "exact_selected_code_accuracy": 1.0,
+    "automatic_detection_coverage": 0.8461538461538461,
+    "accuracy_when_automatically_detected": 1.0
+  },
+  "status": "completed",
+  "gpu": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+  "peak_vram_bytes": 0,
+  "total_seconds": 3.238
+}

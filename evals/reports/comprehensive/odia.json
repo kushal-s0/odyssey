@@ -1,0 +1,39 @@
+{
+  "component": "odia",
+  "scope": "Actual local pinned model on authored fixtures; original Odia sample has no reviewed transcript",
+  "started_utc": "2026-10-18T02:19:02.958034+00:00",
+  "manifest_hash": "b3a08182e8e2cb1c1287fcbbc964436e48ebdabd8bed668520cf2c5d9e8a176c",
+  "data_sha256": "8897ab986f5ac467ea9383c9bad0ec9e053dc392007d1cf2df3bab800aaaa2c6",
+  "human_quality_validated": false,
+  "deployed": false,
+  "runtime": {
+    "torch": "2.9.1+cu128",
+    "transformers": "5.0.0",
+    "numpy": "2.2.6",
+    "sacrebleu": "2.5.1"
+  },
+  "model": {
+    "id": "ARTPARK-IISc/whisper-large-v3-vaani-odia",
+    "revision": "357f3571fde5962196596cef29b76807e0932ff4"
+  },
+  "load_seconds": 12.341,
+  "seconds": 6.104,
+  "audio_seconds": 10.0,
+  "source_sha256": "7418927bbc0c20e800f5861bf55996c5863a5677c16bc916b859680b45eb50b5",
+  "transcript_characters": 81,
+  "odia_script_present": true,
+  "language": {
+    "code": "or",
+    "provenance": "declared",
+    "model_id": null,
+    "model_confidence": null,
+    "needs_confirmation": true
+  },
+  "wer": null,
+  "cer": null,
+  "reason": "No independent human reference transcript. Private original/transcript retained ignored; no accuracy claimed.",
+  "status": "completed",
+  "gpu": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+  "peak_vram_bytes": 3385153024,
+  "total_seconds": 21.276
+}

@@ -3,6 +3,8 @@
 Business ideas: extracted facts, original evidence and reasoned assessments.
 React + FastAPI + Supabase + free open-weight models on your NVIDIA laptop.
 
+[Implementation and measured model results](docs/IMPLEMENTATION_AND_MODEL_EVALUATION.md) · [Excel results workbook](evals/reports/comprehensive/EVALUATION_WORKBOOK.xlsx) · [Searchable local report](evals/reports/comprehensive/IMPLEMENTATION_AND_MODEL_EVALUATION.html)
+
 ## Setup once
 
 Install Python 3.11, Node 22 and uv, then run:

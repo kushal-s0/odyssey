@@ -2084,6 +2084,7 @@ export interface components {
         SubmissionWorkspace: {
             submission: components["schemas"]["SubmissionView"];
             assessment: components["schemas"]["Assessment"] | null;
+            economics?: components["schemas"]["Economics"] | null;
         };
         /** TextEvidence */
         TextEvidence: {

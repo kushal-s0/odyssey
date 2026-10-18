@@ -1,0 +1,12 @@
+{
+  "scope": "Local standalone report only; no model or application interaction",
+  "tables": 45,
+  "search_filters_rows": true,
+  "page_errors": [],
+  "external_requests": 0,
+  "mobile_dimensions": {
+    "content": 390,
+    "viewport": 390
+  },
+  "passed": true
+}

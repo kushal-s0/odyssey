@@ -1,0 +1,29 @@
+{
+  "scope": "Assistant inspection after actual runs; not independent human validation and not a change to frozen expectations or model outputs",
+  "findings": [
+    {
+      "case": "translation:T02",
+      "finding": "Actual output preserves 10000/18000 but omits the explicit source statement that the business is making a loss. The literal-number term check also fails due to comma formatting."
+    },
+    {
+      "case": "N02",
+      "finding": "Negative survey produced customer_need2 and market_potential2, above the predeclared ceiling1."
+    },
+    {
+      "case": "N03",
+      "finding": "Funding gap49000 is flagged by arithmetic while feasibility remains2."
+    },
+    {
+      "case": "P02",
+      "finding": "Supplied monthly profit15000 retained amount/currency but period became unknown; consistency check could only calculate surplus."
+    },
+    {
+      "case": "F01",
+      "finding": "Original and diagnostic repeat both stop needs_review. Repeat locates the block at structure; assess is never attempted."
+    },
+    {
+      "case": "speech:silence",
+      "finding": "Raw Whisper says you on zero-energy audio, while actual production RMS guard emits needs_review and publishes no transcript."
+    }
+  ]
+}

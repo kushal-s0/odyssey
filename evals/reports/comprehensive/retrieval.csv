@@ -1,0 +1,5 @@
+﻿ID,Query,Relevant,Ranking,Recall@1,Recall@3,Recall@5,MRR,nDCG@5,Seconds
+Q01,A tea kiosk for commuters needing hot drinks before work.,"[""R01"", ""R02""]","[""R01"", ""R02"", ""R06"", ""R05"", ""R04"", ""R10"", ""R07"", ""R03"", ""R08"", ""R09""]",0.5,1.0,1.0,1.0,1.0,0.0093
+Q02,Stitching and alteration service for customer garments.,"[""R03"", ""R04""]","[""R03"", ""R04"", ""R10"", ""R05"", ""R06"", ""R09"", ""R07"", ""R02"", ""R08"", ""R01""]",0.5,1.0,1.0,1.0,1.0,0.0058
+Q03,A shop replacing broken smartphone screens and batteries.,"[""R05"", ""R06""]","[""R05"", ""R06"", ""R04"", ""R10"", ""R01"", ""R02"", ""R09"", ""R03"", ""R08"", ""R07""]",0.5,1.0,1.0,1.0,1.0,0.007
+Q04,Installing and maintaining solar power equipment on homes.,"[""R09""]","[""R09"", ""R05"", ""R06"", ""R08"", ""R07"", ""R10"", ""R04"", ""R02"", ""R03"", ""R01""]",1.0,1.0,1.0,1.0,1.0,0.0074

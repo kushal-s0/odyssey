@@ -1,0 +1,8 @@
+{
+  "scope": "Changed/untracked nonignored artifacts, including workbook XML; private .env/.env.local values checked only in memory",
+  "files": 75,
+  "configured_private_setting_count": 2,
+  "findings": [],
+  "passed": true,
+  "values_printed": false
+}

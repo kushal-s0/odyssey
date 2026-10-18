@@ -1,0 +1,115 @@
+{
+  "component": "ocr",
+  "scope": "Actual local pinned model on authored fixtures; original Odia sample has no reviewed transcript",
+  "started_utc": "2026-10-18T02:18:14.866232+00:00",
+  "manifest_hash": "b3a08182e8e2cb1c1287fcbbc964436e48ebdabd8bed668520cf2c5d9e8a176c",
+  "data_sha256": "8897ab986f5ac467ea9383c9bad0ec9e053dc392007d1cf2df3bab800aaaa2c6",
+  "human_quality_validated": false,
+  "deployed": false,
+  "runtime": {
+    "torch": "2.9.1+cu128",
+    "transformers": "5.0.0",
+    "numpy": "2.2.6",
+    "sacrebleu": "2.5.1"
+  },
+  "model": {
+    "id": "PaddlePaddle/PaddleOCR-VL-1.5",
+    "revision": "2a4195faa5e7914c12f2fc601d72c81caf8d2da5"
+  },
+  "load_seconds": 8.99,
+  "cases": [
+    {
+      "id": "O01",
+      "style": "clean_print",
+      "reference": "Business idea: Tea for office workers.\nPrice: INR 10 per cup.\nStartup investment: INR 20000.",
+      "output": "Business idea: Tea for office workers.\nPrice: INR 10 per cup.\nStartup investment: INR 20000.",
+      "status": "completed",
+      "seconds": 2.812,
+      "word_edits": 0,
+      "reference_words": 15,
+      "wer": 0.0,
+      "character_edits": 0,
+      "reference_characters": 92,
+      "cer": 0.0,
+      "numbers_preserved": true,
+      "measurement": {
+        "model": "PaddleOCR-VL-1.5",
+        "device": "cuda",
+        "load_seconds": 7.411,
+        "seconds": 2.811,
+        "input_tokens": 916,
+        "output_tokens": 33,
+        "peak_vram_bytes": 2028929024,
+        "rss_bytes": 1914601472,
+        "token_cap_reached": false,
+        "human_quality_validated": false
+      }
+    },
+    {
+      "id": "O02",
+      "style": "numeric_loss",
+      "reference": "Monthly revenue: INR 10000.\nMonthly expenses: INR 18000.\nOperating loss: INR 8000.\nProfit is not known.",
+      "output": "Monthly revenue: INR 10000.\nMonthly expenses: INR 18000.\nOperating loss: INR 8000.\nProfit is not known.",
+      "status": "completed",
+      "seconds": 3.273,
+      "word_edits": 0,
+      "reference_words": 16,
+      "wer": 0.0,
+      "character_edits": 0,
+      "reference_characters": 103,
+      "cer": 0.0,
+      "numbers_preserved": true,
+      "measurement": {
+        "model": "PaddleOCR-VL-1.5",
+        "device": "cuda",
+        "load_seconds": 7.411,
+        "seconds": 3.273,
+        "input_tokens": 916,
+        "output_tokens": 47,
+        "peak_vram_bytes": 2028929024,
+        "rss_bytes": 1918980096,
+        "token_cap_reached": false,
+        "human_quality_validated": false
+      }
+    },
+    {
+      "id": "O03",
+      "style": "rendered_script_font",
+      "reference": "My customers are local office workers.\nI sell tea for INR 10 per cup.\nI need INR 20000 to start.",
+      "output": "My customers are local office workers.\nI sell tea for INR 10 per cup.\nI need INR 20000 to start.",
+      "status": "completed",
+      "seconds": 1.802,
+      "word_edits": 0,
+      "reference_words": 20,
+      "wer": 0.0,
+      "character_edits": 0,
+      "reference_characters": 96,
+      "cer": 0.0,
+      "numbers_preserved": true,
+      "measurement": {
+        "model": "PaddleOCR-VL-1.5",
+        "device": "cuda",
+        "load_seconds": 7.411,
+        "seconds": 1.801,
+        "input_tokens": 916,
+        "output_tokens": 35,
+        "peak_vram_bytes": 2028929024,
+        "rss_bytes": 1922715648,
+        "token_cap_reached": false,
+        "human_quality_validated": false
+      }
+    }
+  ],
+  "metrics": {
+    "completed": 3,
+    "requested": 3,
+    "micro_wer": 0.0,
+    "micro_cer": 0.0,
+    "number_preservation_rate": 1.0,
+    "note": "Typed and rendered-script synthetic images only; no genuine handwriting accuracy claim."
+  },
+  "status": "completed",
+  "gpu": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+  "peak_vram_bytes": 2028929024,
+  "total_seconds": 19.462
+}

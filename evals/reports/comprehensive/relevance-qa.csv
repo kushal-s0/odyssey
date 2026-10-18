@@ -1,0 +1,17 @@
+﻿ID,Question,Answer,Gold0relevant1irrelevant,Baseline-1abstain,Rejected candidate,Cosine,Uncalibrated candidate probability
+A01,What will you sell?,I will repair mobile phone screens.,0,-1,0,0.27710476517677307,0.08996360016809317
+A02,Who are your customers?,Local school teachers.,0,-1,0,0.2789922058582306,0.06576327701835134
+A03,What is your selling price?,INR 275 per repair.,0,0,0,0.3755298852920532,0.06492835860123448
+A04,What are your monthly expenses?,My monthly expenses are INR 18000.,0,0,0,0.648888349533081,0.05306574708223161
+A05,What is your expected monthly revenue?,I expect INR 99999999 of monthly revenue.,0,0,0,0.782118558883667,0.05363108149997562
+A06,Which materials do you need?,Needles and thread.,0,-1,0,0.2582835555076599,0.08679824818590916
+A07,Where will you operate?,A market stall in Jaipur.,0,-1,0,0.19130049645900726,0.06711962079808903
+A08,Who supplies your milk?,The nearby dairy cooperative.,0,0,0,0.5746827125549316,0.06285299829947527
+A09,What will you sell?,I enjoyed the cricket final yesterday.,1,-1,0,-0.043889760971069336,0.2023226717736816
+A10,What is your selling price?,Customers are school teachers.,1,-1,0,0.11835958063602448,0.060303973252076364
+A11,Who are your customers?,A sewing machine costs INR 18000.,1,-1,0,0.12264278531074524,0.06269800244447038
+A12,What are your monthly expenses?,My shop name is Blue Moon Tailors.,1,-1,0,0.1759168803691864,0.06241254272914213
+A13,What is your expected monthly revenue?,The tea supplier closes at six.,1,-1,0,0.15408319234848022,0.05376089385264975
+A14,Which materials do you need?,The village school cricket team won.,1,-1,0,-0.05494948476552963,0.17646829130091207
+A15,Where will you operate?,The price is INR 275 per repair.,1,-1,0,0.1263241469860077,0.08313335961063247
+A16,Who supplies your milk?,My expected sales revenue is INR 20000.,1,-1,0,0.07123057544231415,0.0806345538937898

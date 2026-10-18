@@ -32,5 +32,5 @@ export async function apiRequest<T>(path: `/v1/${string}`, options: {
     throw new ApiError(payload?.code || 'request_failed', payload?.message || 'The request could not be completed.',
       payload?.retryable ?? response.status >= 500, payload?.request_id, response.status)
   }
-  return await response.json() as T
+  return response.status === 204 ? undefined as T : await response.json() as T
 }

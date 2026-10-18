@@ -1,0 +1,98 @@
+{
+  "measured_utc": "2026-10-18T02:13:02.051310+00:00",
+  "manifest_hash": "b3a08182e8e2cb1c1287fcbbc964436e48ebdabd8bed668520cf2c5d9e8a176c",
+  "scope": "Local cache inventory; three bounded config GETs for not-selected legacy gated artifacts; existing HF credential read in memory only",
+  "models": [
+    {
+      "artifact": "qwen",
+      "id": "Qwen/Qwen3-VL-2B-Instruct",
+      "revision": "89644892e4d85e24eaac8bacfd4f463576704203",
+      "selected": true,
+      "snapshot_present": true,
+      "weight_files": 1,
+      "cached_weight_bytes": 4255140312
+    },
+    {
+      "artifact": "ocr",
+      "id": "PaddlePaddle/PaddleOCR-VL-1.5",
+      "revision": "2a4195faa5e7914c12f2fc601d72c81caf8d2da5",
+      "selected": true,
+      "snapshot_present": true,
+      "weight_files": 1,
+      "cached_weight_bytes": 1917255968
+    },
+    {
+      "artifact": "asr",
+      "id": "ai4bharat/indic-conformer-600m-multilingual",
+      "revision": "2a77d305038dfc502fd9464e7d028b90381976cb",
+      "selected": false,
+      "snapshot_present": false,
+      "weight_files": 0,
+      "cached_weight_bytes": 0,
+      "config_http_status": 401,
+      "probe_seconds": 0.439,
+      "scope": "Legacy not-selected access probe, not a model test or integration claim"
+    },
+    {
+      "artifact": "indic_en",
+      "id": "ai4bharat/indictrans2-indic-en-dist-200M",
+      "revision": "d66a2122ad6d28184f3dc3797b652bd80ae3f65f",
+      "selected": false,
+      "snapshot_present": false,
+      "weight_files": 0,
+      "cached_weight_bytes": 0,
+      "config_http_status": 401,
+      "probe_seconds": 0.229,
+      "scope": "Legacy not-selected access probe, not a model test or integration claim"
+    },
+    {
+      "artifact": "en_indic",
+      "id": "ai4bharat/indictrans2-en-indic-dist-200M",
+      "revision": "2cfd0a20057756d756bf3e53528f492afc52f91a",
+      "selected": false,
+      "snapshot_present": false,
+      "weight_files": 0,
+      "cached_weight_bytes": 0,
+      "config_http_status": 401,
+      "probe_seconds": 0.222,
+      "scope": "Legacy not-selected access probe, not a model test or integration claim"
+    },
+    {
+      "artifact": "embedding",
+      "id": "sentence-transformers/all-MiniLM-L6-v2",
+      "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+      "selected": true,
+      "snapshot_present": true,
+      "weight_files": 1,
+      "cached_weight_bytes": 90868376
+    },
+    {
+      "artifact": "speech",
+      "id": "openai/whisper-large-v3-turbo",
+      "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9",
+      "selected": true,
+      "snapshot_present": true,
+      "weight_files": 1,
+      "cached_weight_bytes": 1617824864
+    },
+    {
+      "artifact": "speech_odia",
+      "id": "ARTPARK-IISc/whisper-large-v3-vaani-odia",
+      "revision": "357f3571fde5962196596cef29b76807e0932ff4",
+      "selected": true,
+      "snapshot_present": true,
+      "weight_files": 2,
+      "cached_weight_bytes": 6174117192
+    },
+    {
+      "artifact": "translation",
+      "id": "facebook/nllb-200-distilled-600M",
+      "revision": "f8d333a098d19b4fd9a8b18f94170487ad3f821d",
+      "selected": true,
+      "snapshot_present": true,
+      "weight_files": 1,
+      "cached_weight_bytes": 2460457927
+    }
+  ],
+  "model_download_hash_report": "evals/reports/feasibility/pinned-downloads.json"
+}

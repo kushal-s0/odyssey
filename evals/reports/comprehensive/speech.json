@@ -1,0 +1,83 @@
+{
+  "component": "speech",
+  "scope": "Actual local pinned model on authored fixtures; original Odia sample has no reviewed transcript",
+  "started_utc": "2026-10-18T02:18:35.327990+00:00",
+  "manifest_hash": "b3a08182e8e2cb1c1287fcbbc964436e48ebdabd8bed668520cf2c5d9e8a176c",
+  "data_sha256": "8897ab986f5ac467ea9383c9bad0ec9e053dc392007d1cf2df3bab800aaaa2c6",
+  "human_quality_validated": false,
+  "deployed": false,
+  "runtime": {
+    "torch": "2.9.1+cu128",
+    "transformers": "5.0.0",
+    "numpy": "2.2.6",
+    "sacrebleu": "2.5.1"
+  },
+  "model": {
+    "id": "openai/whisper-large-v3-turbo",
+    "revision": "41f01f3fe87f28c78e2fbf8b568835947dd65ed9"
+  },
+  "load_seconds": 10.171,
+  "cases": [
+    {
+      "id": "positive-tea-en",
+      "reference": "I plan to open a tea stall in Jayanagar, Bengaluru, Karnataka. My customers are office workers who need quick morning tea. I spoke to 30 office workers; 18 said they would consider buying tea, but these are not confirmed orders. I plan to sell 120 cups per day at INR 10 per cup and operate 25 days per month. My total initial investment is INR 20000, consisting of INR 12000 own funds and an INR 8000 requested loan. Planned monthly expenses are INR 22000, including ingredients, rent and transport. I will buy tea leaves and milk from a local wholesale supplier. I need a stove, kettle and reusable cups. Two nearby stalls are alternatives, according to my own observation. My difference is pre-order pickup and reusable cups. The business has not started. All figures and market observations are my estimates.",
+      "output": "I plan to open a tea stall in Jayanagar, Bengaluru, Karnataka. My customers are office workers who need quick morning tea. I spoke to 30 office workers, 18 said they would consider buying tea, but these are not confirmed orders. I plan to sell 120 cups per day at INR 10 per cup and operate 25 days per month. My total initial investment is INR 20,000, consisting of INR 12,000 own funds and an INR 8,000 requested loan. Planned monthly expenses are INR 22,000, including ingredients, rent and transport. I will buy tea leaves and milk from a local wholesale supplier. I need a stove, kettle and reusable cups. Two nearby stalls are alternatives, according to my own observation. My difference is pre-order pickup and reusable cups. The business has not started. All figures and market observations are my estimates.",
+      "seconds": 2.215,
+      "audio_seconds": 64.30825,
+      "chunks": 3,
+      "word_edits": 8,
+      "reference_words": 141,
+      "wer": 0.05673758865248227,
+      "character_edits": 5,
+      "reference_characters": 812,
+      "cer": 0.006157635467980296,
+      "numbers_preserved": true
+    },
+    {
+      "id": "negative-conflicting-en",
+      "reference": "I want to sell tea to office workers in Bengaluru. I wrote INR 10 per cup in my first answer and INR 15 per cup in my second answer. I cannot confirm which selling price is correct. My total initial investment is INR 20000, but my own funds are INR 12000 and my requested loan is INR 18000. I plan to sell 120 cups per day for 25 days per month. I called INR 90000 my monthly profit, but I have not supplied ingredient costs, rent, other expenses or verified sales. I have not researched customers or nearby competitors.",
+      "output": "I want to sell tea to office workers in Bengaluru. I wrote INR 10 per cup in my first answer and INR 15 per cup in my second answer. I cannot confirm which selling price is correct. My total initial investment is INR 20,000, but my own funds are INR 12,000 and my requested loan is INR 18,000. I plan to sell 120 cups per day for 25 days per per month. I called INR 90,000 my monthly profit, but I have not supplied ingredient costs, rent, other expenses, or verified sales. I have not researched customers or nearby competitors.",
+      "seconds": 1.015,
+      "audio_seconds": 42.2765,
+      "chunks": 2,
+      "word_edits": 9,
+      "reference_words": 99,
+      "wer": 0.09090909090909091,
+      "character_edits": 9,
+      "reference_characters": 520,
+      "cer": 0.01730769230769231,
+      "numbers_preserved": true
+    },
+    {
+      "id": "negative-irrelevant-en",
+      "reference": "The sky is blue. I enjoy cricket and my favourite season is winter. This paragraph contains no proposal to sell a product or provide a service, no customer group, no business location and no financial plan.",
+      "output": "The sky is blue. I enjoy cricket and my favorite season is winter. This paragraph contains no proposal to sell a product or provide a service, no customer group, no business location and no financial plan.",
+      "seconds": 1.999,
+      "audio_seconds": 14.99675,
+      "chunks": 1,
+      "word_edits": 1,
+      "reference_words": 36,
+      "wer": 0.027777777777777776,
+      "character_edits": 1,
+      "reference_characters": 206,
+      "cer": 0.0048543689320388345,
+      "numbers_preserved": true
+    }
+  ],
+  "silence": {
+    "raw_model_output": "you",
+    "raw_model_seconds": 2.913,
+    "pipeline_failure": "needs_review",
+    "pipeline_published": false,
+    "rms": 0.0
+  },
+  "metrics": {
+    "micro_wer": 0.06521739130434782,
+    "real_time_factor_warm": 0.04300818792332714,
+    "note": "Three locally synthesized English voices from one SAPI voice; no regional/noisy/diverse-speaker accuracy claim."
+  },
+  "status": "completed",
+  "gpu": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+  "peak_vram_bytes": 1675880960,
+  "total_seconds": 23.524
+}

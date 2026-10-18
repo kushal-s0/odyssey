@@ -1,9 +1,11 @@
+import { useI18n } from '../i18n/I18nProvider'
 import { useEffect, useRef, useState } from 'react'
 import { Mic, Square } from 'lucide-react'
 
 export function AudioRecorder({ onFile, disabled, onActivityChange, active = true }: {
   onFile: (file: File) => void; disabled: boolean; onActivityChange: (active: boolean) => void; active?: boolean
 }) {
+  const { t } = useI18n()
   const [recording, setRecording] = useState(false)
   const [message, setMessage] = useState('')
   const recorder = useRef<MediaRecorder | null>(null)
@@ -52,13 +54,13 @@ export function AudioRecorder({ onFile, disabled, onActivityChange, active = tru
         if (bytes > 25 * 1024 * 1024) {
           failed = true
           if (capture.state === 'recording') capture.stop()
-          if (alive.current) setMessage('Recording reached the 25 MB limit. Make a shorter recording or upload a file.')
+          if (alive.current) setMessage(t("Recording reached the 25 MB limit. Make a shorter recording or upload a file."))
         } else chunks.push(event.data)
       }
       capture.onerror = () => {
         failed = true
         if (capture.state === 'recording') capture.stop()
-        if (alive.current) setMessage('Recording failed. You can upload an existing audio file below.')
+        if (alive.current) setMessage(t("Recording failed. You can upload an existing audio file below."))
       }
       capture.onstop = () => {
         window.clearTimeout(timer.current)
@@ -71,16 +73,16 @@ export function AudioRecorder({ onFile, disabled, onActivityChange, active = tru
           const type = mime.split(';')[0]
           const extension = type === 'audio/mp4' ? 'm4a' : type.split('/')[1]
           onFile(new File(chunks, `idea-recording.${extension}`, { type }))
-          setMessage('Recording ready. Listen before submitting.')
+          setMessage(t("Recording ready. Listen before submitting."))
         }
       }
       capture.start(1000)
       setRecording(true)
-      setMessage('Recording. Maximum 10 minutes. Stop when you finish your idea.')
+      setMessage(t("Recording. Maximum 10 minutes. Stop when you finish your idea."))
       timer.current = window.setTimeout(() => { if (capture.state === 'recording') capture.stop() }, 600_000)
     } catch {
       stream.current?.getTracks().forEach(track => track.stop())
-      if (alive.current) { setRecording(false); setMessage('Microphone unavailable or permission denied. Upload an existing audio file below, or choose Text.') }
+      if (alive.current) { setRecording(false); setMessage(t("Microphone unavailable or permission denied. Upload an existing audio file below, or choose Text.")) }
     } finally {
       requesting.current = false
       if (recorder.current?.state !== 'recording') onActivityChange(false)
@@ -89,8 +91,8 @@ export function AudioRecorder({ onFile, disabled, onActivityChange, active = tru
   return <div className="recorder">
     <button type="button" className="secondary-button" disabled={disabled} onClick={() => {
       if (recording) recorder.current?.stop(); else void start()
-    }}>{recording ? <Square size={16} /> : <Mic size={16} />}{recording ? 'Stop recording' : 'Record your idea'}</button>
-    <p role="status">{message || 'Record in your own words, or upload a recording. Maximum 10 minutes / 25 MB.'}</p>
-    {recording && <p role="alert">Stop recording before submitting.</p>}
+    }}>{recording ? <Square size={16} /> : <Mic size={16} />}{recording ? t("Stop recording") : t("Record your idea")}</button>
+    <p role="status">{message || t("Record in your own words, or upload a recording. Maximum 10 minutes / 25 MB.")}</p>
+    {recording && <p role="alert">{t("Stop recording before submitting.")}</p>}
   </div>
 }

@@ -1,0 +1,100 @@
+﻿Case,Check,Field,Expected,Observed,Pass,Abstained
+P01,money,investment,INR 20000,"{""amount"": ""20000"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": null}",True,False
+P01,money,own_funds,INR 12000,"{""amount"": ""12000"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": null}",True,False
+P01,money,requested_loan,INR 8000,"{""amount"": ""8000"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": null}",True,False
+P01,money,unit_price,INR 10,"{""amount"": ""10"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": ""cup""}",True,False
+P01,money,expenses,INR 22000,"{""amount"": ""22000"", ""currency"": ""INR"", ""period"": ""month"", ""unit"": null}",True,False
+P01,present,offer,Field present with source evidence,present,True,False
+P01,present,target_customers,Field present with source evidence,present,True,False
+P01,missing,profit,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+P01,missing,revenue,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+P01,score_min,Unassessed / not measured,50,50.00,True,False
+P01,all_ratings_max,Unassessed / not measured,3,"[2, 2, 2, null, null, 2]",True,False
+P02,money,investment,INR 30000,"{""amount"": ""30000"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": null}",True,False
+P02,money,own_funds,INR 20000,"{""amount"": ""20000"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": null}",True,False
+P02,money,requested_loan,INR 10000,"{""amount"": ""10000"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": null}",True,False
+P02,money,unit_price,INR 400,"{""amount"": ""400"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": ""piece""}",True,False
+P02,money,revenue,INR 40000,"{""amount"": ""40000"", ""currency"": ""INR"", ""period"": ""month"", ""unit"": null}",True,False
+P02,money,expenses,INR 25000,"{""amount"": ""25000"", ""currency"": ""INR"", ""period"": ""month"", ""unit"": null}",True,False
+P02,money,profit,INR 15000,"{""amount"": ""15000"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": null}",True,False
+P02,economic_status,funding,consistent,consistent,True,False
+P02,economic_status,profit,consistent,calculated,False,False
+P02,score_min,Unassessed / not measured,50,50.00,True,False
+N01,money,revenue,INR 10000,"{""amount"": ""10000"", ""currency"": ""INR"", ""period"": ""month"", ""unit"": null}",True,False
+N01,money,expenses,INR 18000,"{""amount"": ""18000"", ""currency"": ""INR"", ""period"": ""month"", ""unit"": null}",True,False
+N01,surplus,Unassessed / not measured,-8000.00,-8000.00,True,False
+N01,low_domain,feasibility,<= 1 or cautious abstention (reported separately),Unassessed / not measured,True,True
+N01,missing,profit,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+N02,present,market_research,Field present with source evidence,present,True,False
+N02,low_domain,customer_need,<= 1 or cautious abstention (reported separately),2,False,False
+N02,low_domain,market_potential,<= 1 or cautious abstention (reported separately),2,False,False
+N03,money,investment,INR 50000,"{""amount"": ""50000"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": null}",True,False
+N03,money,own_funds,INR 1000,"{""amount"": ""1000"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": null}",True,False
+N03,money,requested_loan,INR 0,"{""amount"": ""0"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": null}",True,False
+N03,economic_status,funding,discrepancy,discrepancy,True,False
+N03,low_domain,feasibility,<= 1 or cautious abstention (reported separately),2,False,False
+N04,status,unit_price,ambiguous,ambiguous,True,False
+N04,headline_null,Unassessed / not measured,Null / withheld,Unassessed / not measured,True,False
+N04,ranking_false,Unassessed / not measured,False,False,True,False
+N04,economic_status,funding,discrepancy,discrepancy,True,False
+U01,missing,offer,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+U01,missing,target_customers,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+U01,missing,investment,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+U01,missing,unit_price,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+U01,missing,revenue,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+U01,missing,profit,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+U01,score_none,Unassessed / not measured,Null / withheld,Unassessed / not measured,True,False
+U01,headline_null,Unassessed / not measured,Null / withheld,Unassessed / not measured,True,False
+U01,ranking_false,Unassessed / not measured,False,False,True,False
+I01,missing,offer,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+I01,missing,target_customers,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+I01,missing,investment,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+I01,missing,unit_price,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+I01,missing,revenue,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+I01,missing,profit,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+I01,score_none,Unassessed / not measured,Null / withheld,Unassessed / not measured,True,False
+I01,ranking_false,Unassessed / not measured,False,False,True,False
+S01,money,unit_price,INR 10,"{""amount"": ""10"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": ""cup""}",True,False
+S01,missing,profit,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+S01,identity_absent,Unassessed / not measured,Exclude Synthetic Applicant from scored data,False,True,False
+S01,all_ratings_max,Unassessed / not measured,3,"[2, null, null, null, null, null]",True,False
+S01,present,offer,Field present with source evidence,present,True,False
+S01,present,target_customers,Field present with source evidence,present,True,False
+G01,present,offer,Field present with source evidence,present,True,False
+G01,present,target_customers,Field present with source evidence,present,True,False
+G01,money,unit_price,INR 10,"{""amount"": ""10"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": ""cup""}",True,False
+G01,money,investment,INR 20000,Unassessed / not measured,False,False
+G01,missing,profit,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+B01,money,investment,INR 20000,"{""amount"": ""20000"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": null}",True,False
+B01,money,own_funds,INR 12000,"{""amount"": ""12000"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": null}",True,False
+B01,money,requested_loan,INR 8000,"{""amount"": ""8000"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": null}",True,False
+B01,money,unit_price,INR 10,"{""amount"": ""10"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": ""cup""}",True,False
+B01,money,expenses,INR 22000,"{""amount"": ""22000"", ""currency"": ""INR"", ""period"": ""month"", ""unit"": null}",True,False
+B01,present,offer,Field present with source evidence,present,True,False
+B01,present,target_customers,Field present with source evidence,present,True,False
+B01,missing,profit,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+B01,missing,revenue,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+B01,score_min,Unassessed / not measured,50,50.00,True,False
+B01,all_ratings_max,Unassessed / not measured,3,"[2, 2, 2, 2, null, 2]",True,False
+B01,identity_absent,Unassessed / not measured,Exclude Synthetic Riya from scored data,False,True,False
+B02,money,investment,INR 20000,"{""amount"": ""20000"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": null}",True,False
+B02,money,own_funds,INR 12000,"{""amount"": ""12000"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": null}",True,False
+B02,money,requested_loan,INR 8000,"{""amount"": ""8000"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": null}",True,False
+B02,money,unit_price,INR 10,"{""amount"": ""10"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": ""cup""}",True,False
+B02,money,expenses,INR 22000,"{""amount"": ""22000"", ""currency"": ""INR"", ""period"": ""month"", ""unit"": null}",True,False
+B02,present,offer,Field present with source evidence,present,True,False
+B02,present,target_customers,Field present with source evidence,present,True,False
+B02,missing,profit,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+B02,missing,revenue,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+B02,score_min,Unassessed / not measured,50,50.00,True,False
+B02,all_ratings_max,Unassessed / not measured,3,"[2, 2, 2, 2, null, 2]",True,False
+B02,identity_absent,Unassessed / not measured,Exclude Synthetic Ravi from scored data,False,True,False
+F01,present,offer,Field present with source evidence,No completed assessment,False,False
+F01,money,revenue,INR 9000000,No completed assessment,False,False
+F01,money,unit_price,INR 10,No completed assessment,False,False
+F01,economic_status,revenue,discrepancy,No completed assessment,False,False
+H01,money,unit_price,INR 10,"{""amount"": ""10"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": null}",True,False
+H01,money,investment,INR 20000,"{""amount"": ""20000"", ""currency"": ""INR"", ""period"": ""unknown"", ""unit"": null}",True,False
+H01,missing,profit,Value null; status missing,"{""value"": null, ""status"": ""missing""}",True,False
+H01,present,offer,Field present with source evidence,present,True,False
+H01,present,target_customers,Field present with source evidence,missing,False,False

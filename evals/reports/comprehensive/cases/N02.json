@@ -1,0 +1,519 @@
+{
+  "assessment": {
+    "id": "5fdc3e65-29bc-4a3b-a5b4-9c105a79985d",
+    "submission_id": "5b966e10-4eb4-4f40-8edc-d3c2cb67145b",
+    "input_revision_id": "77dba49f-d037-48d0-97c1-dc92fde4fc9e",
+    "parent_revision_id": null,
+    "version": 1,
+    "created_at": "2026-10-18T02:08:10.166151Z",
+    "pipeline_version": "screening-v1",
+    "model_manifest_hash": "b3a08182e8e2cb1c1287fcbbc964436e48ebdabd8bed668520cf2c5d9e8a176c",
+    "business": {
+      "schema_version": "1",
+      "summary": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "business_type": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "offer": {
+        "value": "tea",
+        "status": "present",
+        "source_segment_ids": [
+          "02a84901-e89b-5483-a08f-91597437de5c"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "target_customers": {
+        "value": "office workers",
+        "status": "present",
+        "source_segment_ids": [
+          "327105a9-4f72-59f7-ba1f-c841972aea3b"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "problem": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "location": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "market_research": {
+        "value": "I surveyed 30 office workers about buying my tea at INR 10 per cup",
+        "status": "present",
+        "source_segment_ids": [
+          "faa1ed4a-3ba0-56d7-b9a7-e84a807a2e82"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "raw_materials": {
+        "value": [
+          "tea leaves and cups"
+        ],
+        "status": "present",
+        "source_segment_ids": [
+          "c2f4f115-78b7-5ed8-a493-0eed01f0534f"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "suppliers": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "investment": {
+        "value": {
+          "amount": "20000",
+          "currency": "INR",
+          "period": "unknown",
+          "unit": null
+        },
+        "status": "present",
+        "source_segment_ids": [
+          "316a1a78-f3cf-51b9-97da-338e52c2add2"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "own_funds": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "requested_loan": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "unit_price": {
+        "value": {
+          "amount": "10",
+          "currency": "INR",
+          "period": "unknown",
+          "unit": "cup"
+        },
+        "status": "present",
+        "source_segment_ids": [
+          "faa1ed4a-3ba0-56d7-b9a7-e84a807a2e82"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "revenue": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "expenses": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "profit": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "competition": {
+        "value": "Nearby stalls already provide the same tea",
+        "status": "present",
+        "source_segment_ids": [
+          "98995822-fc4d-5520-aef5-cf748ef39650"
+        ],
+        "alternatives": [],
+        "note": null
+      },
+      "differentiation": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "existing_business": {
+        "value": null,
+        "status": "missing",
+        "source_segment_ids": [],
+        "alternatives": [],
+        "note": null
+      },
+      "sector": "unknown",
+      "trade": "unknown",
+      "additional_facts": []
+    },
+    "evidence": [
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "02a84901-e89b-5483-a08f-91597437de5c",
+        "submission_id": "5b966e10-4eb4-4f40-8edc-d3c2cb67145b",
+        "input_revision_id": "77dba49f-d037-48d0-97c1-dc92fde4fc9e",
+        "original_text": "I plan to sell tea to office workers.",
+        "english_text": "I plan to sell tea to office workers.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 1.0,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 0,
+        "end_character": 37
+      },
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "327105a9-4f72-59f7-ba1f-c841972aea3b",
+        "submission_id": "5b966e10-4eb4-4f40-8edc-d3c2cb67145b",
+        "input_revision_id": "77dba49f-d037-48d0-97c1-dc92fde4fc9e",
+        "original_text": "My customers are office workers.",
+        "english_text": "My customers are office workers.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 0.9999878406524658,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 38,
+        "end_character": 70
+      },
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "faa1ed4a-3ba0-56d7-b9a7-e84a807a2e82",
+        "submission_id": "5b966e10-4eb4-4f40-8edc-d3c2cb67145b",
+        "input_revision_id": "77dba49f-d037-48d0-97c1-dc92fde4fc9e",
+        "original_text": "I surveyed 30 office workers about buying my tea at INR 10 per cup.",
+        "english_text": "I surveyed 30 office workers about buying my tea at INR 10 per cup.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 1.0,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 71,
+        "end_character": 138
+      },
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "4c54a2e7-c0ed-517d-a978-ac9a7be45660",
+        "submission_id": "5b966e10-4eb4-4f40-8edc-d3c2cb67145b",
+        "input_revision_id": "77dba49f-d037-48d0-97c1-dc92fde4fc9e",
+        "original_text": "All 30 said they would not buy it.",
+        "english_text": "All 30 said they would not buy it.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 1.0,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 139,
+        "end_character": 173
+      },
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "316a1a78-f3cf-51b9-97da-338e52c2add2",
+        "submission_id": "5b966e10-4eb4-4f40-8edc-d3c2cb67145b",
+        "input_revision_id": "77dba49f-d037-48d0-97c1-dc92fde4fc9e",
+        "original_text": "My startup investment is INR 20000.",
+        "english_text": "My startup investment is INR 20000.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 0.9998469352722168,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 174,
+        "end_character": 209
+      },
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "c2f4f115-78b7-5ed8-a493-0eed01f0534f",
+        "submission_id": "5b966e10-4eb4-4f40-8edc-d3c2cb67145b",
+        "input_revision_id": "77dba49f-d037-48d0-97c1-dc92fde4fc9e",
+        "original_text": "I need tea leaves and cups.",
+        "english_text": "I need tea leaves and cups.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 1.0,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 210,
+        "end_character": 237
+      },
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "98995822-fc4d-5520-aef5-cf748ef39650",
+        "submission_id": "5b966e10-4eb4-4f40-8edc-d3c2cb67145b",
+        "input_revision_id": "77dba49f-d037-48d0-97c1-dc92fde4fc9e",
+        "original_text": "Nearby stalls already provide the same tea.",
+        "english_text": "Nearby stalls already provide the same tea.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 1.0,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 238,
+        "end_character": 281
+      },
+      {
+        "origin_revision_id": null,
+        "origin_segment_id": null,
+        "id": "a0ff340d-341e-5d9b-abcb-5f1d86f82db4",
+        "submission_id": "5b966e10-4eb4-4f40-8edc-d3c2cb67145b",
+        "input_revision_id": "77dba49f-d037-48d0-97c1-dc92fde4fc9e",
+        "original_text": "I have no difference from those stalls and no other customers willing to buy.",
+        "english_text": "I have no difference from those stalls and no other customers willing to buy.",
+        "language": {
+          "code": "en",
+          "provenance": "detected",
+          "model_id": "py3langid-0.3.0",
+          "model_confidence": 1.0,
+          "needs_confirmation": false
+        },
+        "translation_uncertain": false,
+        "kind": "text",
+        "start_character": 282,
+        "end_character": 359
+      }
+    ],
+    "domains": [
+      {
+        "domain": "clarity",
+        "rating": 2,
+        "reason": "Offer is clearly identified as tea, and target customers are office workers, but no details on the operating model are provided.",
+        "source_segment_ids": [
+          "02a84901-e89b-5483-a08f-91597437de5c"
+        ],
+        "basis": "self_reported"
+      },
+      {
+        "domain": "customer_need",
+        "rating": 2,
+        "reason": "Survey of 30 office workers indicates demand for tea at INR 10 per cup, but no evidence of actual purchase or customer satisfaction.",
+        "source_segment_ids": [
+          "327105a9-4f72-59f7-ba1f-c841972aea3b"
+        ],
+        "basis": "self_reported"
+      },
+      {
+        "domain": "market_potential",
+        "rating": 2,
+        "reason": "Survey of 30 office workers shows interest in tea at INR 10 per cup, targeting office workers; however, no evidence of broader market reach or validation beyond this segment.",
+        "source_segment_ids": [
+          "327105a9-4f72-59f7-ba1f-c841972aea3b"
+        ],
+        "basis": "self_reported"
+      },
+      {
+        "domain": "feasibility",
+        "rating": 2,
+        "reason": "Investment of 20,000 INR is present but period and unit are unknown; unit price of 10 INR per cup is consistent with supply, but no evidence of production scale or economic viability.",
+        "source_segment_ids": [
+          "faa1ed4a-3ba0-56d7-b9a7-e84a807a2e82",
+          "316a1a78-f3cf-51b9-97da-338e52c2add2",
+          "c2f4f115-78b7-5ed8-a493-0eed01f0534f"
+        ],
+        "basis": "self_reported"
+      },
+      {
+        "domain": "competition",
+        "rating": 0,
+        "reason": "No alternatives are identified in the evidence; the business claims no competition but the fact states nearby stalls already provide the same tea, indicating a direct competitive threat.",
+        "source_segment_ids": [
+          "98995822-fc4d-5520-aef5-cf748ef39650"
+        ],
+        "basis": "self_reported"
+      },
+      {
+        "domain": "differentiation",
+        "rating": null,
+        "reason": "Insufficient usable evidence; clarification required.",
+        "source_segment_ids": [],
+        "basis": "insufficient"
+      }
+    ],
+    "scores": {
+      "rubric_version": "rubric-v1",
+      "provisional_potential": "44.44",
+      "headline_potential": "44.44",
+      "evidence_coverage": "0.9",
+      "completeness_percent": "38.89",
+      "usable_fields": 7,
+      "applicable_fields": 18,
+      "excluded_fields": {},
+      "needs_clarification": false,
+      "ranking_eligible": false,
+      "withheld_reason": null
+    },
+    "strengths": [],
+    "gaps": [
+      "competition: No alternatives are identified in the evidence; the business claims no competition but the fact states nearby stalls already provide the same tea, indicating a direct competitive threat.",
+      "differentiation: Insufficient usable evidence; clarification required."
+    ],
+    "risks": [
+      "Self-reported proposal; source claims and model judgments require human verification.",
+      "Relevance baseline is advisory and has not been independently validated.",
+      "Source extraction/language uncertainty requires human review."
+    ],
+    "assessment_policy_version": "grounded-domain-v1",
+    "relevance_model": "rules-cosine-baseline-v1",
+    "relevance": [
+      {
+        "domain": "clarity",
+        "classifier": "rules-cosine-baseline-v1",
+        "result": "uncertain",
+        "cosine_similarity": 0.13663211464881897,
+        "advisory_only": true,
+        "independently_validated": false
+      },
+      {
+        "domain": "customer_need",
+        "classifier": "rules-cosine-baseline-v1",
+        "result": "uncertain",
+        "cosine_similarity": 0.2386995404958725,
+        "advisory_only": true,
+        "independently_validated": false
+      },
+      {
+        "domain": "market_potential",
+        "classifier": "rules-cosine-baseline-v1",
+        "result": "uncertain",
+        "cosine_similarity": 0.20925016701221466,
+        "advisory_only": true,
+        "independently_validated": false
+      },
+      {
+        "domain": "feasibility",
+        "classifier": "rules-cosine-baseline-v1",
+        "result": "uncertain",
+        "cosine_similarity": 0.15133510529994965,
+        "advisory_only": true,
+        "independently_validated": false
+      },
+      {
+        "domain": "competition",
+        "classifier": "rules-cosine-baseline-v1",
+        "result": "uncertain",
+        "cosine_similarity": 0.15353970229625702,
+        "advisory_only": true,
+        "independently_validated": false
+      },
+      {
+        "domain": "differentiation",
+        "classifier": "rules-cosine-baseline-v1",
+        "result": "missing",
+        "cosine_similarity": null,
+        "advisory_only": true,
+        "independently_validated": false
+      }
+    ]
+  },
+  "economics": {
+    "assessment_id": "5fdc3e65-29bc-4a3b-a5b4-9c105a79985d",
+    "checks": [
+      {
+        "kind": "funding",
+        "title": "Startup funding balance",
+        "status": "needs_clarification",
+        "explanation": "Supply startup investment, own funds and loan (including an explicit zero where applicable) in a known currency. Recurring amounts cannot be compared as startup capital.",
+        "formula": null,
+        "calculated_amount": null,
+        "stated_amount": null,
+        "currency": null,
+        "period": null,
+        "source_segment_ids": [
+          "316a1a78-f3cf-51b9-97da-338e52c2add2"
+        ],
+        "assumptions": []
+      },
+      {
+        "kind": "profit",
+        "title": "Revenue versus operating surplus",
+        "status": "needs_clarification",
+        "explanation": "Revenue is not profit. Supply revenue and expenses in a known currency and compatible periods before calculating a surplus.",
+        "formula": null,
+        "calculated_amount": null,
+        "stated_amount": null,
+        "currency": null,
+        "period": null,
+        "source_segment_ids": [],
+        "assumptions": []
+      },
+      {
+        "kind": "revenue",
+        "title": "Sales-based revenue estimate",
+        "status": "needs_clarification",
+        "explanation": "Supply one clear daily sales quantity, matching unit price and operating days per month. Conflicting quantities, missing days or unknown currency are not guessed.",
+        "formula": null,
+        "calculated_amount": null,
+        "stated_amount": null,
+        "currency": null,
+        "period": null,
+        "source_segment_ids": [
+          "faa1ed4a-3ba0-56d7-b9a7-e84a807a2e82"
+        ],
+        "assumptions": []
+      }
+    ],
+    "note": "Arithmetic checks use supplied figures and explicit periods. Calculated estimates do not overwrite claims or alter assessment scores. Revenue is not profit."
+  }
+}

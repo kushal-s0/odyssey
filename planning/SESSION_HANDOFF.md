@@ -1,5 +1,63 @@
 # Current checkpoint - judge functionality, 18 October 2026
 
+## Latest local startup repair, 18 October 2026
+
+The user's root `.env.local` had empty database/service settings while their
+`env.download` contained matching-project settings. Filled only previously empty
+root settings from that private file; every existing filled value was preserved.
+Added `env.download` to `.gitignore`; never stage either credential file.
+The earlier evaluation's missing-config observation remains historical.
+
+Verified the configured Supabase database with a read-only connection and zero
+running model stages. Restarted only this checkout's verified older Uvicorn/Vite
+processes (the older API returned 404 for `/health/workspace`). Current canonical
+launcher is running in the background: web `http://127.0.0.1:5173` returns 200,
+API `/health/live` returns 200 and `/health/workspace` returns 200/database ready.
+Owned worker stays running; its claim requests return 200 without logged errors.
+A repeated `start.cmd` safely reuses the workspace. No hosted schema changes,
+account changes, public deployment or commit were made during this repair.
+Restart the launcher after future root environment edits; preserve active jobs.
+
+## Latest user request: comprehensive audit and real model evaluation
+
+Completed18October2026 on this actual RTX3050/6144MiB machine. Main report:
+docs/IMPLEMENTATION_AND_MODEL_EVALUATION.md;17-sheet Excel/searchable HTML/CSVs
+and raw results: evals/reports/comprehensive/. Current code audited at aa89991;
+production application/model prompts/rubric were not modified for better results.
+All29 tasks covered;12 done/17 blocked. T20 stays blocked on human corpus labels.
+
+Fresh192 API tests pass/no skips (54.20s);5 metric tests pass. Fourteen frozen
+business examples:13 completed,89/99 assertions passed,8 fully passing cases.
+Negative grading is NOT reliable:4 weak-domain expectations give0 low ratings,
+1 cautious abstention and3 over-ceiling ratings, despite correct separate loss/
+funding arithmetic. Period loss, rough-English investment omission, Hindi missing
+customers and F01 structure refusal are recorded. Unchanged F01 diagnostic repeat
+also refuses structure. Do not tune away these failures or call assertion rate
+population accuracy. Check report's exact source/expected/actual/reasons tables.
+
+All selected public weights now cached/upstream-hashed on this machine. Actual
+language/embedding/translation/OCR/speech/Odia components ran sequentially; their
+JSON metrics and references are saved. Translation preserved numbers but omitted
+one loss clause; rejected relevance classifier predicts all16 examples relevant.
+Typed/script-font OCR0%CER and clean synthetic English speech6.52%WER are limited
+fixtures, not handwriting/regional accuracy. Odia10-second smoke has no reference.
+Legacy AI4Bharat probes401; Groq/root normal DB config unavailable here. Earlier
+Supabase/RTX5050 evidence below belongs to its recorded environment, not this one.
+
+Ignored .venv-eval has pinned current dependencies and a read-only .pth reference
+to existing Torch packages; normal .venv/.venv-model and all credentials preserved.
+Only optional loopback PG55432 migrations001-008 were applied; no hosted changes.
+Do not run fixture suites against Supabase or concurrently with model harnesses.
+All evaluation workers and synthetic DB records cleaned up. Existing API/web
+services were not stopped or reconfigured. No download/model-check session remains.
+HTML checked in Edge:45 tables, working search,390px fit,0JS/external requests.
+Workbook reopened:17 sheets,29 tasks,99 assertions,0formula cells. Screenshots
+ignored under .local/comprehensive-report-preview/; Odia source/transcript private.
+No publication or push. Next action is review this report with the user; further
+grading changes are recommendations, not work already performed.
+
+### Earlier application/UI checkpoint (retained)
+
 Latest user-reported loading/latency repair is complete locally. Auth no longer clears the actor on repeated same-session SIGNED_IN focus recovery; new tokens still validate /v1/me without unmounting the workspace. App pages retain state after first visit, applicant detail retention is bounded to3 ideas, inactive status polling stops, and tools load only when visited. New GET /v1/submissions/{id}/workspace returns current revision and saved assessment in one RLS-scoped statement, without queue/model work. New revisions/denied access clear current cached results. Sign-out/account/access-scope change discards private views. Source anchors/heading IDs are unique for retained views.
 
 Final media/navigation follow-up: leaving an active recording area now stops tracks and preserves the partial recording; an inactive late permission response releases tracks. Deletion clears retained detail state. Final clean browser rerun: **15 journeys pass**, no JS errors/overflow; additional synthetic AudioContext/real MediaRecorder check confirms stopped tracks, retained playback and text draft (no real microphone). Final build519.79kB main-chunk advisory, typecheck/lint pass. New report evals/reports/product-ui.json and screenshots ignored .local/product-ui-3c9d9d9987e149f09495b163cac21c68 supersede fourteen-journey artifacts below. The192-test API/worker regression remains current; no API change after that pass.

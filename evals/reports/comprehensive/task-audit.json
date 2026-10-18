@@ -1,0 +1,493 @@
+{
+  "scope": "Current code/tracker audit plus explicitly dated/historical measurements; task done count is not product completion percent",
+  "status_counts": {
+    "blocked": 17,
+    "done": 12
+  },
+  "tasks": [
+    {
+      "id": "T01",
+      "task": "Inspect dataset and prove free-runtime feasibility",
+      "tracker_status": "blocked",
+      "implemented": "Source inventory and runtime feasibility",
+      "how": "scripts/inventory_dataset.py; models/manifest.json",
+      "evidence_performance": "55 original files:42 PDFs/13 recordings,109 pages; historical multimodal runs; fresh runtime in this evaluation.",
+      "limitations": "No expert corpus labels; historical RTX5050 evidence must not be attributed to the current RTX3050.",
+      "tracker_blocker": "Owned multimodal runtime measured; free HF provisioning/quota and human language/handwriting validation remain unverified",
+      "task_report": "planning/task-reports/T01.md",
+      "exact_existing_paths": [
+        "scripts/inventory_dataset.py",
+        "models/manifest.json"
+      ]
+    },
+    {
+      "id": "T02",
+      "task": "Scaffold application and local toolchain",
+      "tracker_status": "done",
+      "implemented": "React/Vite frontend, FastAPI API, config and launch scripts",
+      "how": "apps/web; apps/api; scripts/dev.py; start.cmd",
+      "evidence_performance": "Last recorded frontend type/lint/build pass; current192-test API suite passes.",
+      "limitations": "Build/runtime success is not a hosted deployment or semantic model accuracy.",
+      "tracker_blocker": "None confirmed",
+      "task_report": "planning/task-reports/T02.md",
+      "exact_existing_paths": [
+        "apps/web",
+        "apps/api",
+        "scripts/dev.py",
+        "start.cmd"
+      ]
+    },
+    {
+      "id": "T03",
+      "task": "Define contracts, domain rules and rubric",
+      "tracker_status": "done",
+      "implemented": "Typed evidence, business fields, null states and proposed rubric",
+      "how": "apps/api/app/contracts; apps/api/app/domain/scoring.py; docs/RUBRIC.md",
+      "evidence_performance": "Strict schemas and exact Decimal arithmetic covered by current regression.",
+      "limitations": "Rubric is project-proposed, not an organizer-calibrated predictor of business success.",
+      "tracker_blocker": "None confirmed",
+      "task_report": "planning/task-reports/T03.md",
+      "exact_existing_paths": [
+        "apps/api/app/contracts",
+        "apps/api/app/domain/scoring.py",
+        "docs/RUBRIC.md"
+      ]
+    },
+    {
+      "id": "T04",
+      "task": "Implement database, durable stage leases and private storage",
+      "tracker_status": "blocked",
+      "implemented": "Supabase/Postgres persistence, RLS, private objects and durable leases",
+      "how": "supabase/migrations; apps/api/app/db; apps/api/app/repositories",
+      "evidence_performance": "Fresh local checks use migrations001-008; historical Supabase migration006 approved/applied.",
+      "limitations": "This evaluation changes only loopback test DB; hosted Free-plan/recovery and007/008 approval incomplete.",
+      "tracker_blocker": "Actual Supabase migrations/private-object operations pass; hosted Free-plan quota/account and recovery gates unverified",
+      "task_report": "planning/task-reports/T04.md",
+      "exact_existing_paths": [
+        "supabase/migrations",
+        "apps/api/app/db",
+        "apps/api/app/repositories"
+      ]
+    },
+    {
+      "id": "T05",
+      "task": "Implement authentication and authorization",
+      "tracker_status": "blocked",
+      "implemented": "Supabase login, asymmetric JWT checks and trusted role/cohort access",
+      "how": "apps/api/app/auth; apps/web/src/auth",
+      "evidence_performance": "Historical fresh-token fix:issuer1.102s ahead, bounded5s leeway; immediate live workspace200. Current signed fixture tests pass.",
+      "limitations": "Current evaluation Auth identity is explicitly a fixture; full hosted refresh/cohort matrix incomplete.",
+      "tracker_blocker": "Fresh real Supabase sign-in timing fixed and immediate workspace200 verified; complete hosted cohort/forced-refresh matrix unverified",
+      "task_report": "planning/task-reports/T05.md",
+      "exact_existing_paths": [
+        "apps/api/app/auth",
+        "apps/web/src/auth"
+      ]
+    },
+    {
+      "id": "T06",
+      "task": "Implement uploads and submission APIs",
+      "tracker_status": "blocked",
+      "implemented": "Private text/file admission, metadata, SHA256 and idempotent submission",
+      "how": "apps/api/app/routes/uploads.py; apps/api/app/services/media.py",
+      "evidence_performance": "Historical55 corpus and18 synthetic input admissions; hosted PDF original integrity measured.",
+      "limitations": "Hosted upload retry/recovery matrix incomplete; an upload is not a processed assessment.",
+      "tracker_blocker": "Actual hosted private PDF upload/download/delete pass; hosted retry/recovery matrix incomplete",
+      "task_report": "planning/task-reports/T06.md",
+      "exact_existing_paths": [
+        "apps/api/app/routes/uploads.py",
+        "apps/api/app/services/media.py"
+      ]
+    },
+    {
+      "id": "T07",
+      "task": "Implement durable Postgres jobs and free-runtime dispatch",
+      "tracker_status": "blocked",
+      "implemented": "Restricted outbound worker, per-stage checkpoints, fencing and recovery",
+      "how": "apps/api/app/worker; apps/api/app/services/jobs.py; apps/api/app/routes/internal_jobs.py",
+      "evidence_performance": "Current process/lease regressions pass; historical model recovery and local5s idle polling.",
+      "limitations": "GPU concurrency one; secondary HF enqueue/quota/sleep remain unverified/deferred.",
+      "tracker_blocker": "Owned recovery and local 5-second polling verified; secondary HF provisioning/quota compatibility deferred and unverified",
+      "task_report": "planning/task-reports/T07.md",
+      "exact_existing_paths": [
+        "apps/api/app/worker",
+        "apps/api/app/services/jobs.py",
+        "apps/api/app/routes/internal_jobs.py"
+      ]
+    },
+    {
+      "id": "T08",
+      "task": "Build applicant submission and recording UI",
+      "tracker_status": "done",
+      "implemented": "Applicant text/PDF/audio recording, guided interview and saved results",
+      "how": "apps/web/src/pages/ApplicantWorkspace.tsx",
+      "evidence_performance": "Historical15 Edge journeys incl.navigation, drafts, token refresh, media cleanup; browser model/Auth outputs are fixtures.",
+      "limitations": "Reuses separately measured live provider/model results; browser fixture pass is not AI accuracy.",
+      "tracker_blocker": "None confirmed",
+      "task_report": "planning/task-reports/T08.md",
+      "exact_existing_paths": [
+        "apps/web/src/pages/ApplicantWorkspace.tsx"
+      ]
+    },
+    {
+      "id": "T09",
+      "task": "Implement self-hosted extraction and Indic translation",
+      "tracker_status": "blocked",
+      "implemented": "Language detection, translation, exact-quote facts and unknown/conflict guards",
+      "how": "apps/api/app/providers/local_models.py; apps/api/app/providers/translation.py; apps/api/app/pipeline/text.py",
+      "evidence_performance": "Fresh14-scenario challenge and13 language examples in this report; older3 judge cases passed.",
+      "limitations": "Original-corpus and regional semantic quality not independently reviewed.",
+      "tracker_blocker": "Actual positive/missing/conflicting source checks pass under v7; corpus and regional human-reference quality remain unvalidated",
+      "task_report": "planning/task-reports/T09.md",
+      "exact_existing_paths": [
+        "apps/api/app/providers/local_models.py",
+        "apps/api/app/providers/translation.py",
+        "apps/api/app/pipeline/text.py"
+      ]
+    },
+    {
+      "id": "T09A",
+      "task": "Train and evaluate our answer-relevance model",
+      "tracker_status": "done",
+      "implemented": "Frozen MiniLM features + experimental logistic relevance head; baseline serving",
+      "how": "training; models/relevance; docs/MODEL_CARD.md",
+      "evidence_performance": "102 machine-labelled QA pairs from11 PDFs/5 coarse groups; fitted and reproducible; fresh16-pair challenge.",
+      "limitations": "Candidate rejected for serving; zero independent labels, one-class holdouts. No new training in this work.",
+      "tracker_blocker": "None confirmed",
+      "task_report": "planning/task-reports/T09A.md",
+      "exact_existing_paths": [
+        "training",
+        "models/relevance",
+        "docs/MODEL_CARD.md"
+      ]
+    },
+    {
+      "id": "T10",
+      "task": "Implement PDF and handwritten scans with open weights",
+      "tracker_status": "blocked",
+      "implemented": "PDF text layer and page-wise PaddleOCR with traceable uncertain evidence",
+      "how": "apps/api/app/pipeline/pdf.py; apps/api/app/providers/document_ocr.py",
+      "evidence_performance": "Historical digital PDF70.453s;11-page Hindi scan extraction/recovery415.188s; fresh3 synthetic OCR references.",
+      "limitations": "Unreadable/capped scan pages; typed/script-font images cannot establish handwriting accuracy.",
+      "tracker_blocker": "PaddleOCR integrated and full 11-page processing/recovery measured; unreadable pages and mixed/overwritten semantic quality still fail or lack review",
+      "task_report": "planning/task-reports/T10.md",
+      "exact_existing_paths": [
+        "apps/api/app/pipeline/pdf.py",
+        "apps/api/app/providers/document_ocr.py"
+      ]
+    },
+    {
+      "id": "T11",
+      "task": "Implement self-hosted regional audio transcription",
+      "tracker_status": "blocked",
+      "implemented": "Whisper speech, Odia-specific weights, sample ranges and silent-chunk guard",
+      "how": "apps/api/app/pipeline/audio.py; apps/api/app/providers/speech.py",
+      "evidence_performance": "Historical full Hindi/Telugu/Bengali/Odia processing/recovery; fresh English synthetic WER and Odia smoke.",
+      "limitations": "No independent regional transcripts; selected/declared language is not proven detection.",
+      "tracker_blocker": "Full Hindi/Telugu/Bengali/Odia processing and Hindi recovery pass; human transcript/reference quality remains unvalidated",
+      "task_report": "planning/task-reports/T11.md",
+      "exact_existing_paths": [
+        "apps/api/app/pipeline/audio.py",
+        "apps/api/app/providers/speech.py"
+      ]
+    },
+    {
+      "id": "T12",
+      "task": "Implement evidence-backed ratings and deterministic totals",
+      "tracker_status": "done",
+      "implemented": "Six grounded domain judgments; server-derived potential/coverage/completeness",
+      "how": "apps/api/app/pipeline/assess.py; apps/api/app/domain/scoring.py",
+      "evidence_performance": "Fresh actual positive/weak/unknown/adversarial outcomes and exact totals in business.csv.",
+      "limitations": "No binary success classifier. Semantic grading can fail despite valid references; financial checks are separate.",
+      "tracker_blocker": "None confirmed",
+      "task_report": "planning/task-reports/T12.md",
+      "exact_existing_paths": [
+        "apps/api/app/pipeline/assess.py",
+        "apps/api/app/domain/scoring.py"
+      ]
+    },
+    {
+      "id": "T13",
+      "task": "Build assessor workspace, evidence viewer and review",
+      "tracker_status": "blocked",
+      "implemented": "Scoped assessor queue, original evidence, reviews and correction revisions",
+      "how": "apps/web/src/pages/AssessorWorkspace.tsx; apps/api/app/routes/reviews.py",
+      "evidence_performance": "API role/scope/stale/idempotency tests; historical browser review/correction/history journeys.",
+      "limitations": "All-format source and real model/browser acceptance remain incomplete.",
+      "tracker_blocker": "Scoped queue/review/correction tests pass; all-format source and model/browser acceptance pending",
+      "task_report": "planning/task-reports/T13.md",
+      "exact_existing_paths": [
+        "apps/web/src/pages/AssessorWorkspace.tsx",
+        "apps/api/app/routes/reviews.py"
+      ]
+    },
+    {
+      "id": "T14",
+      "task": "Implement authorized similar-idea retrieval",
+      "tracker_status": "blocked",
+      "implemented": "Frozen384D embeddings, pgvector neighbours and authorized family/version filtering",
+      "how": "apps/api/app/domain/similarity.py; apps/api/app/routes/similar.py; apps/api/app/providers/local_models.py",
+      "evidence_performance": "Fresh curated4-query/10-idea Recall/MRR; API access and stale/family filtering covered.",
+      "limitations": "Curated local retrieval is not annotated real-submission Recall@5.",
+      "tracker_blocker": "Scoped pgvector retrieval passes; real embedding publication and annotated Recall@5 pending",
+      "task_report": "planning/task-reports/T14.md",
+      "exact_existing_paths": [
+        "apps/api/app/domain/similarity.py",
+        "apps/api/app/routes/similar.py",
+        "apps/api/app/providers/local_models.py"
+      ]
+    },
+    {
+      "id": "T15",
+      "task": "Implement free OpenStreetMap business context",
+      "tracker_status": "done",
+      "implemented": "Confirmed-area OSM lookup, attributed dated snapshots and outage fallback",
+      "how": "apps/api/app/routes/location_insights.py; apps/api/app/providers/osm.py",
+      "evidence_performance": "Historical bounded real lookup plus snapshot/outage UI; no public load test.",
+      "limitations": "OSM rural/informal coverage incomplete; absence is not evidence of no competition.",
+      "tracker_blocker": "None confirmed",
+      "task_report": "planning/task-reports/T15.md",
+      "exact_existing_paths": [
+        "apps/api/app/routes/location_insights.py",
+        "apps/api/app/providers/osm.py"
+      ]
+    },
+    {
+      "id": "T16",
+      "task": "Implement all four comparison views",
+      "tracker_status": "done",
+      "implemented": "Domain/trade/cohort/across-cohort SQL comparisons and charts/CSV",
+      "how": "apps/api/app/routes/analytics.py",
+      "evidence_performance": "Historical graph/table/keyboard CSV browser checks and scoped aggregates.",
+      "limitations": "Samples/denominators/missing values matter; comparison charts do not validate the rubric.",
+      "tracker_blocker": "None confirmed",
+      "task_report": "planning/task-reports/T16.md",
+      "exact_existing_paths": [
+        "apps/api/app/routes/analytics.py"
+      ]
+    },
+    {
+      "id": "T17",
+      "task": "Implement clarification and reassessment",
+      "tracker_status": "done",
+      "implemented": "Prioritized contextual gaps/conflicts, localized questions and linked text/audio revisions",
+      "how": "apps/api/app/domain/questions.py; apps/api/app/routes/clarifications.py; apps/api/app/pipeline/inheritance.py",
+      "evidence_performance": "Historical typed/audio follow-up inference and immutable history; current API contract tests.",
+      "limitations": "Localized question fluency and answer quality need human review.",
+      "tracker_blocker": "None confirmed",
+      "task_report": "planning/task-reports/T17.md",
+      "exact_existing_paths": [
+        "apps/api/app/domain/questions.py",
+        "apps/api/app/routes/clarifications.py",
+        "apps/api/app/pipeline/inheritance.py"
+      ]
+    },
+    {
+      "id": "T18",
+      "task": "Implement business arithmetic checks",
+      "tracker_status": "done",
+      "implemented": "Deterministic funding/revenue/surplus checks and separate what-if/stress planner",
+      "how": "apps/api/app/domain/economics.py; apps/api/app/routes/economics.py",
+      "evidence_performance": "Fresh negative-surplus/conflicting-funding assertions; exact arithmetic tests.",
+      "limitations": "Unknown units/periods block arithmetic; estimates are not verified net profit. Checks do not automatically lower ratings.",
+      "tracker_blocker": "None confirmed",
+      "task_report": "planning/task-reports/T18.md",
+      "exact_existing_paths": [
+        "apps/api/app/domain/economics.py",
+        "apps/api/app/routes/economics.py"
+      ]
+    },
+    {
+      "id": "T19",
+      "task": "Implement reports and version history",
+      "tracker_status": "done",
+      "implemented": "Current/historical reports, printable HTML and evidence-linked plan exports",
+      "how": "apps/api/app/routes/reports.py; apps/web/src/components",
+      "evidence_performance": "Historical scoped export/print/PDF browser checks; secret-safe source/context tests.",
+      "limitations": "Exports reproduce model limitations; source/format readability not fully reviewed for all original media.",
+      "tracker_blocker": "None confirmed",
+      "task_report": "planning/task-reports/T19.md",
+      "exact_existing_paths": [
+        "apps/api/app/routes/reports.py",
+        "apps/web/src/components"
+      ]
+    },
+    {
+      "id": "T20",
+      "task": "Evaluate dataset and our model with real measurements",
+      "tracker_status": "blocked",
+      "implemented": "Dataset accounting, evaluation scripts,18 authored rehearsal inputs and this evaluation",
+      "how": "evals; input; scripts/evaluate_business_scenarios.py; scripts/evaluate_model_components.py",
+      "evidence_performance": "Fresh actual model outputs with frozen source expectations and per-assertion denominators.",
+      "limitations": "Remains blocked on independently reviewed corpus labels, transcripts/retrieval/fairness outcomes.",
+      "tracker_blocker": "Fresh 14 authored scenarios: 89/99 checks, negative grading counterexamples; independent original-corpus, regional transcript, retrieval and fairness labels still absent",
+      "task_report": "planning/task-reports/T20.md",
+      "exact_existing_paths": [
+        "evals",
+        "input",
+        "scripts/evaluate_business_scenarios.py",
+        "scripts/evaluate_model_components.py"
+      ]
+    },
+    {
+      "id": "T21",
+      "task": "Harden access, uploads and failure boundaries",
+      "tracker_status": "done",
+      "implemented": "Bounded auth/uploads, RLS/stale writes, privacy cleanup and dependency audit",
+      "how": "apps/api/app/auth; apps/api/app/services; apps/api/app/routes/deletion.py",
+      "evidence_performance": "Current192 regression plus historical dependency/private-value scans.",
+      "limitations": "No claim of exhaustive penetration testing, commercial security certification or all provider limits.",
+      "tracker_blocker": "None confirmed",
+      "task_report": "planning/task-reports/T21.md",
+      "exact_existing_paths": [
+        "apps/api/app/auth",
+        "apps/api/app/services",
+        "apps/api/app/routes/deletion.py"
+      ]
+    },
+    {
+      "id": "T22",
+      "task": "Measure portable API and model scalability",
+      "tracker_status": "done",
+      "implemented": "Two API replicas and local paced metadata workload/recovery experiment",
+      "how": "scripts/verify_scale.py; docs/SCALABILITY.md",
+      "evidence_performance": "Historical4988 requests/303s,50 sessions,p5086.335ms,p95212.115ms,0 errors;20 synthetic jobs recovered.",
+      "limitations": "Synthetic tiny handlers, no LLM throughput. One-second diagnostic p951944.633ms; hosted scale not demonstrated.",
+      "tracker_blocker": "None confirmed",
+      "task_report": "planning/task-reports/T22.md",
+      "exact_existing_paths": [
+        "scripts/verify_scale.py",
+        "docs/SCALABILITY.md"
+      ]
+    },
+    {
+      "id": "T23",
+      "task": "Package zero-spend application deployment",
+      "tracker_status": "blocked",
+      "implemented": "Allowlisted release artifacts, API image and free-host deployment configuration",
+      "how": "scripts/package_release.py; docs/DEPLOYMENT.md; infra",
+      "evidence_performance": "Historical105232638-byte non-root API image; liveness2.688s;512MiB limit; no model weights/private env.",
+      "limitations": "Container/image build and archive creation are not cloud deployment/account verification.",
+      "tracker_blocker": "Local image/packages pass; provider Free-plan/account limits and clean hosted deployment/recovery unverified",
+      "task_report": "planning/task-reports/T23.md",
+      "exact_existing_paths": [
+        "scripts/package_release.py",
+        "docs/DEPLOYMENT.md",
+        "infra"
+      ]
+    },
+    {
+      "id": "T23A",
+      "task": "Package and deploy versioned model runtimes",
+      "tracker_status": "blocked",
+      "implemented": "Pinned owned-model runtime and manifest/provenance packaging",
+      "how": "models; docs/MODEL_DEPLOYMENT.md",
+      "evidence_performance": "Actual owned inference and pinned artifact hashes; this evaluation provisions current-machine public weights.",
+      "limitations": "Secondary free HF provisioning, quota and publication not completed.",
+      "tracker_blocker": "Owned worker packaged/measured; secondary free HF provisioning, quota and approved publication remain missing",
+      "task_report": "planning/task-reports/T23A.md",
+      "exact_existing_paths": [
+        "models",
+        "docs/MODEL_DEPLOYMENT.md"
+      ]
+    },
+    {
+      "id": "T24",
+      "task": "Deploy and verify the full free hosted application",
+      "tracker_status": "blocked",
+      "implemented": "Public hosting configuration/preparation; no approved public release",
+      "how": "docs/DEPLOYMENT.md",
+      "evidence_performance": "No public application URL verified; local/Supabase-backed development only.",
+      "limitations": "No approved public host artifacts/destinations/Free-plan verification.",
+      "tracker_blocker": "No approved public host projects/Free-plan verification or application publication",
+      "task_report": "planning/task-reports/T24.md",
+      "exact_existing_paths": [
+        "docs/DEPLOYMENT.md"
+      ]
+    },
+    {
+      "id": "T25",
+      "task": "Run deployed acceptance and recovery checks",
+      "tracker_status": "blocked",
+      "implemented": "Deployment acceptance plan; local recovery evidence retained",
+      "how": "planning/task-reports/T25.md",
+      "evidence_performance": "No deployed release for a public journey/recovery run.",
+      "limitations": "Local recovery cannot substitute for public deployed acceptance.",
+      "tracker_blocker": "No T24 public release URL exists for deployed acceptance and recovery",
+      "task_report": "planning/task-reports/T25.md",
+      "exact_existing_paths": [
+        "planning/task-reports/T25.md"
+      ]
+    },
+    {
+      "id": "T26",
+      "task": "Write final implementation and readiness handover",
+      "tracker_status": "blocked",
+      "implemented": "Continuation/readiness notes, explanations and committee handover",
+      "how": "planning/SESSION_HANDOFF.md; explanations",
+      "evidence_performance": "Traceable local capability/blocker records and measured test artifacts.",
+      "limitations": "Final handover remains conditional on human evaluation and deployed release evidence.",
+      "tracker_blocker": "Local handover prepared; human evaluation and T24/T25 deployed release evidence unavailable",
+      "task_report": "planning/task-reports/T26.md",
+      "exact_existing_paths": [
+        "planning/SESSION_HANDOFF.md",
+        "explanations"
+      ]
+    },
+    {
+      "id": "T27",
+      "task": "Write detailed free-deployment walkthrough",
+      "tracker_status": "blocked",
+      "implemented": "Detailed free-configuration deployment walkthrough",
+      "how": "docs/DEPLOYMENT.md; docs/SETUP.md",
+      "evidence_performance": "Document prepared with secrets, startup, recovery and limitations.",
+      "limitations": "No clean deployed reproduction; publication needs separate explicit approval.",
+      "tracker_blocker": "Detailed actual-configuration guide prepared; publication/host provisioning and deployed reproduction unverified",
+      "task_report": "planning/task-reports/T27.md",
+      "exact_existing_paths": [
+        "docs/DEPLOYMENT.md",
+        "docs/SETUP.md"
+      ]
+    }
+  ],
+  "fresh_api_regression": {
+    "tests": 192,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "test_case_seconds_sum": 51.77199999999999,
+    "groups": {
+      "test_analytics": 3,
+      "test_assessments": 13,
+      "test_audio_pipeline": 1,
+      "test_auth": 31,
+      "test_bootstrap": 5,
+      "test_clarifications": 5,
+      "test_contracts": 24,
+      "test_database": 8,
+      "test_economics": 3,
+      "test_evaluation": 2,
+      "test_explanations": 3,
+      "test_explicit_spans": 5,
+      "test_gradio_dispatch": 4,
+      "test_location": 3,
+      "test_model_recovery": 2,
+      "test_pdf_pipeline": 5,
+      "test_privacy_hardening": 3,
+      "test_relevance": 2,
+      "test_reports": 1,
+      "test_reviews": 2,
+      "test_saved_workspace": 2,
+      "test_similar": 1,
+      "test_submissions": 20,
+      "test_text_pipeline": 19,
+      "test_upload_corpus": 1,
+      "test_worker_http": 5,
+      "test_worker_polling": 3,
+      "test_worker_process": 4,
+      "test_worker_service": 5,
+      "test_worker_transport": 7
+    },
+    "suite_seconds": 54.198
+  }
+}

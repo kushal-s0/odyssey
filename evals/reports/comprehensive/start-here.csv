@@ -1,0 +1,27 @@
+﻿Item,Answer
+evaluated_ist,2026-10-18T07:57:56.786216+05:30
+data_scope,Authored synthetic fixtures; no independent population labels or success outcomes
+task_status_counts,"{""blocked"": 17, ""done"": 12}"
+fresh_api_tests,"{""tests"": 192, ""failures"": 0, ""errors"": 0, ""skipped"": 0, ""test_case_seconds_sum"": 51.77199999999999, ""groups"": {""test_analytics"": 3, ""test_assessments"": 13, ""test_audio_pipeline"": 1, ""test_auth"": 31, ""test_bootstrap"": 5, ""test_clarifications"": 5, ""test_contracts"": 24, ""test_database"": 8, ""test_economics"": 3, ""test_evaluation"": 2, ""test_explanations"": 3, ""test_explicit_spans"": 5, ""test_gradio_dispatch"": 4, ""test_location"": 3, ""test_model_recovery"": 2, ""test_pdf_pipeline"": 5, ""test_privacy_hardening"": 3, ""test_relevance"": 2, ""test_reports"": 1, ""test_reviews"": 2, ""test_saved_workspace"": 2, ""test_similar"": 1, ""test_submissions"": 20, ""test_text_pipeline"": 19, ""test_upload_corpus"": 1, ""test_worker_http"": 5, ""test_worker_polling"": 3, ""test_worker_process"": 4, ""test_worker_service"": 5, ""test_worker_transport"": 7}, ""suite_seconds"": 54.198}"
+business_cases_requested,14
+business_cases_measured,14
+business_completed,13
+business_assertions_passed,89
+business_assertions_total,99
+business_all_checks_passed_cases,8
+money_exact_passed,31
+money_exact_total,34
+low_domain_requested,4
+low_domain_cautious_abstentions,1
+low_domain_actual_low_ratings,0
+low_domain_overly_high_ratings,3
+end_to_end_p50_seconds,60.698
+end_to_end_p95_seconds,110.163
+qwen_peak_allocated_vram_bytes,4628486656
+qwen_generation_tokens_per_second,20.249379408422268
+component_status,"{""language"": ""completed"", ""embedding"": ""completed"", ""translation"": ""completed"", ""ocr"": ""completed"", ""speech"": ""completed"", ""odia"": ""completed""}"
+human_quality_validated,False
+deployed,False
+Meaning,"Scenario assertion scores are not population accuracy. Null is unassessed, not a bad business. Read negative counterexamples and domain reasons."
+Detailed readable report,docs/IMPLEMENTATION_AND_MODEL_EVALUATION.md
+Standalone searchable report,IMPLEMENTATION_AND_MODEL_EVALUATION.html

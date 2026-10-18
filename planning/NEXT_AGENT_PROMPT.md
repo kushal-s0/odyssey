@@ -1,5 +1,17 @@
 Continue Udyam Saathi in this existing repository on branch second. Read AGENTS.md, planning/SESSION_HANDOFF.md, HACKATHON_RESET.md, TASK_STATUS.md and latest task reports, then inspect actual Git/process/code state without printing secrets. Preserve user changes and original source archives.
 
+Latest request was comprehensive implementation/model evaluation, now completed.
+Read docs/IMPLEMENTATION_AND_MODEL_EVALUATION.md and evals/reports/comprehensive/
+EVALUATION_WORKBOOK.xlsx before acting on older continuation notes below. Fresh
+192API/5metric tests pass;14 frozen business scenarios give13 completions and
+89/99 checks. Negative-domain grading still fails:0 actual low/1abstained/3too
+high out of4 expectations. All actual component outcomes/references and failures
+are stored. No model prompts/rubric changed; T20 still blocked on human labels.
+Current hardware RTX3050/6GB, not the older RTX5050 reports. Evaluation .venv-eval
+preserves normal environments/credentials. Public selected weights now cached;
+legacy gated probes401, Groq/root normalDB unconfigured here. Existing app retained;
+no evaluation worker remains. Review results with user before additional scope.
+
 Deadline18Oct2026 06:00IST includes deployed demo. Free services only; owned RTX5050 laptop inference, React/FastAPI/Supabase, Supabase login ONLY. No MySQL/Mongo rewrite, production expansion, paid APIs or extra classifier training. Every new commit author AND committer Kartik Verma <kartikverma2204number1@gmail.com>, no trailers. Local commits only; no push/PR/public deployment/source upload approval.
 
 The reported dead UI was traced to the API's cached failed database startup and missing application profiles/cohorts despite existing Supabase Auth accounts. Actual Supabase connection now passes, all5migrations are checksum-applied, selected applicant access/cohort provisioned, and app restarted. Root secrets are filled; do not ask for the same keys again. Launcher waits for database-backed workspace health; frontend shows useful signed-in error/retry states rather than the static landing. Real Supabase login/GPU English assessment/evidence/reload and private PDF upload/download passed. Digital-PDF assessment/display/logout and scoped cleanup also passed in the PDF-only retry (live-app.json); the first test wait timeout remains honestly recorded separately. 144backend tests, mypy55files, Ruff, frontend type/lint/build and desktop/mobile checks passed. Existing app may still be running; preserve it and user jobs.

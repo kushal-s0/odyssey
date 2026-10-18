@@ -1,3 +1,4 @@
+import { useI18n } from '../i18n/I18nProvider'
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import { createClient, type Session } from '@supabase/supabase-js'
 import { apiRequest, ApiError } from '../api/client'
@@ -33,6 +34,7 @@ type AuthState = {
 const Context = createContext<AuthState | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const { t } = useI18n()
   const [session, setSession] = useState<Session | null>(null)
   const [actor, setActor] = useState<Actor | null>(null)
   const [loading, setLoading] = useState(Boolean(client))
@@ -48,7 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Supabase can repeat SIGNED_IN on focus. The same session is not a logout.
       setSession(previous => previous?.user.id === next?.user.id && previous?.access_token === next?.access_token ? previous : next)
       if (changedAccount || !next) { setActor(null); setLoading(Boolean(next)) }
-      if (event === 'SIGNED_OUT') setMessage('Your session ended. Sign in to continue.')
+      if (event === 'SIGNED_OUT') setMessage(t("Your session ended. Sign in to continue."))
     })
     return () => subscription.unsubscribe()
   }, [])
@@ -62,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .then(value => { if (!controller.signal.aborted) { setActor(previous => JSON.stringify(previous) === JSON.stringify(value) ? previous : value); setMessage('') } })
       .catch((error: unknown) => {
         if (controller.signal.aborted) return
-        setMessage(error instanceof ApiError ? error.message : 'Workspace access could not be checked.')
+        setMessage(error instanceof ApiError ? error.message : t("Workspace access could not be checked."))
         if (error instanceof ApiError && error.status === 401) {
           setActor(null); setSession(null)
           void client?.auth.signOut({ scope: 'local' })
@@ -71,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       })
       .finally(() => { window.clearTimeout(timeout); if (!controller.signal.aborted) setLoading(false) })
     const onTimeout = window.setTimeout(() => {
-      if (controller.signal.aborted) { setLoading(false); setMessage('Workspace connection timed out. Check that start.cmd is running, then retry.') }
+      if (controller.signal.aborted) { setLoading(false); setMessage(t("Workspace connection timed out. Check that start.cmd is running, then retry.")) }
     }, 10_050)
     return () => { controller.abort(); window.clearTimeout(timeout); window.clearTimeout(onTimeout) }
   }, [session, retry])
@@ -80,13 +82,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(true); setMessage('')
     try {
       const { error } = await client.auth.signInWithPassword({ email, password })
-      if (error) { setMessage('Sign-in failed. Check your details or ask your coordinator.'); setLoading(false); return false }
+      if (error) { setMessage(t("Sign-in failed. Check your details or ask your coordinator.")); setLoading(false); return false }
       return true
-    } catch { setMessage('Sign-in connection failed. Please try again.'); setLoading(false); return false }
+    } catch { setMessage(t("Sign-in connection failed. Please try again.")); setLoading(false); return false }
   }
   async function signOut() {
     identity.current = null
-    setActor(null); setSession(null); setMessage('You are signed out.'); setLoading(false)
+    setActor(null); setSession(null); setMessage(t("You are signed out.")); setLoading(false)
     await client?.auth.signOut({ scope: 'local' }).catch(() => undefined)
   }
   return <Context.Provider value={{ session, actor, loading, message, configured: Boolean(client), signIn, signOut,

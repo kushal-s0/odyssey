@@ -1,0 +1,370 @@
+{
+  "component": "embedding",
+  "scope": "Actual local pinned model on authored fixtures; original Odia sample has no reviewed transcript",
+  "started_utc": "2026-10-18T02:17:50.222295+00:00",
+  "manifest_hash": "b3a08182e8e2cb1c1287fcbbc964436e48ebdabd8bed668520cf2c5d9e8a176c",
+  "data_sha256": "8897ab986f5ac467ea9383c9bad0ec9e053dc392007d1cf2df3bab800aaaa2c6",
+  "human_quality_validated": false,
+  "deployed": false,
+  "runtime": {
+    "torch": "2.9.1+cu128",
+    "transformers": "5.0.0",
+    "numpy": "2.2.6",
+    "sacrebleu": "2.5.1"
+  },
+  "model": {
+    "id": "sentence-transformers/all-MiniLM-L6-v2",
+    "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41"
+  },
+  "load_seconds": 5.65,
+  "qa_cases": [
+    {
+      "id": "A01",
+      "question": "What will you sell?",
+      "answer": "I will repair mobile phone screens.",
+      "gold": 0,
+      "cosine": 0.27710476517677307,
+      "baseline": -1,
+      "candidate": 0,
+      "candidate_uncalibrated_irrelevant_probability": 0.08996360016809317
+    },
+    {
+      "id": "A02",
+      "question": "Who are your customers?",
+      "answer": "Local school teachers.",
+      "gold": 0,
+      "cosine": 0.2789922058582306,
+      "baseline": -1,
+      "candidate": 0,
+      "candidate_uncalibrated_irrelevant_probability": 0.06576327701835134
+    },
+    {
+      "id": "A03",
+      "question": "What is your selling price?",
+      "answer": "INR 275 per repair.",
+      "gold": 0,
+      "cosine": 0.3755298852920532,
+      "baseline": 0,
+      "candidate": 0,
+      "candidate_uncalibrated_irrelevant_probability": 0.06492835860123448
+    },
+    {
+      "id": "A04",
+      "question": "What are your monthly expenses?",
+      "answer": "My monthly expenses are INR 18000.",
+      "gold": 0,
+      "cosine": 0.648888349533081,
+      "baseline": 0,
+      "candidate": 0,
+      "candidate_uncalibrated_irrelevant_probability": 0.05306574708223161
+    },
+    {
+      "id": "A05",
+      "question": "What is your expected monthly revenue?",
+      "answer": "I expect INR 99999999 of monthly revenue.",
+      "gold": 0,
+      "cosine": 0.782118558883667,
+      "baseline": 0,
+      "candidate": 0,
+      "candidate_uncalibrated_irrelevant_probability": 0.05363108149997562
+    },
+    {
+      "id": "A06",
+      "question": "Which materials do you need?",
+      "answer": "Needles and thread.",
+      "gold": 0,
+      "cosine": 0.2582835555076599,
+      "baseline": -1,
+      "candidate": 0,
+      "candidate_uncalibrated_irrelevant_probability": 0.08679824818590916
+    },
+    {
+      "id": "A07",
+      "question": "Where will you operate?",
+      "answer": "A market stall in Jaipur.",
+      "gold": 0,
+      "cosine": 0.19130049645900726,
+      "baseline": -1,
+      "candidate": 0,
+      "candidate_uncalibrated_irrelevant_probability": 0.06711962079808903
+    },
+    {
+      "id": "A08",
+      "question": "Who supplies your milk?",
+      "answer": "The nearby dairy cooperative.",
+      "gold": 0,
+      "cosine": 0.5746827125549316,
+      "baseline": 0,
+      "candidate": 0,
+      "candidate_uncalibrated_irrelevant_probability": 0.06285299829947527
+    },
+    {
+      "id": "A09",
+      "question": "What will you sell?",
+      "answer": "I enjoyed the cricket final yesterday.",
+      "gold": 1,
+      "cosine": -0.043889760971069336,
+      "baseline": -1,
+      "candidate": 0,
+      "candidate_uncalibrated_irrelevant_probability": 0.2023226717736816
+    },
+    {
+      "id": "A10",
+      "question": "What is your selling price?",
+      "answer": "Customers are school teachers.",
+      "gold": 1,
+      "cosine": 0.11835958063602448,
+      "baseline": -1,
+      "candidate": 0,
+      "candidate_uncalibrated_irrelevant_probability": 0.060303973252076364
+    },
+    {
+      "id": "A11",
+      "question": "Who are your customers?",
+      "answer": "A sewing machine costs INR 18000.",
+      "gold": 1,
+      "cosine": 0.12264278531074524,
+      "baseline": -1,
+      "candidate": 0,
+      "candidate_uncalibrated_irrelevant_probability": 0.06269800244447038
+    },
+    {
+      "id": "A12",
+      "question": "What are your monthly expenses?",
+      "answer": "My shop name is Blue Moon Tailors.",
+      "gold": 1,
+      "cosine": 0.1759168803691864,
+      "baseline": -1,
+      "candidate": 0,
+      "candidate_uncalibrated_irrelevant_probability": 0.06241254272914213
+    },
+    {
+      "id": "A13",
+      "question": "What is your expected monthly revenue?",
+      "answer": "The tea supplier closes at six.",
+      "gold": 1,
+      "cosine": 0.15408319234848022,
+      "baseline": -1,
+      "candidate": 0,
+      "candidate_uncalibrated_irrelevant_probability": 0.05376089385264975
+    },
+    {
+      "id": "A14",
+      "question": "Which materials do you need?",
+      "answer": "The village school cricket team won.",
+      "gold": 1,
+      "cosine": -0.05494948476552963,
+      "baseline": -1,
+      "candidate": 0,
+      "candidate_uncalibrated_irrelevant_probability": 0.17646829130091207
+    },
+    {
+      "id": "A15",
+      "question": "Where will you operate?",
+      "answer": "The price is INR 275 per repair.",
+      "gold": 1,
+      "cosine": 0.1263241469860077,
+      "baseline": -1,
+      "candidate": 0,
+      "candidate_uncalibrated_irrelevant_probability": 0.08313335961063247
+    },
+    {
+      "id": "A16",
+      "question": "Who supplies your milk?",
+      "answer": "My expected sales revenue is INR 20000.",
+      "gold": 1,
+      "cosine": 0.07123057544231415,
+      "baseline": -1,
+      "candidate": 0,
+      "candidate_uncalibrated_irrelevant_probability": 0.0806345538937898
+    }
+  ],
+  "baseline_metrics": {
+    "count": 16,
+    "strict_accuracy": 0.25,
+    "coverage": 0.25,
+    "selective_accuracy": 1.0,
+    "macro_f1": 0.3333333333333333,
+    "irrelevant_precision": null,
+    "irrelevant_recall": 0.0,
+    "confusion_rows_gold_relevant_irrelevant_columns_pred_relevant_irrelevant_abstain": [
+      [
+        4,
+        0,
+        4
+      ],
+      [
+        0,
+        0,
+        8
+      ]
+    ]
+  },
+  "experimental_candidate_metrics": {
+    "count": 16,
+    "strict_accuracy": 0.5,
+    "coverage": 1.0,
+    "selective_accuracy": 0.5,
+    "macro_f1": 0.3333333333333333,
+    "irrelevant_precision": null,
+    "irrelevant_recall": 0.0,
+    "confusion_rows_gold_relevant_irrelevant_columns_pred_relevant_irrelevant_abstain": [
+      [
+        8,
+        0,
+        0
+      ],
+      [
+        8,
+        0,
+        0
+      ]
+    ]
+  },
+  "candidate_serving": "rejected; evaluated only, never promoted",
+  "retrieval_cases": [
+    {
+      "id": "Q01",
+      "text": "A tea kiosk for commuters needing hot drinks before work.",
+      "relevant_ids": [
+        "R01",
+        "R02"
+      ],
+      "ranked_ids": [
+        "R01",
+        "R02",
+        "R06",
+        "R05",
+        "R04",
+        "R10",
+        "R07",
+        "R03",
+        "R08",
+        "R09"
+      ],
+      "top5_scores": [
+        0.6948932547077189,
+        0.5494534743553159,
+        0.35244850289936414,
+        0.23617288605691383,
+        0.21719776324880316
+      ],
+      "recall_at_1": 0.5,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "seconds": 0.0093
+    },
+    {
+      "id": "Q02",
+      "text": "Stitching and alteration service for customer garments.",
+      "relevant_ids": [
+        "R03",
+        "R04"
+      ],
+      "ranked_ids": [
+        "R03",
+        "R04",
+        "R10",
+        "R05",
+        "R06",
+        "R09",
+        "R07",
+        "R02",
+        "R08",
+        "R01"
+      ],
+      "top5_scores": [
+        0.7904177853549379,
+        0.692084071962453,
+        0.3667580133572701,
+        0.2647626577330141,
+        0.19839756169050826
+      ],
+      "recall_at_1": 0.5,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "seconds": 0.0058
+    },
+    {
+      "id": "Q03",
+      "text": "A shop replacing broken smartphone screens and batteries.",
+      "relevant_ids": [
+        "R05",
+        "R06"
+      ],
+      "ranked_ids": [
+        "R05",
+        "R06",
+        "R04",
+        "R10",
+        "R01",
+        "R02",
+        "R09",
+        "R03",
+        "R08",
+        "R07"
+      ],
+      "top5_scores": [
+        0.6680837874558991,
+        0.5743033313194565,
+        0.35273057414626363,
+        0.33621672861734964,
+        0.2567205787889877
+      ],
+      "recall_at_1": 0.5,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "seconds": 0.007
+    },
+    {
+      "id": "Q04",
+      "text": "Installing and maintaining solar power equipment on homes.",
+      "relevant_ids": [
+        "R09"
+      ],
+      "ranked_ids": [
+        "R09",
+        "R05",
+        "R06",
+        "R08",
+        "R07",
+        "R10",
+        "R04",
+        "R02",
+        "R03",
+        "R01"
+      ],
+      "top5_scores": [
+        0.6794307672244413,
+        0.26001976440768876,
+        0.20813414897483262,
+        0.20188436740275748,
+        0.1893392192012511
+      ],
+      "recall_at_1": 1.0,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "seconds": 0.0074
+    }
+  ],
+  "retrieval_metrics": {
+    "recall_at_1": 0.625,
+    "recall_at_3": 1.0,
+    "recall_at_5": 1.0,
+    "reciprocal_rank": 1.0,
+    "ndcg_at_5": 1.0
+  },
+  "index_seconds": 0.068,
+  "status": "completed",
+  "gpu": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+  "peak_vram_bytes": 0,
+  "total_seconds": 7.933
+}

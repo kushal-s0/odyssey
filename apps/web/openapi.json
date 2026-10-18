@@ -6194,6 +6194,16 @@
                 "type": "null"
               }
             ]
+          },
+          "economics": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Economics"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "additionalProperties": false,
