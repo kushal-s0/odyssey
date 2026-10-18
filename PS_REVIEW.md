@@ -1,5 +1,13 @@
 # Evaluation against the problem statement
 
+## Implementation follow-up
+
+The review below records the pre-change state. The subsequent implementation adds an interactive map with confirmed coordinates, numbered markers, managed Geoapify lookup, public/cached fallbacks and separately sourced manual observations. A live generic Pune lookup returned 71 food listings within 1 km, with valid radius checks and source IDs. Market coverage is not exhaustive.
+
+The live clarification flow now passes. Assessors can assign existing submissions to cohorts. Information readiness is distinguished from provisional screening concerns and separate source-backed human domain ratings used in comparisons. The evidence workspace provides original/English comparison, highlighted quotations, search, source filters, page/audio links and an expanded reading view with explicit source confirmation. Free text is the default intake mode.
+
+These changes address the identified product/workflow gaps. They do not prove regional-language accuracy, calibrated business ratings, improved assessor decisions or sustained processing capacity. Independent language checks and an assessor pilot remain necessary. Custom relevance inference and deployment remain separate, user-owned steps. See README.md for current usage.
+
 18 October 2026. Based on `.planning/problem-statement.txt`, the current source code, saved verification results and a local synthetic scoring experiment. This review changes documentation only; it does not deploy, train or send submissions to providers.
 
 ## Honest verdict

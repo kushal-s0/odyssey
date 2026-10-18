@@ -148,7 +148,11 @@ router.get("/dashboard", async (req, res) =>
 );
 router.use("/training", requireAssessor);
 router.use("/locations", requireAssessor);
-router.use("/submissions/:id/local-context", requireAssessor, localContextRouter);
+router.use(
+  "/submissions/:id/local-context",
+  requireAssessor,
+  localContextRouter,
+);
 router.get("/cohorts", requireAssessor, async (_req, res) =>
   res.json({
     cohorts: (await CohortModel.find().sort({ name: 1 }).lean()).map((c) => ({
@@ -320,15 +324,51 @@ router.get("/submissions/:id", async (req, res) => {
   }
   res.json({ submission: serializeSubmission(doc) });
 });
-router.post("/submissions/:id/cohort", requireAssessor, writableRate, async(req,res)=>{
-  const data=z.object({cohortId:id.nullable(),updatedAt:z.string().datetime()}).strict().parse(req.body);
-  const cohort=data.cohortId ? await CohortModel.findById(data.cohortId) : null;
-  if(data.cohortId&&!cohort){res.status(404).json({error:"Cohort not found."});return;}
-  const record=await SubmissionModel.findOneAndUpdate({_id:id.parse(req.params.id),updatedAt:new Date(data.updatedAt)},{$set:{cohortId:cohort?String(cohort._id):null,cohortName:cohort?.name??null,cohortSynthetic:!!cohort?.synthetic}},{new:true});
-  if(!record){res.status(409).json({error:"Submission changed or was not found. Refresh before assigning a cohort."});return;}
-  await AuditModel.create({submissionId:record._id,userId:req.actor!.id,action:"submission.cohort_assigned",details:{cohortId:data.cohortId}});
-  res.json({submission:serializeSubmission(record)});
-});
+router.post(
+  "/submissions/:id/cohort",
+  requireAssessor,
+  writableRate,
+  async (req, res) => {
+    const data = z
+      .object({ cohortId: id.nullable(), updatedAt: z.string().datetime() })
+      .strict()
+      .parse(req.body);
+    const cohort = data.cohortId
+      ? await CohortModel.findById(data.cohortId)
+      : null;
+    if (data.cohortId && !cohort) {
+      res.status(404).json({ error: "Cohort not found." });
+      return;
+    }
+    const record = await SubmissionModel.findOneAndUpdate(
+      { _id: id.parse(req.params.id), updatedAt: new Date(data.updatedAt) },
+      {
+        $set: {
+          cohortId: cohort ? String(cohort._id) : null,
+          cohortName: cohort?.name ?? null,
+          cohortSynthetic: !!cohort?.synthetic,
+        },
+      },
+      { new: true },
+    );
+    if (!record) {
+      res
+        .status(409)
+        .json({
+          error:
+            "Submission changed or was not found. Refresh before assigning a cohort.",
+        });
+      return;
+    }
+    await AuditModel.create({
+      submissionId: record._id,
+      userId: req.actor!.id,
+      action: "submission.cohort_assigned",
+      details: { cohortId: data.cohortId },
+    });
+    res.json({ submission: serializeSubmission(record) });
+  },
+);
 router.get("/submissions/:id/source", async (req, res) => {
   const doc = await SubmissionModel.findOne({
     _id: id.parse(req.params.id),

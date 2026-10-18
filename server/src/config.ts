@@ -54,6 +54,7 @@ export const config = z
     FFMPEG_PATH: optional,
     MODEL_SERVICE_URL: optional,
     MODEL_SERVICE_TOKEN: optional,
+    GEOAPIFY_API_KEY: optional,
     OSM_USER_AGENT: z.string().default("StriveScreening/1.0 (hackathon demo)"),
     MAX_UPLOAD_MB: z.coerce.number().min(1).max(12).default(10),
     ENABLE_EXAMPLES: z
@@ -69,6 +70,7 @@ export const health = () => ({
   groq: !!config.GROQ_API_KEY,
   sarvam: !!config.SARVAM_API_KEY,
   classifier: !!config.MODEL_SERVICE_URL,
+  places: !!config.GEOAPIFY_API_KEY,
   examples: config.ENABLE_EXAMPLES,
   maxUploadMb: config.MAX_UPLOAD_MB,
   audioProvider: config.AUDIO_PROVIDER,

@@ -228,7 +228,24 @@ export function decisionSupport(assessment: Assessment): AssessorSupport {
     });
   }
   return {
-    screening: screeningSummary(assessment, {monthlySales,monthlyCosts,monthlySurplus,marginPercent,investment,ownInvestment,requestedFunding,fundingPlanGap,stressedSurplus,evidenceIds:refs("monthlyRevenue","monthlyCosts","investment","selfInvestment","loan")}),
+    screening: screeningSummary(assessment, {
+      monthlySales,
+      monthlyCosts,
+      monthlySurplus,
+      marginPercent,
+      investment,
+      ownInvestment,
+      requestedFunding,
+      fundingPlanGap,
+      stressedSurplus,
+      evidenceIds: refs(
+        "monthlyRevenue",
+        "monthlyCosts",
+        "investment",
+        "selfInvestment",
+        "loan",
+      ),
+    }),
     version: "financial-screening-v1",
     assessmentVersion: assessment.version,
     risk: {

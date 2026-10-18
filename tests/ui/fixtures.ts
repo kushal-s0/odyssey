@@ -72,7 +72,16 @@ export async function mockWorkspace(
     else if (path === "/training/annotations") json = { annotations: [] };
     else if (path === "/training/model")
       json = { ready: false, reason: "Endpoint not configured" };
-    else if (path.endsWith("/local-context")) json={context:{place:null,category:"",radius:3000,observations:[],revision:0}};
+    else if (path.endsWith("/local-context"))
+      json = {
+        context: {
+          place: null,
+          category: "",
+          radius: 3000,
+          observations: [],
+          revision: 0,
+        },
+      };
     else if (path.endsWith("/similar")) json = { matches: [] };
     else if (path.endsWith("/decision-support")) {
       const assessment = records.find(

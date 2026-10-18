@@ -2,6 +2,7 @@ import { config } from "../config.js";
 import { CacheModel } from "../db.js";
 import type { LocalInsights } from "../../../shared/types.js";
 import { mapPointSchema } from "../../../shared/local-context.js";
+import { geoapifyBusinesses } from "./geoapify.js";
 let lastGeocode = 0;
 export async function geocode(query: string) {
   const key = `geo:${query.toLowerCase().trim()}`;
@@ -26,9 +27,21 @@ export async function geocode(query: string) {
   const response = await fetch(url, {
     headers: { "User-Agent": config.OSM_USER_AGENT },
     signal: AbortSignal.timeout(15000),
-  }).catch(() => { throw Object.assign(new Error("The public location service is unavailable. Use a confirmed map point instead."),{status:503}); });
+  }).catch(() => {
+    throw Object.assign(
+      new Error(
+        "The public location service is unavailable. Use a confirmed map point instead.",
+      ),
+      { status: 503 },
+    );
+  });
   if (!response.ok)
-    throw Object.assign(new Error("The public location service is unavailable. Use a confirmed map point instead."),{status:503});
+    throw Object.assign(
+      new Error(
+        "The public location service is unavailable. Use a confirmed map point instead.",
+      ),
+      { status: 503 },
+    );
   const data: any = await response.json();
   if (!Array.isArray(data)) throw new Error("Invalid location response.");
   const results = data
@@ -68,18 +81,45 @@ export async function localBusinesses(
   category: string,
   radius = 3000,
 ): Promise<LocalInsights> {
-  if(!mapPointSchema.safeParse({lat,lon}).success || !Number.isInteger(radius) || radius<500 || radius>5000)
-    throw Object.assign(new Error("Use valid coordinates and a search radius between 500 and 5000 meters."),{status:400});
+  if (
+    !mapPointSchema.safeParse({ lat, lon }).success ||
+    !Number.isInteger(radius) ||
+    radius < 500 ||
+    radius > 5000
+  )
+    throw Object.assign(
+      new Error(
+        "Use valid coordinates and a search radius between 500 and 5000 meters.",
+      ),
+      { status: 400 },
+    );
   const mapping = categories[category];
   if (!mapping) throw new Error("Choose a supported business category.");
-  const key = `osm-v2:${lat}:${lon}:${category}:${radius}`;
+  const key = `places-v3:${config.GEOAPIFY_API_KEY ? "managed" : "public"}:${lat}:${lon}:${category}:${radius}`;
   const cached = await CacheModel.findOne({
     key,
   }).lean();
   const snapshot = cached?.value as LocalInsights | undefined;
-  const age=snapshot?Date.now()-new Date(snapshot.retrievedAt).getTime():Infinity;
-  if (snapshot && age>=0 && age<86400000) return {...snapshot,cached:true,stale:false};
-  const query = `[out:json][timeout:20];nwr(around:${radius},${lat},${lon})["${mapping.key}"~"^(${mapping.value})$"];out center tags 101;`;
+  const age = snapshot
+    ? Date.now() - new Date(snapshot.retrievedAt).getTime()
+    : Infinity;
+  if (snapshot && age >= 0 && age < 86400000)
+    return { ...snapshot, cached: true, stale: false };
+  const managed = await geoapifyBusinesses(lat, lon, category, radius);
+  if (managed) {
+    await CacheModel.findOneAndUpdate(
+      { key },
+      {
+        $set: {
+          value: managed,
+          expiresAt: new Date(Date.now() + 7 * 86400000),
+        },
+      },
+      { upsert: true },
+    );
+    return managed;
+  }
+  const query = `[out:json][timeout:8];nwr(around:${radius},${lat},${lon})["${mapping.key}"~"^(${mapping.value})$"];out center tags 101;`;
   let data: any;
   let sourceEndpoint: string | undefined;
   for (const endpoint of [
@@ -94,7 +134,7 @@ export async function localBusinesses(
           "User-Agent": config.OSM_USER_AGENT,
         },
         body: new URLSearchParams({ data: query }),
-        signal: AbortSignal.timeout(15000),
+        signal: AbortSignal.timeout(10000),
       });
       if (!response.ok) continue;
       const result = await response.json();
@@ -106,7 +146,14 @@ export async function localBusinesses(
       /* A bounded fallback may return a complete map response. */
     }
   }
-  if(!data && snapshot && age>=0 && age<7*86400000) return {...snapshot,cached:true,stale:true,message:"Live map services are unavailable. These older sourced listings may have changed; verify them before relying on them."};
+  if (!data && snapshot && age >= 0 && age < 7 * 86400000)
+    return {
+      ...snapshot,
+      cached: true,
+      stale: true,
+      message:
+        "Live map services are unavailable. These older sourced listings may have changed; verify them before relying on them.",
+    };
   if (!data)
     throw Object.assign(
       new Error(
@@ -121,7 +168,11 @@ export async function localBusinesses(
     const h =
       Math.sin(dlat / 2) ** 2 +
       Math.cos(lat * rad) * Math.cos(a * rad) * Math.sin(dlon / 2) ** 2;
-    return Math.round(6371000 * 2 * Math.atan2(Math.sqrt(Math.min(1,h)), Math.sqrt(Math.max(0,1-h))));
+    return Math.round(
+      6371000 *
+        2 *
+        Math.atan2(Math.sqrt(Math.min(1, h)), Math.sqrt(Math.max(0, 1 - h))),
+    );
   };
   const businesses = data.elements
     .flatMap((p: any) => {
@@ -175,7 +226,7 @@ export async function localBusinesses(
   };
   await CacheModel.findOneAndUpdate(
     { key },
-    { $set: { value: result, expiresAt: new Date(Date.now() + 7*86400000) } },
+    { $set: { value: result, expiresAt: new Date(Date.now() + 7 * 86400000) } },
     { upsert: true },
   );
   return result;

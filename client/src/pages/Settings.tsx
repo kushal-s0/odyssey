@@ -284,6 +284,13 @@ export default function Settings() {
                   ready: health?.sarvam,
                 },
                 {
+                  name: "Geoapify business listings",
+                  description:
+                    "Optional managed nearby lookup; public map fallback remains available",
+                  key: "GEOAPIFY_API_KEY",
+                  ready: health?.places,
+                },
+                {
                   name: "Trained relevance model",
                   description: "Optional remote inference endpoint",
                   key: "MODEL_SERVICE_URL",

@@ -4,6 +4,21 @@ A MERN application for the Tata STRIVE hackathon problem statement. It accepts t
 
 The UI uses white, black and neutral grays. All AI inference uses hosted services. No local LLM, embedding model, speech model or trained classifier is started by the application.
 
+## Map, evidence and screening workflow
+
+Measured checks and remaining validation limits: [EVALUATION_RESULTS.md](EVALUATION_RESULTS.md).
+
+- Open an assessed submission → **Similar ideas & local context**. Confirm the place or enter confirmed coordinates, choose a category and radius, then select a numbered marker or matching listing. Location settings persist per submission; Leaflet loads only when the map is needed.
+- Add `GEOAPIFY_API_KEY` to the root `.env` for managed nearby lookup; restart the API after environment changes. Geoapify Places is preferred when configured, with bounded public Overpass fallback. Keys stay on the server and are excluded from source URLs and exports. See [Places documentation](https://apidocs.geoapify.com/docs/places/) and [plan/attribution requirements](https://www.geoapify.com/pricing/).
+- Failed lookup can fall back to a matching cached result up to seven days old, with its original retrieval date and a stale warning. Otherwise the app reports unavailability. Failure never becomes zero competitors. Tiles, business listings and manual observations have separate availability states.
+- Assessors can save separately labelled manual observations: business name, coordinates, public source link, note and source-check status. Dashed markers distinguish them from provider results. Observations are audit logged, remain assessor-only and never change financial risk.
+- **Source evidence** now supports original/English comparison, highlighted extracted quotations, linked parameters, PDF page/audio passage links, search, verification filters, multiple selection, previous/next navigation, copy/download and an expanded keyboard-accessible dialog. Confirming fidelity requires selected sources and an explicit comparison with originals. Source fidelity does not establish the truth of business claims.
+- **Information readiness** is separate from provisional screening concerns and **assessor-rated business potential**. A screening summary explains financial concerns, missing information and a suggested next action. Assessors can rate six domains with reasons and current source citations. Unknowns stay unrated; an aggregate requires all six current ratings. Weights: clarity 15%, customer need 20%, market potential 15%, feasibility 25%, competition 10%, differentiation 15%. These are human screening opinions, not calibrated success probabilities. Evidence revisions invalidate old reviews.
+- **Assign programme cohort** in the assessment header supports existing entrepreneur submissions. Only assessors assign actual membership. Comparison views/CSV show readiness separately from current human potential ratings, domain medians and rated sample counts.
+- Free text is the default intake mode. Guided input, audio and PDF remain available. Missing questions can be answered in stages; all unresolved parameters remain accessible.
+
+Live verification: the synthetic clarification flow passed source retention, history and stale-version checks. Temporary Atlas fixtures passed cohort assignment, local-context persistence, observation lifecycle, domain-review persistence and evidence-version invalidation, then were removed. A generic Pune query returned 71 Geoapify food listings within 1 km with radius checks and provider/source IDs. This does not establish exhaustive market coverage. Independent language-quality checks, assessor time savings and capacity validation remain pending. Deployment is user-owned.
+
 ## Run it
 
 Node.js 22.13 or newer and Python 3 are needed. On this Windows machine, use `npm.cmd` if PowerShell blocks `npm.ps1`.

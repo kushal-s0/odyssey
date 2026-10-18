@@ -36,7 +36,9 @@ export default function Submit() {
     [error, setError] = useState(""),
     [pending, setPending] = useState(false),
     [drag, setDrag] = useState(false);
-  const [writeMode, setWriteMode] = useState<"guided" | "free_text">("free_text");
+  const [writeMode, setWriteMode] = useState<"guided" | "free_text">(
+    "free_text",
+  );
   const [guided, setGuided] = useState({ ...EMPTY_GUIDED_INPUT });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [preview, setPreview] = useState<{

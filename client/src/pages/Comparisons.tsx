@@ -47,8 +47,11 @@ export default function Comparisons() {
         const comparable = records.filter(
           (s) => s.assessment?.score != null && s.assessment.coverage >= 70,
         );
-        const dims = records.find(s=>s.assessment)?.assessment?.dimensions ?? [];
-        const potential = records.map(reviewedPotential).filter(p=>p.score!==null);
+        const dims =
+          records.find((s) => s.assessment)?.assessment?.dimensions ?? [];
+        const potential = records
+          .map(reviewedPotential)
+          .filter((p) => p.score !== null);
         return {
           name: name!,
           version: version!,
@@ -58,8 +61,8 @@ export default function Comparisons() {
           completeness: median(
             records.map((s) => s.assessment?.completeness ?? 0),
           ),
-          potential:median(potential.map(p=>p.score!)),
-          potentialCount:potential.length,
+          potential: median(potential.map((p) => p.score!)),
+          potentialCount: potential.length,
           dimensions: dims.map((d) => ({
             key: d.key,
             label: d.label,
@@ -72,7 +75,13 @@ export default function Comparisons() {
                 )
                 .filter((n): n is number => n != null),
             ),
-            potential:median(records.flatMap(s=>reviewedPotential(s).ratings.filter(r=>r.key===d.key).map(r=>r.score))),
+            potential: median(
+              records.flatMap((s) =>
+                reviewedPotential(s)
+                  .ratings.filter((r) => r.key === d.key)
+                  .map((r) => r.score),
+              ),
+            ),
           })),
         };
       })
@@ -261,8 +270,12 @@ export default function Comparisons() {
                       )}
                     </td>
                     <td>
-                      {g.potential===null?"Not rated":`${g.potential} / 100`}
-                      <div className="cell-secondary">{g.potentialCount} fully rated</div>
+                      {g.potential === null
+                        ? "Not rated"
+                        : `${g.potential} / 100`}
+                      <div className="cell-secondary">
+                        {g.potentialCount} fully rated
+                      </div>
                     </td>
                     <td>
                       <div className="table-progress">
@@ -318,7 +331,25 @@ export default function Comparisons() {
                 <p className="muted">No assessed dimensions yet.</p>
               )}
             </div>
-            <div className="human-domain-comparison"><h4>Assessor-rated domain quality</h4><p className="hint">Current human ratings only; unknowns are excluded. Values above show information readiness.</p>{g.dimensions.filter(d=>d.key!=="completeness").map(d=><p key={d.key}><span>{d.label}</span><strong>{d.potential===null?"Not rated":`${d.potential} / 4`}</strong></p>)}</div>
+            <div className="human-domain-comparison">
+              <h4>Assessor-rated domain quality</h4>
+              <p className="hint">
+                Current human ratings only; unknowns are excluded. Values above
+                show information readiness.
+              </p>
+              {g.dimensions
+                .filter((d) => d.key !== "completeness")
+                .map((d) => (
+                  <p key={d.key}>
+                    <span>{d.label}</span>
+                    <strong>
+                      {d.potential === null
+                        ? "Not rated"
+                        : `${d.potential} / 4`}
+                    </strong>
+                  </p>
+                ))}
+            </div>
           </section>
         ))}
       </div>

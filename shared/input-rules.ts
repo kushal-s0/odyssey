@@ -365,12 +365,33 @@ export const assessorReviewSchema = z
         message: "Review the original source and confirm it before saving.",
       }),
     }),
-    domainRatings: z.array(z.object({
-      key:z.enum(["clarity","customer_need","market_potential","feasibility","competition","differentiation"]),
-      score:z.number().int().min(0).max(4),
-      reason:textInput("Domain rating rationale",20,600),
-      evidenceIds:z.array(z.string().min(1).max(100)).min(1,"Cite a source for each domain rating.").max(20),
-    }).strict()).max(6).refine(rows=>new Set(rows.map(r=>r.key)).size===rows.length,"Rate each domain once.").optional(),
+    domainRatings: z
+      .array(
+        z
+          .object({
+            key: z.enum([
+              "clarity",
+              "customer_need",
+              "market_potential",
+              "feasibility",
+              "competition",
+              "differentiation",
+            ]),
+            score: z.number().int().min(0).max(4),
+            reason: textInput("Domain rating rationale", 20, 600),
+            evidenceIds: z
+              .array(z.string().min(1).max(100))
+              .min(1, "Cite a source for each domain rating.")
+              .max(20),
+          })
+          .strict(),
+      )
+      .max(6)
+      .refine(
+        (rows) => new Set(rows.map((r) => r.key)).size === rows.length,
+        "Rate each domain once.",
+      )
+      .optional(),
     version: z.number().int().positive(),
   })
   .strict()
@@ -390,9 +411,10 @@ export function reviewEvidenceError(
   if (review.version !== assessment.version)
     return "This assessment changed. Refresh before saving your review.";
   if (
-    [...review.evidenceIds,...(review.domainRatings??[]).flatMap(r=>r.evidenceIds)].some(
-      (id) => !assessment.segments.some((segment) => segment.id === id),
-    )
+    [
+      ...review.evidenceIds,
+      ...(review.domainRatings ?? []).flatMap((r) => r.evidenceIds),
+    ].some((id) => !assessment.segments.some((segment) => segment.id === id))
   )
     return "Choose evidence from this assessment version only.";
   return null;

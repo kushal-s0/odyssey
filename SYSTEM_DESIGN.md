@@ -1,5 +1,9 @@
 # STRIVE system design
 
+Map context is persisted per submission in `LocalContext`, with compare-and-swap revisions for confirmed locations and bounded source-linked manual observations. Assessor-only routes enforce access before reads. Geoapify Places is preferred when configured, with category/coordinate/radius validation and public Overpass fallback. Cached results retain their retrieval date and can be explicitly marked stale; unavailable services never become fabricated zero-result responses. Browser map tiles use a narrow OpenStreetMap CSP origin, attribution and a policy-compatible referrer setting. Provider keys remain on the server.
+
+Information readiness, rule-based financial screening and assessor-rated domain quality are separate outputs. Human ratings require reasons and current source citations. Incomplete ratings have no numeric aggregate; evidence revisions clear the old review. Cohort assignment uses a timestamp precondition and produces an audit event. Evidence review uses a portal-mounted dialog, source selection, original/English comparison, PDF/audio links and explicit source-fidelity confirmation. Leaflet loads lazily with the context map.
+
 The application uses a modular MERN service with a durable background worker. The React website, Express API, Atlas storage and hosted AI providers have separate responsibilities. Run one API process for this hackathon configuration; request spacing and authentication rate-limit counters are per process.
 
 ```mermaid

@@ -25,7 +25,12 @@ export function createApp() {
           "default-src": ["'self'"],
           "script-src": ["'self'"],
           "style-src": ["'self'", "'unsafe-inline'"],
-          "img-src": ["'self'", "data:", "blob:", "https://tile.openstreetmap.org"],
+          "img-src": [
+            "'self'",
+            "data:",
+            "blob:",
+            "https://tile.openstreetmap.org",
+          ],
           "font-src": ["'self'"],
           "connect-src": ["'self'"],
           "media-src": ["'self'", "blob:"],
@@ -45,12 +50,10 @@ export function createApp() {
     res.setHeader("Cache-Control", "no-store");
     if (["POST", "PUT", "PATCH", "DELETE"].includes(req.method)) {
       if (req.get("Sec-Fetch-Site") === "cross-site") {
-        res
-          .status(403)
-          .json({
-            error: "Cross-site requests are not allowed.",
-            code: "CROSS_SITE_REQUEST",
-          });
+        res.status(403).json({
+          error: "Cross-site requests are not allowed.",
+          code: "CROSS_SITE_REQUEST",
+        });
         return;
       }
       const origin = req.headers.origin;

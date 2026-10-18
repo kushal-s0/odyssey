@@ -62,7 +62,11 @@ test("zero model quota and unknown daily resets require an explicit configuratio
   assert.equal(daily.retryable, false);
   assert.equal(daily.code, "PROVIDER_DAILY_QUOTA");
 });
-test("minute limits respect the longest Retry-After header or RetryInfo delay", async () => {
+test("minute limits respect the longest Retry-After header or RetryInfo delay", async (t) => {
+  t.mock.timers.enable({
+    apis: ["Date"],
+    now: new Date("2026-10-18T00:00:00.000Z"),
+  });
   const error = await providerResponseError(
     quotaResponse("GenerateRequestsPerMinute", "5", "12.5s", "180"),
   );

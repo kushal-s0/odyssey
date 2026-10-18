@@ -13,17 +13,14 @@ import {
   Check,
   CheckCheck,
   ChevronDown,
-  FileText,
   History,
   Info,
   Loader2,
-  MapPin,
   MessageSquare,
   Printer,
   RefreshCw,
   ShieldCheck,
   Sparkles,
-  ExternalLink,
   Mic,
   AlignLeft,
   Download,
@@ -37,7 +34,6 @@ import {
   type Assessment,
   type RepairQuestion,
   type SimilarIdea,
-  type LocalInsights,
   type EvidenceField,
   type FieldKey,
 } from "../../../shared/types";
@@ -52,9 +48,11 @@ import AssessorInsights from "../AssessorInsights";
 import LocationPanel from "../LocationPanel";
 import EvidencePanel from "../EvidencePanel";
 import CohortAssignment from "../CohortAssignment";
-import { PotentialReviewFields, PotentialReviewResult } from "../PotentialReview";
+import {
+  PotentialReviewFields,
+  PotentialReviewResult,
+} from "../PotentialReview";
 import type { DomainRating } from "../../../shared/business-review";
-import { BUSINESS_CATEGORIES } from "../../../shared/business-categories";
 import {
   assessorReviewSchema,
   REVIEW_REASONS,
@@ -86,30 +84,46 @@ export default function Detail() {
     [review, setReview] = useState(false),
     [busy, setBusy] = useState(false),
     [matches, setMatches] = useState<SimilarIdea[]>([]);
-  const sourceRef = useRef<HTMLDivElement>(null);
   const [questionGroup, setQuestionGroup] = useState("all"),
     [questionSearch, setQuestionSearch] = useState("");
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const loadRevision = useRef(0);
+  useEffect(() => {
+    setRecord(null);
+    setSelected([]);
+    setSourceTab("compare");
+    setTab("overview");
+    setQuestionGroup("all");
+    setQuestionSearch("");
+    setRepair(false);
+    setReview(false);
+  }, [id]);
   const reload = useCallback(async () => {
+    const requestRevision = ++loadRevision.current;
     try {
       if (id?.startsWith("example-")) {
         const example = w.submissions.find((s) => s.id === id);
         if (!example)
           throw new Error("Example not found in the current workspace.");
+        if (requestRevision !== loadRevision.current) return;
         setRecord(example);
       } else {
         const response = await api<{ submission: Submission }>(
           `/submissions/${id}`,
         );
+        if (requestRevision !== loadRevision.current) return;
         setRecord(response.submission);
       }
       setError("");
     } catch (e) {
+      if (requestRevision !== loadRevision.current) return;
       setError(e instanceof Error ? e.message : "Could not open assessment.");
     }
   }, [id, w.submissions]);
   useEffect(() => {
     void reload();
+    return () => {
+      loadRevision.current++;
+    };
   }, [reload]);
   useEffect(() => {
     if (
@@ -157,17 +171,6 @@ export default function Detail() {
         .then((r) => setMatches(r.matches))
         .catch(() => setMatches([]));
   }, [record?.id, record?.assessment?.version, w.submissions, entrepreneur]);
-  useEffect(() => {
-    if (selected[0])
-      document
-        .getElementById(`source-${selected[0]}`)
-        ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    const segment = record?.assessment?.segments.find(
-      (s) => s.id === selected[0],
-    );
-    if (segment?.startSeconds != null && audioRef.current)
-      audioRef.current.currentTime = segment.startSeconds;
-  }, [selected, record]);
   async function verify() {
     if (!record?.assessment) return;
     setBusy(true);
@@ -224,7 +227,13 @@ export default function Detail() {
             BUSINESS IDEA ASSESSMENT {a && <span>· VERSION {a.version}</span>}
           </div>
           <h1>{record.title}</h1>
-          {!entrepreneur && !record.example && <CohortAssignment key={record.id + (record.cohortId ?? "")} record={record} onSaved={setRecord} />}
+          {!entrepreneur && !record.example && (
+            <CohortAssignment
+              key={record.id + (record.cohortId ?? "")}
+              record={record}
+              onSaved={setRecord}
+            />
+          )}
           <div className="detail-meta">
             <span>{record.beneficiaryName}</span>
             <span>
@@ -404,7 +413,15 @@ export default function Detail() {
                     onNearby={() => setTab("context")}
                   />
                 )}
-                {(!entrepreneur || !!record.review?.domainRatings?.length) && <PotentialReviewResult record={record} onEvidence={ids => {setSelected(ids);setSourceTab("compare");}} />}
+                {(!entrepreneur || !!record.review?.domainRatings?.length) && (
+                  <PotentialReviewResult
+                    record={record}
+                    onEvidence={(ids) => {
+                      setSelected(ids);
+                      setSourceTab("compare");
+                    }}
+                  />
+                )}
                 <section className="panel completion-panel">
                   <div className="panel-heading">
                     <div>
@@ -414,6 +431,17 @@ export default function Detail() {
                         {FIELD_KEYS.length} parameters answered. Only unanswered
                         or unclear information is shown below.
                       </p>
+                      {a.questions.length > 0 && (
+                        <p className="hint">
+                          Start with{" "}
+                          {a.questions
+                            .slice(0, 3)
+                            .map((q) => FIELD_LABELS[q.field])
+                            .join(", ")}
+                          . You can answer in stages; missing information is not
+                          a judgement of business quality.
+                        </p>
+                      )}
                     </div>
                     <button
                       type="button"
@@ -662,7 +690,17 @@ export default function Detail() {
                 </section>
               </section>
               <aside className="source-column">
-                <EvidencePanel record={record} selected={selected} onSelect={setSelected} mode={sourceTab} onModeChange={setSourceTab} onVerify={() => void verify()} busy={busy} readOnly={!!entrepreneur} />
+                <EvidencePanel
+                  key={record.id}
+                  record={record}
+                  selected={selected}
+                  onSelect={setSelected}
+                  mode={sourceTab}
+                  onModeChange={setSourceTab}
+                  onVerify={() => void verify()}
+                  busy={busy}
+                  readOnly={!!entrepreneur}
+                />
                 <section className="panel limits-panel">
                   <div className="panel-heading">
                     <h3>
@@ -1049,7 +1087,11 @@ function ReviewModal({
   const [evidence, setEvidence] = useState<string[]>([]);
   const [nextAction, setNextAction] = useState("");
   const [sourceReviewed, setSourceReviewed] = useState(false);
-  const [domainRatings,setDomainRatings]=useState<DomainRating[]>(record.review?.assessmentVersion===record.assessment?.version ? record.review?.domainRatings??[] : []);
+  const [domainRatings, setDomainRatings] = useState<DomainRating[]>(
+    record.review?.assessmentVersion === record.assessment?.version
+      ? (record.review?.domainRatings ?? [])
+      : [],
+  );
   return (
     <Modal title="Record assessor review" onClose={onClose}>
       <form
@@ -1183,7 +1225,12 @@ function ReviewModal({
             </label>
           ))}
         </fieldset>
-        <PotentialReviewFields record={record} ratings={domainRatings} onChange={setDomainRatings} disabled={pending} />
+        <PotentialReviewFields
+          record={record}
+          ratings={domainRatings}
+          onChange={setDomainRatings}
+          disabled={pending}
+        />
         <label className="check-line">
           <input
             type="checkbox"

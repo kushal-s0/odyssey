@@ -14,7 +14,7 @@ test("guided preparation shows financial checks and a normalized preview without
       writes++;
   });
   await page.goto("/submit");
-  await page.getByRole("button", {name:"Guided form",exact:true}).click();
+  await page.getByRole("button", { name: "Guided form", exact: true }).click();
   await page
     .getByLabel("Idea title", { exact: true })
     .fill("Neighbourhood tea stall");
@@ -47,7 +47,7 @@ test("preview identifies the invalid field and preserves entered answers", async
 }) => {
   await mockWorkspace(page, "entrepreneur");
   await page.goto("/submit");
-  await page.getByRole("button", {name:"Guided form",exact:true}).click();
+  await page.getByRole("button", { name: "Guided form", exact: true }).click();
   await page.getByLabel("Idea title", { exact: true }).fill("Tea stall");
   await page
     .locator("#guided-products")
@@ -97,7 +97,7 @@ test("guided preparation and preview fit on mobile with keyboard-accessible navi
   await mockWorkspace(page, "entrepreneur");
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/submit");
-  await page.getByRole("button", {name:"Guided form",exact:true}).click();
+  await page.getByRole("button", { name: "Guided form", exact: true }).click();
   await page.screenshot({
     path: ".planning/screenshots/guided-preparation-mobile-compact.png",
     fullPage: false,
@@ -154,7 +154,7 @@ test("reviewed input submits once through the normal validated submission flow",
     await route.fulfill({ status: 202, json: { submission: records[0] } });
   });
   await page.goto("/submit");
-  await page.getByRole("button", {name:"Guided form",exact:true}).click();
+  await page.getByRole("button", { name: "Guided form", exact: true }).click();
   await page.getByLabel("Idea title", { exact: true }).fill("Tea stall");
   await page
     .locator("#guided-products")

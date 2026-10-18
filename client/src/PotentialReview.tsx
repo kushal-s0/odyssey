@@ -1,10 +1,172 @@
-import { BUSINESS_DOMAINS, reviewedPotential, type DomainRating } from "../../shared/business-review";
+import {
+  BUSINESS_DOMAINS,
+  reviewedPotential,
+  type DomainRating,
+} from "../../shared/business-review";
 import type { Submission } from "../../shared/types";
-export function PotentialReviewFields({record,ratings,onChange,disabled}:{record:Submission;ratings:DomainRating[];onChange:(ratings:DomainRating[])=>void;disabled:boolean}){
-  function update(key:DomainRating["key"],patch:Partial<DomainRating>){const old=ratings.find(r=>r.key===key)??{key,score:2,reason:"",evidenceIds:[]};onChange([...ratings.filter(r=>r.key!==key),{...old,...patch}]);}
-  return <details className="potential-review-fields"><summary>Rate business potential across six domains</summary><p className="hint">Your judgement is separate from information readiness and financial risk. Leave a domain unrated if evidence is insufficient. Cite passages and explain the rating; this is not a predicted success probability.</p><p className="hint">Anchors: 0 major concern · 1 weak case · 2 plausible · 3 promising · 4 strong case. Unrated means unknown.</p>{BUSINESS_DOMAINS.map(d=>{const rating=ratings.find(r=>r.key===d.key);return <fieldset key={d.key}><legend>{d.label}</legend><p className="hint">{d.prompt}</p><label>{d.label} rating<select aria-label={`${d.label} rating`} disabled={disabled} value={rating?String(rating.score):""} onChange={e=>{if(e.target.value==="")onChange(ratings.filter(r=>r.key!==d.key));else update(d.key,{score:Number(e.target.value)});}}><option value="">Not rated / insufficient evidence</option>{["0 · Major concern","1 · Weak case","2 · Plausible","3 · Promising","4 · Strong case"].map((label,i)=><option key={i} value={i}>{label}</option>)}</select></label>{rating&&<><label>{d.label} rationale<textarea minLength={20} maxLength={600} required disabled={disabled} value={rating.reason} onChange={e=>update(d.key,{reason:e.target.value})}/></label><label>{d.label} evidence<select multiple required disabled={disabled} value={rating.evidenceIds} onChange={e=>update(d.key,{evidenceIds:Array.from(e.target.selectedOptions,o=>o.value)})}>{record.assessment!.segments.map(s=><option key={s.id} value={s.id}>{s.id} · {s.englishText.slice(0,90)}</option>)}</select><small>Choose one or more current source passages.</small></label></>}</fieldset>;})}</details>;
+export function PotentialReviewFields({
+  record,
+  ratings,
+  onChange,
+  disabled,
+}: {
+  record: Submission;
+  ratings: DomainRating[];
+  onChange: (ratings: DomainRating[]) => void;
+  disabled: boolean;
+}) {
+  function update(key: DomainRating["key"], patch: Partial<DomainRating>) {
+    const old = ratings.find((r) => r.key === key) ?? {
+      key,
+      score: 2,
+      reason: "",
+      evidenceIds: [],
+    };
+    onChange([...ratings.filter((r) => r.key !== key), { ...old, ...patch }]);
+  }
+  return (
+    <details className="potential-review-fields">
+      <summary>Rate business potential across six domains</summary>
+      <p className="hint">
+        Your judgement is separate from information readiness and financial
+        risk. Leave a domain unrated if evidence is insufficient. Cite passages
+        and explain the rating; this is not a predicted success probability.
+      </p>
+      <p className="hint">
+        Anchors: 0 major concern · 1 weak case · 2 plausible · 3 promising · 4
+        strong case. Unrated means unknown.
+      </p>
+      {BUSINESS_DOMAINS.map((d) => {
+        const rating = ratings.find((r) => r.key === d.key);
+        return (
+          <fieldset key={d.key}>
+            <legend>{d.label}</legend>
+            <p className="hint">{d.prompt}</p>
+            <label>
+              {d.label} rating
+              <select
+                aria-label={`${d.label} rating`}
+                disabled={disabled}
+                value={rating ? String(rating.score) : ""}
+                onChange={(e) => {
+                  if (e.target.value === "")
+                    onChange(ratings.filter((r) => r.key !== d.key));
+                  else update(d.key, { score: Number(e.target.value) });
+                }}
+              >
+                <option value="">Not rated / insufficient evidence</option>
+                {[
+                  "0 · Major concern",
+                  "1 · Weak case",
+                  "2 · Plausible",
+                  "3 · Promising",
+                  "4 · Strong case",
+                ].map((label, i) => (
+                  <option key={i} value={i}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            {rating && (
+              <>
+                <label>
+                  {d.label} rationale
+                  <textarea
+                    minLength={20}
+                    maxLength={600}
+                    required
+                    disabled={disabled}
+                    value={rating.reason}
+                    onChange={(e) => update(d.key, { reason: e.target.value })}
+                  />
+                </label>
+                <label>
+                  {d.label} evidence
+                  <select
+                    aria-label={`${d.label} evidence`}
+                    multiple
+                    required
+                    disabled={disabled}
+                    value={rating.evidenceIds}
+                    onChange={(e) =>
+                      update(d.key, {
+                        evidenceIds: Array.from(
+                          e.target.selectedOptions,
+                          (o) => o.value,
+                        ),
+                      })
+                    }
+                  >
+                    {record.assessment!.segments.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.id} · {s.englishText.slice(0, 90)}
+                      </option>
+                    ))}
+                  </select>
+                  <small>Choose one or more current source passages.</small>
+                </label>
+              </>
+            )}
+          </fieldset>
+        );
+      })}
+    </details>
+  );
 }
-export function PotentialReviewResult({record,onEvidence}:{record:Submission;onEvidence:(ids:string[])=>void}){
-  const summary=reviewedPotential(record);
-  return <section className="panel potential-review-result"><div className="panel-heading"><div><h2>Assessor-rated business potential</h2><p>Human judgement with reasons and citations; separate from information readiness.</p></div><strong>{summary.score===null?"Not fully rated":`${summary.score} / 100`}</strong></div>{!summary.ratings.length?<p className="notes-body">No current domain ratings. Market and business quality remain unvalidated. An assessor can rate them when recording a review.</p>:<div className="screening-domains">{summary.ratings.map(r=><article key={r.key}><div><strong>{r.label}</strong><span>{r.score} / 4</span></div><p>{r.reason}</p><button className="evidence-link" onClick={()=>onEvidence(r.evidenceIds)}>Inspect rating sources</button></article>)}</div>}<p className="hint notes-body">{summary.ratings.length} of 6 domains rated. An aggregate is shown only when all six have current ratings. This is a screening opinion, not funding approval or a calibrated outcome prediction.</p></section>;
+export function PotentialReviewResult({
+  record,
+  onEvidence,
+}: {
+  record: Submission;
+  onEvidence: (ids: string[]) => void;
+}) {
+  const summary = reviewedPotential(record);
+  return (
+    <section className="panel potential-review-result">
+      <div className="panel-heading">
+        <div>
+          <h2>Assessor-rated business potential</h2>
+          <p>
+            Human judgement with reasons and citations; separate from
+            information readiness.
+          </p>
+        </div>
+        <strong>
+          {summary.score === null
+            ? "Not fully rated"
+            : `${summary.score} / 100`}
+        </strong>
+      </div>
+      {!summary.ratings.length ? (
+        <p className="notes-body">
+          No current domain ratings. Market and business quality remain
+          unvalidated. An assessor can rate them when recording a review.
+        </p>
+      ) : (
+        <div className="screening-domains">
+          {summary.ratings.map((r) => (
+            <article key={r.key}>
+              <div>
+                <strong>{r.label}</strong>
+                <span>{r.score} / 4</span>
+              </div>
+              <p>{r.reason}</p>
+              <button
+                className="evidence-link"
+                onClick={() => onEvidence(r.evidenceIds)}
+              >
+                Inspect rating sources
+              </button>
+            </article>
+          ))}
+        </div>
+      )}
+      <p className="hint notes-body">
+        {summary.ratings.length} of 6 domains rated. An aggregate is shown only
+        when all six have current ratings. This is a screening opinion, not
+        funding approval or a calibrated outcome prediction.
+      </p>
+    </section>
+  );
 }

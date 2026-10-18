@@ -119,14 +119,21 @@ export const CacheModel = mongoose.model(
 );
 export const LocalContextModel = mongoose.model(
   "LocalContext",
-  new Schema({
-    submissionId: { type: Schema.Types.ObjectId, required: true, unique: true },
-    place: Schema.Types.Mixed,
-    category: String,
-    radius: Number,
-    observations: { type: [Schema.Types.Mixed], default: [] },
-    revision: { type: Number, default: 0 },
-  }, flexible),
+  new Schema(
+    {
+      submissionId: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        unique: true,
+      },
+      place: Schema.Types.Mixed,
+      category: String,
+      radius: Number,
+      observations: { type: [Schema.Types.Mixed], default: [] },
+      revision: { type: Number, default: 0 },
+    },
+    flexible,
+  ),
 );
 export const ClarificationModel = mongoose.model(
   "Clarification",

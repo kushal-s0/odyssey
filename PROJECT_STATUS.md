@@ -2,6 +2,8 @@
 
 Reviewed: 18 October 2026. This is the current summary; earlier entries in TASKS.md describe historical states.
 
+Implementation follow-up: live clarification now passes. Cohort assignment after submission, separate assessor domain ratings, screening guidance and the expanded evidence workspace are implemented. The map supports confirmed points, sourced listings, saved manual observations and cache/failure states; managed live lookup returned 71 food listings within 1 km of the generic Pune test point. The detailed table below preserves the earlier audit context; current usage and remaining human-validation limits are documented at the start of README.md.
+
 For the substantive evaluation against the actual problem statement and a three-deliverable improvement plan, see [PS_REVIEW.md](PS_REVIEW.md). It distinguishes implemented feature coverage from validated business-assessment usefulness.
 
 The main application is implemented. The largest remaining risks are a missing successful live clarification test, hosted-provider availability, incomplete human checks of multilingual output, an unavailable public nearby-business service, and an unconnected custom classifier. More feature development is less valuable than proving one complete demonstration.

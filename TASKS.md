@@ -2,7 +2,22 @@
 
 Updated: 18 October 2026. `[x]` implementation complete, `[-]` in progress, `[ ]` pending. Live account verification is tracked separately from implemented code.
 
-Current prioritized audit: [PROJECT_STATUS.md](PROJECT_STATUS.md). Older sections below retain historical test counts and connection/provider states; use the audit and latest verification entries for present status. In particular, current Atlas connectivity is healthy, nearby listings remain externally unreliable, the hosted classifier is not connected, and a successful full live clarification check remains unverified.
+Current prioritized audit: [PROJECT_STATUS.md](PROJECT_STATUS.md). Older sections retain historical test counts and service states. Atlas connectivity is healthy, live clarification has passed, and managed nearby lookup returned source-linked results. The hosted relevance classifier remains unconnected; independent language/assessor-quality validation is pending. See the latest log and README.md for current map/evidence usage.
+
+## PS gap closure: map, source evidence and screening
+
+- [x] Add interactive monochrome Leaflet map, confirmed/geocoded/manual points, radius, matching numbered markers/list, source links, mobile controls and provider attribution.
+- [x] Add server-only Geoapify Places integration, category/radius validation, public Overpass fallback and explicitly dated stale-cache recovery.
+- [x] Persist assessor-only location settings and sourced manual observations with revisions, coordinates, source-check status, limits and audit history. Manual observations remain distinct from live listings and do not change financial risk.
+- [x] Replace the narrow evidence list with original/English comparison, highlighted quotations, linked parameters, page/audio links, search/verification filters, selection, copy/download and expanded reading.
+- [x] Require explicit selected-source comparison before verification; prevent stale responses and previous-record selections from leaking into another evidence review.
+- [x] Distinguish information readiness, source-backed screening concerns and human business-potential ratings. Require reasons/current citations per rated domain; leave unknowns unrated and invalidate old reviews after revisions.
+- [x] Add assessor cohort assignment after entrepreneur submission; compare current human domain ratings separately from readiness, including sample counts and CSV output.
+- [x] Prefer free-text intake and staged questions while retaining guided/audio/PDF options and all missing-parameter questions.
+- [x] Verify live synthetic clarification and eleven temporary Atlas workflow checks; remove temporary fixtures. Verify actual Geoapify/map imagery and 71 sourced public listings/markers in the browser.
+- [x] Pass 115 application tests, a full 44-browser-test production run and eight final targeted browser checks including two new source-navigation checks. Production build passed; final client rebuild passed. See [EVALUATION_RESULTS.md](EVALUATION_RESULTS.md) for the exact coverage and limits.
+- [ ] Independent regional-language accuracy review, actual assessor agreement/time-savings pilot and capacity measurement remain necessary; no such accuracy or impact is claimed.
+- [ ] Deployment and connecting hosted custom inference remain user-owned. No local training or deployment was started.
 
 ## Personal dashboards and external-data cloud training
 - [x] Add public home, dedicated authentication, protected role dashboards and automatic progress updates.

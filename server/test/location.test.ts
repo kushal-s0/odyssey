@@ -3,16 +3,20 @@ import assert from "node:assert/strict";
 import { localBusinesses } from "../src/providers/location.js";
 import { CacheModel } from "../src/db.js";
 import { BUSINESS_CATEGORIES } from "../../shared/business-categories.js";
+import { config } from "../src/config.js";
 const original = {
   fetch: globalThis.fetch,
   find: CacheModel.findOne,
   update: CacheModel.findOneAndUpdate,
+  geoapify: config.GEOAPIFY_API_KEY,
 };
 beforeEach(() => {
+  config.GEOAPIFY_API_KEY = "";
   CacheModel.findOne = (() => ({ lean: async () => null })) as any;
   CacheModel.findOneAndUpdate = (async () => ({})) as any;
 });
 afterEach(() => {
+  config.GEOAPIFY_API_KEY = original.geoapify;
   globalThis.fetch = original.fetch;
   CacheModel.findOne = original.find;
   CacheModel.findOneAndUpdate = original.update;
@@ -112,15 +116,100 @@ test("a second public endpoint can recover a failed lookup without inventing res
     "https://overpass.private.coffee/api/interpreter",
   );
 });
-test("old sourced cache is labelled stale when live providers fail",async()=>{
-  const snapshot={status:"available",businesses:[],retrievedAt:new Date(Date.now()-2*86400000).toISOString(),radiusMeters:1000,center:{lat:18.52,lon:73.85},category:"food",attribution:"OpenStreetMap",message:"Old complete response"};
-  CacheModel.findOne=(()=>({lean:async()=>({value:snapshot})})) as any;
-  globalThis.fetch=async()=>new Response("",{status:503});
-  const result=await localBusinesses(18.52,73.85,"food",1000);
-  assert.equal(result.stale,true);assert.equal(result.cached,true);assert.equal(result.retrievedAt,snapshot.retrievedAt);assert.match(result.message,/older/);
+test("old sourced cache is labelled stale when live providers fail", async () => {
+  const snapshot = {
+    status: "available",
+    businesses: [],
+    retrievedAt: new Date(Date.now() - 2 * 86400000).toISOString(),
+    radiusMeters: 1000,
+    center: { lat: 18.52, lon: 73.85 },
+    category: "food",
+    attribution: "OpenStreetMap",
+    message: "Old complete response",
+  };
+  CacheModel.findOne = (() => ({
+    lean: async () => ({ value: snapshot }),
+  })) as any;
+  globalThis.fetch = async () => new Response("", { status: 503 });
+  const result = await localBusinesses(18.52, 73.85, "food", 1000);
+  assert.equal(result.stale, true);
+  assert.equal(result.cached, true);
+  assert.equal(result.retrievedAt, snapshot.retrievedAt);
+  assert.match(result.message, /older/);
 });
-test("invalid coordinates and radius are rejected before map provider requests",async()=>{
-  globalThis.fetch=async()=>{throw new Error("Provider must not be called");};
-  await assert.rejects(()=>localBusinesses(NaN,73.85,"food",1000),/valid coordinates/);
-  await assert.rejects(()=>localBusinesses(18.52,73.85,"food",10000),/radius/);
+test("invalid coordinates and radius are rejected before map provider requests", async () => {
+  globalThis.fetch = async () => {
+    throw new Error("Provider must not be called");
+  };
+  await assert.rejects(
+    () => localBusinesses(NaN, 73.85, "food", 1000),
+    /valid coordinates/,
+  );
+  await assert.rejects(
+    () => localBusinesses(18.52, 73.85, "food", 10000),
+    /radius/,
+  );
+});
+test("managed places validate category, location, deduplication and never expose the API key", async () => {
+  config.GEOAPIFY_API_KEY = "synthetic-secret-do-not-return";
+  globalThis.fetch = async (input) => {
+    const url = new URL(String(input));
+    assert.equal(url.hostname, "api.geoapify.com");
+    assert.equal(url.searchParams.get("filter"), "circle:73.85,18.52,1000");
+    const feature = {
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [73.85, 18.521] },
+      properties: {
+        place_id: "test-place",
+        name: "Public example cafe",
+        categories: ["catering.cafe"],
+        formatted: "Public example address",
+        datasource: { raw: { osm_type: "n", osm_id: 42 } },
+      },
+    };
+    return Response.json({
+      type: "FeatureCollection",
+      features: [
+        feature,
+        feature,
+        {
+          ...feature,
+          properties: {
+            ...feature.properties,
+            place_id: "wrong-category",
+            categories: ["commercial.supermarket"],
+          },
+        },
+        {
+          ...feature,
+          properties: { ...feature.properties, place_id: "too-far" },
+          geometry: { type: "Point", coordinates: [70, 20] },
+        },
+      ],
+    });
+  };
+  const result = await localBusinesses(18.52, 73.85, "food", 1000);
+  assert.equal(result.businesses.length, 1);
+  assert.equal(
+    result.businesses[0]!.url,
+    "https://www.openstreetmap.org/node/42",
+  );
+  assert.equal(result.businesses[0]!.provider, "geoapify");
+  assert.equal(JSON.stringify(result).includes(config.GEOAPIFY_API_KEY), false);
+  assert.match(result.attribution, /Geoapify/);
+});
+test("managed service failures fall back to public map data without returning provider errors", async () => {
+  config.GEOAPIFY_API_KEY = "synthetic-key";
+  let calls = 0;
+  globalThis.fetch = async () =>
+    ++calls === 1
+      ? new Response("key-specific error", { status: 403 })
+      : Response.json({ elements: [] });
+  const result = await localBusinesses(18.52, 73.85, "food", 1000);
+  assert.equal(result.status, "available");
+  assert.equal(calls, 2);
+  assert.equal(
+    result.sourceEndpoint,
+    "https://overpass-api.de/api/interpreter",
+  );
 });

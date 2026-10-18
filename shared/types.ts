@@ -173,6 +173,7 @@ export interface Cohort {
   synthetic: boolean;
 }
 export interface Health {
+  places?: boolean;
   database: boolean;
   gemini: boolean;
   groq?: boolean;
@@ -193,6 +194,10 @@ export interface SimilarIdea {
   matchedTerms: string[];
 }
 export interface LocalBusiness {
+  provider?: "geoapify" | "openstreetmap";
+  providerPlaceId?: string;
+  address?: string;
+  sourceLabel?: string;
   id: string;
   name: string;
   category: string;
@@ -216,7 +221,11 @@ export interface LocalInsights {
   stale?: boolean;
 }
 
-export interface MapPlace { name: string; lat: number; lon: number }
+export interface MapPlace {
+  name: string;
+  lat: number;
+  lon: number;
+}
 export interface LocalObservation {
   id: string;
   name: string;
@@ -237,11 +246,21 @@ export interface SavedLocalContext {
 }
 
 export interface ScreeningSummary {
-  action: "clarification" | "financial_mentoring" | "skills_review" | "deeper_evaluation";
+  action:
+    | "clarification"
+    | "financial_mentoring"
+    | "skills_review"
+    | "deeper_evaluation";
   label: string;
   reasons: { text: string; evidenceIds: string[] }[];
   priorityFields: FieldKey[];
-  domains: { key: string; label: string; status: "missing" | "described" | "concern" | "not_validated"; explanation: string; evidenceIds: string[] }[];
+  domains: {
+    key: string;
+    label: string;
+    status: "missing" | "described" | "concern" | "not_validated";
+    explanation: string;
+    evidenceIds: string[];
+  }[];
 }
 
 export interface RiskFactor {

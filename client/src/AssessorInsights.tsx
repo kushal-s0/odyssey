@@ -84,16 +84,62 @@ export default function AssessorInsights({
         </div>
       ) : (
         <>
-          {support.screening && <section className="screening-summary">
-            <span className="eyebrow">PROVISIONAL NEXT ACTION · ASSESSOR CONFIRMS</span>
-            <h3>{support.screening.label}</h3>
-            <p>Information readiness measures how well the idea is described. The concerns below assess the implications of the available statements.</p>
-            <ul>{support.screening.reasons.map((reason,index)=><li key={index}>{reason.text}{reason.evidenceIds.length>0&&<button className="evidence-link" onClick={()=>onEvidence(reason.evidenceIds)}>Inspect reason sources</button>}</li>)}</ul>
-            <details><summary>Business potential: what is established?</summary>
-              <div className="screening-domains">{support.screening.domains.map(d=><article key={d.key}><div><strong>{d.label}</strong><span className="status">{d.status.replaceAll("_"," ")}</span></div><p>{d.explanation}</p>{d.evidenceIds.length>0&&<button className="evidence-link" onClick={()=>onEvidence(d.evidenceIds)}>View domain evidence</button>}</article>)}</div>
-            </details>
-            <p className="hint">This is screening guidance, not funding approval. Market potential and competitive advantage require assessor validation.</p>
-          </section>}
+          {support.screening && (
+            <section className="screening-summary">
+              <span className="eyebrow">
+                PROVISIONAL NEXT ACTION · ASSESSOR CONFIRMS
+              </span>
+              <h3>{support.screening.label}</h3>
+              <p>
+                Information readiness measures how well the idea is described.
+                The concerns below assess the implications of the available
+                statements.
+              </p>
+              <ul>
+                {support.screening.reasons.map((reason, index) => (
+                  <li key={index}>
+                    {reason.text}
+                    {reason.evidenceIds.length > 0 && (
+                      <button
+                        className="evidence-link"
+                        onClick={() => onEvidence(reason.evidenceIds)}
+                      >
+                        Inspect reason sources
+                      </button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+              <details>
+                <summary>Business potential: what is established?</summary>
+                <div className="screening-domains">
+                  {support.screening.domains.map((d) => (
+                    <article key={d.key}>
+                      <div>
+                        <strong>{d.label}</strong>
+                        <span className="status">
+                          {d.status.replaceAll("_", " ")}
+                        </span>
+                      </div>
+                      <p>{d.explanation}</p>
+                      {d.evidenceIds.length > 0 && (
+                        <button
+                          className="evidence-link"
+                          onClick={() => onEvidence(d.evidenceIds)}
+                        >
+                          View domain evidence
+                        </button>
+                      )}
+                    </article>
+                  ))}
+                </div>
+              </details>
+              <p className="hint">
+                This is screening guidance, not funding approval. Market
+                potential and competitive advantage require assessor validation.
+              </p>
+            </section>
+          )}
           <div className="risk-summary">
             <div>
               <span className="eyebrow">FINANCIAL RISK SCORE</span>

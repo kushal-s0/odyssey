@@ -102,7 +102,7 @@ test("entrepreneur dashboard exposes personal metrics and sign-out clears privat
     page.getByRole("heading", { name: "My dashboard", exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByText("MY LATEST ASSESSMENT", { exact: true }),
+    page.getByText("MY LATEST INFORMATION READINESS", { exact: true }),
   ).toBeVisible();
   await expect(
     page.getByRole("link", { name: "Comparisons", exact: true }),
