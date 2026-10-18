@@ -1,3 +1,5 @@
+// localized-ui
+import { t, useLanguage } from "./i18n";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import {
@@ -25,6 +27,7 @@ import "./styles.css";
 import "./experience.css";
 import "./assessment-workspace.css";
 function RequireAccount() {
+  useLanguage();
   const w = useWorkspace(),
     location = useLocation();
   if (w.loading) return <Busy />;
@@ -48,12 +51,14 @@ class ErrorBoundary extends React.Component<
   render() {
     return this.state.error ? (
       <div className="fatal-error">
-        <h1>The workspace could not be displayed.</h1>
+        <h1>{t("The workspace could not be displayed.")}</h1>
         <p>
-          Reload the page to try again. Your saved submissions remain in Atlas.
+          {t(
+            "Reload the page to try again. Your saved submissions remain in Atlas.",
+          )}
         </p>
         <button onClick={() => window.location.reload()}>
-          Reload workspace
+          {t("Reload workspace")}
         </button>
       </div>
     ) : (
@@ -83,8 +88,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                   path="*"
                   element={
                     <div className="empty">
-                      <h1>Page not found</h1>
-                      <Link to="/">Return to overview</Link>
+                      <h1>{t("Page not found")}</h1>
+                      <Link to="/">{t("Return to overview")}</Link>
                     </div>
                   }
                 />

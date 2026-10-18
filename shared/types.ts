@@ -164,7 +164,7 @@ export interface Submission {
   error: string | null;
   errorCode?: string | null;
   nextRetryAt?: string | null;
-  errorProvider?: "gemini" | "groq" | null;
+  errorProvider?: "gemini" | "groq" | "cloud" | null;
   example?: boolean;
 }
 export interface Cohort {
@@ -177,6 +177,7 @@ export interface Health {
   database: boolean;
   gemini: boolean;
   groq?: boolean;
+  cloud?: boolean;
   sarvam: boolean;
   classifier: boolean;
   examples: boolean;

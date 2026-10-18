@@ -1,3 +1,5 @@
+// localized-ui
+import { t, useLanguage } from "./i18n";
 import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { ExternalLink, Loader2, MapPin, Save, Trash2 } from "lucide-react";
 import type {
@@ -30,6 +32,7 @@ export default function LocationPanel({
   location: string;
   submissionId: string;
 }) {
+  useLanguage();
   const [query, setQuery] = useState(location),
     [locations, setLocations] = useState<(MapPlace & { id: string })[]>([]),
     [selected, setSelected] = useState(""),
@@ -161,26 +164,28 @@ export default function LocationPanel({
       <div className="panel-heading">
         <div>
           <h2>
-            <MapPin size={17} /> Local business context
+            <MapPin size={17} /> {t("Local business context")}
           </h2>
           <p>
-            Confirm the operating location, inspect mapped businesses and record
-            sourced observations.
+            {t(
+              "Confirm the operating location, inspect mapped businesses and record sourced observations.",
+            )}
           </p>
         </div>
       </div>
       <div className="location-body">
         <Notice>
-          Mapped listings can be incomplete or outdated. A category match is not
-          necessarily a competitor; no results do not mean no competition.
+          {t(
+            "Mapped listings can be incomplete or outdated. A category match is not necessarily a competitor; no results do not mean no competition.",
+          )}
         </Notice>
-        {loading && <p role="status">Loading saved local context…</p>}
+        {loading && <p role="status">{t("Loading saved local context…")}</p>}
         <label>
-          Business location
+          {t("Business location")}
           <div className="input-button">
             <input
               value={query}
-              aria-label="Business location"
+              aria-label={t("Business location")}
               disabled={pending || loading}
               onChange={(e) => {
                 setQuery(e.target.value);
@@ -189,7 +194,7 @@ export default function LocationPanel({
                 setPlace(null);
                 clearResult();
               }}
-              placeholder="Village, district and state"
+              placeholder={t("Village, district and state")}
             />
             <button
               className="button secondary"
@@ -213,13 +218,13 @@ export default function LocationPanel({
                 })
               }
             >
-              Find location
+              {t("Find location")}
             </button>
           </div>
         </label>
         {locations.length > 0 && (
           <label>
-            Confirm the correct location
+            {t("Confirm the correct location")}
             <select
               value={selected}
               disabled={pending}
@@ -233,7 +238,7 @@ export default function LocationPanel({
                 }
               }}
             >
-              <option value="">Choose the correct place</option>
+              <option value="">{t("Choose the correct place")}</option>
               {locations.map((l) => (
                 <option key={l.id} value={l.id}>
                   {l.name}
@@ -243,14 +248,15 @@ export default function LocationPanel({
           </label>
         )}
         <details className="coordinate-controls">
-          <summary>Use a confirmed map point instead</summary>
+          <summary>{t("Use a confirmed map point instead")}</summary>
           <p className="hint">
-            Use this when the place name is ambiguous or the geocoder is
-            unavailable. Confirm coordinates with the beneficiary or source.
+            {t(
+              "Use this when the place name is ambiguous or the geocoder is unavailable. Confirm coordinates with the beneficiary or source.",
+            )}
           </p>
           <div className="form-grid">
             <label>
-              Location latitude
+              {t("Location latitude")}
               <input
                 type="number"
                 min={-85}
@@ -262,7 +268,7 @@ export default function LocationPanel({
               />
             </label>
             <label>
-              Location longitude
+              {t("Location longitude")}
               <input
                 type="number"
                 min={-180}
@@ -284,8 +290,8 @@ export default function LocationPanel({
             >
               {" "}
               {pick === "center"
-                ? "Cancel location pin"
-                : "Place location pin on map"}
+                ? t("Cancel location pin")
+                : t("Place location pin on map")}
             </button>
             <button
               className="button secondary small"
@@ -302,13 +308,13 @@ export default function LocationPanel({
                 confirm({ ...p.data, name: query.trim() });
               }}
             >
-              Confirm coordinates
+              {t("Confirm coordinates")}
             </button>
           </div>
         </details>
         <div className="form-grid">
           <label>
-            Business category
+            {t("Business category")}
             <select
               value={category}
               disabled={pending || loading}
@@ -317,7 +323,7 @@ export default function LocationPanel({
                 clearResult();
               }}
             >
-              <option value="">Choose the closest category</option>
+              <option value="">{t("Choose the closest category")}</option>
               {BUSINESS_CATEGORIES.map(([v, l]) => (
                 <option key={v} value={v}>
                   {l}
@@ -326,7 +332,7 @@ export default function LocationPanel({
             </select>
           </label>
           <label>
-            Search radius
+            {t("Search radius")}
             <select
               value={radius}
               disabled={pending || loading}
@@ -335,15 +341,15 @@ export default function LocationPanel({
                 clearResult();
               }}
             >
-              <option value={1000}>1 km</option>
-              <option value={3000}>3 km</option>
-              <option value={5000}>5 km</option>
+              <option value={1000}>{t("1 km")}</option>
+              <option value={3000}>{t("3 km")}</option>
+              <option value={5000}>{t("5 km")}</option>
             </select>
           </label>
         </div>
         {place && (
           <p className="confirmed-place">
-            <strong>Confirmed location:</strong> {place.name} ·{" "}
+            <strong>{t("Confirmed location:")}</strong> {place.name} ·{" "}
             {place.lat.toFixed(5)}, {place.lon.toFixed(5)}
           </p>
         )}
@@ -374,7 +380,7 @@ export default function LocationPanel({
             ) : (
               <MapPin size={15} />
             )}
-            Look up mapped businesses
+            {t("Look up mapped businesses")}
           </button>
           <button
             className="button secondary"
@@ -388,18 +394,21 @@ export default function LocationPanel({
               })
             }
           >
-            <Save size={14} /> Save location
+            <Save size={14} /> {t("Save location")}
           </button>
         </div>
         {error && <Notice type="error">{error}</Notice>}
         {notice && <p role="status">{notice}</p>}
         {example ? (
           <p className="hint">
-            Live maps and lookup are available in your connected workspace. No
-            listings are invented for examples.
+            {t(
+              "Live maps and lookup are available in your connected workspace. No listings are invented for examples.",
+            )}
           </p>
         ) : (
-          <Suspense fallback={<p role="status">Loading interactive map…</p>}>
+          <Suspense
+            fallback={<p role="status">{t("Loading interactive map…")}</p>}
+          >
             <BusinessMap
               place={place}
               radius={radius}
@@ -433,27 +442,29 @@ export default function LocationPanel({
             target="_blank"
             rel="noreferrer"
           >
-            Open area in OpenStreetMap <ExternalLink size={13} />
+            {t("Open area in OpenStreetMap")} <ExternalLink size={13} />
           </a>
         )}
         {result && (
           <div className="local-results">
             <h3>
               {result.businesses.length}
-              {result.truncated ? "+" : ""} mapped listings within{" "}
-              {(result.radiusMeters / 1000).toFixed(0)} km
+              {result.truncated ? "+" : ""} {t("mapped listings within")}{" "}
+              {(result.radiusMeters / 1000).toFixed(0)} {t("km")}
             </h3>
             <p>{result.message}</p>
             {result.stale && (
               <Notice>
-                Live lookup failed. These are older cached listings from the
-                date below; verify them before relying on them.
+                {t(
+                  "Live lookup failed. These are older cached listings from the date below; verify them before relying on them.",
+                )}
               </Notice>
             )}
             {result.truncated && (
               <p>
-                Results are capped at 100 and may omit nearer businesses. Narrow
-                the radius.
+                {t(
+                  "Results are capped at 100 and may omit nearer businesses. Narrow the radius.",
+                )}
               </p>
             )}
             {result.businesses.map((b, index) => (
@@ -470,8 +481,8 @@ export default function LocationPanel({
                   <span>
                     <strong>{b.name}</strong>
                     <small>
-                      {b.category} · {(b.distanceMeters / 1000).toFixed(2)} km
-                      straight-line
+                      {b.category} · {(b.distanceMeters / 1000).toFixed(2)}{" "}
+                      {t("km straight-line")}
                     </small>
                   </span>
                 </button>
@@ -500,23 +511,25 @@ export default function LocationPanel({
                     target="_blank"
                     rel="noreferrer"
                   >
-                    Powered by Geoapify
+                    {t("Powered by Geoapify")}
                   </a>
                   {" · "}
                 </>
               )}
-              · Retrieved {new Date(result.retrievedAt).toLocaleString("en-IN")}{" "}
-              {result.cached ? "· cached" : ""}
+              {t("· Retrieved")}{" "}
+              {new Date(result.retrievedAt).toLocaleString("en-IN")}{" "}
+              {result.cached ? t("· cached") : ""}
             </small>
           </div>
         )}
         <section className="local-observations">
           <div className="panel-heading">
             <div>
-              <h3>Assessor observations</h3>
+              <h3>{t("Assessor observations")}</h3>
               <p>
-                Separately sourced local context. These entries are manual and
-                do not change the financial risk score.
+                {t(
+                  "Separately sourced local context. These entries are manual and do not change the financial risk score.",
+                )}
               </p>
             </div>
           </div>
@@ -536,9 +549,10 @@ export default function LocationPanel({
                   <p>{o.note}</p>
                   <small>
                     {o.checked
-                      ? "Source checked by assessor"
-                      : "Reported; needs checking"}{" "}
-                    · {(distanceMeters(place!, o) / 1000).toFixed(2)} km ·{" "}
+                      ? t("Source checked by assessor")
+                      : t("Reported; needs checking")}{" "}
+                    · {(distanceMeters(place!, o) / 1000).toFixed(2)}{" "}
+                    {t("km ·")}{" "}
                     {new Date(o.recordedAt).toLocaleDateString("en-IN")}
                   </small>
                   <div className="toolbar-actions">
@@ -548,7 +562,7 @@ export default function LocationPanel({
                       target="_blank"
                       rel="noreferrer"
                     >
-                      Observation source <ExternalLink size={12} />
+                      {t("Observation source")} <ExternalLink size={12} />
                     </a>
                     <button
                       className="button text small"
@@ -564,7 +578,7 @@ export default function LocationPanel({
                         })
                       }
                     >
-                      <Trash2 size={12} /> Remove
+                      <Trash2 size={12} /> {t("Remove")}
                     </button>
                   </div>
                 </li>
@@ -573,8 +587,9 @@ export default function LocationPanel({
           )}
           {!observations.length && (
             <p className="hint">
-              No saved observations match the selected category and radius. This
-              says nothing about how many competitors exist.
+              {t(
+                "No saved observations match the selected category and radius. This says nothing about how many competitors exist.",
+              )}
             </p>
           )}
           <button
@@ -583,8 +598,8 @@ export default function LocationPanel({
             onClick={() => setShowManual(!showManual)}
           >
             {showManual
-              ? "Close observation form"
-              : "Add sourced local observation"}
+              ? t("Close observation form")
+              : t("Add sourced local observation")}
           </button>
           {showManual && (
             <form
@@ -626,7 +641,7 @@ export default function LocationPanel({
               }}
             >
               <label>
-                Observed business name
+                {t("Observed business name")}
                 <input
                   required
                   minLength={2}
@@ -639,7 +654,7 @@ export default function LocationPanel({
                 />
               </label>
               <label>
-                Public source URL
+                {t("Public source URL")}
                 <input
                   required
                   type="url"
@@ -652,7 +667,7 @@ export default function LocationPanel({
                 />
               </label>
               <label>
-                What was observed?
+                {t("What was observed?")}
                 <textarea
                   required
                   minLength={10}
@@ -666,7 +681,7 @@ export default function LocationPanel({
               </label>
               <div className="form-grid">
                 <label>
-                  Observed business latitude
+                  {t("Observed business latitude")}
                   <input
                     required
                     type="number"
@@ -681,7 +696,7 @@ export default function LocationPanel({
                   />
                 </label>
                 <label>
-                  Observed business longitude
+                  {t("Observed business longitude")}
                   <input
                     required
                     type="number"
@@ -705,8 +720,8 @@ export default function LocationPanel({
                 }
               >
                 {pick === "observation"
-                  ? "Cancel observation pin"
-                  : "Place observation pin on map"}
+                  ? t("Cancel observation pin")
+                  : t("Place observation pin on map")}
               </button>
               <label className="check-line">
                 <input
@@ -717,11 +732,12 @@ export default function LocationPanel({
                     setObservation((o) => ({ ...o, checked: e.target.checked }))
                   }
                 />
-                I checked this source; its business claims may still need
-                validation.
+                {t(
+                  "I checked this source; its business claims may still need validation.",
+                )}
               </label>
               <button className="button primary" disabled={pending}>
-                Save manual observation
+                {t("Save manual observation")}
               </button>
             </form>
           )}
@@ -747,7 +763,7 @@ export default function LocationPanel({
               )
             }
           >
-            Download sourced local context
+            {t("Download sourced local context")}
           </button>
         )}
       </div>

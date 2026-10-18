@@ -1,3 +1,5 @@
+// localized-ui
+import { t, useLanguage } from "../i18n";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -16,6 +18,7 @@ import { api, download } from "../api";
 import { FIELD_LABELS } from "../../../shared/types";
 import { trainingReadiness } from "../../../shared/training";
 export default function ModelLab() {
+  useLanguage();
   const w = useWorkspace();
   const [annotations, setAnnotations] = useState<any[]>([]),
     [remoteModel, setRemoteModel] = useState<any>(null),
@@ -82,9 +85,11 @@ export default function ModelLab() {
   return (
     <>
       <PageIntro
-        eyebrow="A SMALL MODEL WITH A CLEAR JOB"
-        title="Train for better input quality."
-        description="Review answer relevance, preserve independent business groups, and evaluate honestly."
+        eyebrow={t("A SMALL MODEL WITH A CLEAR JOB")}
+        title={t("Train for better input quality.")}
+        description={t(
+          "Review answer relevance, preserve independent business groups, and evaluate honestly.",
+        )}
         action={
           <button
             className="button secondary"
@@ -92,7 +97,7 @@ export default function ModelLab() {
             disabled={!annotations.length}
           >
             <ArrowDownToLine size={15} />
-            Export reviewed answers
+            {t("Export reviewed answers")}
           </button>
         }
       />
@@ -101,20 +106,22 @@ export default function ModelLab() {
           <FlaskConical size={28} />
         </div>
         <div>
-          <span className="eyebrow">CLOUD-TRAINED RESPONSE RELEVANCE</span>
-          <h2>Does this answer address the question?</h2>
+          <span className="eyebrow">
+            {t("CLOUD-TRAINED RESPONSE RELEVANCE")}
+          </span>
+          <h2>{t("Does this answer address the question?")}</h2>
           <p>
-            A supervised classifier flags potentially off-topic responses for
-            review. Business outcomes and funding decisions remain outside its
-            scope.
+            {t(
+              "A supervised classifier flags potentially off-topic responses for review. Business outcomes and funding decisions remain outside its scope.",
+            )}
           </p>
         </div>
         <span className="outline-label">
           {remoteModel?.ready
-            ? "Cloud artefact loaded"
+            ? t("Cloud artefact loaded")
             : modelAssessments.length
-              ? "Endpoint used in assessments"
-              : "Training not verified"}
+              ? t("Endpoint used in assessments")
+              : t("Training not verified")}
         </span>
       </div>
       <div className="model-stats">
@@ -130,26 +137,32 @@ export default function ModelLab() {
       {live && (
         <Notice>
           {readiness.ready
-            ? "These saved labels meet the minimum count checks. Verify business families and inspect grouped evaluation in Colab before using the model."
+            ? t(
+                "These saved labels meet the minimum count checks. Verify business families and inspect grouped evaluation in Colab before using the model.",
+              )
             : `These saved labels are not ready for training. Still needed: ${readiness.checks
                 .filter((check) => check.remaining > 0)
                 .map((check) => `${check.remaining} ${check.label}`)
                 .join(
                   ", ",
                 )}. Exports from this screen contain only labels saved here.`}{" "}
-          Keep translations and revisions of the same business in one family.
+          {t(
+            "Keep translations and revisions of the same business in one family.",
+          )}
         </Notice>
       )}
       {remoteModel?.ready && remoteModel.metrics && (
         <section className="panel model-evaluation">
           <div className="panel-heading">
             <div>
-              <h2>Measured cloud-training results</h2>
+              <h2>{t("Measured cloud-training results")}</h2>
               <p>
                 {remoteModel.modelVersion} · {remoteModel.metrics.evaluation}
               </p>
             </div>
-            <span className="outline-label">EXPERIMENTAL · ADVISORY</span>
+            <span className="outline-label">
+              {t("EXPERIMENTAL · ADVISORY")}
+            </span>
           </div>
           <div className="model-stats">
             {[
@@ -158,20 +171,22 @@ export default function ModelLab() {
               ["Evaluation coverage", remoteModel.metrics.evaluationCoverage],
               ["Abstention rate", remoteModel.metrics.abstentionRate],
             ].map(([label, value]) => (
-              <div key={label}>
+              <div key={t(label)}>
                 <strong>
                   {typeof value === "number"
                     ? `${Math.round(value * 100)}%`
                     : "—"}
                 </strong>
-                <span>{label}</span>
+                <span>{t(label)}</span>
               </div>
             ))}
           </div>
           <div className="panel-footer">
-            {remoteModel.metrics.rows} reviewed answers ·{" "}
-            {remoteModel.metrics.groups} groups. Small-data grouped evaluation
-            does not establish general accuracy.
+            {remoteModel.metrics.rows} {t("reviewed answers ·")}{" "}
+            {remoteModel.metrics.groups}{" "}
+            {t(
+              "groups. Small-data grouped evaluation does not establish general accuracy.",
+            )}
           </div>
         </section>
       )}
@@ -179,9 +194,11 @@ export default function ModelLab() {
         <section className="panel">
           <div className="panel-heading">
             <div>
-              <h2>Review an answer</h2>
+              <h2>{t("Review an answer")}</h2>
               <p>
-                Label the answer itself, rather than relying on its filename.
+                {t(
+                  "Label the answer itself, rather than relying on its filename.",
+                )}
               </p>
             </div>
           </div>
@@ -211,13 +228,13 @@ export default function ModelLab() {
           >
             {!live && (
               <Notice>
-                Annotation requires a connected live workspace and actual
-                processed submissions. Synthetic interface examples are excluded
-                from training.
+                {t(
+                  "Annotation requires a connected live workspace and actual processed submissions. Synthetic interface examples are excluded from training.",
+                )}
               </Notice>
             )}
             <label>
-              Submission
+              {t("Submission")}
               <select
                 value={submissionId}
                 onChange={(e) => {
@@ -226,7 +243,7 @@ export default function ModelLab() {
                 }}
                 required
               >
-                <option value="">Select an assessed submission</option>
+                <option value="">{t("Select an assessed submission")}</option>
                 {w.submissions
                   .filter((s) => s.assessment)
                   .map((s) => (
@@ -237,40 +254,45 @@ export default function ModelLab() {
               </select>
             </label>
             <label>
-              Question / field
+              {t("Question / field")}
               <select
                 value={field}
                 onChange={(e) => setField(e.target.value)}
                 required
               >
-                <option value="">Select an answer with source evidence</option>
+                <option value="">
+                  {t("Select an answer with source evidence")}
+                </option>
                 {fields.map((f) => (
                   <option key={f.key} value={f.key}>
-                    {FIELD_LABELS[f.key]}
+                    {t(FIELD_LABELS[f.key])}
                   </option>
                 ))}
               </select>
             </label>
             {selected && (
               <div className="question-card">
-                <div className="eyebrow">ANSWER TO REVIEW</div>
+                <div className="eyebrow">{t("ANSWER TO REVIEW")}</div>
                 <p>{answer}</p>
-                <small>Question: {FIELD_LABELS[selected.key]}</small>
+                <small>
+                  {t("Question:")} {t(FIELD_LABELS[selected.key])}
+                </small>
               </div>
             )}
             <label>
-              Underlying business / scenario family
+              {t("Underlying business / scenario family")}
               <input
                 required
                 minLength={2}
                 maxLength={100}
                 value={groupId}
                 onChange={(e) => setGroupId(e.target.value)}
-                placeholder="e.g. tailoring-family-01"
+                placeholder={t("e.g. tailoring-family-01")}
               />
               <small className="hint">
-                Use the same group for all related translations, revisions, and
-                scenario variants.
+                {t(
+                  "Use the same group for all related translations, revisions, and scenario variants.",
+                )}
               </small>
             </label>
             <div className="annotation-options">
@@ -281,7 +303,7 @@ export default function ModelLab() {
                   checked={label === 0}
                   onChange={() => setLabel(0)}
                 />
-                Relevant answer
+                {t("Relevant answer")}
               </label>
               <label>
                 <input
@@ -290,7 +312,7 @@ export default function ModelLab() {
                   checked={label === 1}
                   onChange={() => setLabel(1)}
                 />
-                Off-topic answer
+                {t("Off-topic answer")}
               </label>
             </div>
             {error && <Notice type="error">{error}</Notice>}
@@ -303,15 +325,17 @@ export default function ModelLab() {
               ) : (
                 <Check size={15} />
               )}
-              Save reviewed label
+              {t("Save reviewed label")}
             </button>
           </form>
         </section>
         <section className="panel">
           <div className="panel-heading">
             <div>
-              <h2>Cloud training workflow</h2>
-              <p>No training or model inference runs on this computer.</p>
+              <h2>{t("Cloud training workflow")}</h2>
+              <p>
+                {t("No training or model inference runs on this computer.")}
+              </p>
             </div>
             <Layers size={19} />
           </div>
@@ -320,41 +344,44 @@ export default function ModelLab() {
               <li>
                 <span>1</span>
                 <div>
-                  <strong>Review evidence and labels</strong>
+                  <strong>{t("Review evidence and labels")}</strong>
                   <p>
-                    Correct transcripts before labelling. Keep examples from the
-                    same business together.
+                    {t(
+                      "Correct transcripts before labelling. Keep examples from the same business together.",
+                    )}
                   </p>
                 </div>
               </li>
               <li>
                 <span>2</span>
                 <div>
-                  <strong>Run the supplied Colab notebook</strong>
+                  <strong>{t("Run the supplied Colab notebook")}</strong>
                   <p>
-                    Upload reviewed answers, generate hosted embeddings, and
-                    train a regularized classifier in the cloud.
+                    {t(
+                      "Upload reviewed answers, generate hosted embeddings, and train a regularized classifier in the cloud.",
+                    )}
                   </p>
                 </div>
               </li>
               <li>
                 <span>3</span>
                 <div>
-                  <strong>Measure grouped performance</strong>
+                  <strong>{t("Measure grouped performance")}</strong>
                   <p>
-                    Inspect macro-F1, off-topic recall, confusion matrices, and
-                    group counts. No metrics are shown until a real training run
-                    exists.
+                    {t(
+                      "Inspect macro-F1, off-topic recall, confusion matrices, and group counts. No metrics are shown until a real training run exists.",
+                    )}
                   </p>
                 </div>
               </li>
               <li>
                 <span>4</span>
                 <div>
-                  <strong>Deploy the remote model service</strong>
+                  <strong>{t("Deploy the remote model service")}</strong>
                   <p>
-                    Load the exported artefact into the separate hosted service
-                    and configure its URL and service token.
+                    {t(
+                      "Load the exported artefact into the separate hosted service and configure its URL and service token.",
+                    )}
                   </p>
                 </div>
               </li>
@@ -362,16 +389,17 @@ export default function ModelLab() {
             <div className="aside-note">
               <ShieldCheck size={19} />
               <p>
-                Predictions are advisory model scores. They are not calibrated
-                probabilities of truth and cannot fill missing facts.
+                {t(
+                  "Predictions are advisory model scores. They are not calibrated probabilities of truth and cannot fill missing facts.",
+                )}
               </p>
             </div>
             <p className="hint">
-              Notebook: training/cloud_training.ipynb
+              {t("Notebook: training/cloud_training.ipynb")}
               <br />
-              Service: model-service/
+              {t("Service: model-service/")}
               <br />
-              Instructions: README.md
+              {t("Instructions: README.md")}
             </p>
           </div>
         </section>

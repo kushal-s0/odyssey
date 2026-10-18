@@ -1,4 +1,6 @@
-﻿import { useState, type FormEvent } from "react";
+// localized-ui
+import { t, useLanguage } from "../i18n";
+import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
@@ -17,6 +19,7 @@ import { loginSchema, registrationSchema } from "../../../shared/input-rules";
 import type { WorkspaceUser } from "../../../shared/types";
 import AccountSecurity from "../AccountSecurity";
 export default function Settings() {
+  useLanguage();
   const w = useWorkspace(),
     navigate = useNavigate();
   const [mode, setMode] = useState<"signin" | "register">("signin");
@@ -77,13 +80,15 @@ export default function Settings() {
   return (
     <>
       <PageIntro
-        eyebrow="YOUR WORKSPACE"
-        title="Connections & settings"
-        description="Manage your account, sessions, and workspace connections."
+        eyebrow={t("YOUR WORKSPACE")}
+        title={t("Connections & settings")}
+        description={t(
+          "Manage your account, sessions, and workspace connections.",
+        )}
         action={
           <button className="button secondary" onClick={() => void w.refresh()}>
             <RefreshCw size={14} />
-            Refresh status
+            {t("Refresh status")}
           </button>
         }
       />
@@ -92,10 +97,11 @@ export default function Settings() {
         <section className="panel">
           <div className="panel-heading">
             <div>
-              <h2>Account access</h2>
+              <h2>{t("Account access")}</h2>
               <p>
-                Entrepreneurs see their own ideas. Assessors review programme
-                submissions.
+                {t(
+                  "Entrepreneurs see their own ideas. Assessors review programme submissions.",
+                )}
               </p>
             </div>
           </div>
@@ -104,13 +110,13 @@ export default function Settings() {
               <>
                 <div className="signed-in">
                   <span className="user-avatar">
-                    {entrepreneur ? "EN" : "AS"}
+                    {entrepreneur ? t("EN") : t("AS")}
                   </span>
                   <div>
                     <strong>{w.session.user.name}</strong>
                     <p>{w.session.user.email}</p>
                     <span className="outline-label">
-                      {entrepreneur ? "Entrepreneur" : "Assessor"}
+                      {entrepreneur ? t("Entrepreneur") : t("Assessor")}
                     </span>
                   </div>
                 </div>
@@ -120,12 +126,13 @@ export default function Settings() {
                     navigate("/dashboard");
                   }}
                 >
-                  Open live workspace <ArrowRight size={15} />
+                  {t("Open live workspace")} <ArrowRight size={15} />
                 </button>
                 {entrepreneur && (
                   <p className="hint">
-                    Your account owns the ideas you submit. Programme membership
-                    and assessor permissions are managed by the programme.
+                    {t(
+                      "Your account owns the ideas you submit. Programme membership and assessor permissions are managed by the programme.",
+                    )}
                   </p>
                 )}
               </>
@@ -140,7 +147,7 @@ export default function Settings() {
                       setError("");
                     }}
                   >
-                    Existing account
+                    {t("Existing account")}
                   </button>
                   <button
                     type="button"
@@ -150,19 +157,20 @@ export default function Settings() {
                       setError("");
                     }}
                   >
-                    Create entrepreneur account
+                    {t("Create entrepreneur account")}
                   </button>
                 </div>
                 <form onSubmit={authenticate}>
                   {!health?.database && (
                     <Notice>
-                      The workspace is not connected yet. Read-only examples
-                      remain available.
+                      {t(
+                        "The workspace is not connected yet. Read-only examples remain available.",
+                      )}
                     </Notice>
                   )}
                   {mode === "register" && (
                     <label>
-                      Full name
+                      {t("Full name")}
                       <input
                         required
                         minLength={2}
@@ -174,7 +182,7 @@ export default function Settings() {
                     </label>
                   )}
                   <label>
-                    Email
+                    {t("Email")}
                     <input
                       type="email"
                       required
@@ -186,7 +194,7 @@ export default function Settings() {
                     />
                   </label>
                   <label>
-                    Password
+                    {t("Password")}
                     <input
                       type="password"
                       required
@@ -204,10 +212,10 @@ export default function Settings() {
                   {mode === "register" && (
                     <>
                       <p className="hint">
-                        Use a password of at least 12 characters.
+                        {t("Use a password of at least 12 characters.")}
                       </p>
                       <label>
-                        Confirm password
+                        {t("Confirm password")}
                         <input
                           type="password"
                           required
@@ -233,12 +241,16 @@ export default function Settings() {
                     ) : (
                       <ArrowRight size={15} />
                     )}
-                    {mode === "register" ? "Create account" : "Sign in"}
+                    {mode === "register" ? t("Create account") : t("Sign in")}
                   </button>
                   <p className="hint">
                     {mode === "register"
-                      ? "Public registration creates an entrepreneur account. Assessor access is provided by the programme."
-                      : "Use the email and password for your entrepreneur or assessor account."}
+                      ? t(
+                          "Public registration creates an entrepreneur account. Assessor access is provided by the programme.",
+                        )
+                      : t(
+                          "Use the email and password for your entrepreneur or assessor account.",
+                        )}
                   </p>
                 </form>
               </>
@@ -247,13 +259,43 @@ export default function Settings() {
         </section>
         {administration && (
           <section className="panel">
+            <div className="notice quota-help">
+              <div>
+                <strong>{t("When AI limits are reached")}</strong>
+                <p>
+                  {t(
+                    "Saved submissions wait for the provider reset and resume automatically. Avoid submitting the same file again. Completed processing stages are reused.",
+                  )}
+                </p>
+                <p>
+                  {t(
+                    "Website translations and fixed follow-up questions use bundled text and do not consume generation quota. Free allowances are finite; for sustained use, enable billing or request higher limits with your provider.",
+                  )}
+                </p>
+                <a
+                  href="https://console.groq.com/settings/limits"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {t("Groq limits")}
+                </a>
+                {" · "}
+                <a
+                  href="https://aistudio.google.com/usage?tab=rate-limit"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {t("Gemini usage")}
+                </a>
+              </div>
+            </div>
             <div className="panel-heading">
               <div>
                 <h2>
                   <Database size={17} />
-                  Service connections
+                  {t("Service connections")}
                 </h2>
-                <p>Connection status for the programme workspace.</p>
+                <p>{t("Connection status for the programme workspace.")}</p>
               </div>
             </div>
             <div className="connection-list">
@@ -263,6 +305,13 @@ export default function Settings() {
                   description: "Submissions, originals and account sessions",
                   key: "MONGODB_URI",
                   ready: health?.database,
+                },
+                {
+                  name: "Private cloud models",
+                  description:
+                    "Your own extraction, PDF OCR and speech service",
+                  key: "CLOUD_AI_URL",
+                  ready: health?.cloud,
                 },
                 {
                   name: "Gemini document & language API",
@@ -308,23 +357,24 @@ export default function Settings() {
                     )}
                   </span>
                   <div>
-                    <strong>{connection.name}</strong>
-                    <p>{connection.description}</p>
+                    <strong>{t(connection.name)}</strong>
+                    <p>{t(connection.description)}</p>
                   </div>
                   <span className="outline-label">
                     {connection.ready
                       ? connection.key === "MONGODB_URI"
-                        ? "Connected"
-                        : "Configured"
-                      : "Not configured"}
+                        ? t("Connected")
+                        : t("Configured")
+                      : t("Not configured")}
                   </span>
                 </div>
               ))}
             </div>
             <div className="panel-footer">
               <ShieldCheck size={14} />
-              API keys remain on the server. Configuration alone does not verify
-              provider access or quota.
+              {t(
+                "API keys remain on the server. Configuration alone does not verify provider access or quota.",
+              )}
             </div>
           </section>
         )}
@@ -332,8 +382,8 @@ export default function Settings() {
           <section className="panel">
             <div className="panel-heading">
               <div>
-                <h2>Programme cohorts</h2>
-                <p>Membership is supplied by the programme.</p>
+                <h2>{t("Programme cohorts")}</h2>
+                <p>{t("Membership is supplied by the programme.")}</p>
               </div>
             </div>
             <div className="settings-body">
@@ -341,7 +391,7 @@ export default function Settings() {
                 <div className="cohort-row" key={cohort.id}>
                   <span>{cohort.name}</span>
                   <span className="small-label">
-                    {cohort.synthetic ? "DEMO" : "PROGRAMME"}
+                    {cohort.synthetic ? t("DEMO") : t("PROGRAMME")}
                   </span>
                 </div>
               ))}
@@ -372,25 +422,26 @@ export default function Settings() {
                   }}
                 >
                   <label>
-                    New cohort name
+                    {t("New cohort name")}
                     <input
                       required
                       minLength={2}
                       maxLength={100}
                       value={cohortName}
                       onChange={(event) => setCohortName(event.target.value)}
-                      placeholder="e.g. Pune, October 2026"
+                      placeholder={t("e.g. Pune, October 2026")}
                     />
                   </label>
                   <button className="button secondary" disabled={pending}>
                     <Plus size={14} />
-                    Create cohort
+                    {t("Create cohort")}
                   </button>
                 </form>
               ) : (
                 <p className="hint">
-                  An assessor can create programme cohorts. Example cohorts are
-                  synthetic.
+                  {t(
+                    "An assessor can create programme cohorts. Example cohorts are synthetic.",
+                  )}
                 </p>
               )}
               {error && w.session?.user && (

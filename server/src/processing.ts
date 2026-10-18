@@ -22,6 +22,7 @@ import type { Assessment } from "../../shared/types.js";
 import {
   generationGate,
   groqGate,
+  cloudGate,
   generationAvailability,
 } from "./providers/quota.js";
 
@@ -32,12 +33,16 @@ export interface ProcessingCheckpoint {
   fields?: Awaited<ReturnType<typeof extractFieldsWithProvider>>["fields"];
   fieldsModel?: string;
 }
-export const quotaCacheKey = (provider: "gemini" | "groq" = "gemini") =>
+export const quotaCacheKey = (
+  provider: "gemini" | "groq" | "cloud" = "gemini",
+) =>
   `${provider === "groq" ? "groq" : "generation"}-quota:${createHash("sha256")
     .update(
-      provider === "groq"
-        ? `${config.GROQ_API_KEY}:${config.GROQ_MODEL}`
-        : `${config.GEMINI_API_KEY}:${config.GEMINI_MODEL}`,
+      provider === "cloud"
+        ? `${config.CLOUD_AI_URL}:${config.CLOUD_AI_MODEL}:${config.CLOUD_AI_TOKEN}`
+        : provider === "groq"
+          ? `${config.GROQ_API_KEY}:${config.GROQ_MODEL}`
+          : `${config.GEMINI_API_KEY}:${config.GEMINI_MODEL}`,
     )
     .digest("hex")}`;
 
@@ -46,19 +51,15 @@ export function retryPlan(error: unknown, attempts: number, now = Date.now()) {
   const rateLimit =
     !!provider?.code.startsWith("PROVIDER_") &&
     /QUOTA|RATE_LIMITED/.test(provider.code);
-  const retry =
-    !!provider?.retryable &&
-    (attempts < 3 || (rateLimit && !provider.requestMade));
+  const retry = !!provider?.retryable && (attempts < 3 || rateLimit);
   return {
     retry,
     attempts:
-      rateLimit && !provider?.requestMade
-        ? Math.max(0, attempts - 1)
-        : attempts,
+      rateLimit && provider?.retryable ? Math.max(0, attempts - 1) : attempts,
     runAt: new Date(
       now +
         Math.max(
-          60000 * 2 ** Math.max(0, attempts - 1),
+          60000 * 2 ** Math.min(4, Math.max(0, attempts - 1)),
           provider?.retryAfterMs ?? 0,
         ),
     ),
@@ -83,6 +84,8 @@ export async function buildAssessment(input: {
         input.mime,
         config.GEMINI_MODEL,
         config.GROQ_MODEL,
+        config.CLOUD_AI_URL,
+        config.CLOUD_AI_MODEL,
         config.AUDIO_PROVIDER,
         config.SARVAM_MODEL,
       ]),
@@ -113,7 +116,10 @@ export async function buildAssessment(input: {
   }
   const audioSegments =
     checkpoint.audioSegments ??
-    (input.kind === "audio" && config.AUDIO_PROVIDER === "sarvam"
+    (input.kind === "audio" &&
+    (config.CLOUD_AI_URL ||
+      config.AUDIO_PROVIDER === "sarvam" ||
+      config.AUDIO_PROVIDER === "cloud")
       ? await transcribe(input.buffer!, input.language)
       : undefined);
   if (audioSegments && !checkpoint.audioSegments) {
@@ -237,22 +243,36 @@ async function tick() {
   if (ticking || !timer || !databaseReady()) return;
   ticking = true;
   try {
-    const [geminiCooldown, groqCooldown] = await Promise.all(
-      (["gemini", "groq"] as const).map((provider) =>
-        CacheModel.findOne({
-          key: quotaCacheKey(provider),
+    const [geminiCooldown, groqCooldown] = config.CLOUD_AI_URL
+      ? [null, null]
+      : await Promise.all(
+          (["gemini", "groq"] as const).map((provider) =>
+            CacheModel.findOne({
+              key: quotaCacheKey(provider),
+              expiresAt: { $gt: new Date() },
+            }).lean(),
+          ),
+        );
+    const cloudCooldown = config.CLOUD_AI_URL
+      ? await CacheModel.findOne({
+          key: quotaCacheKey("cloud"),
           expiresAt: { $gt: new Date() },
-        }).lean(),
-      ),
-    );
+        }).lean()
+      : null;
     for (const [provider, entry] of [
       ["gemini", geminiCooldown],
       ["groq", groqCooldown],
+      ["cloud", cloudCooldown],
     ] as const) {
       if (!entry?.value) continue;
       const until = new Date(entry.expiresAt!).getTime();
       const { message, code, retryable } = entry.value;
-      (provider === "gemini" ? generationGate : groqGate).defer(
+      (provider === "cloud"
+        ? cloudGate
+        : provider === "gemini"
+          ? generationGate
+          : groqGate
+      ).defer(
         new ProviderError(
           message,
           retryable,
@@ -264,22 +284,34 @@ async function tick() {
         until,
       );
     }
-    const availability = generationAvailability([
-      {
-        provider: "gemini",
-        configured: !!config.GEMINI_API_KEY,
-        until: geminiCooldown?.expiresAt?.getTime() ?? 0,
-      },
-      {
-        provider: "groq",
-        configured: !!config.GROQ_API_KEY,
-        until: groqCooldown?.expiresAt?.getTime() ?? 0,
-      },
-    ]);
+    const availability = generationAvailability(
+      config.CLOUD_AI_URL
+        ? [
+            {
+              provider: "cloud",
+              configured: true,
+              until: cloudCooldown?.expiresAt?.getTime() ?? 0,
+            },
+          ]
+        : [
+            {
+              provider: "gemini",
+              configured: !!config.GEMINI_API_KEY,
+              until: geminiCooldown?.expiresAt?.getTime() ?? 0,
+            },
+            {
+              provider: "groq",
+              configured: !!config.GROQ_API_KEY,
+              until: groqCooldown?.expiresAt?.getTime() ?? 0,
+            },
+          ],
+    );
     const cooldown = availability.blocked
-      ? availability.provider === "groq"
-        ? groqCooldown
-        : geminiCooldown
+      ? availability.provider === "cloud"
+        ? cloudCooldown
+        : availability.provider === "groq"
+          ? groqCooldown
+          : geminiCooldown
       : null;
     if (cooldown?.value) {
       const { message, code } = cooldown.value;
@@ -290,7 +322,7 @@ async function tick() {
             stage: "Waiting for AI quota",
             error: message,
             errorCode: code,
-            errorProvider: cooldown === groqCooldown ? "groq" : "gemini",
+            errorProvider: availability.provider,
             nextRetryAt: cooldown.expiresAt,
           },
         },
@@ -299,6 +331,7 @@ async function tick() {
     }
     // A ready provider can resume jobs postponed by the other provider's quota.
     if (
+      (availability.provider === "cloud" && config.CLOUD_AI_URL) ||
       (availability.provider === "groq" && config.GROQ_API_KEY) ||
       (availability.provider === "gemini" && config.GEMINI_API_KEY)
     ) {

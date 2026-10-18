@@ -1,3 +1,5 @@
+// localized-ui
+import { t, useLanguage } from "./i18n";
 import { useState } from "react";
 import type { Submission } from "../../shared/types";
 import { useWorkspace } from "./workspace";
@@ -10,6 +12,7 @@ export default function CohortAssignment({
   record: Submission;
   onSaved: (record: Submission) => void;
 }) {
+  useLanguage();
   const w = useWorkspace(),
     [cohort, setCohort] = useState(record.cohortId ?? ""),
     [name, setName] = useState(""),
@@ -47,23 +50,24 @@ export default function CohortAssignment({
   }
   return (
     <details className="cohort-assignment">
-      <summary>Assign programme cohort</summary>
+      <summary>{t("Assign programme cohort")}</summary>
       <p className="hint">
-        Use the beneficiary's actual programme membership. Cohorts are never
-        inferred from the proposal.
+        {t(
+          "Use the beneficiary's actual programme membership. Cohorts are never inferred from the proposal.",
+        )}
       </p>
       <div className="input-button">
         <select
-          aria-label="Assign programme cohort"
+          aria-label={t("Assign programme cohort")}
           value={cohort}
           disabled={pending}
           onChange={(e) => setCohort(e.target.value)}
         >
-          <option value="">Unassigned cohort</option>
+          <option value="">{t("Unassigned cohort")}</option>
           {w.cohorts.map((c) => (
             <option key={c.id} value={c.id}>
               {c.name}
-              {c.synthetic ? " · demo" : ""}
+              {c.synthetic ? t(" · demo") : ""}
             </option>
           ))}
         </select>
@@ -72,13 +76,13 @@ export default function CohortAssignment({
           disabled={pending || cohort === (record.cohortId ?? "")}
           onClick={() => void save()}
         >
-          Save cohort
+          {t("Save cohort")}
         </button>
       </div>
       <div className="input-button">
         <input
-          aria-label="New programme cohort name"
-          placeholder="Or create the actual programme cohort"
+          aria-label={t("New programme cohort name")}
+          placeholder={t("Or create the actual programme cohort")}
           minLength={2}
           maxLength={100}
           value={name}
@@ -90,7 +94,7 @@ export default function CohortAssignment({
           disabled={pending || name.trim().length < 2}
           onClick={() => void save(true)}
         >
-          Create and assign
+          {t("Create and assign")}
         </button>
       </div>
       {error && <Notice type="error">{error}</Notice>}

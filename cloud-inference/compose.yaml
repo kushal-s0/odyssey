@@ -1,0 +1,50 @@
+services:
+  llm:
+    image: vllm/vllm-openai:v0.31.0
+    restart: unless-stopped
+    gpus: all
+    shm_size: 4gb
+    environment:
+      VLLM_API_KEY: ${CLOUD_SERVICE_TOKEN:?Set CLOUD_SERVICE_TOKEN}
+      HF_HUB_DISABLE_TELEMETRY: "1"
+    command:
+      - --model
+      - Qwen/Qwen3.5-9B
+      - --revision
+      - c202236235762e1c871ad0ccb60c8ee5ba337b9a
+      - --served-model-name
+      - Qwen/Qwen3.5-9B
+      - --language-model-only
+      - --max-model-len
+      - "16384"
+      - --max-num-seqs
+      - "1"
+      - --gpu-memory-utilization
+      - "0.90"
+      - --disable-log-requests
+    volumes:
+      - llm-cache:/root/.cache/huggingface
+    # Deliberately no public port. Only the gateway can call this container.
+  gateway:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - llm
+    environment:
+      CLOUD_SERVICE_TOKEN: ${CLOUD_SERVICE_TOKEN:?Set CLOUD_SERVICE_TOKEN}
+      HF_TOKEN: ${HF_TOKEN:?Accept the IndicConformer model terms and set HF_TOKEN}
+      LLM_URL: http://llm:8000
+      INDIC_MODEL_REVISION: 2a77d305038dfc502fd9464e7d028b90381976cb
+      ASR_CPU_THREADS: "4"
+      CUDA_VISIBLE_DEVICES: ""
+    ports:
+      - "127.0.0.1:8080:8080"
+    cpus: 4
+    mem_limit: 16g
+    volumes:
+      - speech-cache:/models
+    security_opt:
+      - no-new-privileges:true
+volumes:
+  llm-cache:
+  speech-cache:

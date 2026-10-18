@@ -7,7 +7,7 @@ export class ProviderError extends Error {
     public code = "SOURCE_PROCESSING_FAILED",
     public retryAfterMs = 0,
     public requestMade = true,
-    public provider: "gemini" | "groq" = "gemini",
+    public provider: "gemini" | "groq" | "cloud" = "gemini",
   ) {
     super(message);
     this.name = "ProviderError";
@@ -81,6 +81,36 @@ export class RequestGate {
     this.nextStart = 0;
     this.cooldown = null;
   }
+  observe(response: Response, provider: "gemini" | "groq") {
+    // Successful Groq responses expose remaining organization quota too. Stop
+    // before the next request when it is already exhausted, instead of seeking a 429.
+    if (provider !== "groq") return;
+    const requestsEmpty =
+      response.headers.get("x-ratelimit-remaining-requests") === "0";
+    const tokensEmpty =
+      response.headers.get("x-ratelimit-remaining-tokens") === "0";
+    if (!requestsEmpty && !tokensEmpty) return;
+    const wait =
+      Math.max(
+        requestsEmpty
+          ? durationMs(response.headers.get("x-ratelimit-reset-requests"))
+          : 0,
+        tokensEmpty
+          ? durationMs(response.headers.get("x-ratelimit-reset-tokens"))
+          : 0,
+        1000,
+      ) + 2000;
+    this.defer(
+      new ProviderError(
+        "Groq allowance is temporarily exhausted. Your saved submission will resume automatically after the reset.",
+        true,
+        requestsEmpty ? "PROVIDER_DAILY_QUOTA" : "PROVIDER_RATE_LIMITED",
+        wait,
+        false,
+        "groq",
+      ),
+    );
+  }
   private check() {
     if (this.cooldown && this.cooldown.until > Date.now()) {
       const { error, until } = this.cooldown;
@@ -106,9 +136,10 @@ export class RequestGate {
 export const generationGate = new RequestGate();
 export const embeddingGate = new RequestGate();
 export const groqGate = new RequestGate();
+export const cloudGate = new RequestGate();
 export function generationAvailability(
   providers: {
-    provider: "gemini" | "groq";
+    provider: "gemini" | "groq" | "cloud";
     configured: boolean;
     until: number;
   }[],
@@ -130,14 +161,64 @@ export function durationMs(value: string | null) {
       ({ ms: 1, s: 1000, m: 60000, h: 3600000, d: 86400000 }[match[2]!] ?? 0);
   return delay || Math.max(0, Date.parse(value) - Date.now()) || 0;
 }
-export function groqResponseError(response: Response) {
+export function groqResponseError(
+  response: Response,
+  details?: { code?: unknown; message?: unknown },
+) {
+  const upstreamCode = String(details?.code ?? "").toLowerCase();
+  const upstreamMessage = String(details?.message ?? "").toLowerCase();
+  // Never return failed_generation, raw provider text, source content or credentials.
+  if (
+    response.status === 400 &&
+    ["json_validate_failed", "schema_validation_failed"].includes(upstreamCode)
+  )
+    return new ProviderError(
+      "Groq could not finish a valid structured response. Processing can retry; your original submission is saved.",
+      true,
+      "PROVIDER_STRUCTURED_OUTPUT",
+      3000,
+      true,
+      "groq",
+    );
+  if (
+    response.status === 400 &&
+    (upstreamCode === "context_length_exceeded" ||
+      /context (?:length|window)|maximum context/.test(upstreamMessage))
+  )
+    return new ProviderError(
+      "This input exceeds the Groq model's context allowance. Submit a shorter document or split it into sections. Your original is saved.",
+      false,
+      "PROVIDER_INPUT_LIMIT",
+      0,
+      true,
+      "groq",
+    );
+  if (
+    response.status === 400 &&
+    /response_format|json_schema|structured output|strict/.test(upstreamMessage)
+  )
+    return new ProviderError(
+      "The configured Groq model rejected the structured-output settings. Use a model supporting strict JSON schema, such as openai/gpt-oss-120b, and retry.",
+      false,
+      "PROVIDER_CONFIGURATION",
+      0,
+      true,
+      "groq",
+    );
   const limited = response.status === 429;
   const daily =
-    limited && response.headers.get("x-ratelimit-remaining-requests") === "0";
+    limited &&
+    (response.headers.get("x-ratelimit-remaining-requests") === "0" ||
+      /tokens per day|requests per day|\b[tr]pd\b/.test(upstreamMessage));
+  const reportedWait =
+    /try again in ([\d.]+(?:ms|s|m|h|d)(?:[\d.]+(?:ms|s|m|h|d))*)/.exec(
+      upstreamMessage,
+    )?.[1];
   const delay = limited
     ? Math.max(
         60000,
         durationMs(response.headers.get("retry-after")),
+        durationMs(reportedWait ?? null),
         daily
           ? durationMs(response.headers.get("x-ratelimit-reset-requests"))
           : durationMs(response.headers.get("x-ratelimit-reset-tokens")),
@@ -159,7 +240,13 @@ export function groqResponseError(response: Response) {
       : response.status >= 500
         ? "PROVIDER_TEMPORARILY_UNAVAILABLE"
         : "PROVIDER_CONFIGURATION",
-    delay,
+    daily &&
+      delay === 62000 &&
+      !reportedWait &&
+      !response.headers.get("retry-after") &&
+      !response.headers.get("x-ratelimit-reset-requests")
+      ? 86402000
+      : delay,
     true,
     "groq",
   );
@@ -169,10 +256,22 @@ export async function checkResponse(
   gate: RequestGate,
   provider: "gemini" | "groq" = "gemini",
 ) {
-  if (response.ok) return;
+  if (response.ok) {
+    gate.observe(response, provider);
+    return;
+  }
   const error =
     provider === "groq"
-      ? groqResponseError(response)
+      ? groqResponseError(
+          response,
+          await response
+            .json()
+            .then((body) => ({
+              code: body?.error?.code,
+              message: body?.error?.message,
+            }))
+            .catch(() => undefined),
+        )
       : await providerResponseError(response);
   if (response.status === 429)
     gate.defer(error, Date.now() + (error.retryAfterMs || 60000));

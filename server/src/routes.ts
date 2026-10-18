@@ -255,6 +255,15 @@ router.post(
         new Error("Text submissions cannot include a file."),
         { status: 400 },
       );
+    if (
+      config.CLOUD_AI_URL &&
+      data.inputType === "audio" &&
+      data.language === "auto"
+    )
+      throw Object.assign(
+        new Error("Select the recording language for cloud speech processing."),
+        { status: 400 },
+      );
     let cohort: any = null;
     if (data.cohortId) {
       if (req.actor!.role !== "assessor")
@@ -352,12 +361,10 @@ router.post(
       { new: true },
     );
     if (!record) {
-      res
-        .status(409)
-        .json({
-          error:
-            "Submission changed or was not found. Refresh before assigning a cohort.",
-        });
+      res.status(409).json({
+        error:
+          "Submission changed or was not found. Refresh before assigning a cohort.",
+      });
       return;
     }
     await AuditModel.create({
@@ -482,6 +489,11 @@ router.post(
       })
       .strict()
       .parse(req.body);
+    if (config.CLOUD_AI_URL && req.file && parsed.language === "auto")
+      throw Object.assign(
+        new Error("Select the recording language for cloud speech processing."),
+        { status: 400 },
+      );
     const record = await SubmissionModel.findOne({
       _id: id.parse(req.params.id),
       ...submissionScope(req.actor!),

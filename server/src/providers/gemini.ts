@@ -14,6 +14,8 @@ import {
   generationInterval,
 } from "./quota.js";
 import { generateGroq } from "./groq.js";
+import { generateCloud, readCloudPdf } from "./cloud.js";
+import { fixedQuestionTranslations } from "../../../shared/localized-questions.js";
 import { extractPdfPages, type PdfPageText } from "./pdf-text.js";
 export { ProviderError } from "./quota.js";
 const BASE = "https://generativelanguage.googleapis.com/v1beta";
@@ -23,6 +25,26 @@ async function generate(
   schema: unknown,
   fallbackText?: () => Promise<string>,
 ): Promise<{ value: unknown; model: string }> {
+  if (config.CLOUD_AI_URL) {
+    const textParts = parts.filter((p: any) => typeof p?.text === "string") as {
+      text: string;
+    }[];
+    if (textParts.length !== parts.length)
+      throw new ProviderError(
+        "The private cloud path requires PDF reading or speech transcription before extraction.",
+        false,
+        "PROVIDER_CONFIGURATION",
+        0,
+        false,
+        "cloud",
+      );
+    // Cloud mode is exclusive: participant content is never silently sent to another provider.
+    return generateCloud(
+      textParts.map((p) => p.text).join("\n"),
+      instruction,
+      schema,
+    );
+  }
   try {
     return await generateGemini(parts, instruction, schema);
   } catch (error) {
@@ -195,14 +217,19 @@ export async function readSource(input: {
         })),
       ),
     });
-  if (input.buffer)
+  const cloudPdf =
+    config.CLOUD_AI_URL && input.kind === "pdf" && input.buffer
+      ? await readCloudPdf(input.buffer)
+      : null;
+  if (cloudPdf) parts.push({ text: JSON.stringify({ pages: cloudPdf.pages }) });
+  if (input.buffer && !cloudPdf)
     parts.push({
       inlineData: {
         mimeType: input.mime,
         data: input.buffer.toString("base64"),
       },
     });
-  let fallbackPages: PdfPageText[] | undefined;
+  let fallbackPages: PdfPageText[] | undefined = cloudPdf?.pages;
   const generated = await generate(
     parts,
     instructions,
@@ -242,7 +269,7 @@ export async function readSource(input: {
         text.normalize("NFKC").replace(/\s+/g, " ").trim();
       if (!page || !normalize(page.text).includes(normalize(s.originalText))) {
         warnings.push(
-          "A Groq PDF quotation did not match its cited page and was withheld.",
+          "A Groq/cloud PDF quotation did not match its cited page and was withheld.",
         );
         return [];
       }
@@ -313,9 +340,13 @@ export async function readSource(input: {
     warnings.push(
       "Groq hosted fallback was used because Gemini was unavailable. Source citations and evidence checks still apply.",
     );
-  if (fallbackPages)
+  if (fallbackPages && !cloudPdf)
     warnings.push(
       "Only the PDF's selectable text was read by the fallback. Images and handwriting require separate review.",
+    );
+  if (cloudPdf?.ocrPages.length)
+    warnings.push(
+      "Scanned PDF pages were read with cloud OCR. Compare their text against the original pages before relying on it.",
     );
   return {
     language: parsed.language,
@@ -391,6 +422,9 @@ export async function translateQuestions(
   language: string,
 ) {
   if (/english|^en/i.test(language)) return [];
+  // Known input languages use bundled fixed copy, never another generation call.
+  const fixed = fixedQuestionTranslations(questions, language);
+  if (fixed !== null) return fixed;
   const schema = {
     type: "object",
     properties: {
@@ -431,6 +465,15 @@ export async function embed(
   text: string,
   task: "SEMANTIC_SIMILARITY" | "CLASSIFICATION" = "SEMANTIC_SIMILARITY",
 ): Promise<number[]> {
+  if (config.CLOUD_AI_URL)
+    throw new ProviderError(
+      "External embeddings are disabled in private cloud mode. Keyword matching remains available.",
+      false,
+      "OPTIONAL_EMBEDDINGS_DISABLED",
+      0,
+      false,
+      "cloud",
+    );
   if (!config.GEMINI_API_KEY)
     throw new ProviderError("Embedding API is not configured.");
   await embeddingGate.enter(generationInterval());

@@ -22,7 +22,11 @@
     "setup": "node scripts/init-env.mjs",
     "check:connections": "tsx server/src/scripts/check-connections.ts",
     "check:pipeline": "tsx server/src/scripts/check-pipeline.ts",
-    "check:groq": "tsx server/src/scripts/check-groq.ts"
+    "check:groq": "tsx server/src/scripts/check-groq.ts",
+    "check:api": "tsx server/src/scripts/check-api.ts",
+    "check:cloud": "tsx server/src/scripts/check-cloud.ts",
+    "i18n:catalog": "node scripts/catalog-ui.mjs",
+    "i18n:translate": "tsx scripts/translate-ui.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.64.1",

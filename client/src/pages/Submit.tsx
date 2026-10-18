@@ -1,3 +1,5 @@
+// localized-ui
+import { t, useLanguage } from "../i18n";
 import { useState, useRef, useEffect, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -23,6 +25,7 @@ import {
 import InputCompanion from "../InputCompanion";
 import GuidedIdeaInputs, { EMPTY_GUIDED_INPUT } from "../GuidedIdeaInputs";
 export default function Submit() {
+  useLanguage();
   const w = useWorkspace(),
     navigate = useNavigate();
   const [type, setType] = useState<"text" | "pdf" | "audio">("text"),
@@ -147,6 +150,14 @@ export default function Submit() {
       );
       return;
     }
+    if (
+      type === "audio" &&
+      w.session?.health.audioProvider === "cloud" &&
+      language === "auto"
+    ) {
+      setError(t("Select the recording language for cloud speech processing."));
+      return;
+    }
     if (type !== "text" && !file) {
       setError("Please add a PDF or recording.");
       return;
@@ -192,15 +203,17 @@ export default function Submit() {
   return (
     <>
       <PageIntro
-        eyebrow="THE NEXT BUSINESS STARTS WITH AN IDEA"
-        title="Tell us what you have in mind."
-        description="Write it, say it, or share a document. We’ll help bring the details together."
+        eyebrow={t("THE NEXT BUSINESS STARTS WITH AN IDEA")}
+        title={t("Tell us what you have in mind.")}
+        description={t(
+          "Write it, say it, or share a document. We’ll help bring the details together.",
+        )}
       />
       {!available && (
         <Notice>
-          This is an example workspace.{" "}
-          <Link to="/settings">Connect Atlas and sign in</Link> to save and
-          assess your own submissions.
+          {t("This is an example workspace.")}{" "}
+          <Link to="/settings">{t("Connect Atlas and sign in")}</Link>{" "}
+          {t("to save and assess your own submissions.")}
         </Notice>
       )}
       <form ref={formRef} onSubmit={submit} className="submit-layout">
@@ -209,38 +222,40 @@ export default function Submit() {
             <div className="step-heading">
               <span>01</span>
               <div>
-                <h2>A few details first</h2>
-                <p>Keep cohort membership as supplied by your programme.</p>
+                <h2>{t("A few details first")}</h2>
+                <p>
+                  {t("Keep cohort membership as supplied by your programme.")}
+                </p>
               </div>
             </div>
             <div className="form-grid">
               <label>
-                Entrepreneur name
+                {t("Entrepreneur name")}
                 <input
                   id="submission-name"
                   required
                   minLength={2}
                   maxLength={100}
-                  placeholder="Full name"
+                  placeholder={t("Full name")}
                   value={name}
                   readOnly={entrepreneur}
                   onChange={(e) => setName(e.target.value)}
                 />
               </label>
               <label>
-                Idea title
+                {t("Idea title")}
                 <input
                   id="submission-title"
                   required
                   minLength={3}
                   maxLength={150}
-                  placeholder="e.g. A neighbourhood tailoring studio"
+                  placeholder={t("e.g. A neighbourhood tailoring studio")}
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </label>
               <label>
-                Submission language
+                {t("Submission language")}
                 <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
@@ -251,15 +266,24 @@ export default function Submit() {
                     </option>
                   ))}
                 </select>
+                {type === "audio" &&
+                  w.session?.health.audioProvider === "cloud" && (
+                    <small>
+                      {t(
+                        "Select the recording language for cloud speech processing.",
+                      )}
+                    </small>
+                  )}
               </label>
               {!entrepreneur && (
                 <label>
-                  Programme cohort <span className="optional">optional</span>
+                  {t("Programme cohort")}{" "}
+                  <span className="optional">{t("optional")}</span>
                   <select
                     value={cohort}
                     onChange={(e) => setCohort(e.target.value)}
                   >
-                    <option value="">Unassigned</option>
+                    <option value="">{t("Unassigned")}</option>
                     {w.mode === "live" &&
                       w.cohorts.map((c) => (
                         <option value={c.id} key={c.id}>
@@ -275,8 +299,8 @@ export default function Submit() {
             <div className="step-heading">
               <span>02</span>
               <div>
-                <h2>Share your business idea</h2>
-                <p>Choose the format that works best for you.</p>
+                <h2>{t("Share your business idea")}</h2>
+                <p>{t("Choose the format that works best for you.")}</p>
               </div>
             </div>
             <div className="input-tabs">
@@ -296,7 +320,7 @@ export default function Submit() {
                   }}
                 >
                   <Icon size={17} />
-                  {label}
+                  {t(label)}
                 </button>
               ))}
             </div>
@@ -311,7 +335,7 @@ export default function Submit() {
                       setError("");
                     }}
                   >
-                    Guided form
+                    {t("Guided form")}
                   </button>
                   <button
                     type="button"
@@ -321,7 +345,7 @@ export default function Submit() {
                       setError("");
                     }}
                   >
-                    Free text
+                    {t("Free text")}
                   </button>
                 </div>
                 {writeMode === "guided" ? (
@@ -337,7 +361,7 @@ export default function Submit() {
                 ) : (
                   <>
                     <label className="text-input-label" htmlFor="idea-text">
-                      Your idea, in your own words
+                      {t("Your idea, in your own words")}
                     </label>
                     <textarea
                       id="idea-text"
@@ -347,11 +371,13 @@ export default function Submit() {
                       maxLength={20000}
                       value={text}
                       onChange={(e) => setText(e.target.value)}
-                      placeholder="What would your business offer? Who are your customers? Where would it operate? Share what you know about costs, prices, suppliers, and competition. It’s okay if you don’t have every answer yet."
+                      placeholder={t(
+                        "What would your business offer? Who are your customers? Where would it operate? Share what you know about costs, prices, suppliers, and competition. It’s okay if you don’t have every answer yet.",
+                      )}
                     />
                     <div className="textarea-foot">
                       <span>
-                        You can write in any of the supported languages.
+                        {t("You can write in any of the supported languages.")}
                       </span>
                       <span>{text.length.toLocaleString()} / 20,000</span>
                     </div>
@@ -370,7 +396,7 @@ export default function Submit() {
                         setFile(null);
                       }}
                     >
-                      Record audio
+                      {t("Record audio")}
                     </button>
                     <button
                       type="button"
@@ -380,7 +406,7 @@ export default function Submit() {
                         setFile(null);
                       }}
                     >
-                      Upload recording
+                      {t("Upload recording")}
                     </button>
                   </div>
                 )}
@@ -411,8 +437,8 @@ export default function Submit() {
                         </div>
                         <h3>{file.name}</h3>
                         <p>
-                          {(file.size / 1024 / 1024).toFixed(2)} MB · ready to
-                          upload
+                          {(file.size / 1024 / 1024).toFixed(2)}{" "}
+                          {t("MB · ready to upload")}
                         </p>
                         <button
                           type="button"
@@ -420,7 +446,7 @@ export default function Submit() {
                           onClick={() => setFile(null)}
                         >
                           <X size={14} />
-                          Remove file
+                          {t("Remove file")}
                         </button>
                       </>
                     ) : (
@@ -429,16 +455,17 @@ export default function Submit() {
                           <Upload size={25} />
                         </div>
                         <h3>
-                          Drop your {type === "pdf" ? "document" : "recording"}{" "}
-                          here
+                          {t("Drop your")}{" "}
+                          {type === "pdf" ? t("document") : t("recording")}{" "}
+                          {t("here")}
                         </h3>
-                        <p>or choose a file from your device</p>
+                        <p>{t("or choose a file from your device")}</p>
                         <button
                           type="button"
                           className="button secondary"
                           onClick={() => fileRef.current?.click()}
                         >
-                          Browse files
+                          {t("Browse files")}
                         </button>
                         <span className="hint">
                           {type === "pdf"
@@ -451,7 +478,7 @@ export default function Submit() {
                       ref={fileRef}
                       type="file"
                       className="sr-only"
-                      aria-label="Choose submission file"
+                      aria-label={t("Choose submission file")}
                       accept={
                         type === "pdf"
                           ? ".pdf"
@@ -467,7 +494,7 @@ export default function Submit() {
           <div className="form-submit-bar">
             <span>
               <ShieldCheck size={15} />
-              Your original submission is preserved.
+              {t("Your original submission is preserved.")}
             </span>
             <button
               className="button secondary"
@@ -475,7 +502,7 @@ export default function Submit() {
               disabled={pending}
               onClick={previewInput}
             >
-              Preview submission
+              {t("Preview submission")}
             </button>
             <button
               className="button primary"
@@ -487,7 +514,7 @@ export default function Submit() {
               ) : (
                 <ArrowRight size={16} />
               )}
-              Submit for assessment
+              {t("Submit for assessment")}{" "}
             </button>
           </div>
           {error && (
@@ -501,49 +528,55 @@ export default function Submit() {
             <InputCompanion value={guided} onPreview={previewInput} />
           ) : (
             <>
-              <div className="eyebrow">WHAT HAPPENS NEXT</div>
-              <h2>An idea is a starting point.</h2>
+              <div className="eyebrow">{t("WHAT HAPPENS NEXT")}</div>
+              <h2>{t("An idea is a starting point.")}</h2>
               <p>
-                You don’t need a polished business plan. Share what you know,
-                and we’ll help identify what needs a closer look.
+                {t(
+                  "You don’t need a polished business plan. Share what you know, and we’ll help identify what needs a closer look.",
+                )}
               </p>
               <ol className="process-list">
                 <li>
                   <span>1</span>
                   <div>
-                    <strong>Understand your submission</strong>
+                    <strong>{t("Understand your submission")}</strong>
                     <p>
-                      Read or transcribe your original and translate it into
-                      English.
+                      {t(
+                        "Read or transcribe your original and translate it into English.",
+                      )}
                     </p>
                   </div>
                 </li>
                 <li>
                   <span>2</span>
                   <div>
-                    <strong>Bring the details together</strong>
+                    <strong>{t("Bring the details together")}</strong>
                     <p>
-                      Organise the business, customers, resources, and financial
-                      assumptions.
+                      {t(
+                        "Organise the business, customers, resources, and financial assumptions.",
+                      )}
                     </p>
                   </div>
                 </li>
                 <li>
                   <span>3</span>
                   <div>
-                    <strong>Ask useful questions</strong>
+                    <strong>{t("Ask useful questions")}</strong>
                     <p>
-                      Clarify gaps and conflicting answers without filling them
-                      in for you.
+                      {t(
+                        "Clarify gaps and conflicting answers without filling them in for you.",
+                      )}
                     </p>
                   </div>
                 </li>
                 <li>
                   <span>4</span>
                   <div>
-                    <strong>Support the assessor</strong>
+                    <strong>{t("Support the assessor")}</strong>
                     <p>
-                      Provide a consistent first review for the programme team.
+                      {t(
+                        "Provide a consistent first review for the programme team.",
+                      )}
                     </p>
                   </div>
                 </li>
@@ -551,8 +584,9 @@ export default function Submit() {
               <div className="aside-note">
                 <ShieldCheck size={20} />
                 <p>
-                  This is a first assessment. It does not predict business
-                  success or determine funding eligibility.
+                  {t(
+                    "This is a first assessment. It does not predict business success or determine funding eligibility.",
+                  )}
                 </p>
               </div>
             </>
@@ -561,12 +595,12 @@ export default function Submit() {
       </form>
       {preview && (
         <Modal
-          title="Review your submission"
+          title={t("Review your submission")}
           onClose={() => setPreview(null)}
           wide
         >
           <div className="modal-content submission-preview">
-            <span className="eyebrow">STANDARDIZED INPUT</span>
+            <span className="eyebrow">{t("STANDARDIZED INPUT")}</span>
             <h3>{preview.title}</h3>
             <p>
               {preview.name} ·{" "}
@@ -574,9 +608,9 @@ export default function Submit() {
                 ?.label ?? preview.language}
             </p>
             <p className="hint">
-              Review the text prepared from your entries before submitting.
-              Blank answers stay unknown. You can continue editing if anything
-              needs to change.
+              {t(
+                "Review the text prepared from your entries before submitting. Blank answers stay unknown. You can continue editing if anything needs to change.",
+              )}
             </p>
             <pre>{preview.text}</pre>
             <div className="modal-actions">
@@ -590,14 +624,14 @@ export default function Submit() {
                   )
                 }
               >
-                Download summary
+                {t("Download summary")}
               </button>
               <button
                 type="button"
                 className="button secondary"
                 onClick={() => setPreview(null)}
               >
-                Continue editing
+                {t("Continue editing")}
               </button>
               <button
                 type="button"
@@ -608,7 +642,7 @@ export default function Submit() {
                   formRef.current?.requestSubmit();
                 }}
               >
-                Submit for assessment <ArrowRight size={14} />
+                {t("Submit for assessment")} <ArrowRight size={14} />
               </button>
             </div>
           </div>

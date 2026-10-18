@@ -1,9 +1,12 @@
+// localized-ui
+import { t, useLanguage } from "./i18n";
 import { useState, type FormEvent } from "react";
 import { LogOut, KeyRound, Loader2 } from "lucide-react";
 import { useWorkspace } from "./workspace";
 import { api } from "./api";
 import { changePasswordSchema } from "../../shared/input-rules";
 export default function AccountSecurity() {
+  useLanguage();
   const w = useWorkspace();
   const [currentPassword, setCurrentPassword] = useState(""),
     [newPassword, setNewPassword] = useState(""),
@@ -51,15 +54,16 @@ export default function AccountSecurity() {
     <section className="panel account-security">
       <div className="panel-heading">
         <div>
-          <h2>Account security</h2>
-          <p>Manage your password and signed-in sessions.</p>
+          <h2>{t("Account security")}</h2>
+          <p>{t("Manage your password and signed-in sessions.")}</p>
         </div>
       </div>
       <div className="settings-body">
         <div className="session-actions">
           <p>
-            Sign out of this browser, or revoke all sessions for your account
-            across devices. Sessions expire after eight hours.
+            {t(
+              "Sign out of this browser, or revoke all sessions for your account across devices. Sessions expire after eight hours.",
+            )}
           </p>
           <div className="security-buttons">
             <button
@@ -68,7 +72,7 @@ export default function AccountSecurity() {
               onClick={() => void w.signOut().catch(() => {})}
             >
               <LogOut size={15} />
-              Sign out of this browser
+              {t("Sign out of this browser")}
             </button>
             <button
               className="button secondary"
@@ -76,25 +80,26 @@ export default function AccountSecurity() {
               onClick={() => void w.signOut(true).catch(() => {})}
             >
               <LogOut size={15} />
-              Sign out all devices
+              {t("Sign out all devices")}
             </button>
           </div>
         </div>
         <form onSubmit={change} className="password-change-form">
           <h3>
-            <KeyRound size={16} /> Change password
+            <KeyRound size={16} /> {t("Change password")}
           </h3>
           <p className="hint">
-            Changing your password signs out all devices. You will need to sign
-            in again.
+            {t(
+              "Changing your password signs out all devices. You will need to sign in again.",
+            )}
           </p>
           {error && (
             <div className="notice error" role="alert">
-              {error}
+              {t(error)}
             </div>
           )}
           <label>
-            Current password
+            {t("Current password")}
             <input
               type="password"
               autoComplete="current-password"
@@ -104,7 +109,7 @@ export default function AccountSecurity() {
             />
           </label>
           <label>
-            New password
+            {t("New password")}
             <input
               type="password"
               autoComplete="new-password"
@@ -114,7 +119,7 @@ export default function AccountSecurity() {
             />
           </label>
           <label>
-            Confirm new password
+            {t("Confirm new password")}
             <input
               type="password"
               autoComplete="new-password"
@@ -129,7 +134,7 @@ export default function AccountSecurity() {
             ) : (
               <KeyRound size={15} />
             )}{" "}
-            Update password
+            {t("Update password")}
           </button>
         </form>
       </div>

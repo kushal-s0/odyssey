@@ -1,3 +1,5 @@
+// localized-ui
+import { t, useLanguage } from "./i18n";
 import { FINANCIAL_FIELDS } from "../../shared/input-rules";
 
 export const EMPTY_GUIDED_INPUT = {
@@ -90,6 +92,7 @@ export default function GuidedIdeaInputs({
   onChange: (value: GuidedDraft) => void;
   errors: Record<string, string>;
 }) {
+  useLanguage();
   const update = (key: keyof GuidedDraft, text: string) =>
     onChange({ ...value, [key]: text });
   const error = (key: string) =>
@@ -101,16 +104,18 @@ export default function GuidedIdeaInputs({
   return (
     <div className="guided-input">
       <p className="hint">
-        Only products and services are required here. Leave other answers blank
-        when you do not know; unknown amounts are different from zero.
+        {t(
+          "Only products and services are required here. Leave other answers blank when you do not know; unknown amounts are different from zero.",
+        )}
       </p>
       <div className="guided-fields">
         <div className="guided-section-heading" id="guided-section-business">
-          <span className="eyebrow">01 · BUSINESS & CUSTOMERS</span>
-          <h3>What will your business do?</h3>
+          <span className="eyebrow">{t("01 · BUSINESS & CUSTOMERS")}</span>
+          <h3>{t("What will your business do?")}</h3>
           <p>
-            Describe the offering, the people it serves, and the need it
-            addresses.
+            {t(
+              "Describe the offering, the people it serves, and the need it addresses.",
+            )}
           </p>
         </div>
         {fields
@@ -120,9 +125,9 @@ export default function GuidedIdeaInputs({
           )
           .map((field) => (
             <label key={field.key}>
-              {field.label}
+              {t(field.label)}
               {!("required" in field) && (
-                <span className="optional"> optional</span>
+                <span className="optional"> {t("optional")}</span>
               )}
               <textarea
                 id={`guided-${field.key}`}
@@ -132,7 +137,7 @@ export default function GuidedIdeaInputs({
                 required={"required" in field}
                 minLength={"required" in field ? 10 : undefined}
                 maxLength={field.max}
-                placeholder={field.placeholder}
+                placeholder={t(field.placeholder)}
                 aria-invalid={!!errors[field.key]}
                 aria-describedby={
                   errors[field.key] ? `guided-${field.key}-error` : undefined
@@ -145,9 +150,9 @@ export default function GuidedIdeaInputs({
             </label>
           ))}
         <div className="guided-section-heading" id="guided-section-operations">
-          <span className="eyebrow">02 · OPERATIONS</span>
-          <h3>How will you deliver it?</h3>
-          <p>Share the resources, sourcing and skills you know about.</p>
+          <span className="eyebrow">{t("02 · OPERATIONS")}</span>
+          <h3>{t("How will you deliver it?")}</h3>
+          <p>{t("Share the resources, sourcing and skills you know about.")}</p>
         </div>
         {fields
           .filter((field) =>
@@ -155,15 +160,15 @@ export default function GuidedIdeaInputs({
           )
           .map((field) => (
             <label key={field.key}>
-              {field.label}
-              <span className="optional"> optional</span>
+              {t(field.label)}
+              <span className="optional"> {t("optional")}</span>
               <textarea
                 id={`guided-${field.key}`}
                 rows={2}
                 value={value[field.key]}
                 onChange={(event) => update(field.key, event.target.value)}
                 maxLength={field.max}
-                placeholder={field.placeholder}
+                placeholder={t(field.placeholder)}
                 aria-invalid={!!errors[field.key]}
                 aria-describedby={
                   errors[field.key] ? `guided-${field.key}-error` : undefined
@@ -177,23 +182,24 @@ export default function GuidedIdeaInputs({
           ))}
       </div>
       <div className="guided-section-heading" id="guided-section-finances">
-        <span className="eyebrow">03 · FINANCES</span>
-        <h3>Make your assumptions visible.</h3>
+        <span className="eyebrow">{t("03 · FINANCES")}</span>
+        <h3>{t("Make your assumptions visible.")}</h3>
       </div>
       <p className="hint">
-        Amounts are in Indian rupees (INR). Sales and operating costs are
-        monthly projections. Enter 0 only if the amount is genuinely zero.
+        {t(
+          "Amounts are in Indian rupees (INR). Sales and operating costs are monthly projections. Enter 0 only if the amount is genuinely zero.",
+        )}
       </p>
       <div className="form-grid">
         {FINANCIAL_FIELDS.map(([key, label]) => (
           <label key={key}>
-            {label} (₹{key.startsWith("monthly") ? "/month" : ""}){" "}
-            <span className="optional">optional</span>
+            {t(label)} (₹{key.startsWith("monthly") ? "/month" : ""}){" "}
+            <span className="optional"> {t("optional")}</span>
             <input
               id={`guided-${key}`}
               inputMode="decimal"
               maxLength={24}
-              placeholder="Not known yet"
+              placeholder={t("Not known yet")}
               value={value[key]}
               onChange={(event) => update(key, event.target.value)}
               aria-invalid={!!errors[key]}
@@ -203,18 +209,18 @@ export default function GuidedIdeaInputs({
           </label>
         ))}
         <label>
-          Price unit{" "}
+          {t("Price unit")}{" "}
           {value.unitPrice.trim() ? (
-            <span className="hint">required with a price</span>
+            <span className="hint">{t("required with a price")}</span>
           ) : (
-            <span className="optional">optional</span>
+            <span className="optional"> {t("optional")}</span>
           )}
           <input
             id="guided-priceUnit"
             maxLength={80}
             value={value.priceUnit}
             onChange={(event) => update("priceUnit", event.target.value)}
-            placeholder="e.g. meal, garment or litre"
+            placeholder={t("e.g. meal, garment or litre")}
             aria-invalid={!!errors.priceUnit}
             aria-describedby={
               errors.priceUnit ? "guided-priceUnit-error" : undefined
@@ -224,11 +230,11 @@ export default function GuidedIdeaInputs({
         </label>
       </div>
       <div className="guided-section-heading" id="guided-section-research">
-        <span className="eyebrow">04 · MARKET RESEARCH</span>
-        <h3>What have you checked so far?</h3>
+        <span className="eyebrow">{t("04 · MARKET RESEARCH")}</span>
+        <h3>{t("What have you checked so far?")}</h3>
       </div>
       <label>
-        Research status
+        {t("Research status")}
         <select
           id="guided-researchStatus"
           value={value.researchStatus}
@@ -238,19 +244,19 @@ export default function GuidedIdeaInputs({
             errors.researchStatus ? "guided-researchStatus-error" : undefined
           }
         >
-          <option value="unknown">Not known yet</option>
-          <option value="not_done">Not conducted</option>
-          <option value="planned">Planned, not conducted yet</option>
-          <option value="done">Conducted</option>
+          <option value="unknown">{t("Not known yet")}</option>
+          <option value="not_done">{t("Not conducted")}</option>
+          <option value="planned">{t("Planned, not conducted yet")}</option>
+          <option value="done">{t("Conducted")}</option>
         </select>
         {error("researchStatus")}
       </label>
       <label>
-        Research details{" "}
+        {t("Research details")}{" "}
         <span className="optional">
           {value.researchStatus === "done"
-            ? "required for conducted research"
-            : "optional"}
+            ? t("required for conducted research")
+            : t("optional")}
         </span>
         <textarea
           id="guided-researchDetails"
@@ -260,7 +266,9 @@ export default function GuidedIdeaInputs({
           required={value.researchStatus === "done"}
           value={value.researchDetails}
           onChange={(event) => update("researchDetails", event.target.value)}
-          placeholder="If conducted, describe who you consulted, how and what you learned."
+          placeholder={t(
+            "If conducted, describe who you consulted, how and what you learned.",
+          )}
           aria-invalid={!!errors.researchDetails}
           aria-describedby={
             errors.researchDetails ? "guided-researchDetails-error" : undefined

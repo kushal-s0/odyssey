@@ -1,3 +1,5 @@
+// localized-ui
+import { t, useLanguage } from "../i18n";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import {
@@ -24,6 +26,7 @@ import {
 import { csvCell, download } from "../api";
 import PersonalDashboard from "./PersonalDashboard";
 export default function Dashboard() {
+  useLanguage();
   const w = useWorkspace(),
     [cohort, setCohort] = useState("");
   const items = w.submissions.filter((s) => !cohort || s.cohortId === cohort);
@@ -95,30 +98,32 @@ export default function Dashboard() {
   return (
     <>
       <PageIntro
-        eyebrow="YOUR ASSESSOR WORKSPACE"
-        title="A clearer view of every idea."
-        description="Understand proposals. Find the gaps. Help the next business take shape."
+        eyebrow={t("YOUR ASSESSOR WORKSPACE")}
+        title={t("A clearer view of every idea.")}
+        description={t(
+          "Understand proposals. Find the gaps. Help the next business take shape.",
+        )}
         action={
           <Link to="/submit" className="button primary">
             <Plus size={16} />
-            Submit an idea
+            {t("Submit an idea")}
           </Link>
         }
       />
       <div className="dashboard-toolbar">
         <div className="section-tabs">
-          <span className="section-tab active">Programme overview</span>
+          <span className="section-tab active">{t("Programme overview")}</span>
           <Link className="section-tab" to="/comparisons">
-            Cohort insights <ArrowUpRight size={13} />
+            {t("Cohort insights")} <ArrowUpRight size={13} />
           </Link>
         </div>
         <div className="toolbar-actions">
           <select
-            aria-label="Filter by cohort"
+            aria-label={t("Filter by cohort")}
             value={cohort}
             onChange={(e) => setCohort(e.target.value)}
           >
-            <option value="">All cohorts</option>
+            <option value="">{t("All cohorts")}</option>
             {w.cohorts.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -131,13 +136,13 @@ export default function Dashboard() {
             disabled={!total}
           >
             <ArrowDownToLine size={14} />
-            Export
+            {t("Export")}
           </button>
         </div>
       </div>
       <div className="metric-grid">
         <Metric
-          label="Ideas submitted"
+          label={t("Ideas submitted")}
           value={String(total).padStart(2, "0")}
           icon={FileText}
           foot={`${new Set(items.map((s) => s.inputType)).size} submission formats`}
@@ -154,7 +159,7 @@ export default function Dashboard() {
           }
         />
         <Metric
-          label="Assessment available"
+          label={t("Assessment available")}
           value={String(assessable).padStart(2, "0")}
           icon={CheckCheck}
           foot="Provisional · evidence-based"
@@ -166,14 +171,14 @@ export default function Dashboard() {
           }
         />
         <Metric
-          label="Need clarification"
+          label={t("Need clarification")}
           value={String(repair).padStart(2, "0")}
           icon={MessageSquare}
           foot="An opportunity for a better answer"
-          visual={<span className="metric-pill">Review queue</span>}
+          visual={<span className="metric-pill">{t("Review queue")}</span>}
         />
         <Metric
-          label="Information completeness"
+          label={t("Information completeness")}
           value={`${completion}%`}
           icon={ScanLine}
           foot="Average across submissions"
@@ -189,20 +194,25 @@ export default function Dashboard() {
           <div className="panel-heading">
             <div>
               <h2>
-                Recent submissions <span className="count-pill">{total}</span>
+                {t("Recent submissions")}{" "}
+                <span className="count-pill">{total}</span>
               </h2>
-              <p>A first look at the ideas coming through your programme.</p>
+              <p>
+                {t("A first look at the ideas coming through your programme.")}
+              </p>
             </div>
             <Link to="/submissions" className="text-link">
-              View all <ArrowRight size={14} />
+              {t("View all")} <ArrowRight size={14} />
             </Link>
           </div>
           <SubmissionsTable items={items.slice(0, 5)} compact />
           <div className="panel-footer">
             <ShieldCheck size={14} />
             {w.mode === "examples"
-              ? "Illustrative examples · synthetic profiles and cohorts"
-              : "Scores reflect available evidence and need assessor interpretation."}
+              ? t("Illustrative examples · synthetic profiles and cohorts")
+              : t(
+                  "Scores reflect available evidence and need assessor interpretation.",
+                )}
           </div>
         </section>
         <aside className="insight-column">
@@ -211,21 +221,22 @@ export default function Dashboard() {
               <span className="line-icon">
                 <MessageSquare size={21} />
               </span>
-              <span className="small-label">EVIDENCE REPAIR LOOP</span>
+              <span className="small-label">{t("EVIDENCE REPAIR LOOP")}</span>
             </div>
             <h2>
-              Good questions.
+              {t("Good questions.")}
               <br />
-              Stronger proposals.
+              {t("Stronger proposals.")}
             </h2>
             <p>
-              Turn missing information into a useful next conversation, in the
-              beneficiary’s own language.
+              {t(
+                "Turn missing information into a useful next conversation, in the beneficiary’s own language.",
+              )}
             </p>
             <div className="dark-card-divider" />
             <div className="dark-card-bottom">
               <span>
-                <strong>{repair}</strong> ideas to clarify
+                <strong>{repair}</strong> {t("ideas to clarify")}
               </span>
               <Link
                 to={
@@ -233,7 +244,7 @@ export default function Dashboard() {
                     ? `/submissions/${pending[0].id}?repair=1`
                     : "/submissions"
                 }
-                aria-label="Open clarification queue"
+                aria-label={t("Open clarification queue")}
                 className="light-icon"
               >
                 <ArrowUpRight size={20} />
@@ -242,31 +253,35 @@ export default function Dashboard() {
           </section>
           <section className="panel language-panel">
             <div className="panel-heading">
-              <h3>Ideas, in their own words.</h3>
+              <h3>{t("Ideas, in their own words.")}</h3>
               <Languages size={19} />
             </div>
             <div className="language-count">
               {languages.toString().padStart(2, "0")}
-              <span>languages represented</span>
+              <span>{t("languages represented")}</span>
             </div>
             <div className="language-tags">
               {[...new Set(items.map((s) => s.language))].map((l) => (
                 <span key={l}>{l}</span>
               ))}
             </div>
-            <p>Language and writing style do not determine the assessment.</p>
+            <p>
+              {t("Language and writing style do not determine the assessment.")}
+            </p>
           </section>
         </aside>
       </div>
       <section className="panel queue-panel">
         <div className="panel-heading">
           <div>
-            <h2>A little more clarity goes a long way.</h2>
+            <h2>{t("A little more clarity goes a long way.")}</h2>
             <p>
-              These proposals have questions worth asking before the next step.
+              {t(
+                "These proposals have questions worth asking before the next step.",
+              )}
             </p>
           </div>
-          <span className="outline-label">NEXT CONVERSATIONS</span>
+          <span className="outline-label">{t("NEXT CONVERSATIONS")}</span>
         </div>
         {pending.length ? (
           <div className="repair-grid">
@@ -289,30 +304,37 @@ export default function Dashboard() {
                 </p>
                 <span className="repair-card-footer">
                   {s.beneficiaryName}
-                  <span>{s.assessment?.questions.length ?? 0} questions</span>
+                  <span>
+                    {s.assessment?.questions.length ?? 0} {t("questions")}
+                  </span>
                 </span>
               </Link>
             ))}
           </div>
         ) : (
           <Empty
-            title="No outstanding clarification"
-            description="New questions will appear here when submissions need more detail."
+            title={t("No outstanding clarification")}
+            description={t(
+              "New questions will appear here when submissions need more detail.",
+            )}
           />
         )}
       </section>
       <div className="principles-row">
         <span>
           <ShieldCheck size={16} />
-          <strong>Evidence first</strong>Every fact has a reference
+          <strong>{t("Evidence first")}</strong>
+          {t("Every fact has a reference")}
         </span>
         <span>
           <Languages size={16} />
-          <strong>Language inclusive</strong>Originals stay available
+          <strong>{t("Language inclusive")}</strong>
+          {t("Originals stay available")}
         </span>
         <span>
           <ChartNoAxesCombined size={16} />
-          <strong>People decide</strong>AI supports the first review
+          <strong>{t("People decide")}</strong>
+          {t("AI supports the first review")}
         </span>
       </div>
     </>
@@ -331,10 +353,11 @@ function Metric({
   foot: string;
   visual: React.ReactNode;
 }) {
+  useLanguage();
   return (
     <div className="metric-card">
       <div className="metric-top">
-        <span>{label}</span>
+        <span>{t(label)}</span>
         <Icon size={17} />
       </div>
       <div className="metric-body">

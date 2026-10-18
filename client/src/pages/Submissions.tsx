@@ -1,9 +1,12 @@
+// localized-ui
+import { t, useLanguage } from "../i18n";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Plus, Search, SlidersHorizontal, ArrowDownToLine } from "lucide-react";
 import { PageIntro, SubmissionsTable } from "../components";
 import { useWorkspace } from "../workspace";
 export default function Submissions() {
+  useLanguage();
   const w = useWorkspace();
   const entrepreneur = w.session?.user?.role === "entrepreneur";
   const [query, setQuery] = useState(""),
@@ -23,17 +26,19 @@ export default function Submissions() {
   return (
     <>
       <PageIntro
-        eyebrow="ONE PLACE FOR EVERY PROPOSAL"
-        title={entrepreneur ? "My submissions" : "All submissions"}
+        eyebrow={t("ONE PLACE FOR EVERY PROPOSAL")}
+        title={entrepreneur ? t("My submissions") : t("All submissions")}
         description={
           entrepreneur
-            ? "Track your ideas, assessments, and next steps."
-            : "Review ideas across formats, languages, and programme cohorts."
+            ? t("Track your ideas, assessments, and next steps.")
+            : t(
+                "Review ideas across formats, languages, and programme cohorts.",
+              )
         }
         action={
           <Link to="/submit" className="button primary">
             <Plus size={16} />
-            Submit an idea
+            {t("Submit an idea")}
           </Link>
         }
       />
@@ -42,41 +47,41 @@ export default function Submissions() {
           <div className="search-field">
             <Search size={17} />
             <input
-              aria-label="Search submissions"
-              placeholder="Search ideas, beneficiaries, languages…"
+              aria-label={t("Search submissions")}
+              placeholder={t("Search ideas, beneficiaries, languages…")}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
           </div>
           <select
-            aria-label="Status filter"
+            aria-label={t("Status filter")}
             value={status}
             onChange={(e) => setStatus(e.target.value)}
           >
-            <option value="">All statuses</option>
-            <option value="ready">Ready for review</option>
-            <option value="needs_review">Needs review</option>
-            <option value="processing">Processing</option>
-            <option value="queued">In queue</option>
-            <option value="failed">Needs attention</option>
+            <option value="">{t("All statuses")}</option>
+            <option value="ready">{t("Ready for review")}</option>
+            <option value="needs_review">{t("Needs review")}</option>
+            <option value="processing">{t("Processing")}</option>
+            <option value="queued">{t("In queue")}</option>
+            <option value="failed">{t("Needs attention")}</option>
           </select>
           <select
-            aria-label="Format filter"
+            aria-label={t("Format filter")}
             value={format}
             onChange={(e) => setFormat(e.target.value)}
           >
-            <option value="">All formats</option>
-            <option value="text">Text</option>
-            <option value="pdf">PDF</option>
-            <option value="audio">Audio</option>
+            <option value="">{t("All formats")}</option>
+            <option value="text">{t("Text")}</option>
+            <option value="pdf">{t("PDF")}</option>
+            <option value="audio">{t("Audio")}</option>
           </select>
           {!entrepreneur && (
             <select
-              aria-label="Cohort filter"
+              aria-label={t("Cohort filter")}
               value={cohort}
               onChange={(e) => setCohort(e.target.value)}
             >
-              <option value="">All cohorts</option>
+              <option value="">{t("All cohorts")}</option>
               {w.cohorts.map((c) => (
                 <option value={c.id} key={c.id}>
                   {c.name}
@@ -87,7 +92,8 @@ export default function Submissions() {
         </div>
         <div className="results-caption">
           <span>
-            {items.length} {items.length === 1 ? "submission" : "submissions"}
+            {items.length}{" "}
+            {items.length === 1 ? t("submission") : t("submissions")}
           </span>
           {(query || status || format || cohort) && (
             <button
@@ -99,13 +105,13 @@ export default function Submissions() {
                 setCohort("");
               }}
             >
-              Clear filters
+              {t("Clear filters")}
             </button>
           )}
           <span>
             {w.mode === "examples"
-              ? "Read-only examples"
-              : "Latest 500 records"}
+              ? t("Read-only examples")
+              : t("Latest 500 records")}
           </span>
         </div>
         <SubmissionsTable items={items} personal={entrepreneur} />

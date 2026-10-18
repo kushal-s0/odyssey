@@ -1,3 +1,5 @@
+// localized-ui
+import { t, useLanguage } from "./i18n";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   CheckCheck,
@@ -18,6 +20,7 @@ function time(value: number) {
   return `${Math.floor(value / 60)}:${String(Math.floor(value % 60)).padStart(2, "0")}`;
 }
 function Highlight({ text, values }: { text: string; values: string[] }) {
+  useLanguage();
   const terms = values
     .filter((v) => v.trim().length > 1)
     .sort((a, b) => b.length - a.length);
@@ -67,6 +70,7 @@ export default function EvidencePanel({
   busy: boolean;
   readOnly: boolean;
 }) {
+  useLanguage();
   const a = record.assessment!,
     [expanded, setExpanded] = useState(false),
     [query, setQuery] = useState(""),
@@ -160,13 +164,17 @@ export default function EvidencePanel({
             <strong>
               {a.segments.filter((s) => s.verified).length}/{a.segments.length}
             </strong>{" "}
-            source segments checked
+            {t("source segments checked")}
           </span>
           <span>
-            Version {a.version} · {record.language}
+            {t("Version")} {a.version} · {record.language}
           </span>
         </div>
-        <div className="source-tabs" role="group" aria-label="Evidence display">
+        <div
+          className="source-tabs"
+          role="group"
+          aria-label={t("Evidence display")}
+        >
           {[
             ["compare", "Side by side"],
             ["translation", "English"],
@@ -182,7 +190,7 @@ export default function EvidencePanel({
               className={mode === key ? "active" : ""}
               onClick={() => onModeChange(key!)}
             >
-              {label}
+              {t(label)}
             </button>
           ))}
         </div>
@@ -190,20 +198,20 @@ export default function EvidencePanel({
           <label className="evidence-search">
             <Search size={14} />
             <input
-              aria-label="Search source evidence"
-              placeholder="Search text, field or source ID"
+              aria-label={t("Search source evidence")}
+              placeholder={t("Search text, field or source ID")}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
           </label>
           <select
-            aria-label="Evidence verification filter"
+            aria-label={t("Evidence verification filter")}
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
           >
-            <option value="all">All verification states</option>
-            <option value="unchecked">Needs verification</option>
-            <option value="checked">Checked</option>
+            <option value="all">{t("All verification states")}</option>
+            <option value="unchecked">{t("Needs verification")}</option>
+            <option value="checked">{t("Checked")}</option>
           </select>
           <label className="check-line">
             <input
@@ -212,7 +220,7 @@ export default function EvidencePanel({
               checked={onlySelected && selected.length > 0}
               onChange={(e) => setOnlySelected(e.target.checked)}
             />
-            Selected sources only
+            {t("Selected sources only")}
           </label>
           {selected.length > 0 && (
             <button
@@ -223,19 +231,19 @@ export default function EvidencePanel({
                 setConfirmed(false);
               }}
             >
-              Clear selection
+              {t("Clear selection")}
             </button>
           )}
         </div>
         <div className="evidence-selection" aria-live="polite">
           <span>
             {selected.length ? `${selected.length} selected · ` : ""}
-            {visible.length} / {a.segments.length} shown
+            {visible.length} / {a.segments.length} {t("shown")}
           </span>
           <div>
             <button
               className="icon-button"
-              aria-label="Previous source"
+              aria-label={t("Previous source")}
               disabled={!active || a.segments.indexOf(active) === 0}
               onClick={() => {
                 const i = a.segments.indexOf(active!);
@@ -246,7 +254,7 @@ export default function EvidencePanel({
             </button>
             <button
               className="icon-button"
-              aria-label="Next source"
+              aria-label={t("Next source")}
               disabled={
                 !active || a.segments.indexOf(active) >= a.segments.length - 1
               }
@@ -259,7 +267,7 @@ export default function EvidencePanel({
             </button>
             <button
               className="icon-button"
-              aria-label="Download selected or all evidence"
+              aria-label={t("Download selected or all evidence")}
               onClick={exportEvidence}
             >
               <Download size={15} />
@@ -276,7 +284,7 @@ export default function EvidencePanel({
             {fileKind === "pdf" ? (
               <iframe
                 key={`${url(active)}:${active?.page ?? 1}`}
-                title="Original submitted PDF"
+                title={t("Original submitted PDF")}
                 src={`${url(active)}#page=${active?.page ?? 1}`}
               />
             ) : fileKind === "audio" ? (
@@ -289,11 +297,11 @@ export default function EvidencePanel({
                 />
                 {active?.startSeconds != null && (
                   <p>
-                    Selected passage: {time(active.startSeconds)}
+                    {t("Selected passage:")} {time(active.startSeconds)}
                     {active.endSeconds != null
                       ? `–${time(active.endSeconds)}`
                       : ""}
-                    . Timing is approximate; compare with the recording.
+                    {t(". Timing is approximate; compare with the recording.")}
                   </p>
                 )}
               </>
@@ -308,15 +316,16 @@ export default function EvidencePanel({
               target="_blank"
               rel="noreferrer"
             >
-              Open retained original <ExternalLink size={13} />
+              {t("Open retained original")} <ExternalLink size={13} />
             </a>
           </div>
         ) : (
           <div className="source-segments" ref={list}>
             {visible.length === 0 && (
               <p className="evidence-empty">
-                No source segments match. Clear the search/filter or show all
-                sources.
+                {t(
+                  "No source segments match. Clear the search/filter or show all sources.",
+                )}
               </p>
             )}
             {visible.map((s) => {
@@ -351,7 +360,9 @@ export default function EvidencePanel({
                       <strong>{s.id}</strong>
                     </label>
                     <span className="status">
-                      {s.verified ? "Source checked" : "Needs verification"}
+                      {s.verified
+                        ? t("Source checked")
+                        : t("Needs verification")}
                     </span>
                   </div>
                   <div className="source-location">
@@ -361,7 +372,7 @@ export default function EvidencePanel({
                         : s.startSeconds != null
                           ? `${time(s.startSeconds)}${s.endSeconds != null ? ` – ${time(s.endSeconds)}` : ""}`
                           : `${s.kind.toUpperCase()} SOURCE`}
-                      {s.clarificationId ? " · CLARIFICATION" : ""}
+                      {s.clarificationId ? t(" · CLARIFICATION") : ""}
                     </span>
                     {!record.example &&
                       (record.fileName || s.clarificationId) && (
@@ -370,10 +381,10 @@ export default function EvidencePanel({
                           onClick={() => locate(s)}
                         >
                           {s.startSeconds != null
-                            ? "Listen to passage"
+                            ? t("Listen to passage")
                             : s.page
-                              ? "Open this page"
-                              : "Open original response"}{" "}
+                              ? t("Open this page")
+                              : t("Open original response")}{" "}
                           <ExternalLink size={11} />
                         </button>
                       )}
@@ -383,7 +394,9 @@ export default function EvidencePanel({
                   >
                     {mode !== "translation" && (
                       <section>
-                        <h4>Original · {record.language}</h4>
+                        <h4>
+                          {t("Original ·")} {record.language}
+                        </h4>
                         <p lang={record.language.split("-")[0]}>
                           <Highlight text={s.originalText} values={values} />
                         </p>
@@ -392,8 +405,10 @@ export default function EvidencePanel({
                     {mode !== "original" && (
                       <section>
                         <h4>
-                          English{" "}
-                          {s.verified ? "· checked" : "· AI output; verify"}
+                          {t("English")}{" "}
+                          {s.verified
+                            ? t("· checked")
+                            : t("· AI output; verify")}
                         </h4>
                         <p lang="en">
                           <Highlight text={s.englishText} values={values} />
@@ -402,15 +417,15 @@ export default function EvidencePanel({
                     )}
                   </div>
                   <div className="evidence-field-links">
-                    <span>Used for</span>
+                    <span>{t("Used for")}</span>
                     {fields.length ? (
                       fields.map((f) => (
                         <span className="evidence-field-chip" key={f.key}>
-                          {FIELD_LABELS[f.key]} · {f.status}
+                          {t(FIELD_LABELS[f.key])} · {f.status}
                         </span>
                       ))
                     ) : (
-                      <span>No extracted parameter</span>
+                      <span>{t("No extracted parameter")}</span>
                     )}
                   </div>
                   <button
@@ -428,7 +443,7 @@ export default function EvidencePanel({
                         )
                     }
                   >
-                    <Copy size={12} /> Copy quote and reference
+                    <Copy size={12} /> {t("Copy quote and reference")}
                   </button>
                 </article>
               );
@@ -449,8 +464,9 @@ export default function EvidencePanel({
                 disabled={!selected.length || busy}
                 onChange={(e) => setConfirmed(e.target.checked)}
               />
-              I compared the selected original passages with the
-              transcript/translation.
+              {t(
+                "I compared the selected original passages with the transcript/translation.",
+              )}
             </label>
             <button
               className="button secondary small"
@@ -458,11 +474,14 @@ export default function EvidencePanel({
               onClick={onVerify}
             >
               <CheckCheck size={14} />
-              {busy ? "Saving verification…" : "Confirm selected evidence"}
+              {busy
+                ? t("Saving verification…")
+                : t("Confirm selected evidence")}
             </button>
             <p className="hint">
-              This verifies source fidelity, not whether the applicant's
-              business claims are true.
+              {t(
+                "This verifies source fidelity, not whether the applicant's business claims are true.",
+              )}
             </p>
           </div>
         )}
@@ -474,13 +493,13 @@ export default function EvidencePanel({
       <div className="panel-heading">
         <div>
           <h2>
-            <FileText size={17} /> Source evidence
+            <FileText size={17} /> {t("Source evidence")}
           </h2>
-          <p>Trace each extracted fact back to its original.</p>
+          <p>{t("Trace each extracted fact back to its original.")}</p>
         </div>
         <button
           className="icon-button"
-          aria-label="Expand evidence workspace"
+          aria-label={t("Expand evidence workspace")}
           onClick={() => setExpanded(true)}
         >
           <Maximize2 size={17} />
@@ -488,14 +507,14 @@ export default function EvidencePanel({
       </div>
       {expanded ? (
         <p className="hint evidence-copy-notice">
-          Evidence is open in the expanded workspace.
+          {t("Evidence is open in the expanded workspace.")}
         </p>
       ) : (
         contents()
       )}
       {expanded && (
         <Modal
-          title="Source evidence workspace"
+          title={t("Source evidence workspace")}
           wide
           onClose={() => setExpanded(false)}
         >

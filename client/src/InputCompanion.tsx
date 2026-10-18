@@ -1,3 +1,5 @@
+// localized-ui
+import { t, useLanguage } from "./i18n";
 import { Check, CircleHelp, ArrowDown, Wallet } from "lucide-react";
 import { useEffect, useState } from "react";
 import { inputAssistance } from "../../shared/input-assistance";
@@ -11,6 +13,7 @@ export default function InputCompanion({
   value: GuidedDraft;
   onPreview: () => void;
 }) {
+  useLanguage();
   const status = inputAssistance(value);
   const [expanded, setExpanded] = useState(
     () => window.matchMedia("(min-width: 1051px)").matches,
@@ -30,20 +33,24 @@ export default function InputCompanion({
           maximumFractionDigits: 2,
         }).format(amount);
   return (
-    <section className="input-companion" aria-label="Submission preparation">
-      <span className="eyebrow">YOUR SUBMISSION</span>
-      <h2>A clear starting point.</h2>
+    <section
+      className="input-companion"
+      aria-label={t("Submission preparation")}
+    >
+      <span className="eyebrow">{t("YOUR SUBMISSION")}</span>
+      <h2>{t("A clear starting point.")}</h2>
       <div className="preparation-count">
         <strong>
           {status.entered}
           <span> / {status.total}</span>
         </strong>
-        <span>guided details entered</span>
+        <span>{t("guided details entered")}</span>
       </div>
       <Progress value={(status.entered / status.total) * 100} />
       <p className="hint">
-        This tracks form entries, not your assessment score. Optional answers
-        can stay unknown.
+        {t(
+          "This tracks form entries, not your assessment score. Optional answers can stay unknown.",
+        )}
       </p>
       <details
         className="preparation-tools"
@@ -51,9 +58,13 @@ export default function InputCompanion({
         onToggle={(event) => setExpanded(event.currentTarget.open)}
       >
         <summary>
-          Preparation tools <span>Sections, calculations & preview</span>
+          {t("Preparation tools")}{" "}
+          <span>{t("Sections, calculations & preview")}</span>
         </summary>
-        <nav className="input-section-nav" aria-label="Guided form sections">
+        <nav
+          className="input-section-nav"
+          aria-label={t("Guided form sections")}
+        >
           {[
             ["business", "Business & customers"],
             ["operations", "Operations & experience"],
@@ -62,27 +73,27 @@ export default function InputCompanion({
           ].map(([key, label], i) => (
             <a href={`#guided-section-${key}`} key={key}>
               <span>0{i + 1}</span>
-              {label}
+              {t(label)}
               <ArrowDown size={13} />
             </a>
           ))}
         </nav>
         <div className="draft-financials">
           <h3>
-            <Wallet size={16} /> Your financial assumptions
+            <Wallet size={16} /> {t("Your financial assumptions")}
           </h3>
           <div>
-            <span>Projected monthly surplus</span>
+            <span>{t("Projected monthly surplus")}</span>
             <strong>{money(status.surplus)}</strong>
           </div>
           <div>
-            <span>Funding-plan gap</span>
+            <span>{t("Funding-plan gap")}</span>
             <strong>{money(status.fundingGap)}</strong>
           </div>
           <p>
-            Calculated from your entries. Surplus = monthly sales − monthly
-            costs. Funding gap = setup investment − own funds − requested
-            external funds.
+            {t(
+              "Calculated from your entries. Surplus = monthly sales − monthly costs. Funding gap = setup investment − own funds − requested external funds.",
+            )}
           </p>
         </div>
         <div className="preparation-note">
@@ -90,8 +101,9 @@ export default function InputCompanion({
             <>
               <Check size={16} />
               <span>
-                Guided answers pass the input checks. Review them before
-                submitting.
+                {t(
+                  "Guided answers pass the input checks. Review them before submitting.",
+                )}
               </span>
             </>
           ) : (
@@ -99,7 +111,9 @@ export default function InputCompanion({
               <CircleHelp size={16} />
               <span>
                 {status.entered === 0
-                  ? "Start with your products and services. Other details can wait."
+                  ? t(
+                      "Start with your products and services. Other details can wait.",
+                    )
                   : (status.issues[0] ??
                     "Add the required business description.")}
               </span>
@@ -111,7 +125,7 @@ export default function InputCompanion({
           type="button"
           onClick={onPreview}
         >
-          Preview standardized input
+          {t("Preview standardized input")}
         </button>
       </details>
     </section>

@@ -1,3 +1,5 @@
+// localized-ui
+import { t, useLanguage } from "../i18n";
 import { useMemo, useState } from "react";
 import {
   ArrowDownToLine,
@@ -18,6 +20,7 @@ const median = (a: number[]) => {
     : Math.round(((s[s.length / 2 - 1]! + s[s.length / 2]!) / 2) * 10) / 10;
 };
 export default function Comparisons() {
+  useLanguage();
   const w = useWorkspace();
   const [groupBy, setGroupBy] = useState("cohort"),
     [cohort, setCohort] = useState(""),
@@ -120,9 +123,11 @@ export default function Comparisons() {
   return (
     <>
       <PageIntro
-        eyebrow="LOOK ACROSS THE PROGRAMME"
-        title="Patterns worth a closer look."
-        description="Compare the supporting information across sectors, trades, and cohorts."
+        eyebrow={t("LOOK ACROSS THE PROGRAMME")}
+        title={t("Patterns worth a closer look.")}
+        description={t(
+          "Compare the supporting information across sectors, trades, and cohorts.",
+        )}
         action={
           <button
             className="button secondary"
@@ -130,14 +135,15 @@ export default function Comparisons() {
             onClick={exportData}
           >
             <ArrowDownToLine size={15} />
-            Export comparison
+            {t("Export comparison")}
           </button>
         }
       />
       {w.mode === "examples" && (
         <Notice>
-          Example cohorts are synthetic. These charts illustrate the interface
-          and do not describe Tata STRIVE programme outcomes.
+          {t(
+            "Example cohorts are synthetic. These charts illustrate the interface and do not describe Tata STRIVE programme outcomes.",
+          )}
         </Notice>
       )}
       <div className="comparison-controls">
@@ -152,7 +158,7 @@ export default function Comparisons() {
               key={key}
               onClick={() => setGroupBy(key!)}
             >
-              {label}
+              {t(label)}
             </button>
           ))}
         </div>
@@ -160,9 +166,9 @@ export default function Comparisons() {
           <select
             value={cohort}
             onChange={(e) => setCohort(e.target.value)}
-            aria-label="Filter cohort"
+            aria-label={t("Filter cohort")}
           >
-            <option value="">All cohorts</option>
+            <option value="">{t("All cohorts")}</option>
             {w.cohorts.map((c) => (
               <option value={c.id} key={c.id}>
                 {c.name}
@@ -172,9 +178,9 @@ export default function Comparisons() {
           <select
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
-            aria-label="Filter language"
+            aria-label={t("Filter language")}
           >
-            <option value="">All languages</option>
+            <option value="">{t("All languages")}</option>
             {[...new Set(w.submissions.map((s) => s.language))].map((l) => (
               <option key={l}>{l}</option>
             ))}
@@ -184,30 +190,30 @@ export default function Comparisons() {
       <div className="comparison-summary">
         <div>
           <span className="comparison-stat">{items.length}</span>
-          <span>submissions in view</span>
+          <span>{t("submissions in view")}</span>
         </div>
         <div>
           <span className="comparison-stat">{groups.length}</span>
           <span>
             {groupBy === "cohort"
-              ? "cohort"
+              ? t("cohort")
               : groupBy === "trade"
-                ? "trade"
-                : "sector"}{" "}
-            groups
+                ? t("trade")
+                : t("sector")}{" "}
+            {t("groups")}
           </span>
         </div>
         <div>
           <span className="comparison-stat">
             {items.filter((s) => s.assessment?.score != null).length}
           </span>
-          <span>assessments with sufficient coverage</span>
+          <span>{t("assessments with sufficient coverage")}</span>
         </div>
         <p>
           <Info size={16} />
-          Small groups show descriptive values.
+          {t("Small groups show descriptive values.")}
           <br />
-          Percentile rankings require at least five comparable ideas.
+          {t("Percentile rankings require at least five comparable ideas.")}
         </p>
       </div>
       <section className="panel">
@@ -215,22 +221,25 @@ export default function Comparisons() {
           <div>
             <h2>
               {groupBy === "cohort"
-                ? "Across-cohort comparison"
+                ? t("Across-cohort comparison")
                 : groupBy === "trade"
-                  ? "Trade-wise comparison"
-                  : "Domain-wise comparison"}
+                  ? t("Trade-wise comparison")
+                  : t("Domain-wise comparison")}
             </h2>
             <p>
-              Records with incompatible rubric versions are displayed
-              separately.
+              {t(
+                "Records with incompatible rubric versions are displayed separately.",
+              )}
             </p>
           </div>
           <ChartNoAxesCombined size={20} />
         </div>
         {!groups.length ? (
           <Empty
-            title="No comparison data yet"
-            description="Assess submissions and assign programme metadata to see patterns here."
+            title={t("No comparison data yet")}
+            description={t(
+              "Assess submissions and assign programme metadata to see patterns here.",
+            )}
           />
         ) : (
           <div className="table-scroll">
@@ -239,17 +248,17 @@ export default function Comparisons() {
                 <tr>
                   <th>
                     {groupBy === "cohort"
-                      ? "Cohort"
+                      ? t("Cohort")
                       : groupBy === "trade"
-                        ? "Trade"
-                        : "Domain / sector"}
+                        ? t("Trade")
+                        : t("Domain / sector")}
                   </th>
-                  <th>Ideas</th>
-                  <th>Comparable</th>
-                  <th>Median information readiness</th>
-                  <th>Assessor-rated potential</th>
-                  <th>Completeness</th>
-                  <th>Interpretation</th>
+                  <th>{t("Ideas")}</th>
+                  <th>{t("Comparable")}</th>
+                  <th>{t("Median information readiness")}</th>
+                  <th>{t("Assessor-rated potential")}</th>
+                  <th>{t("Completeness")}</th>
+                  <th>{t("Interpretation")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -271,10 +280,10 @@ export default function Comparisons() {
                     </td>
                     <td>
                       {g.potential === null
-                        ? "Not rated"
+                        ? t("Not rated")
                         : `${g.potential} / 100`}
                       <div className="cell-secondary">
-                        {g.potentialCount} fully rated
+                        {g.potentialCount} {t("fully rated")}
                       </div>
                     </td>
                     <td>
@@ -286,8 +295,8 @@ export default function Comparisons() {
                     <td>
                       <span className="outline-label">
                         {g.comparable.length >= 5
-                          ? "Descriptive comparison"
-                          : "Small sample"}
+                          ? t("Descriptive comparison")
+                          : t("Small sample")}
                       </span>
                     </td>
                   </tr>
@@ -297,8 +306,10 @@ export default function Comparisons() {
           </div>
         )}
         <div className="panel-footer">
-          <Info size={14} />A higher readiness score reflects more supporting
-          information. It does not establish business viability.
+          <Info size={14} />
+          {t(
+            "A higher readiness score reflects more supporting information. It does not establish business viability.",
+          )}
         </div>
       </section>
       <div className="dimension-comparisons">
@@ -308,9 +319,9 @@ export default function Comparisons() {
               <div>
                 <h3>{g.name}</h3>
                 <p>
-                  {g.comparable.length} comparable{" "}
-                  {g.comparable.length === 1 ? "idea" : "ideas"} · dimension
-                  medians
+                  {g.comparable.length} {t("comparable")}{" "}
+                  {g.comparable.length === 1 ? t("idea") : t("ideas")}{" "}
+                  {t("· dimension medians")}
                 </p>
               </div>
               <Users size={17} />
@@ -319,7 +330,7 @@ export default function Comparisons() {
               {g.dimensions.length ? (
                 g.dimensions.map((d) => (
                   <div key={d.key}>
-                    <span>{d.label}</span>
+                    <span>{t(d.label)}</span>
                     <Progress value={(d.score ?? 0) * 25} />
                     <strong>
                       {d.score ?? "—"}
@@ -328,23 +339,24 @@ export default function Comparisons() {
                   </div>
                 ))
               ) : (
-                <p className="muted">No assessed dimensions yet.</p>
+                <p className="muted">{t("No assessed dimensions yet.")}</p>
               )}
             </div>
             <div className="human-domain-comparison">
-              <h4>Assessor-rated domain quality</h4>
+              <h4>{t("Assessor-rated domain quality")}</h4>
               <p className="hint">
-                Current human ratings only; unknowns are excluded. Values above
-                show information readiness.
+                {t(
+                  "Current human ratings only; unknowns are excluded. Values above show information readiness.",
+                )}
               </p>
               {g.dimensions
                 .filter((d) => d.key !== "completeness")
                 .map((d) => (
                   <p key={d.key}>
-                    <span>{d.label}</span>
+                    <span>{t(d.label)}</span>
                     <strong>
                       {d.potential === null
-                        ? "Not rated"
+                        ? t("Not rated")
                         : `${d.potential} / 4`}
                     </strong>
                   </p>

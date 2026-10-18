@@ -25,6 +25,9 @@ export const config = z
     ASSESSOR_EMAIL: z.string().default("assessor@example.com"),
     ASSESSOR_PASSWORD: optional,
     GEMINI_API_KEY: optional,
+    CLOUD_AI_URL: optional,
+    CLOUD_AI_TOKEN: optional,
+    CLOUD_AI_MODEL: z.string().default("Qwen/Qwen3.5-9B"),
     GEMINI_MODEL: z.string().default("gemini-3.8-flash"),
     GEMINI_THINKING_LEVEL: z.enum(["LOW", "MEDIUM", "HIGH"]).default("LOW"),
     GEMINI_EMBEDDING_MODEL: z.string().default("gemini-embedding-001"),
@@ -50,7 +53,7 @@ export const config = z
       .default(12000),
     SARVAM_API_KEY: optional,
     SARVAM_MODEL: z.string().default("saaras:v4"),
-    AUDIO_PROVIDER: z.enum(["sarvam", "gemini"]).default("sarvam"),
+    AUDIO_PROVIDER: z.enum(["sarvam", "gemini", "cloud"]).default("sarvam"),
     FFMPEG_PATH: optional,
     MODEL_SERVICE_URL: optional,
     MODEL_SERVICE_TOKEN: optional,
@@ -61,17 +64,18 @@ export const config = z
       .string()
       .default("true")
       .transform((v) => v === "true"),
-    PROCESSING_CONCURRENCY: z.coerce.number().int().min(1).max(4).default(2),
+    PROCESSING_CONCURRENCY: z.coerce.number().int().min(1).max(4).default(1),
   })
   .parse(process.env);
 export const health = () => ({
   database: false,
   gemini: !!config.GEMINI_API_KEY,
   groq: !!config.GROQ_API_KEY,
+  cloud: !!config.CLOUD_AI_URL && !!config.CLOUD_AI_TOKEN,
   sarvam: !!config.SARVAM_API_KEY,
   classifier: !!config.MODEL_SERVICE_URL,
   places: !!config.GEOAPIFY_API_KEY,
   examples: config.ENABLE_EXAMPLES,
   maxUploadMb: config.MAX_UPLOAD_MB,
-  audioProvider: config.AUDIO_PROVIDER,
+  audioProvider: config.CLOUD_AI_URL ? "cloud" : config.AUDIO_PROVIDER,
 });

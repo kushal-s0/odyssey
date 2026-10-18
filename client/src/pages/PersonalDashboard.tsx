@@ -1,3 +1,5 @@
+// localized-ui
+import { questionText, t, useLanguage } from "../i18n";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
@@ -8,8 +10,10 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useWorkspace } from "../workspace";
+import ScoreExplanation from "../ScoreExplanation";
 import { PageIntro, Status, Empty, Progress } from "../components";
 export default function PersonalDashboard() {
+  useLanguage();
   const w = useWorkspace(),
     stats = w.dashboard;
   const latest =
@@ -19,12 +23,15 @@ export default function PersonalDashboard() {
   return (
     <>
       <PageIntro
-        eyebrow="YOUR PERSONAL WORKSPACE"
-        title="My dashboard"
-        description={`Welcome, ${w.session?.user?.name.split(" ")[0] ?? "there"}. Your ideas, progress, and next steps are here.`}
+        eyebrow={t("YOUR PERSONAL WORKSPACE")}
+        title={t("My dashboard")}
+        description={t(
+          "Welcome, {name}. Your ideas, progress, and next steps are here.",
+          { name: w.session?.user?.name.split(" ")[0] ?? "—" },
+        )}
         action={
           <Link className="button primary" to="/submit">
-            <Plus size={16} /> Submit an idea
+            <Plus size={16} /> {t("Submit an idea")}
           </Link>
         }
       />
@@ -32,17 +39,17 @@ export default function PersonalDashboard() {
         <div className="metric-card">
           <FileText size={18} />
           <strong>{stats?.total ?? w.submissions.length}</strong>
-          <span>My submissions</span>
+          <span>{t("My submissions")}</span>
         </div>
         <div className="metric-card">
           <Clock size={18} />
           <strong>{stats?.processing ?? 0}</strong>
-          <span>Being processed</span>
+          <span>{t("Being processed")}</span>
         </div>
         <div className="metric-card">
           <MessageSquare size={18} />
           <strong>{stats?.needsClarification ?? questions.length}</strong>
-          <span>Need my answers</span>
+          <span>{t("Need my answers")}</span>
         </div>
         <div className="metric-card">
           <ShieldCheck size={18} />
@@ -50,12 +57,14 @@ export default function PersonalDashboard() {
             {stats?.assessed ??
               w.submissions.filter((s) => s.assessment).length}
           </strong>
-          <span>Assessments received</span>
+          <span>{t("Assessments received")}</span>
         </div>
       </div>
       <div className="personal-columns">
         <section className="panel personal-score">
-          <span className="eyebrow">MY LATEST INFORMATION READINESS</span>
+          <span className="eyebrow">
+            {t("MY LATEST INFORMATION READINESS")}
+          </span>
           <h2>{latest?.title ?? "Your next step starts here."}</h2>
           {latest?.assessment ? (
             <>
@@ -63,17 +72,19 @@ export default function PersonalDashboard() {
                 {latest.assessment.score ?? "—"}
                 <small>
                   {latest.assessment.score == null
-                    ? "More detail needed"
+                    ? t("More detail needed")
                     : "/ 100"}
                 </small>
               </div>
               <p>
-                This score reflects the information you supplied, rather than a
-                prediction of business success.
+                {t(
+                  "This score reflects the information you supplied, rather than a prediction of business success.",
+                )}
               </p>
+              <ScoreExplanation assessment={latest.assessment} compact />
               <div className="personal-progress">
                 <span>
-                  Information completeness{" "}
+                  {t("Information completeness")}{" "}
                   <strong>{latest.assessment.completeness}%</strong>
                 </span>
                 <Progress value={latest.assessment.completeness} />
@@ -82,28 +93,30 @@ export default function PersonalDashboard() {
                 className="button secondary"
                 to={`/submissions/${latest.id}`}
               >
-                View my assessment <ArrowRight size={15} />
+                {t("View my assessment")} <ArrowRight size={15} />
               </Link>
             </>
           ) : (
             <>
               <p>
-                Share your business idea to get a structured assessment and
-                questions that help you develop it.
+                {t(
+                  "Share your business idea to get a structured assessment and questions that help you develop it.",
+                )}
               </p>
               <Link className="button secondary" to="/submit">
-                Submit my first idea <ArrowRight size={15} />
+                {t("Submit my first idea")} <ArrowRight size={15} />
               </Link>
             </>
           )}
         </section>
         <section className="panel personal-next">
-          <span className="eyebrow">MY NEXT STEPS</span>
-          <h2>Keep your idea moving.</h2>
+          <span className="eyebrow">{t("MY NEXT STEPS")}</span>
+          <h2>{t("Keep your idea moving.")}</h2>
           {stats?.processing ? (
             <p className="notice">
-              Your submission is being processed. This dashboard updates
-              automatically.
+              {t(
+                "Your submission is being processed. This dashboard updates automatically.",
+              )}
             </p>
           ) : null}
           {questions.length ? (
@@ -116,11 +129,11 @@ export default function PersonalDashboard() {
                 <div>
                   <strong>{s.title}</strong>
                   <p>
-                    {s.assessment?.questions[0]?.translatedQuestion ??
-                      s.assessment?.questions[0]?.question}
+                    {s.assessment?.questions[0] &&
+                      questionText(s.assessment.questions[0])}
                   </p>
                   <small>
-                    {s.assessment?.questions.length} questions to clarify
+                    {s.assessment?.questions.length} {t("questions to clarify")}
                   </small>
                 </div>
                 <ArrowRight size={18} />
@@ -128,8 +141,9 @@ export default function PersonalDashboard() {
             ))
           ) : (
             <p>
-              No clarification questions are waiting. Your assessor’s feedback
-              will appear with your assessment.
+              {t(
+                "No clarification questions are waiting. Your assessor’s feedback will appear with your assessment.",
+              )}
             </p>
           )}
           {w.submissions
@@ -138,9 +152,11 @@ export default function PersonalDashboard() {
             .map((s) => (
               <div className="personal-action" key={s.id}>
                 <div>
-                  <strong>Assessor feedback: {s.title}</strong>
+                  <strong>
+                    {t("Assessor feedback:")} {s.title}
+                  </strong>
                   <p>{s.review?.nextAction}</p>
-                  <Link to={`/submissions/${s.id}`}>Read feedback</Link>
+                  <Link to={`/submissions/${s.id}`}>{t("Read feedback")}</Link>
                 </div>
               </div>
             ))}
@@ -149,11 +165,11 @@ export default function PersonalDashboard() {
       <section className="panel">
         <div className="panel-heading">
           <div>
-            <h2>My recent ideas</h2>
-            <p>Only submissions linked to your account appear here.</p>
+            <h2>{t("My recent ideas")}</h2>
+            <p>{t("Only submissions linked to your account appear here.")}</p>
           </div>
           <Link className="text-link" to="/submissions">
-            View all <ArrowRight size={14} />
+            {t("View all")} <ArrowRight size={14} />
           </Link>
         </div>
         {w.submissions.length ? (
@@ -173,7 +189,7 @@ export default function PersonalDashboard() {
                 <Status status={s.status} />
                 <span className="personal-idea-score">
                   {s.assessment?.score == null
-                    ? "Score pending"
+                    ? t("Score pending")
                     : `${s.assessment.score} / 100`}
                 </span>
                 <ArrowRight size={16} />
@@ -182,8 +198,10 @@ export default function PersonalDashboard() {
           </div>
         ) : (
           <Empty
-            title="Your first idea belongs here"
-            description="Use text, a PDF, or your voice. Your original submission stays available to you."
+            title={t("Your first idea belongs here")}
+            description={t(
+              "Use text, a PDF, or your voice. Your original submission stays available to you.",
+            )}
           />
         )}
       </section>

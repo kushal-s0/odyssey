@@ -1,3 +1,5 @@
+// localized-ui
+import { questionText, t, useLanguage } from "../i18n";
 import {
   useCallback,
   useEffect,
@@ -47,6 +49,7 @@ import {
 import AssessorInsights from "../AssessorInsights";
 import LocationPanel from "../LocationPanel";
 import EvidencePanel from "../EvidencePanel";
+import ScoreExplanation from "../ScoreExplanation";
 import CohortAssignment from "../CohortAssignment";
 import {
   PotentialReviewFields,
@@ -70,6 +73,7 @@ import {
   Status,
 } from "../components";
 export default function Detail() {
+  useLanguage();
   const { id } = useParams();
   const [search] = useSearchParams();
   const w = useWorkspace();
@@ -199,10 +203,10 @@ export default function Detail() {
   if (error && !record)
     return (
       <Notice type="error">
-        {error} <Link to="/submissions">Back to submissions</Link>
+        {error} <Link to="/submissions">{t("Back to submissions")}</Link>
       </Notice>
     );
-  if (!record) return <Busy label="Opening assessment" />;
+  if (!record) return <Busy label={t("Opening assessment")} />;
   const a = record.assessment;
   const visibleQuestions =
     a?.questions.filter(
@@ -211,7 +215,7 @@ export default function Detail() {
           QUESTION_GROUPS.find(
             (group) => group.key === questionGroup,
           )?.fields.includes(q.field)) &&
-        `${FIELD_LABELS[q.field]} ${q.question} ${PARAMETER_QUESTIONS[q.field].hint}`
+        `${t(FIELD_LABELS[q.field])} ${questionText(q)} ${q.question} ${t(PARAMETER_QUESTIONS[q.field].hint)}`
           .toLocaleLowerCase()
           .includes(questionSearch.trim().toLocaleLowerCase()),
     ) ?? [];
@@ -219,12 +223,17 @@ export default function Detail() {
     <>
       <Link to="/submissions" className="back-link">
         <ArrowLeft size={14} />
-        All submissions
+        {t("All submissions")}
       </Link>
       <div className="detail-intro">
         <div>
           <div className="eyebrow">
-            BUSINESS IDEA ASSESSMENT {a && <span>· VERSION {a.version}</span>}
+            {t("BUSINESS IDEA ASSESSMENT")}{" "}
+            {a && (
+              <span>
+                {t("· VERSION")} {a.version}
+              </span>
+            )}
           </div>
           <h1>{record.title}</h1>
           {!entrepreneur && !record.example && (
@@ -242,7 +251,7 @@ export default function Detail() {
             </span>
             <span>
               {record.cohortName ?? "Cohort unassigned"}
-              {record.cohortSynthetic ? " · demo" : ""}
+              {record.cohortSynthetic ? t(" · demo") : ""}
             </span>
             <Status status={record.status} />
           </div>
@@ -254,7 +263,7 @@ export default function Detail() {
             disabled={!a}
           >
             <Printer size={15} />
-            Export report
+            {t("Export report")}
           </button>
           {!entrepreneur && (
             <button
@@ -263,16 +272,17 @@ export default function Detail() {
               disabled={!a || record.example}
             >
               <CheckCheck size={16} />
-              Add review
+              {t("Add review")}
             </button>
           )}
         </div>
       </div>
       {record.example && (
         <Notice>
-          Illustrative assessment with synthetic profiles and cohorts. Live
-          changes are available after{" "}
-          <Link to="/settings">connecting your workspace</Link>.
+          {t(
+            "Illustrative assessment with synthetic profiles and cohorts. Live changes are available after",
+          )}{" "}
+          <Link to="/settings">{t("connecting your workspace")}</Link>.
         </Notice>
       )}
       {error && <Notice type="error">{error}</Notice>}
@@ -287,32 +297,32 @@ export default function Detail() {
           </div>
           <h2>
             {record.status === "failed"
-              ? "This submission needs attention"
+              ? t("This submission needs attention")
               : record.errorCode?.includes("QUOTA") ||
                   record.errorCode === "PROVIDER_RATE_LIMITED"
-                ? "Waiting for AI service quota"
+                ? t("Waiting for AI service quota")
                 : record.status === "queued"
-                  ? "Your submission is in the queue"
-                  : "Bringing the evidence together"}
+                  ? t("Your submission is in the queue")
+                  : t("Bringing the evidence together")}
           </h2>
-          <p>{record.error ?? record.stage}</p>
+          <p>{t(record.error ?? record.stage)}</p>
           {record.nextRetryAt && record.status === "queued" && (
             <p>
-              Next automatic attempt:{" "}
-              {new Date(record.nextRetryAt).toLocaleString()}. You can leave
-              this page; no resubmission is needed.
+              {t("Next automatic attempt:")}{" "}
+              {new Date(record.nextRetryAt).toLocaleString()}
+              {t(". You can leave this page; no resubmission is needed.")}
             </p>
           )}
           <div className="processing-steps">
             <span className="complete">
               <Check size={14} />
-              Original saved
+              {t("Original saved")}
             </span>
             <span className={record.status === "processing" ? "current" : ""}>
-              Read & translate
+              {t("Read & translate")}
             </span>
-            <span>Validate evidence</span>
-            <span>Assess & compare</span>
+            <span>{t("Validate evidence")}</span>
+            <span>{t("Assess & compare")}</span>
           </div>
           {record.status === "failed" && (
             <button
@@ -333,7 +343,7 @@ export default function Detail() {
               }}
             >
               <RefreshCw size={15} />
-              Retry processing
+              {t("Retry processing")}
             </button>
           )}
         </section>
@@ -341,31 +351,33 @@ export default function Detail() {
         <>
           <div className="assessment-summary">
             <div className="score-block">
-              <span className="eyebrow">INFORMATION READINESS</span>
+              <span className="eyebrow">{t("INFORMATION READINESS")}</span>
               <div className="score-number">
                 {a.score ?? "—"}
-                <span>{a.score == null ? "Not assessable" : "/ 100"}</span>
+                <span>{a.score == null ? t("Not assessable") : "/ 100"}</span>
               </div>
-              <p>Supporting information, not predicted success.</p>
+              <p>{t("Supporting information, not predicted success.")}</p>
             </div>
             <div className="summary-measure">
               <div>
-                <span>Core information completeness</span>
+                <span>{t("Core information completeness")}</span>
                 <strong>{a.completeness}%</strong>
               </div>
               <Progress value={a.completeness} />
-              <p>{a.questions.length} parameters need answers</p>
+              <p>
+                {a.questions.length} {t("parameters need answers")}
+              </p>
             </div>
             <div className="summary-measure">
               <div>
-                <span>Assessment coverage</span>
+                <span>{t("Assessment coverage")}</span>
                 <strong>{a.coverage}%</strong>
               </div>
               <Progress value={a.coverage} />
               <p>
                 {a.reviewRequired
-                  ? "Human verification or clarification required"
-                  : "Source evidence checked for this version"}
+                  ? t("Human verification or clarification required")
+                  : t("Source evidence checked for this version")}
               </p>
             </div>
             <button
@@ -374,29 +386,30 @@ export default function Detail() {
               disabled={!a.questions.length}
             >
               <MessageSquare size={16} />
-              Resolve gaps <ArrowRight size={14} />
+              {t("Resolve gaps")} <ArrowRight size={14} />
             </button>
           </div>
+          <ScoreExplanation assessment={a} />
           <div className="detail-tabs">
             <button
               className={tab === "overview" ? "active" : ""}
               onClick={() => setTab("overview")}
             >
-              Assessment overview
+              {t("Assessment overview")}
             </button>
             {!entrepreneur && (
               <button
                 className={tab === "context" ? "active" : ""}
                 onClick={() => setTab("context")}
               >
-                Similar ideas & local context
+                {t("Similar ideas & local context")}
               </button>
             )}
             <button
               className={tab === "history" ? "active" : ""}
               onClick={() => setTab("history")}
             >
-              Version history{" "}
+              {t("Version history")}{" "}
               <span className="count-pill">{record.history.length + 1}</span>
             </button>
           </div>
@@ -425,21 +438,24 @@ export default function Detail() {
                 <section className="panel completion-panel">
                   <div className="panel-heading">
                     <div>
-                      <h2>Complete missing information</h2>
+                      <h2>{t("Complete missing information")}</h2>
                       <p>
-                        {FIELD_KEYS.length - a.questions.length} of{" "}
-                        {FIELD_KEYS.length} parameters answered. Only unanswered
-                        or unclear information is shown below.
+                        {FIELD_KEYS.length - a.questions.length} {t("of")}{" "}
+                        {FIELD_KEYS.length}{" "}
+                        {t(
+                          "parameters answered. Only unanswered or unclear information is shown below.",
+                        )}
                       </p>
                       {a.questions.length > 0 && (
                         <p className="hint">
-                          Start with{" "}
+                          {t("Start with")}{" "}
                           {a.questions
                             .slice(0, 3)
                             .map((q) => FIELD_LABELS[q.field])
                             .join(", ")}
-                          . You can answer in stages; missing information is not
-                          a judgement of business quality.
+                          {t(
+                            ". You can answer in stages; missing information is not a judgement of business quality.",
+                          )}
                         </p>
                       )}
                     </div>
@@ -454,7 +470,7 @@ export default function Detail() {
                       }
                     >
                       <Download size={14} />
-                      Download checklist
+                      {t("Download checklist")}
                     </button>
                   </div>
                   {a.questions.length ? (
@@ -463,7 +479,7 @@ export default function Detail() {
                         <div
                           className="question-filters"
                           role="group"
-                          aria-label="Question categories"
+                          aria-label={t("Question categories")}
                         >
                           {[
                             { key: "all", label: "All", fields: FIELD_KEYS },
@@ -475,7 +491,7 @@ export default function Detail() {
                               key={group.key}
                               onClick={() => setQuestionGroup(group.key)}
                             >
-                              {group.label}
+                              {t(group.label)}
                               <span>
                                 {
                                   a.questions.filter((q) =>
@@ -489,8 +505,8 @@ export default function Detail() {
                         <div className="question-search">
                           <Search size={16} />
                           <input
-                            aria-label="Search missing information"
-                            placeholder="Find a question…"
+                            aria-label={t("Search missing information")}
+                            placeholder={t("Find a question…")}
                             value={questionSearch}
                             onChange={(event) =>
                               setQuestionSearch(event.target.value)
@@ -498,8 +514,8 @@ export default function Detail() {
                           />
                         </div>
                         <span className="hint" role="status">
-                          Showing {visibleQuestions.length} of{" "}
-                          {a.questions.length} open questions
+                          {t("Showing")} {visibleQuestions.length} {t("of")}{" "}
+                          {a.questions.length} {t("open questions")}
                         </span>
                       </div>
                       <div className="completion-questions">
@@ -510,13 +526,13 @@ export default function Detail() {
                           >
                             <div>
                               <span className="eyebrow">
-                                {FIELD_LABELS[q.field]}
+                                {t(FIELD_LABELS[q.field])}
                               </span>
-                              <h3>{q.translatedQuestion ?? q.question}</h3>
-                              {q.translatedQuestion && <p>{q.question}</p>}
+                              <h3>{questionText(q)}</h3>
+
                               <details className="question-guidance">
-                                <summary>Answer guidance</summary>
-                                <p>{PARAMETER_QUESTIONS[q.field].hint}</p>
+                                <summary>{t("Answer guidance")}</summary>
+                                <p>{t(PARAMETER_QUESTIONS[q.field].hint)}</p>
                               </details>
                             </div>
                             <button
@@ -525,15 +541,15 @@ export default function Detail() {
                                 setRepairField(q.field);
                                 setRepair(true);
                               }}
-                              aria-label={`Answer ${FIELD_LABELS[q.field]}`}
+                              aria-label={`Answer ${t(FIELD_LABELS[q.field])}`}
                             >
-                              Answer <ArrowRight size={14} />
+                              {t("Answer")} <ArrowRight size={14} />
                             </button>
                           </article>
                         ))}
                         {!visibleQuestions.length && (
                           <div className="question-empty">
-                            <h3>No questions match these filters</h3>
+                            <h3>{t("No questions match these filters")}</h3>
                             <button
                               type="button"
                               className="button secondary small"
@@ -542,7 +558,7 @@ export default function Detail() {
                                 setQuestionSearch("");
                               }}
                             >
-                              Show all open questions
+                              {t("Show all open questions")}
                             </button>
                           </div>
                         )}
@@ -551,8 +567,9 @@ export default function Detail() {
                   ) : (
                     <div className="notes-body">
                       <p>
-                        All parameters have answers in the available evidence.
-                        No additional questions are needed.
+                        {t(
+                          "All parameters have answers in the available evidence. No additional questions are needed.",
+                        )}
                       </p>
                     </div>
                   )}
@@ -560,13 +577,14 @@ export default function Detail() {
                 <section className="panel">
                   <div className="panel-heading">
                     <div>
-                      <h2>The business, at a glance</h2>
+                      <h2>{t("The business, at a glance")}</h2>
                       <p>
-                        Applicant-stated facts quoted from the available
-                        evidence.
+                        {t(
+                          "Applicant-stated facts quoted from the available evidence.",
+                        )}
                       </p>
                     </div>
-                    <span className="outline-label">SOURCE LINKED</span>
+                    <span className="outline-label">{t("SOURCE LINKED")}</span>
                   </div>
                   <div className="facts-grid">
                     {a.fields
@@ -586,10 +604,11 @@ export default function Detail() {
                 <section className="panel">
                   <div className="panel-heading">
                     <div>
-                      <h2>Assessment dimensions</h2>
+                      <h2>{t("Assessment dimensions")}</h2>
                       <p>
-                        Deterministic rubric · 0–4 · unknown is different from
-                        zero.
+                        {t(
+                          "Deterministic rubric · 0–4 · unknown is different from zero.",
+                        )}
                       </p>
                     </div>
                   </div>
@@ -597,10 +616,10 @@ export default function Detail() {
                     {a.dimensions.map((d) => (
                       <div className="dimension-row" key={d.key}>
                         <div className="dimension-heading">
-                          <strong>{d.label}</strong>
+                          <strong>{t(d.label)}</strong>
                           <span>
                             {d.score == null
-                              ? "Not assessable"
+                              ? t("Not assessable")
                               : `${d.score} / 4`}
                           </span>
                         </div>
@@ -616,7 +635,7 @@ export default function Detail() {
                             />
                           ))}
                         </div>
-                        <p>{d.explanation}</p>
+                        <p>{t(d.explanation)}</p>
                         {d.evidenceIds.length > 0 && (
                           <button
                             className="evidence-link"
@@ -625,7 +644,8 @@ export default function Detail() {
                               setSourceTab("compare");
                             }}
                           >
-                            View supporting evidence <ArrowUpRight size={12} />
+                            {t("View supporting evidence")}{" "}
+                            <ArrowUpRight size={12} />
                           </button>
                         )}
                       </div>
@@ -633,13 +653,15 @@ export default function Detail() {
                   </div>
                   <div className="panel-footer">
                     <Info size={14} />
-                    Rubric {a.rubricVersion}. Weights are product rules, not
-                    learned business-outcome predictions.
+                    {t("Rubric")} {a.rubricVersion}
+                    {t(
+                      ". Weights are product rules, not learned business-outcome predictions.",
+                    )}
                   </div>
                 </section>
                 <section className="panel">
                   <div className="panel-heading">
-                    <h2>Assessor notes & next steps</h2>
+                    <h2>{t("Assessor notes & next steps")}</h2>
                   </div>
                   <div className="notes-body">
                     {record.review ? (
@@ -650,13 +672,13 @@ export default function Detail() {
                         <p>{record.review.note}</p>
                         {record.review.nextAction && (
                           <p>
-                            <strong>Next action: </strong>
+                            <strong>{t("Next action:")} </strong>
                             {record.review.nextAction}
                           </p>
                         )}
                         {record.review.reasonCodes?.length ? (
                           <p className="hint">
-                            Reasons:{" "}
+                            {t("Reasons:")}{" "}
                             {record.review.reasonCodes
                               .map(
                                 (key) =>
@@ -669,12 +691,12 @@ export default function Detail() {
                         ) : null}
                         {record.review.evidenceIds?.length ? (
                           <p className="hint">
-                            Supporting evidence:{" "}
+                            {t("Supporting evidence:")}{" "}
                             {record.review.evidenceIds.join(", ")}
                           </p>
                         ) : null}
                         <span className="hint">
-                          Reviewed{" "}
+                          {t("Reviewed")}{" "}
                           {new Date(
                             record.review.reviewedAt,
                           ).toLocaleDateString("en-IN")}
@@ -682,8 +704,9 @@ export default function Detail() {
                       </>
                     ) : (
                       <p className="muted">
-                        No assessor review recorded. Review the source and
-                        unresolved questions before choosing the next step.
+                        {t(
+                          "No assessor review recorded. Review the source and unresolved questions before choosing the next step.",
+                        )}
                       </p>
                     )}
                   </div>
@@ -705,7 +728,7 @@ export default function Detail() {
                   <div className="panel-heading">
                     <h3>
                       <ShieldCheck size={16} />
-                      What to keep in mind
+                      {t("What to keep in mind")}
                     </h3>
                   </div>
                   <ul>
@@ -715,8 +738,9 @@ export default function Detail() {
                         <li key={i}>{v}</li>
                       ))}
                     <li>
-                      Source references establish traceability. They do not
-                      independently verify the applicant’s claims.
+                      {t(
+                        "Source references establish traceability. They do not independently verify the applicant’s claims.",
+                      )}
                     </li>
                   </ul>
                 </section>
@@ -727,10 +751,11 @@ export default function Detail() {
               <section className="panel">
                 <div className="panel-heading">
                   <div>
-                    <h2>Related business ideas</h2>
+                    <h2>{t("Related business ideas")}</h2>
                     <p>
-                      Similarity helps identify overlap; it is not a
-                      recommendation or a truth check.
+                      {t(
+                        "Similarity helps identify overlap; it is not a recommendation or a truth check.",
+                      )}
                     </p>
                   </div>
                 </div>
@@ -758,8 +783,8 @@ export default function Detail() {
                           </div>
                           <small>
                             {m.method === "embedding"
-                              ? "Semantic similarity"
-                              : "Keyword overlap"}
+                              ? t("Semantic similarity")
+                              : t("Keyword overlap")}
                             {m.method === "embedding"
                               ? ` · ${m.similarity.toFixed(2)} cosine score`
                               : ""}
@@ -771,8 +796,10 @@ export default function Detail() {
                   </div>
                 ) : (
                   <Empty
-                    title="No related ideas found"
-                    description="Matches will appear as more distinct business proposals are assessed."
+                    title={t("No related ideas found")}
+                    description={t(
+                      "Matches will appear as more distinct business proposals are assessed.",
+                    )}
                   />
                 )}
               </section>
@@ -788,8 +815,10 @@ export default function Detail() {
             <section className="panel">
               <div className="panel-heading">
                 <div>
-                  <h2>Evidence changes. The assessment follows.</h2>
-                  <p>Every clarification preserves the earlier assessment.</p>
+                  <h2>{t("Evidence changes. The assessment follows.")}</h2>
+                  <p>
+                    {t("Every clarification preserves the earlier assessment.")}
+                  </p>
                 </div>
               </div>
               <div className="history-list">
@@ -812,19 +841,20 @@ export default function Detail() {
                       </div>
                       <div>
                         <h3>
-                          Version {version.version}{" "}
+                          {t("Version")} {version.version}{" "}
                           <span className="small-label">
-                            {index === 0 ? "CURRENT" : "PREVIOUS"}
+                            {index === 0 ? t("CURRENT") : t("PREVIOUS")}
                           </span>
                         </h3>
                         <p>
                           {new Date(version.createdAt).toLocaleString("en-IN")}{" "}
-                          · Completeness {version.completeness}% · Assessment{" "}
+                          {t("· Completeness")} {version.completeness}
+                          {t("% · Assessment")}{" "}
                           {version.score ?? "not assessable"}
                         </p>
                         {changed.map((f) => (
                           <div className="history-change" key={f.key}>
-                            <strong>{FIELD_LABELS[f.key]}</strong>
+                            <strong>{t(FIELD_LABELS[f.key])}</strong>
                             <span>
                               {previous?.fields.find((p) => p.key === f.key)
                                 ?.value ?? "Unknown / conflicting"}{" "}
@@ -834,7 +864,9 @@ export default function Detail() {
                           </div>
                         ))}
                         {!previous && (
-                          <small>Initial extraction and assessment.</small>
+                          <small>
+                            {t("Initial extraction and assessment.")}
+                          </small>
                         )}
                       </div>
                     </article>
@@ -886,6 +918,7 @@ function RepairModal({
   onClose: () => void;
   onSaved: (s: Submission) => void;
 }) {
+  useLanguage();
   const [a, setAssessment] = useState(record.assessment!);
   const stale = a.version !== record.assessment!.version;
   const [questionId, setQuestionId] = useState(
@@ -931,27 +964,30 @@ function RepairModal({
     }
   }
   return (
-    <Modal title="Evidence Repair Loop" onClose={onClose}>
+    <Modal title={t("Evidence Repair Loop")} onClose={onClose}>
       <div className="modal-content">
         <div className="repair-intro">
           <span className="document-icon">
             <MessageSquare size={20} />
           </span>
           <p>
-            {a.questions.length} parameters still need answers. Information
-            already found in your input is not asked again. Answers may change
-            the assessment in either direction.
+            {a.questions.length}{" "}
+            {t(
+              "parameters still need answers. Information already found in your input is not asked again. Answers may change the assessment in either direction.",
+            )}
           </p>
         </div>
         {!q ? (
           <Empty
-            title="No open questions"
-            description="Review the source evidence or add an assessor note."
+            title={t("No open questions")}
+            description={t(
+              "Review the source evidence or add an assessor note.",
+            )}
           />
         ) : (
           <form onSubmit={save}>
             <label>
-              Information to clarify
+              {t("Information to clarify")}
               <select
                 value={q.id}
                 disabled={pending}
@@ -963,20 +999,20 @@ function RepairModal({
               >
                 {a.questions.map((question) => (
                   <option key={question.id} value={question.id}>
-                    {FIELD_LABELS[question.field]}
+                    {t(FIELD_LABELS[question.field])}
                   </option>
                 ))}
               </select>
             </label>
             <div className="question-card">
-              <div className="eyebrow">QUESTION FOR THE BENEFICIARY</div>
-              <h3>{q.translatedQuestion ?? q.question}</h3>
-              {q.translatedQuestion && <p>{q.question}</p>}
-              <small>{q.reason}</small>
-              <p>{PARAMETER_QUESTIONS[q.field].hint}</p>
+              <div className="eyebrow">{t("QUESTION FOR THE BENEFICIARY")}</div>
+              <h3>{questionText(q)}</h3>
+
+              <small>{t(q.reason)}</small>
+              <p>{t(PARAMETER_QUESTIONS[q.field].hint)}</p>
             </div>
             <label>
-              Answer language
+              {t("Answer language")}
               <select
                 value={language}
                 disabled={pending}
@@ -997,7 +1033,7 @@ function RepairModal({
                 onClick={() => setMode("text")}
               >
                 <AlignLeft size={14} />
-                Type an answer
+                {t("Type an answer")}
               </button>
               <button
                 type="button"
@@ -1006,12 +1042,12 @@ function RepairModal({
                 onClick={() => setMode("audio")}
               >
                 <Mic size={14} />
-                Record an answer
+                {t("Record an answer")}
               </button>
             </div>
             {mode === "text" ? (
               <label>
-                Your clarification
+                {t("Your clarification")}
                 <textarea
                   required
                   minLength={1}
@@ -1020,27 +1056,32 @@ function RepairModal({
                   value={answer}
                   disabled={pending}
                   onChange={(e) => setAnswer(e.target.value)}
-                  placeholder="Provide the missing detail or explain which conflicting value is correct."
+                  placeholder={t(
+                    "Provide the missing detail or explain which conflicting value is correct.",
+                  )}
                 />
               </label>
             ) : (
               <Recorder onFile={setFile} disabled={pending} />
             )}
             <p className="hint">
-              The original remains unchanged. Your clarification becomes a new
-              evidence source and assessment version.
+              {t(
+                "The original remains unchanged. Your clarification becomes a new evidence source and assessment version.",
+              )}
             </p>
             {record.example && (
               <Notice>
-                This example is read-only. Connect your workspace to save
-                clarifications on live submissions.
+                {t(
+                  "This example is read-only. Connect your workspace to save clarifications on live submissions.",
+                )}
               </Notice>
             )}
             {error && <Notice type="error">{error}</Notice>}
             {stale && (
               <Notice>
-                This assessment has changed. Close and reopen these questions
-                before answering.
+                {t(
+                  "This assessment has changed. Close and reopen these questions before answering.",
+                )}
               </Notice>
             )}
             <div className="modal-actions">
@@ -1049,7 +1090,7 @@ function RepairModal({
                 className="button secondary"
                 onClick={onClose}
               >
-                Close
+                {t("Close")}
               </button>
               <button
                 type="submit"
@@ -1061,7 +1102,7 @@ function RepairModal({
                 ) : (
                   <ArrowRight size={15} />
                 )}
-                Save & reassess
+                {t("Save & reassess")}
               </button>
             </div>
           </form>
@@ -1079,6 +1120,7 @@ function ReviewModal({
   onClose: () => void;
   onSaved: (s: Submission) => void;
 }) {
+  useLanguage();
   const [decision, setDecision] = useState(""),
     [note, setNote] = useState(""),
     [pending, setPending] = useState(false),
@@ -1093,7 +1135,7 @@ function ReviewModal({
       : [],
   );
   return (
-    <Modal title="Record assessor review" onClose={onClose}>
+    <Modal title={t("Record assessor review")} onClose={onClose}>
       <form
         className="modal-content"
         onSubmit={async (e) => {
@@ -1135,25 +1177,30 @@ function ReviewModal({
         }}
       >
         <Notice>
-          This review records your professional judgement. AI assessment does
-          not determine funding eligibility.
+          {t(
+            "This review records your professional judgement. AI assessment does not determine funding eligibility.",
+          )}
         </Notice>
         <label>
-          Recommended next step
+          {t("Recommended next step")}
           <select
             required
             value={decision}
             onChange={(e) => setDecision(e.target.value)}
           >
-            <option value="">Select a next step</option>
-            <option value="mentoring">Mentoring / skilling conversation</option>
-            <option value="deeper_evaluation">Deeper evaluation</option>
-            <option value="clarification">Further clarification</option>
-            <option value="reviewed">Reviewed — no next step recorded</option>
+            <option value="">{t("Select a next step")}</option>
+            <option value="mentoring">
+              {t("Mentoring / skilling conversation")}
+            </option>
+            <option value="deeper_evaluation">{t("Deeper evaluation")}</option>
+            <option value="clarification">{t("Further clarification")}</option>
+            <option value="reviewed">
+              {t("Reviewed — no next step recorded")}
+            </option>
           </select>
         </label>
         <label>
-          Review rationale
+          {t("Review rationale")}
           <textarea
             rows={5}
             required
@@ -1161,11 +1208,13 @@ function ReviewModal({
             maxLength={2000}
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Explain the next step and any information that needs validation."
+            placeholder={t(
+              "Explain the next step and any information that needs validation.",
+            )}
           />
         </label>
         <fieldset className="review-checklist">
-          <legend>Review reasons — choose 1 to 4</legend>
+          <legend>{t("Review reasons — choose 1 to 4")}</legend>
           {REVIEW_REASONS.map(([key, label]) => (
             <label key={key} className="check-line">
               <input
@@ -1180,14 +1229,14 @@ function ReviewModal({
                   )
                 }
               />
-              {label}
+              {t(label)}
             </label>
           ))}
         </fieldset>
         <label>
-          Next action{" "}
+          {t("Next action")}{" "}
           {decision === "reviewed" && (
-            <span className="optional">optional</span>
+            <span className="optional">{t("optional")}</span>
           )}
           <textarea
             rows={3}
@@ -1196,11 +1245,13 @@ function ReviewModal({
             maxLength={600}
             value={nextAction}
             onChange={(event) => setNextAction(event.target.value)}
-            placeholder="Describe who should do what next, and which information should be checked."
+            placeholder={t(
+              "Describe who should do what next, and which information should be checked.",
+            )}
           />
         </label>
         <fieldset className="review-checklist">
-          <legend>Supporting source evidence — choose 1 to 20</legend>
+          <legend>{t("Supporting source evidence — choose 1 to 20")}</legend>
           {record.assessment!.segments.map((segment) => (
             <label key={segment.id} className="check-line">
               <input
@@ -1238,13 +1289,14 @@ function ReviewModal({
             onChange={(event) => setSourceReviewed(event.target.checked)}
             required
           />
-          I reviewed the original source and the evidence supporting this
-          recommendation.
+          {t(
+            "I reviewed the original source and the evidence supporting this recommendation.",
+          )}
         </label>
         {error && <Notice type="error">{error}</Notice>}
         <div className="modal-actions">
           <button type="button" className="button secondary" onClick={onClose}>
-            Cancel
+            {t("Cancel")}
           </button>
           <button className="button primary" disabled={pending}>
             {pending ? (
@@ -1252,7 +1304,7 @@ function ReviewModal({
             ) : (
               <Check size={15} />
             )}
-            Save review
+            {t("Save review")}
           </button>
         </div>
       </form>

@@ -1,3 +1,5 @@
+// localized-ui
+import { t, useLanguage } from "./i18n";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
@@ -23,6 +25,7 @@ import {
   type EvidenceField,
 } from "../../shared/types";
 export function Icon({ type, size = 16 }: { type: string; size?: number }) {
+  useLanguage();
   return type === "pdf" ? (
     <FileText size={size} />
   ) : type === "audio" ? (
@@ -32,6 +35,7 @@ export function Icon({ type, size = 16 }: { type: string; size?: number }) {
   );
 }
 export function Status({ status }: { status: Submission["status"] }) {
+  useLanguage();
   const label = {
     ready: "Ready for review",
     needs_review: "Needs review",
@@ -42,11 +46,12 @@ export function Status({ status }: { status: Submission["status"] }) {
   return (
     <span className={`status status-${status}`}>
       <span className="status-dot" />
-      {label}
+      {t(label)}
     </span>
   );
 }
 export function Progress({ value }: { value: number }) {
+  useLanguage();
   return (
     <div
       className="progress-track"
@@ -68,13 +73,14 @@ export function Empty({
   description: string;
   action?: ReactNode;
 }) {
+  useLanguage();
   return (
     <div className="empty">
       <div className="empty-icon">
         <FileText size={25} />
       </div>
-      <h3>{title}</h3>
-      <p>{description}</p>
+      <h3>{t(title)}</h3>
+      <p>{t(description)}</p>
       {action}
     </div>
   );
@@ -86,13 +92,14 @@ export function Notice({
   children: ReactNode;
   type?: "info" | "error";
 }) {
+  useLanguage();
   return (
     <div
       className={`notice ${type}`}
       role={type === "error" ? "alert" : undefined}
     >
       {type === "error" ? <AlertCircle size={17} /> : <Info size={17} />}
-      <div>{children}</div>
+      <div>{typeof children === "string" ? t(children) : children}</div>
     </div>
   );
 }
@@ -107,22 +114,24 @@ export function PageIntro({
   description: string;
   action?: ReactNode;
 }) {
+  useLanguage();
   return (
     <div className="page-intro">
       <div>
-        {eyebrow && <div className="eyebrow">{eyebrow}</div>}
-        <h1>{title}</h1>
-        <p>{description}</p>
+        {eyebrow && <div className="eyebrow">{t(eyebrow)}</div>}
+        <h1>{t(title)}</h1>
+        <p>{t(description)}</p>
       </div>
       {action && <div className="intro-action">{action}</div>}
     </div>
   );
 }
 export function Busy({ label = "Loading workspace" }: { label?: string }) {
+  useLanguage();
   return (
     <div className="busy">
       <Loader2 size={21} className="spin" />
-      <span>{label}</span>
+      <span>{t(label)}</span>
     </div>
   );
 }
@@ -137,6 +146,7 @@ export function Modal({
   onClose: () => void;
   wide?: boolean;
 }) {
+  useLanguage();
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const previous = document.activeElement as HTMLElement;
@@ -180,15 +190,15 @@ export function Modal({
         tabIndex={-1}
         role="dialog"
         aria-modal="true"
-        aria-label={title}
+        aria-label={t(title)}
         className={`modal ${wide ? "modal-wide" : ""}`}
       >
         <div className="modal-heading">
-          <h2>{title}</h2>
+          <h2>{t(title)}</h2>
           <button
             className="icon-button"
             onClick={onClose}
-            aria-label="Close dialog"
+            aria-label={t("Close dialog")}
           >
             <X size={20} />
           </button>
@@ -208,14 +218,15 @@ export function SubmissionsTable({
   compact?: boolean;
   personal?: boolean;
 }) {
+  useLanguage();
   if (!items.length)
     return (
       <Empty
-        title="No ideas here yet"
-        description="Start with a text, PDF, or audio submission."
+        title={t("No ideas here yet")}
+        description={t("Start with a text, PDF, or audio submission.")}
         action={
           <Link to="/submit" className="button primary">
-            Submit an idea <ArrowRight size={15} />
+            {t("Submit an idea")} <ArrowRight size={15} />
           </Link>
         }
       />
@@ -226,14 +237,16 @@ export function SubmissionsTable({
         <thead>
           <tr>
             <th>
-              {personal ? "My business idea" : "Business idea / beneficiary"}
+              {personal
+                ? t("My business idea")
+                : t("Business idea / beneficiary")}
             </th>
-            {!compact && !personal && <th>Trade / cohort</th>}
-            {personal && <th>My readiness</th>}
-            <th>Submission</th>
-            <th>Completeness</th>
-            <th>Status</th>
-            <th aria-label="Open assessment" />
+            {!compact && !personal && <th>{t("Trade / cohort")}</th>}
+            {personal && <th>{t("My readiness")}</th>}
+            <th>{t("Submission")}</th>
+            <th>{t("Completeness")}</th>
+            <th>{t("Status")}</th>
+            <th aria-label={t("Open assessment")} />
           </tr>
         </thead>
         <tbody>
@@ -259,7 +272,7 @@ export function SubmissionsTable({
               {personal && (
                 <td>
                   {item.assessment?.score == null
-                    ? "Pending"
+                    ? t("Pending")
                     : `${item.assessment.score} / 100`}
                 </td>
               )}
@@ -267,14 +280,14 @@ export function SubmissionsTable({
                 <span className="format-label">
                   <Icon type={item.inputType} />
                   {item.inputType === "pdf"
-                    ? "PDF"
+                    ? t("PDF")
                     : item.inputType === "audio"
-                      ? "Audio"
-                      : "Text"}
+                      ? t("Audio")
+                      : t("Text")}
                 </span>
                 <div className="cell-secondary">
                   {item.language === "auto"
-                    ? "Detecting language"
+                    ? t("Detecting language")
                     : item.language}
                 </div>
               </td>
@@ -312,19 +325,20 @@ export function FieldCard({
   field: EvidenceField;
   onEvidence: (ids: string[]) => void;
 }) {
+  useLanguage();
   return (
     <div className={`fact fact-${field.status}`}>
       <div className="fact-top">
-        <span>{FIELD_LABELS[field.key]}</span>
+        <span>{t(FIELD_LABELS[field.key])}</span>
         {field.status === "supported" ? (
           <Check size={13} />
         ) : (
           <span className="small-label">
             {field.status === "ambiguous"
-              ? "Conflicting"
+              ? t("Conflicting")
               : field.status === "irrelevant"
-                ? "Off-topic"
-                : "Not provided"}
+                ? t("Off-topic")
+                : t("Not provided")}
           </span>
         )}
       </div>
@@ -342,8 +356,8 @@ export function FieldCard({
           onClick={() => onEvidence(field.evidenceIds)}
         >
           <FileText size={12} />
-          {field.evidenceIds.length} source{" "}
-          {field.evidenceIds.length === 1 ? "reference" : "references"}{" "}
+          {field.evidenceIds.length} {t("source")}{" "}
+          {field.evidenceIds.length === 1 ? t("reference") : t("references")}{" "}
           <ChevronRight size={12} />
         </button>
       )}
@@ -357,6 +371,7 @@ export function Recorder({
   onFile: (file: File | null) => void;
   disabled?: boolean;
 }) {
+  useLanguage();
   const [recording, setRecording] = useState(false),
     [seconds, setSeconds] = useState(0),
     [file, setFile] = useState<File | null>(null),
@@ -456,7 +471,7 @@ export function Recorder({
             disabled={disabled}
           >
             <Trash2 size={15} />
-            Record again
+            {t("Record again")}
           </button>
         </>
       ) : (
@@ -469,12 +484,14 @@ export function Recorder({
           <h3>
             {recording
               ? `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`
-              : "Tell us about your idea"}
+              : t("Tell us about your idea")}
           </h3>
           <p>
             {recording
-              ? "Recording · stop when you are finished"
-              : "Speak naturally in the language you are most comfortable with."}
+              ? t("Recording · stop when you are finished")
+              : t(
+                  "Speak naturally in the language you are most comfortable with.",
+                )}
           </p>
           <button
             type="button"
@@ -485,17 +502,19 @@ export function Recorder({
             {recording ? (
               <>
                 <Square size={14} />
-                Stop recording
+                {t("Stop recording")}
               </>
             ) : (
               <>
                 <Mic size={15} />
-                Start recording
+                {t("Start recording")}
               </>
             )}
           </button>
           <span className="hint">
-            Up to 5 minutes per recording. Please avoid sharing contact details.
+            {t(
+              "Up to 5 minutes per recording. Please avoid sharing contact details.",
+            )}
           </span>
         </>
       )}

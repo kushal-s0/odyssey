@@ -1,3 +1,5 @@
+// localized-ui
+import { t, useLanguage } from "./i18n";
 import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -26,6 +28,7 @@ export default function BusinessMap({
   onPick: (point: { lat: number; lon: number }) => void;
   picking: boolean;
 }) {
+  useLanguage();
   const container = useRef<HTMLDivElement>(null),
     map = useRef<L.Map | null>(null),
     markers = useRef(new Map<string, L.Marker>());
@@ -139,17 +142,22 @@ export default function BusinessMap({
         ref={container}
         className={`business-map ${picking ? "picking" : ""}`}
         role="region"
-        aria-label="Nearby business map"
+        aria-label={t("Nearby business map")}
       />
       <p className="hint">
         {picking
-          ? "Click the map to place the selected pin. You can also enter coordinates below."
-          : "Pan or use + / − to zoom. Focus the map and use arrow keys to pan. Numbered pins match the list; distances are straight-line."}
+          ? t(
+              "Click the map to place the selected pin. You can also enter coordinates below.",
+            )
+          : t(
+              "Pan or use + / − to zoom. Focus the map and use arrow keys to pan. Numbered pins match the list; distances are straight-line.",
+            )}
       </p>
       {tileError && (
         <p role="status" className="map-warning">
-          Some map tiles could not load. Pins and the sourced list remain
-          available. Use “Open area in OpenStreetMap” to inspect the location.
+          {t(
+            "Some map tiles could not load. Pins and the sourced list remain available. Use “Open area in OpenStreetMap” to inspect the location.",
+          )}
         </p>
       )}
     </div>

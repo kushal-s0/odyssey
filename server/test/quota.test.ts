@@ -4,6 +4,8 @@ import {
   ProviderError,
   RequestGate,
   providerResponseError,
+  checkResponse,
+  groqResponseError,
 } from "../src/providers/quota.js";
 import { retryPlan } from "../src/processing.js";
 
@@ -107,6 +109,61 @@ test("real failing requests stop after three attempts and use exponential backof
   assert.equal(retryPlan(error, 1, 0).runAt.getTime(), 60000);
   assert.equal(retryPlan(error, 2, 0).runAt.getTime(), 120000);
   assert.equal(retryPlan(error, 3, 0).retry, false);
+});
+
+test("a real rate limit remains queued without exhausting processing attempts", () => {
+  const error = new ProviderError(
+    "Quota reset pending",
+    true,
+    "PROVIDER_RATE_LIMITED",
+    90000,
+    true,
+    "groq",
+  );
+  const plan = retryPlan(error, 3, 0);
+  assert.equal(plan.retry, true);
+  assert.equal(plan.attempts, 2);
+  assert.ok(plan.runAt.getTime() >= 90000);
+  const inaccessible = new ProviderError(
+    "Zero allowance",
+    false,
+    "PROVIDER_QUOTA_UNAVAILABLE",
+  );
+  assert.equal(retryPlan(inaccessible, 3).retry, false);
+});
+
+test("successful responses with exhausted token allowance prevent another upstream request", async () => {
+  const gate = new RequestGate();
+  await checkResponse(
+    new Response("{}", {
+      headers: {
+        "x-ratelimit-remaining-tokens": "0",
+        "x-ratelimit-reset-tokens": "15s",
+      },
+    }),
+    gate,
+    "groq",
+  );
+  await assert.rejects(
+    () => gate.enter(0),
+    (error: unknown) => {
+      assert.ok(error instanceof ProviderError);
+      assert.equal(error.requestMade, false);
+      assert.equal(error.provider, "groq");
+      assert.ok(error.retryAfterMs > 15000);
+      return true;
+    },
+  );
+});
+
+test("Groq token-per-day limits use their reported delay even with requests remaining", () => {
+  const error = groqResponseError(new Response("{}", { status: 429 }), {
+    code: "rate_limit_exceeded",
+    message: "Limit on tokens per day (TPD). Please try again in 2h30m.",
+  });
+  assert.equal(error.code, "PROVIDER_DAILY_QUOTA");
+  assert.equal(error.retryAfterMs, 9002000);
+  assert.ok(!error.message.includes("TPD"));
 });
 test("parallel calls reserve separate request slots", async () => {
   const gate = new RequestGate();

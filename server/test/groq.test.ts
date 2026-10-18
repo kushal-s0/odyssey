@@ -23,6 +23,7 @@ const original = {
   groq: config.GROQ_API_KEY,
   geminiInterval: config.GEMINI_MIN_REQUEST_INTERVAL_MS,
   groqInterval: config.GROQ_MIN_REQUEST_INTERVAL_MS,
+  tokens: config.GROQ_MAX_COMPLETION_TOKENS,
 };
 beforeEach(() => {
   config.GEMINI_API_KEY = "gemini-test-only";
@@ -36,6 +37,7 @@ afterEach(() => {
   config.GROQ_API_KEY = original.groq;
   config.GEMINI_MIN_REQUEST_INTERVAL_MS = original.geminiInterval;
   config.GROQ_MIN_REQUEST_INTERVAL_MS = original.groqInterval;
+  config.GROQ_MAX_COMPLETION_TOKENS = original.tokens;
   generationGate.reset();
   groqGate.reset();
   embeddingGate.reset();
@@ -70,6 +72,111 @@ const source = {
   language: "English",
   segments: [segment("Synthetic tailoring business.")],
 };
+
+test("Groq decoder 400 retries once with more tokens while preserving schema and source", async () => {
+  config.GROQ_MAX_COMPLETION_TOKENS = 512;
+  const bodies: any[] = [];
+  globalThis.fetch = async (_url, options) => {
+    bodies.push(JSON.parse(String(options?.body)));
+    return bodies.length === 1
+      ? Response.json(
+          {
+            error: {
+              code: "json_validate_failed",
+              message: "Failed to generate JSON",
+              failed_generation: "PRIVATE PARTIAL SOURCE MUST NOT BE USED",
+            },
+          },
+          { status: 400 },
+        )
+      : groq({ status: "ok" });
+  };
+  const schema = {
+    type: "object",
+    properties: { status: { type: "string" } },
+    required: ["status"],
+    additionalProperties: false,
+  };
+  const result = await generateGroq(
+    "Original synthetic input",
+    "Keep quoted facts",
+    schema,
+  );
+  assert.deepEqual(result.value, { status: "ok" });
+  assert.equal(bodies.length, 2);
+  assert.equal(bodies[0].max_completion_tokens, 512);
+  assert.equal(bodies[1].max_completion_tokens, 1024);
+  assert.deepEqual(bodies[0].messages, bodies[1].messages);
+  assert.deepEqual(bodies[1].response_format.json_schema.schema, schema);
+  assert.equal(bodies[1].response_format.json_schema.strict, true);
+  assert.equal(JSON.stringify(bodies[1]).includes("PRIVATE PARTIAL"), false);
+  if (/^openai\/gpt-oss-(20b|120b)$/.test(config.GROQ_MODEL))
+    assert.equal(bodies[1].reasoning_effort, "low");
+});
+test("persistent Groq JSON errors stop after two calls and do not leak generated content", async () => {
+  let calls = 0;
+  globalThis.fetch = async () => {
+    calls++;
+    return Response.json(
+      {
+        error: {
+          code: "json_validate_failed",
+          message: "PRIVATE SOURCE",
+          failed_generation: "PRIVATE SOURCE",
+        },
+      },
+      { status: 400 },
+    );
+  };
+  await assert.rejects(
+    () => generateGroq("synthetic", "synthetic", {}),
+    (error: unknown) =>
+      error instanceof ProviderError &&
+      error.code === "PROVIDER_STRUCTURED_OUTPUT" &&
+      !error.message.includes("PRIVATE"),
+  );
+  assert.equal(calls, 2);
+});
+test("access, schema configuration and context errors do not trigger generation recovery", async () => {
+  for (const [status, error] of [
+    [401, { code: "invalid_api_key" }],
+    [
+      400,
+      {
+        code: "invalid_request_error",
+        message: "response_format json_schema is not supported",
+      },
+    ],
+    [400, { code: "context_length_exceeded" }],
+  ] as const) {
+    let calls = 0;
+    globalThis.fetch = async () => {
+      calls++;
+      return Response.json({ error }, { status });
+    };
+    await assert.rejects(() => generateGroq("synthetic", "synthetic", {}));
+    assert.equal(calls, 1);
+  }
+});
+test("explicit Groq refusal is never retried as a structured-output failure", async () => {
+  let calls = 0;
+  globalThis.fetch = async () => {
+    calls++;
+    return Response.json({
+      choices: [
+        {
+          finish_reason: "stop",
+          message: { refusal: "blocked", content: "{}" },
+        },
+      ],
+    });
+  };
+  await assert.rejects(
+    () => generateGroq("synthetic", "synthetic", {}),
+    /blocked/,
+  );
+  assert.equal(calls, 1);
+});
 
 test("Gemini 429 switches to Groq with strict JSON and server-only credentials", async () => {
   const calls: string[] = [];

@@ -11,6 +11,7 @@ import { join } from "node:path";
 import { spawn } from "node:child_process";
 import { createRequire } from "node:module";
 import { config } from "../config.js";
+import { cloudPost } from "./cloud.js";
 import { ProviderError } from "./gemini.js";
 import type { SourceSegment } from "../../../shared/types.js";
 const ffmpegStatic = createRequire(import.meta.url)("ffmpeg-static") as
@@ -80,7 +81,8 @@ export async function transcribe(
   buffer: Buffer,
   language: string,
 ): Promise<SourceSegment[]> {
-  if (!config.SARVAM_API_KEY)
+  const useCloud = !!config.CLOUD_AI_URL || config.AUDIO_PROVIDER === "cloud";
+  if (!useCloud && !config.SARVAM_API_KEY)
     throw new ProviderError(
       "Set SARVAM_API_KEY or explicitly choose AUDIO_PROVIDER=gemini.",
     );
@@ -112,18 +114,23 @@ export async function transcribe(
       form.set("model", config.SARVAM_MODEL);
       form.set("mode", "transcribe");
       form.set("language_code", language === "auto" ? "unknown" : language);
-      const response = await fetch("https://api.sarvam.ai/speech-to-text", {
-        method: "POST",
-        headers: { "api-subscription-key": config.SARVAM_API_KEY },
-        body: form,
-        signal: AbortSignal.timeout(60000),
-      });
-      if (!response.ok)
-        throw new ProviderError(
-          `Speech API returned ${response.status}. Check access and quota.`,
-          response.status === 429 || response.status >= 500,
-        );
-      const result: any = await response.json();
+      let result: any;
+      if (useCloud) {
+        result = await cloudPost("v1/audio/transcriptions", form);
+      } else {
+        const response = await fetch("https://api.sarvam.ai/speech-to-text", {
+          method: "POST",
+          headers: { "api-subscription-key": config.SARVAM_API_KEY },
+          body: form,
+          signal: AbortSignal.timeout(60000),
+        });
+        if (!response.ok)
+          throw new ProviderError(
+            `Speech API returned ${response.status}. Check access and quota.`,
+            response.status === 429 || response.status >= 500,
+          );
+        result = await response.json();
+      }
       const text =
         typeof result.transcript === "string" ? result.transcript.trim() : "";
       if (text)

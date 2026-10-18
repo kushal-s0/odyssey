@@ -1,3 +1,5 @@
+// localized-ui
+import { t, useLanguage, LanguageControl } from "../i18n";
 import { useState, type FormEvent } from "react";
 import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowRight, Loader2, ShieldCheck, Eye, EyeOff } from "lucide-react";
@@ -6,6 +8,7 @@ import { api } from "../api";
 import { Busy } from "../components";
 import { loginSchema, registrationSchema } from "../../../shared/input-rules";
 export default function Auth({ register = false }: { register?: boolean }) {
+  useLanguage();
   const w = useWorkspace(),
     navigate = useNavigate(),
     [params] = useSearchParams();
@@ -66,49 +69,57 @@ export default function Auth({ register = false }: { register?: boolean }) {
     <div className="auth-page">
       <aside className="auth-story">
         <Link className="public-brand" to="/">
-          STRIVE<span>IDEA ASSESSMENT</span>
+          {t("STRIVE")}
+          <span>{t("IDEA ASSESSMENT")}</span>
         </Link>
         <div>
-          <span className="eyebrow">YOUR NEXT CHAPTER</span>
+          <span className="eyebrow">{t("YOUR NEXT CHAPTER")}</span>
           <h1>
-            A clearer idea.
-            <br />A stronger start.
+            {t("A clearer idea.")}
+            <br />
+            {t("A stronger start.")}
           </h1>
           <p>
-            A private place to share your business, understand the gaps, and
-            build on useful feedback.
+            {t(
+              "A private place to share your business, understand the gaps, and build on useful feedback.",
+            )}
           </p>
         </div>
         <p className="auth-assurance">
-          <ShieldCheck size={19} /> Your account keeps your submissions and
-          progress together.
+          <ShieldCheck size={19} />{" "}
+          {t("Your account keeps your submissions and progress together.")}
         </p>
       </aside>
       <main className="auth-main">
+        <LanguageControl />
         <Link className="auth-home" to="/">
-          ← Back to home
+          {t("← Back to home")}
         </Link>
         <div className="auth-form-wrap">
           <span className="eyebrow">
             {register
-              ? "ENTREPRENEUR ACCOUNT"
+              ? t("ENTREPRENEUR ACCOUNT")
               : assessor
-                ? "ASSESSOR WORKSPACE"
-                : "WELCOME BACK"}
+                ? t("ASSESSOR WORKSPACE")
+                : t("WELCOME BACK")}
           </span>
           <h1>
             {register
-              ? "Make room for your idea."
-              : "Sign in to your workspace."}
+              ? t("Make room for your idea.")
+              : t("Sign in to your workspace.")}
           </h1>
           <p>
             {register
-              ? "Create your account to submit an idea and track your own progress."
-              : "Entrepreneurs and assessors sign in with their own account. Your access is set by the programme."}
+              ? t(
+                  "Create your account to submit an idea and track your own progress.",
+                )
+              : t(
+                  "Entrepreneurs and assessors sign in with their own account. Your access is set by the programme.",
+                )}
           </p>
           {error && (
             <div className="notice error" role="alert">
-              {error}
+              {t(error)}
             </div>
           )}
           {w.authNotice && (
@@ -123,9 +134,9 @@ export default function Auth({ register = false }: { register?: boolean }) {
                   "The workspace service is temporarily unavailable. Rechecking automatically."
                 ) : (
                   <>
-                    The workspace database is currently unavailable. Sign-in and
-                    registration will be available when it reconnects.
-                    Availability is checked automatically.
+                    {t(
+                      "The workspace database is currently unavailable. Sign-in and registration will be available when it reconnects. Availability is checked automatically.",
+                    )}
                   </>
                 )}
               </p>
@@ -142,14 +153,14 @@ export default function Auth({ register = false }: { register?: boolean }) {
                   }
                 }}
               >
-                {checking ? "Checking connection…" : "Check connection"}
+                {checking ? t("Checking connection…") : t("Check connection")}
               </button>
             </div>
           )}
           <form onSubmit={submit} className="auth-form">
             {register && (
               <label>
-                Full name
+                {t("Full name")}
                 <input
                   required
                   autoComplete="name"
@@ -160,7 +171,7 @@ export default function Auth({ register = false }: { register?: boolean }) {
               </label>
             )}
             <label>
-              Email
+              {t("Email")}
               <input
                 required
                 type="email"
@@ -171,7 +182,7 @@ export default function Auth({ register = false }: { register?: boolean }) {
               />
             </label>
             <label>
-              Password
+              {t("Password")}
               <div className="password-field">
                 <input
                   required
@@ -183,7 +194,7 @@ export default function Auth({ register = false }: { register?: boolean }) {
                 <button
                   type="button"
                   className="icon-button"
-                  aria-label={visible ? "Hide password" : "Show password"}
+                  aria-label={visible ? t("Hide password") : t("Show password")}
                   onClick={() => setVisible(!visible)}
                 >
                   {visible ? <EyeOff size={17} /> : <Eye size={17} />}
@@ -192,9 +203,11 @@ export default function Auth({ register = false }: { register?: boolean }) {
             </label>
             {register && (
               <>
-                <small className="hint">Use at least 12 characters.</small>
+                <small className="hint">
+                  {t("Use at least 12 characters.")}
+                </small>
                 <label>
-                  Confirm password
+                  {t("Confirm password")}
                   <input
                     required
                     type={visible ? "text" : "password"}
@@ -216,18 +229,19 @@ export default function Auth({ register = false }: { register?: boolean }) {
               ) : (
                 <ArrowRight size={16} />
               )}{" "}
-              {register ? "Create account" : "Sign in"}
+              {register ? t("Create account") : t("Sign in")}
             </button>
           </form>
           <p className="auth-switch">
-            {register ? "Already have an account? " : "New to STRIVE? "}
+            {register ? t("Already have an account? ") : t("New to STRIVE? ")}
             <Link to={register ? "/login" : "/register"}>
-              {register ? "Sign in" : "Create entrepreneur account"}
+              {register ? t("Sign in") : t("Create entrepreneur account")}
             </Link>
           </p>
           <p className="hint">
-            Assessor accounts are provided by the programme. Public registration
-            creates an entrepreneur account.
+            {t(
+              "Assessor accounts are provided by the programme. Public registration creates an entrepreneur account.",
+            )}
           </p>
         </div>
       </main>
