@@ -4,6 +4,7 @@ import os
 import re
 import time
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import httpx
 from dotenv import dotenv_values
@@ -27,6 +28,8 @@ def main() -> None:
     parser.add_argument('--stages', nargs='+', help='Advertise only stages the selected handler implements')
     parser.add_argument('--probe', action='store_true', help='Synthetic orchestration ONLY; never claims screening stages')
     parser.add_argument('--continuous', action='store_true', help='Operator-run owned worker until Ctrl+C; no provider keep-alive')
+    parser.add_argument('--local-poll-seconds', type=int, default=30, choices=range(1, 31), metavar='1..30',
+                        help='Maximum idle poll interval for loopback API only; remote/error backoff remains 30s')
     args = parser.parse_args()
     private = dotenv_values(args.env_file) if args.env_file.exists() else {}
     if not os.environ.get('HF_TOKEN') and private.get('HF_TOKEN'):
@@ -48,6 +51,7 @@ def main() -> None:
     deadline = float('inf') if args.continuous else time.monotonic()+args.session_seconds
     idle_until = float('inf') if args.continuous else time.monotonic()+args.idle_seconds
     backoff = 1.0
+    idle_ceiling = float(args.local_poll_seconds) if urlsplit(origin).hostname in {'127.0.0.1','localhost','::1'} else 30.0
     try:
         while time.monotonic() < min(deadline, idle_until):
             try:
@@ -58,7 +62,7 @@ def main() -> None:
                     idle_until = float('inf') if args.continuous else time.monotonic()+args.idle_seconds
                     backoff = 1.0
                 else:
-                    backoff = min(30.0, backoff*2)
+                    backoff = min(idle_ceiling, backoff*2)
             except httpx.HTTPStatusError as error:
                 print(f'worker_http_status={error.response.status_code}', flush=True)
                 if error.response.status_code in {401,403,422}:

@@ -84,7 +84,7 @@ def main() -> None:
         worker_env['PYTHONIOENCODING'] = 'utf-8'
         commands.append(('worker', [str(model_python), '-B', '-m', 'app.worker', '--allow-loopback',
             '--handler', 'app.pipeline.run:handler', '--stages', 'extract:text', 'extract:pdf', 'extract:audio', 'translate', 'structure', 'assess',
-            '--continuous', '--stage-seconds', '600'], worker_env))
+            '--continuous', '--stage-seconds', '600', '--local-poll-seconds', '5'], worker_env))
     try:
         print('Starting API and checking the database connection…', flush=True)
         for name, command, environment in commands:

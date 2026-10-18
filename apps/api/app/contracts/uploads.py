@@ -4,7 +4,7 @@ from uuid import UUID
 
 from pydantic import Field, field_validator
 
-from .models import Contract, Language
+from .models import Assessment, Contract, Language
 
 MediaType = Literal['application/pdf', 'audio/mp4', 'video/mp4', 'audio/ogg',
                     'audio/webm', 'audio/wav', 'audio/mpeg']
@@ -51,3 +51,8 @@ class SubmissionView(Contract):
     job_id: UUID
     status: str
     created_at: datetime
+
+
+class SubmissionWorkspace(Contract):
+    submission: SubmissionView
+    assessment: Assessment | None

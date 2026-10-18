@@ -1,5 +1,7 @@
 # Why login could succeed while the app did not work
 
+For the later browser-focus reset and saved-result latency repair, see [loading and results](26-loading-and-results.md). Identical-session focus notifications now preserve the workspace; refreshed tokens still validate trusted API access. Internal navigation retains visited pages and saved results use a single scoped read.
+
 Supabase Auth checks the password and supplies a signed session. The API then verifies that signature and looks up `public.profiles` and cohort memberships. These are separate steps: an Auth account alone has no application access.
 
 The failing session had an API process whose initial database connection had failed. That process retained its unavailable state even after `.env.local` was corrected. The hosted project also had no profiles or cohorts. The landing page checked process liveness and displayed a green badge despite unavailable persistence, then continued showing promotional content after a successful password login.

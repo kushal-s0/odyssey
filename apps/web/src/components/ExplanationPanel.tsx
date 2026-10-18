@@ -5,11 +5,11 @@ import type { components } from '../api/generated/schema'
 
 type Explanation = components['schemas']['Explanation']
 const domainLabels: Record<string, string> = { clarity: 'Business clarity', customer_need: 'Customer need', market_potential: 'Market potential' }
-export function ExplanationPanel({ value, token }: { value: Assessment; token: string }) {
-  return <SavedExplanation key={value.id} value={value} token={token} />
+export function ExplanationPanel({ value, token, idPrefix = '' }: { value: Assessment; token: string; idPrefix?: string }) {
+  return <SavedExplanation key={value.id} value={value} token={token} idPrefix={idPrefix} />
 }
 
-function SavedExplanation({ value, token }: { value: Assessment; token: string }) {
+function SavedExplanation({ value, token, idPrefix }: { value: Assessment; token: string; idPrefix: string }) {
   const [result, setResult] = useState<Explanation | null>(null)
   const [language, setLanguage] = useState<'en' | 'hi'>('en')
   const [busy, setBusy] = useState(false)
@@ -48,7 +48,7 @@ function SavedExplanation({ value, token }: { value: Assessment; token: string }
     {result?.status === 'not_configured' && <p className="form-message">The assessment guide is available below. Your coordinator can enable additional AI explanations.</p>}
     {result && result.language !== language && <p className="field-note">The saved assessment guide is shown in English. A Hindi explanation is available only after successful generation.</p>}
     {error && <p className="form-error" role="alert">{error} <button className="text-button" onClick={() => setReload(n => n + 1)}>Retry saved explanation</button></p>}
-    {result && <div lang={result.language}><p className="explanation-summary">{result.summary}</p><div className="explanation-notes">{result.domain_notes.map(note => <details key={note.domain}><summary>{domainLabels[note.domain] || note.domain.replaceAll('_', ' ')}</summary><p>{note.explanation}</p><div className="field-links">{(note.evidence_fields || []).map(field => <a key={field} href={`#fact-${field}`}>{field.replaceAll('_', ' ')} ↗</a>)}</div></details>)}</div>
-      <h4>{result.language === 'hi' ? 'अगले उपयोगी कदम' : 'Your next useful steps'}</h4><ol className="next-steps">{result.next_steps.map((step, i) => <li key={i}>{step.action}<div className="field-links">{(step.evidence_fields || []).map(field => <a key={field} href={`#fact-${field}`}>{field.replaceAll('_', ' ')} ↗</a>)}</div></li>)}</ol><small>{result.note}{result.model ? ` Model: ${result.model}.` : ''} Saved assessment version {value.version}. Scores are unchanged.</small></div>}
+    {result && <div lang={result.language}><p className="explanation-summary">{result.summary}</p><div className="explanation-notes">{result.domain_notes.map(note => <details key={note.domain}><summary>{domainLabels[note.domain] || note.domain.replaceAll('_', ' ')}</summary><p>{note.explanation}</p><div className="field-links">{(note.evidence_fields || []).map(field => <a key={field} href={`#${idPrefix}fact-${field}`}>{field.replaceAll('_', ' ')} ↗</a>)}</div></details>)}</div>
+      <h4>{result.language === 'hi' ? 'अगले उपयोगी कदम' : 'Your next useful steps'}</h4><ol className="next-steps">{result.next_steps.map((step, i) => <li key={i}>{step.action}<div className="field-links">{(step.evidence_fields || []).map(field => <a key={field} href={`#${idPrefix}fact-${field}`}>{field.replaceAll('_', ' ')} ↗</a>)}</div></li>)}</ol><small>{result.note}{result.model ? ` Model: ${result.model}.` : ''} Saved assessment version {value.version}. Scores are unchanged.</small></div>}
   </section>
 }

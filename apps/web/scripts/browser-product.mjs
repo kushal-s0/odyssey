@@ -10,6 +10,8 @@ try {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } })
   const page = await context.newPage()
   const errors = []
+  const apiReads = []
+  page.on('request', request => { if (request.method() === 'GET' && request.url().startsWith(fixture.origin + '/v1/')) apiReads.push(new URL(request.url()).pathname) })
   page.on('pageerror', e => errors.push(e.message))
   page.on('response', response => { if (response.url().startsWith(fixture.origin) && response.status() >= 500) errors.push(`API ${response.status()} ${new URL(response.url()).pathname}`) })
   let account = 'applicant'
@@ -17,7 +19,7 @@ try {
     const user = { id: fixture.accounts[account].user, aud: 'authenticated', role: 'authenticated',
       email: `${account}@example.test`, app_metadata: {}, user_metadata: {}, created_at: new Date().toISOString() }
     if (route.request().url().includes('/token')) return route.fulfill({ json: {
-      access_token: fixture.accounts[account].token, refresh_token: 'synthetic-refresh', expires_in: 3600,
+      access_token: route.request().url().includes('grant_type=refresh_token') ? fixture.accounts[account].refreshed_token : fixture.accounts[account].token, refresh_token: 'synthetic-refresh', expires_in: 3600,
       expires_at: fixture.expires, token_type: 'bearer', user } })
     if (route.request().url().includes('/user')) return route.fulfill({ json: user })
     return route.fulfill({ status: 204 })
@@ -44,6 +46,73 @@ try {
   await page.getByRole('heading',{name:/Your idea,/}).waitFor()
   await page.locator('.submission-list button').first().click()
   await page.getByRole('heading',{name:'A clearer view of your idea',exact:true}).waitFor()
+  await page.waitForLoadState('networkidle')
+  expect(apiReads.some(path => path.endsWith('/workspace'))).toBe(true)
+  expect(apiReads.some(path => path.startsWith('/v1/jobs/'))).toBe(false)
+  for (const suffix of ['/similar', '/economics', '/questions', '/history', '/location-settings', '/location-insights']) {
+    expect(apiReads.some(path => path.endsWith(suffix))).toBe(false)
+  }
+  // Use the installed SDK's real visibility handler; repeated SIGNED_IN must preserve drafts.
+  await page.getByRole('button',{name:'New idea',exact:true}).click()
+  await page.getByLabel('Your idea',{exact:true}).fill('Private draft survives focus and navigation')
+  const identityChecks = apiReads.filter(path => path === '/v1/me').length
+  await page.evaluate(() => window.dispatchEvent(new Event('visibilitychange')))
+  await page.waitForLoadState('networkidle')
+  await expect(page.getByLabel('Your idea',{exact:true})).toHaveValue('Private draft survives focus and navigation')
+  expect(apiReads.filter(path => path === '/v1/me').length).toBe(identityChecks)
+  await page.evaluate(() => {
+    const key = Object.keys(localStorage).find(key => key.startsWith('sb-') && key.endsWith('-auth-token'))
+    if (!key) throw new Error('Synthetic SDK session missing')
+    const saved = JSON.parse(localStorage.getItem(key)); saved.expires_at = Math.floor(Date.now() / 1000) - 1
+    localStorage.setItem(key, JSON.stringify(saved))
+    window.dispatchEvent(new Event('visibilitychange'))
+  })
+  await expect.poll(() => apiReads.filter(path => path === '/v1/me').length).toBeGreaterThan(identityChecks)
+  await page.waitForLoadState('networkidle')
+  await expect(page.getByLabel('Your idea',{exact:true})).toHaveValue('Private draft survives focus and navigation')
+  await page.getByRole('button',{name:'Comparisons',exact:true}).click()
+  await page.getByRole('heading',{name:'Compare with context.'}).waitFor()
+  await page.getByRole('button',{name:'My ideas',exact:true}).click()
+  await expect(page.getByLabel('Your idea',{exact:true})).toHaveValue('Private draft survives focus and navigation')
+  // Explicit synthetic MediaStream; no real microphone or permission is used.
+  await page.evaluate(async () => {
+    const audio = new AudioContext()
+    const oscillator = audio.createOscillator()
+    const destination = audio.createMediaStreamDestination()
+    oscillator.connect(destination); oscillator.start(); await audio.resume()
+    window.__fixtureAudio = { audio, oscillator, stream: destination.stream }
+    Object.defineProperty(navigator.mediaDevices, 'getUserMedia', { configurable: true, value: async () => destination.stream })
+  })
+  await page.getByRole('group',{name:'Idea format'}).getByRole('button',{name:/^Audio/}).click()
+  await page.getByRole('button',{name:'Record your idea',exact:true}).click()
+  await expect(page.getByRole('button',{name:'Stop recording',exact:true})).toBeVisible()
+  await page.waitForTimeout(1200) // Capture an actual MediaRecorder chunk from the synthetic stream.
+  await page.getByRole('button',{name:'Comparisons',exact:true}).click()
+  await expect.poll(() => page.evaluate(() => window.__fixtureAudio.stream.getTracks().every(track => track.readyState === 'ended'))).toBe(true)
+  await page.getByRole('button',{name:'My ideas',exact:true}).click()
+  await expect(page.getByLabel('Recording playback',{exact:true})).toBeVisible()
+  await page.getByRole('group',{name:'Idea format'}).getByRole('button',{name:/^Text/}).click()
+  await expect(page.getByLabel('Your idea',{exact:true})).toHaveValue('Private draft survives focus and navigation')
+  await page.evaluate(async () => { window.__fixtureAudio.oscillator.stop(); await window.__fixtureAudio.audio.close() })
+  checks.push('Retained navigation stops synthetic microphone tracks and saves the partial recording on leaving its active panel; returning preserves playback and the separate text draft. No real microphone used.')
+  await page.getByRole('button',{name:'Saved ideas',exact:true}).click()
+  await expect(page.getByRole('heading',{name:'A clearer view of your idea',exact:true})).toBeVisible()
+  checks.push('Real SDK visibility recovery deduplicates the same session; actual signed fixture token refresh rechecks identity without discarding the draft. Switching workspaces preserves drafts and results. Completed results use one snapshot, no job polling or eager hidden tools.')
+  await page.locator(`.submission-list button[data-submission-id="${fixture.personal_submission}"]`).click()
+  await page.getByRole('heading',{name:'A clearer view of your idea',exact:true}).waitFor()
+  let releaseSnapshot
+  let heldSnapshot = false
+  const gate = new Promise(resolve => { releaseSnapshot = resolve })
+  const snapshotUrl = `${fixture.origin}/v1/submissions/${fixture.submission}/workspace`
+  await page.route(snapshotUrl, async route => { heldSnapshot = true; await gate; await route.continue() })
+  try {
+    await page.locator(`.submission-list button[data-submission-id="${fixture.submission}"]`).click()
+    await expect.poll(() => heldSnapshot).toBe(true)
+    await expect(page.getByRole('heading',{name:'A clearer view of your idea',exact:true})).toBeVisible({timeout:750})
+  } finally { releaseSnapshot() }
+  await page.waitForLoadState('networkidle')
+  await page.unroute(snapshotUrl)
+  checks.push('Returning to a previously opened result displays it while its fresh snapshot response is deliberately withheld; separate personal fixture remains outside assessor access.')
   await page.getByRole('heading',{name:'Understand your results',exact:true}).waitFor()
   await expect(page.getByRole('heading',{name:'Ratings and evidence confidence'})).toBeVisible()
   await page.getByRole('button',{name:'Rating radar',exact:true}).click()
@@ -59,11 +128,11 @@ try {
     const value = await original.json()
     await route.fulfill({json:{...value,assessment_id:'00000000-0000-0000-0000-000000000001',summary:'Stale explanation must never appear'}})
   })
-  await page.getByLabel('Explanation language',{exact:true}).selectOption('hi')
-  await expect(page.locator('.explanation-panel')).toContainText('The assessment changed.')
+  await page.locator('.explanation-panel:visible').getByLabel('Explanation language',{exact:true}).selectOption('hi')
+  await expect(page.locator('.explanation-panel:visible')).toContainText('The assessment changed.')
   await expect(page.getByText('Stale explanation must never appear',{exact:true})).toHaveCount(0)
   await page.unroute(wrongExplanation)
-  await page.getByLabel('Explanation language',{exact:true}).selectOption('en')
+  await page.locator('.explanation-panel:visible').getByLabel('Explanation language',{exact:true}).selectOption('en')
   await expect(page.getByRole('button',{name:'Explain with Groq'})).toBeDisabled()
   await page.getByRole('button',{name:'Business plan',exact:true}).click()
   const savedBeforeScenario = await (await context.request.get(`${fixture.origin}/v1/submissions/${fixture.submission}/assessment`, { headers: { Authorization: `Bearer ${fixture.accounts.applicant.token}` } })).json()
@@ -223,6 +292,7 @@ try {
   expect(errors).toEqual([])
   checks.push('Explicit owner deletion removes private audio and both revisions; the workspace confirms actual cleanup.')
   await page.getByRole('button',{name:'New idea',exact:true}).click()
+  await expect(page.getByLabel('Your idea',{exact:true})).toHaveValue('')
   await page.getByLabel('Your idea',{exact:true}).fill('Unsubmitted scratch note')
   await page.getByRole('button',{name:/Guide me/}).click()
   await page.getByLabel('Guided product or service',{exact:true}).fill('Synthetic judge rehearsal: I want to sell tea.')

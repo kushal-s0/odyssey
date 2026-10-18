@@ -29,7 +29,7 @@ export function AssessmentView({ value, idPrefix = '' }: { value: Assessment; id
   const risks = value.risks || []
   return <section className="assessment-view" aria-labelledby={titleId}>
     <div className="panel-heading"><span className="eyebrow">AUTOMATED FIRST-LEVEL ASSESSMENT</span><h2 id={titleId}>A clearer view of your idea</h2><p>Source-backed suggestions for authorized human review. This is not a funding decision or a prediction of business success.</p></div>
-    <section aria-labelledby="business-facts-title"><h3 id="business-facts-title">What we understood</h3><dl className="business-facts">{([
+    <section aria-labelledby={`${titleId}-facts`}><h3 id={`${titleId}-facts`}>What we understood</h3><dl className="business-facts">{([
       ['business_type', 'Business type'], ['offer', 'Product or service'], ['target_customers', 'Customers'], ['problem', 'Customer problem'],
       ['location', 'Business location'], ['investment', 'Investment'], ['unit_price', 'Price'],
       ['revenue', 'Revenue'], ['expenses', 'Expenses'], ['profit', 'Profit'], ['own_funds', 'Own funds'], ['requested_loan', 'Requested loan'],

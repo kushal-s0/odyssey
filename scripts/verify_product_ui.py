@@ -69,6 +69,15 @@ def main():
                 'original_storage_path':data['object_path']}),encoding='utf-8')
             original = save_assessment(database,data['submissions'][0],data['revisions'][0])
             other = save_assessment(database,data['submissions'][1],data['revisions'][1])
+            # A second saved personal idea checks reopening without extending assessor scope.
+            personal, personal_revision, personal_job = uuid4(), uuid4(), uuid4()
+            with database.transaction() as c:
+                c.execute("INSERT INTO public.submissions(id,owner_id,synthetic,created_at) VALUES(%s,%s,true,now()-interval '1 day')", (personal,data['people'][0]))
+                c.execute("INSERT INTO public.submission_versions(id,submission_id,revision_number,input_kind,source_text,input_hash,preferred_language,created_by) VALUES(%s,%s,1,'text','Synthetic personal tea idea',%s,'en',%s)", (personal_revision,personal,'b'*64,data['people'][0]))
+                c.execute('UPDATE public.submissions SET current_revision_id=%s WHERE id=%s', (personal_revision,personal))
+                c.execute("INSERT INTO public.processing_jobs(id,submission_id,input_revision_id,pipeline_version,backend,status) VALUES(%s,%s,%s,'synthetic-ui','owned_worker','completed')", (personal_job,personal,personal_revision))
+                c.execute("INSERT INTO public.job_stages(job_id,stage_key,stage_order,input_hash,status) VALUES(%s,'extract:text',0,%s,'completed')", (personal_job,'b'*64))
+            save_assessment(database, personal, personal_revision)
             index(database,original,[1.] + [0.] * 383)
             index(database,other,[1.] + [0.] * 383)
             # Explicit fixture figures, used to test rendered arithmetic, not to
@@ -87,9 +96,11 @@ def main():
             for name, person in [('applicant',data['people'][0]),('assessor',data['people'][2]),('second_applicant',data['people'][1])]:
                 token = jwt.encode({'sub':str(person),'iss':settings.auth_issuer,'aud':'authenticated',
                     'role':'authenticated','exp':expires,'iat':int(time.time())-1},key,algorithm='RS256',headers={'kid':'product-fixture'})
-                accounts[name] = {'token':token,'user':str(person)}
+                refreshed = jwt.encode({'sub':str(person),'iss':settings.auth_issuer,'aud':'authenticated',
+                    'role':'authenticated','exp':expires,'iat':int(time.time())-1,'jti':str(uuid4())},key,algorithm='RS256',headers={'kid':'product-fixture'})
+                accounts[name] = {'token':token,'refreshed_token':refreshed,'user':str(person)}
             fixture.write_text(json.dumps({'accounts':accounts,'expires':expires,'origin':origin,'web':web,
-                'directory':str(directory),'submission':str(original.submission_id)}),encoding='utf-8')
+                'directory':str(directory),'submission':str(original.submission_id),'personal_submission':str(personal)}),encoding='utf-8')
             env = {**os.environ,'VITE_API_BASE_URL':origin,'VITE_SUPABASE_URL':'https://identity.example.test',
                 'VITE_SUPABASE_PUBLISHABLE_KEY':'sb_publishable_fixture_only','VITE_FIXTURE_MODE':'true',
                 'PRODUCT_UI_FIXTURE':str(fixture)}

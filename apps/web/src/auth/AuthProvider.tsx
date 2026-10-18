@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import { createClient, type Session } from '@supabase/supabase-js'
 import { apiRequest, ApiError } from '../api/client'
 import type { components } from '../api/generated/schema'
@@ -38,13 +38,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(Boolean(client))
   const [message, setMessage] = useState('')
   const [retry, setRetry] = useState(0)
+  const identity = useRef<string | null>(null)
   useEffect(() => {
     if (!client) return
     // Keep this callback synchronous; perform API work in the separate effect.
     const { data: { subscription } } = client.auth.onAuthStateChange((event, next) => {
-      setSession(next)
-      setActor(null)
-      setLoading(Boolean(next))
+      const changedAccount = identity.current !== (next?.user.id || null)
+      identity.current = next?.user.id || null
+      // Supabase can repeat SIGNED_IN on focus. The same session is not a logout.
+      setSession(previous => previous?.user.id === next?.user.id && previous?.access_token === next?.access_token ? previous : next)
+      if (changedAccount || !next) { setActor(null); setLoading(Boolean(next)) }
       if (event === 'SIGNED_OUT') setMessage('Your session ended. Sign in to continue.')
     })
     return () => subscription.unsubscribe()
@@ -56,14 +59,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const controller = new AbortController()
     const timeout = window.setTimeout(() => controller.abort(), 10_000)
     apiRequest<Actor>('/v1/me', { token: session.access_token, signal: controller.signal })
-      .then(value => { if (!controller.signal.aborted) { setActor(value); setMessage('') } })
+      .then(value => { if (!controller.signal.aborted) { setActor(previous => JSON.stringify(previous) === JSON.stringify(value) ? previous : value); setMessage('') } })
       .catch((error: unknown) => {
         if (controller.signal.aborted) return
         setMessage(error instanceof ApiError ? error.message : 'Workspace access could not be checked.')
         if (error instanceof ApiError && error.status === 401) {
-          setSession(null)
+          setActor(null); setSession(null)
           void client?.auth.signOut({ scope: 'local' })
         }
+        if (error instanceof ApiError && error.status === 403) setActor(null)
       })
       .finally(() => { window.clearTimeout(timeout); if (!controller.signal.aborted) setLoading(false) })
     const onTimeout = window.setTimeout(() => {
@@ -81,6 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch { setMessage('Sign-in connection failed. Please try again.'); setLoading(false); return false }
   }
   async function signOut() {
+    identity.current = null
     setActor(null); setSession(null); setMessage('You are signed out.'); setLoading(false)
     await client?.auth.signOut({ scope: 'local' }).catch(() => undefined)
   }

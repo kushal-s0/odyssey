@@ -1,0 +1,11 @@
+{
+  "scope": "One real configured Supabase test-account saved-result read through local API; no model inference or applicant mutation",
+  "samples": 1,
+  "saved_result_available": true,
+  "previous_three_requests_seconds": 19.683,
+  "snapshot_one_request_seconds": 4.519,
+  "same_assessment": true,
+  "same_revision": true,
+  "passed": true,
+  "diagnostic_session_revoked": true
+}

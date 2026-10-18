@@ -2,6 +2,9 @@
   "scope": "Real local Edge/API/PostgreSQL. Auth issuer, assessment outputs and vectors are synthetic fixtures. No live external providers or GPU inference in this check.",
   "checks": [
     "Dark theme persists across reload; landing has no horizontal overflow.",
+    "Retained navigation stops synthetic microphone tracks and saves the partial recording on leaving its active panel; returning preserves playback and the separate text draft. No real microphone used.",
+    "Real SDK visibility recovery deduplicates the same session; actual signed fixture token refresh rechecks identity without discarding the draft. Switching workspaces preserves drafts and results. Completed results use one snapshot, no job polling or eager hidden tools.",
+    "Returning to a previously opened result displays it while its fresh snapshot response is deliberately withheld; separate personal fixture remains outside assessor access.",
     "Business map keeps unknowns visible; authorized Markdown brief includes sources and no token; what-if surplus, stress comparison and negative-margin guard work without changing saved assessment.",
     "Confirmed-area UI survives an explicit provider-outage fixture and renders the real attributed/geofenced dated OSM snapshot.",
     "Applicant sees saved facts, evidence, rule-based explanation, missing-key state, arithmetic and follow-ups; stale-assessment explanation is rejected.",

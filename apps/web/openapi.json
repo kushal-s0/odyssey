@@ -448,6 +448,54 @@
         }
       }
     },
+    "/v1/submissions/{submission_id}/workspace": {
+      "get": {
+        "tags": [
+          "submissions"
+        ],
+        "summary": "Saved Workspace",
+        "operationId": "saved_workspace_v1_submissions__submission_id__workspace_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "submission_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Submission Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmissionWorkspace"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/jobs/{job_id}": {
       "get": {
         "tags": [
@@ -6131,6 +6179,30 @@
           "created_at"
         ],
         "title": "SubmissionView"
+      },
+      "SubmissionWorkspace": {
+        "properties": {
+          "submission": {
+            "$ref": "#/components/schemas/SubmissionView"
+          },
+          "assessment": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Assessment"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "submission",
+          "assessment"
+        ],
+        "title": "SubmissionWorkspace"
       },
       "TextEvidence": {
         "properties": {

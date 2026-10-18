@@ -125,6 +125,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/submissions/{submission_id}/workspace": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Saved Workspace */
+        get: operations["saved_workspace_v1_submissions__submission_id__workspace_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/jobs/{job_id}": {
         parameters: {
             query?: never;
@@ -2063,6 +2080,11 @@ export interface components {
              */
             created_at: string;
         };
+        /** SubmissionWorkspace */
+        SubmissionWorkspace: {
+            submission: components["schemas"]["SubmissionView"];
+            assessment: components["schemas"]["Assessment"] | null;
+        };
         /** TextEvidence */
         TextEvidence: {
             /** Origin Revision Id */
@@ -2525,6 +2547,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DeletionResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    saved_workspace_v1_submissions__submission_id__workspace_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                submission_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubmissionWorkspace"];
                 };
             };
             /** @description Validation Error */

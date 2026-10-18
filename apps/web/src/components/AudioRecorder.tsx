@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Mic, Square } from 'lucide-react'
 
-export function AudioRecorder({ onFile, disabled, onActivityChange }: {
-  onFile: (file: File) => void; disabled: boolean; onActivityChange: (active: boolean) => void
+export function AudioRecorder({ onFile, disabled, onActivityChange, active = true }: {
+  onFile: (file: File) => void; disabled: boolean; onActivityChange: (active: boolean) => void; active?: boolean
 }) {
   const [recording, setRecording] = useState(false)
   const [message, setMessage] = useState('')
@@ -11,6 +11,15 @@ export function AudioRecorder({ onFile, disabled, onActivityChange }: {
   const timer = useRef<number | undefined>(undefined)
   const alive = useRef(true)
   const requesting = useRef(false)
+  const visible = useRef(active)
+  useEffect(() => {
+    visible.current = active
+    if (!active) {
+      if (recorder.current?.state === 'recording') recorder.current.stop()
+      stream.current?.getTracks().forEach(track => track.stop())
+      onActivityChange(false)
+    }
+  }, [active, onActivityChange])
   useEffect(() => {
     alive.current = true
     return () => {
@@ -29,7 +38,7 @@ export function AudioRecorder({ onFile, disabled, onActivityChange }: {
     try {
       if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') throw new Error('unsupported')
       const input = await navigator.mediaDevices.getUserMedia({ audio: true })
-      if (!alive.current) { input.getTracks().forEach(track => track.stop()); return }
+      if (!alive.current || !visible.current) { input.getTracks().forEach(track => track.stop()); return }
       stream.current = input
       const mime = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/ogg;codecs=opus'].find(type => MediaRecorder.isTypeSupported(type))
       if (!mime) throw new Error('unsupported')

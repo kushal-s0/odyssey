@@ -17,7 +17,7 @@ const mediaTypes: Record<string, string> = { pdf: 'application/pdf', wav: 'audio
   m4a: 'audio/mp4', mp4: 'video/mp4', webm: 'audio/webm', ogg: 'audio/ogg' }
 
 
-export function SubmitIdea({ actor, token, onAccepted }: { actor: Actor; token: string; onAccepted: (value: Accepted) => void }) {
+export function SubmitIdea({ actor, token, onAccepted, active = true }: { actor: Actor; token: string; onAccepted: (value: Accepted) => void; active?: boolean }) {
   const [mode, setMode] = useState<Mode>('text')
   const [text, setText] = useState('')
   const [guided, setGuided] = useState(false)
@@ -123,7 +123,7 @@ export function SubmitIdea({ actor, token, onAccepted }: { actor: Actor; token: 
     <form onSubmit={event => { void submit(event) }}>
       <fieldset disabled={busy}>
         {mode === 'text' ? guided ? <GuidedIdea answers={guidedAnswers} onChange={setGuidedAnswers} /> : <label>Your idea<textarea aria-label="Your idea" required maxLength={30000} rows={7} value={text} onChange={event => setText(event.target.value)} placeholder="I plan to sell… My customers are…" /><small>{text.length.toLocaleString()} / 30,000 characters</small></label> : <>
-          {mode === 'audio' && <AudioRecorder onFile={pickFile} disabled={busy} onActivityChange={onRecordingActivity} />}
+          {mode === 'audio' && <AudioRecorder onFile={pickFile} disabled={busy} onActivityChange={onRecordingActivity} active={active} />}
           <label className="file-picker"><Upload size={20} />{mode === 'pdf' ? 'Choose a PDF' : 'Upload an audio file'}<input ref={fileInput} aria-label={mode === 'pdf' ? 'PDF file' : 'Audio file'} type="file" accept={mode === 'pdf' ? 'application/pdf,.pdf' : 'audio/*,video/mp4,.m4a,.mp4,.ogg,.webm,.wav,.mp3'} onChange={event => pickFile(event.target.files?.[0] || null)} /></label>
           <p className="field-note">{mode === 'pdf' ? 'Maximum 20 pages and 25 MB. Digital PDFs are processed by the owned worker; scanned handwriting needs human review.' : 'Maximum 10 minutes and 25 MB. The owned speech worker transcribes supported languages after model provisioning. For Odia, select Odia explicitly; it uses a separate model. All transcriptions need review.'} Your file is saved privately. Uploading does not mean assessment is complete.</p>
           {file && <p className="selected-file">{file.name} · {(file.size / 1024).toFixed(1)} KB</p>}

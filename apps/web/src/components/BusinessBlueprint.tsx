@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import { Download, LayoutGrid, ArrowUpRight } from 'lucide-react'
 import type { Assessment } from '../api/client'
 
@@ -23,6 +24,7 @@ function describe(value: unknown): string {
 }
 
 export function BusinessBlueprint({ value, onQuestions }: { value: Assessment; onQuestions: () => void }) {
+  const titleId = useId()
   const excluded = value.scores.excluded_fields || {}
   const unresolved = groups.reduce((total, group) => total + group.fields.filter(([key]) => !excluded[key] && value.business[key]?.status !== 'present').length, 0)
   function download() {
@@ -39,7 +41,7 @@ export function BusinessBlueprint({ value, onQuestions }: { value: Assessment; o
     const link = document.createElement('a'); link.href = url; link.download = `business-brief-v${value.version}.md`; link.click()
     window.setTimeout(() => URL.revokeObjectURL(url), 1000)
   }
-  return <section className="tool-panel business-blueprint" aria-labelledby="blueprint-title"><div className="tool-heading"><LayoutGrid size={20} /><h3 id="blueprint-title">Your business, on one map</h3><button type="button" className="secondary-button" onClick={download}><Download size={15} />Download business brief</button></div><p className="field-note">A working map of your saved, self-reported facts. {unresolved} detail{unresolved === 1 ? '' : 's'} still need clarification. This checklist uses the project’s proposed rubric; it is not an official industry standard.</p>
+  return <section className="tool-panel business-blueprint" aria-labelledby={titleId}><div className="tool-heading"><LayoutGrid size={20} /><h3 id={titleId}>Your business, on one map</h3><button type="button" className="secondary-button" onClick={download}><Download size={15} />Download business brief</button></div><p className="field-note">A working map of your saved, self-reported facts. {unresolved} detail{unresolved === 1 ? '' : 's'} still need clarification. This checklist uses the project’s proposed rubric; it is not an official industry standard.</p>
     <div className="blueprint-grid">{groups.map((group, index) => <article key={group.title}><span className="eyebrow">0{index + 1}</span><h4>{group.title}</h4><dl>{group.fields.map(([key, label]) => {
       const field = value.business[key]
       return <div key={key}><dt>{label}</dt><dd className={field?.status === 'present' ? '' : 'unresolved-fact'}>{excluded[key] ? `Reviewer excluded: ${excluded[key]}` : field?.status === 'present' ? describe(field.value) : !field || field.status === 'missing' ? 'To explore' : `Needs clarification · ${field.status}`}{field?.status === 'present' && <small>Self-reported · source {(field.source_segment_ids || []).map(id => value.evidence.findIndex(source => source.id === id) + 1).filter(number => number > 0).join(', ')}</small>}</dd></div>

@@ -8,7 +8,7 @@ import { SubmissionDetail } from './MySubmissions'
 type Queue = components['schemas']['QueuePage']
 type Review = components['schemas']['ReviewView']
 type Outcome = components['schemas']['ReviewInput']['outcome']
-export function AssessorWorkspace() {
+export function AssessorWorkspace({ active = true }: { active?: boolean }) {
   const { actor, session } = useAuth()
   const token = session?.access_token || ''
   const [page, setPage] = useState<Queue | null>(null)
@@ -47,7 +47,7 @@ export function AssessorWorkspace() {
         {page.items.length === 0 && <p className="empty-state">No ideas match these filters. New submissions in your programs will appear here.</p>}
         <div className="pagination"><span>{page.total ? `${offset + 1}–${Math.min(offset + 12, page.total)} of ${page.total}` : '0 ideas'}</span><button className="secondary-button" disabled={offset === 0} onClick={() => { setOffset(n => Math.max(0, n - 12)); setLoading(true) }}><ArrowLeft size={15} />Previous</button><button className="secondary-button" disabled={offset + 12 >= page.total} onClick={() => { setOffset(n => n + 12); setLoading(true) }}>Next<ArrowRight size={15} /></button></div></>}
     </section>
-    {selected && <section className="submission-panel"><SubmissionDetail key={`${selected}:${detailEpoch}`} id={selected} token={token} onFinished={refresh} canClarify={false} /><ReviewForm key={selected} id={selected} token={token} onSaved={() => { refresh(); setDetailEpoch(n => n + 1) }} /></section>}
+    {selected && <section className="submission-panel"><SubmissionDetail key={`${selected}:${detailEpoch}`} id={selected} token={token} onFinished={refresh} canClarify={false} active={active} /><ReviewForm key={selected} id={selected} token={token} onSaved={() => { refresh(); setDetailEpoch(n => n + 1) }} /></section>}
   </>
 }
 

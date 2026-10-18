@@ -12,6 +12,7 @@ import { VersionHistory } from '../components/VersionHistory'
 import { DeleteSubmission } from '../components/DeleteSubmission'
 import { BusinessBlueprint } from '../components/BusinessBlueprint'
 import { ScenarioPlanner } from '../components/ScenarioPlanner'
+import { KeptPanel } from '../components/KeptPanel'
 
 export type Submission = components['schemas']['SubmissionView']
 const finished = new Set(['completed', 'partial', 'needs_review', 'failed', 'cancelled'])
@@ -21,18 +22,20 @@ const names: Record<string, string> = { queued: 'Saved · queued', extracting: '
   partial: 'Partial result saved', needs_review: 'Needs review', waiting_for_worker: 'Waiting for the owned worker', waiting_for_runtime: 'Waiting for processing capacity',
   quota_exhausted: 'Processing allowance unavailable', failed: 'Processing stopped', cancelled: 'Processing cancelled' }
 
-export function MySubmissions({ items, selectedId, onSelect, token, refresh }: {
-  items: Submission[]; selectedId: string | null; onSelect: (id: string) => void; token: string; refresh: () => void
+export function MySubmissions({ items, selectedId, onSelect, token, refresh, active = true }: {
+  items: Submission[]; selectedId: string | null; onSelect: (id: string) => void; token: string; refresh: () => void; active?: boolean
 }) {
+  const [recent, setRecent] = useState<string[]>(selectedId ? [selectedId] : [])
+  if (selectedId && recent[0] !== selectedId) setRecent([selectedId, ...recent.filter(id => id !== selectedId)].slice(0, 3))
   return <section className="my-submissions" aria-labelledby="my-submissions-title"><div className="list-heading"><div><span className="eyebrow">SAVED IN YOUR WORKSPACE</span><h2 id="my-submissions-title">My submissions</h2></div><button type="button" className="secondary-button" onClick={refresh}><RefreshCw size={15} />Refresh list</button></div>
     <p className="field-note">Latest 20 submissions. Your accepted ideas and progress stay saved after refresh or sign-out.</p>
-    {items.length === 0 ? <p className="empty-state">Your saved ideas will appear here.</p> : <div className="submission-list">{items.map(item => { const Icon = item.input_kind === 'text' ? FileText : item.input_kind === 'pdf' ? File : AudioLines; return <button type="button" key={item.id} className={selectedId === item.id ? 'selected' : ''} aria-pressed={selectedId === item.id} onClick={() => onSelect(item.id)}><Icon size={21} /><strong>{item.input_kind === 'text' ? 'Written idea' : item.input_kind === 'pdf' ? 'PDF idea' : 'Audio idea'}</strong><span>{new Date(item.created_at).toLocaleString()}</span><small>{names[item.status] || 'Saved'} · {item.preferred_language}{item.synthetic ? ' · Rehearsal' : ''}</small></button> })}</div>}
+    {items.length === 0 ? <p className="empty-state">Your saved ideas will appear here.</p> : <div className="submission-list">{items.map(item => { const Icon = item.input_kind === 'text' ? FileText : item.input_kind === 'pdf' ? File : AudioLines; return <button type="button" key={item.id} data-submission-id={item.id} className={selectedId === item.id ? 'selected' : ''} aria-pressed={selectedId === item.id} onClick={() => onSelect(item.id)}><Icon size={21} /><strong>{item.input_kind === 'text' ? 'Written idea' : item.input_kind === 'pdf' ? 'PDF idea' : 'Audio idea'}</strong><span>{new Date(item.created_at).toLocaleString()}</span><small>{names[item.status] || 'Saved'} · {item.preferred_language}{item.synthetic ? ' · Rehearsal' : ''}</small></button> })}</div>}
     {selectedId && items.find(item => item.id === selectedId)?.synthetic && <p className="form-message" role="note">Synthetic rehearsal input. This fictional example is excluded from ordinary population comparisons.</p>}
-    {selectedId && <SubmissionDetail key={selectedId} id={selectedId} token={token} onFinished={refresh} />}
+    {recent.map(id => <div key={id} hidden={id !== selectedId}><SubmissionDetail id={id} token={token} onFinished={refresh} active={active && id === selectedId} /></div>)}
   </section>
 }
 
-export function SubmissionDetail({ id, token, onFinished, canClarify = true }: { id: string; token: string; onFinished: () => void; canClarify?: boolean }) {
+export function SubmissionDetail({ id, token, onFinished, canClarify = true, active = true }: { id: string; token: string; onFinished: () => void; canClarify?: boolean; active?: boolean }) {
   const [submission, setSubmission] = useState<Submission | null>(null)
   const [job, setJob] = useState<JobView | null>(null)
   const [assessment, setAssessment] = useState<Assessment | null>(null)
@@ -44,50 +47,64 @@ export function SubmissionDetail({ id, token, onFinished, canClarify = true }: {
   const [removed, setRemoved] = useState(false)
   const [tool, setTool] = useState('overview')
   const operation = useRef<AbortController | null>(null)
+  const previousState = useRef<string | null>(null)
   useEffect(() => {
+    if (!active || removed) return
     const controller = new AbortController()
     let timer: number | undefined
     let disposed = false
+    let inFlight = false
     const started = Date.now()
-    setError(''); setAssessment(null); setNote('Checking saved processing state…')
+    setError(''); setNote('Checking for saved updates…')
     async function check() {
+      if (disposed || inFlight) return
+      inFlight = true
       if (!disposed) setChecking(true)
       try {
         if (document.hidden || Date.now() - started > 300_000) {
           if (!disposed) setNote('Automatic updates paused. Use Refresh status when you are ready.')
           return
         }
-        const current = await apiRequest<Submission>(`/v1/submissions/${id}`, { token, signal: controller.signal })
+        const snapshot = await apiRequest<components['schemas']['SubmissionWorkspace']>(`/v1/submissions/${id}/workspace`, { token, signal: controller.signal })
+        if (disposed) return
+        const current = snapshot.submission
+        const stateKey = `${current.revision_id}:${current.status}`
+        const changed = previousState.current !== null && previousState.current !== stateKey
+        previousState.current = stateKey
+        setSubmission(current)
+        setAssessment(previous => previous?.id === snapshot.assessment?.id ? previous : snapshot.assessment)
+        if (finished.has(current.status)) {
+          setJob(null)
+          if (changed) onFinished()
+          setNote(current.status === 'needs_review' ? 'Your original is saved. Processing needs review.' : snapshot.assessment ? 'Saved result retrieved. No model processing is needed to open it.' : `No assessment is saved for this revision. ${names[current.status] || 'Check the processing state'}.`)
+          return
+        }
         const state = await apiRequest<JobView>(`/v1/jobs/${current.job_id}`, { token, signal: controller.signal })
         if (disposed) return
         setSubmission(current); setJob(state)
         if (finished.has(state.status)) {
-          onFinished()
-          if (['completed', 'partial'].includes(state.status)) {
-            try {
-              const result = await apiRequest<Assessment>(`/v1/submissions/${id}/assessment`, { token, signal: controller.signal })
-              if (!disposed) setAssessment(result)
-            } catch (failure) {
-              if (!(failure instanceof ApiError && failure.status === 404)) throw failure
-              if (!disposed) setNote('No assessment is available for this revision yet.')
-              return
-            }
-          }
-          if (!disposed) setNote(state.status === 'needs_review' ? 'Your original is saved. Processing needs review; retry may still require human help.' : 'Saved state retrieved from your workspace.')
+          // Publication may have completed after the snapshot; fetch its coherent result.
+          timer = window.setTimeout(() => { void check() }, 0)
           return
         }
         if (waiting.has(state.status)) { setNote(`${current.input_kind === 'pdf' ? 'Your original upload is saved.' : 'Your idea is safely queued.'} Start or resume the owned worker, then refresh status. Automatic updates are paused.`); return }
         setNote(state.status === 'queued'
-          ? 'Saved and queued. The laptop processes one idea at a time. You can return later; your work stays saved.'
-          : 'Processing on the local worker. Model results can take several minutes. Automatic updates pause after five minutes or when this page is hidden; use Refresh status to continue.')
+          ? 'Saved and queued. The laptop processes one idea at a time; queue wait is additional. Recent measured short text examples took about 1½–2½ minutes. You can return later.'
+          : 'Local models are reading and assessing your idea. Recent measured short text examples took about 1½–2½ minutes; audio, scans, translation and longer inputs can take longer. You can use other tabs while work continues.')
         timer = window.setTimeout(() => { void check() }, Math.min(30, Math.max(3, state.retry_after_seconds || 3)) * 1000)
       } catch (failure) {
-        if (!disposed && !controller.signal.aborted) { setError(failure instanceof Error ? failure.message : 'Could not retrieve saved state.'); setNote('Use Refresh status to try again. Your saved submission is unchanged.') }
-      } finally { if (!disposed) setChecking(false) }
+        if (!disposed && !controller.signal.aborted) {
+          if (failure instanceof ApiError && [401, 403, 404].includes(failure.status || 0)) { setAssessment(null); setSubmission(null) }
+          setError(failure instanceof Error ? failure.message : 'Could not retrieve saved state.'); setNote('Use Refresh status to try again. Your saved submission is unchanged.')
+        }
+      } finally { inFlight = false; if (!disposed) setChecking(false) }
     }
     void check()
-    return () => { disposed = true; controller.abort(); window.clearTimeout(timer) }
-  }, [id, token, refresh, onFinished])
+    // Returning to a browser tab resumes status checks without discarding the page.
+    const visible = () => { if (!document.hidden) { window.clearTimeout(timer); void check() } }
+    document.addEventListener('visibilitychange', visible)
+    return () => { disposed = true; controller.abort(); window.clearTimeout(timer); document.removeEventListener('visibilitychange', visible) }
+  }, [id, token, refresh, onFinished, active, removed])
   useEffect(() => () => operation.current?.abort(), [])
   async function control(resume: boolean) {
     if (!submission || busy) return
@@ -122,13 +139,13 @@ export function SubmissionDetail({ id, token, onFinished, canClarify = true }: {
     finally { if (!controller.signal.aborted) setBusy(false) }
   }
   if (removed) return <p role="status" className="form-message">Idea deleted. Its originals and all derived versions have been removed.</p>
-  return <div className="submission-detail"><details className="processing-disclosure" open={!assessment}><summary>Saved processing status · {job ? names[job.status] || job.status : 'Loading…'}</summary><div className="detail-heading"><h3>Processing journey</h3><button className="secondary-button" type="button" disabled={busy || checking} onClick={() => setRefresh(value => value + 1)}>Refresh status</button></div>
+  return <div className="submission-detail"><details className="processing-disclosure" open={!assessment}><summary>Saved processing status · {job ? names[job.status] || job.status : submission ? names[submission.status] || submission.status : 'Loading…'}</summary><div className="detail-heading"><h3>Processing journey</h3><button className="secondary-button" type="button" disabled={busy || checking} onClick={() => setRefresh(value => value + 1)}>Refresh status</button></div>
     <p className="processing-status" role="status">{job ? names[job.status] || job.status : 'Loading…'}</p>
     {job && <><progress aria-label="Completed processing stages" value={job.completed_stages} max={job.total_stages} /><p className="field-note">{job.completed_stages} of {job.total_stages} processing stages saved. {job.error?.message}</p></>}
     <p className="field-note">{note}</p>
     {error && <p role="alert" className="form-error">{error}</p>}
-    {submission && job && <div className="job-actions">{!finished.has(job.status) && <button className="secondary-button" type="button" disabled={busy} onClick={() => { void control(false) }}>Cancel processing</button>}
-      {(['failed', 'cancelled', 'needs_review'].includes(job.status) || waiting.has(job.status)) && <button className="secondary-button" type="button" disabled={busy} onClick={() => { void control(true) }}>Resume processing</button>}
+    {submission && <div className="job-actions">{!finished.has(job?.status || submission.status) && <button className="secondary-button" type="button" disabled={busy} onClick={() => { void control(false) }}>Cancel processing</button>}
+      {(['failed', 'cancelled', 'needs_review'].includes(job?.status || submission.status) || waiting.has(job?.status || submission.status)) && <button className="secondary-button" type="button" disabled={busy} onClick={() => { void control(true) }}>Resume processing</button>}
       {submission.attachment_id && <button className="secondary-button" type="button" disabled={busy} onClick={() => { void download() }}>Download original</button>}</div>}
     </details>
     {assessment && <><nav className="idea-tool-nav" aria-label="Idea tools">{[
@@ -138,15 +155,15 @@ export function SubmissionDetail({ id, token, onFinished, canClarify = true }: {
       ...(canClarify ? [{ id: 'questions', label: 'Next steps', icon: MessageCircle }] : []),
       { id: 'history', label: 'Versions & privacy', icon: History },
     ].map(({ id, label, icon: Icon }) => <button key={id} type="button" aria-pressed={tool === id} onClick={() => setTool(id)}><Icon size={17} />{label}</button>)}</nav>
-      <div hidden={tool !== 'overview'}><AssessmentView key={assessment.id} value={assessment} /><ExplanationPanel key={`explain:${assessment.id}`} value={assessment} token={token} /></div>
-      <div hidden={tool !== 'plan'}><BusinessBlueprint value={assessment} onQuestions={() => setTool(canClarify ? 'questions' : 'overview')} /><ScenarioPlanner key={`scenario:${assessment.id}`} value={assessment} /><ArithmeticChecks key={`math:${assessment.id}`} value={assessment} token={token} /></div>
-      <div hidden={tool !== 'market'}><SimilarIdeas key={`similar:${assessment.id}`} value={assessment} token={token} /><LocalContext key={`local:${assessment.id}`} value={assessment} token={token} /></div>
-      {canClarify && <div hidden={tool !== 'questions'}><Clarifications value={assessment} token={token} preferredLanguage={submission?.preferred_language} onReassess={() => { setTool('history'); setAssessment(null); setRefresh(n => n + 1); onFinished() }} /></div>}
+      <KeptPanel key={`overview:${assessment.id}`} active={tool === 'overview'}><AssessmentView value={assessment} idPrefix={`${id}-`} /><ExplanationPanel value={assessment} token={token} idPrefix={`${id}-`} /></KeptPanel>
+      <KeptPanel key={`plan:${assessment.id}`} active={tool === 'plan'}><BusinessBlueprint value={assessment} onQuestions={() => setTool(canClarify ? 'questions' : 'overview')} /><ScenarioPlanner value={assessment} /><ArithmeticChecks value={assessment} token={token} /></KeptPanel>
+      <KeptPanel key={`market:${assessment.id}`} active={tool === 'market'}><SimilarIdeas value={assessment} token={token} /><LocalContext value={assessment} token={token} /></KeptPanel>
+      {canClarify && <KeptPanel key={`questions:${assessment.id}`} active={tool === 'questions'}><Clarifications value={assessment} token={token} preferredLanguage={submission?.preferred_language} active={active && tool === 'questions'} onReassess={() => { setTool('history'); setAssessment(null); setRefresh(n => n + 1); onFinished() }} /></KeptPanel>}
     </>}
-    <div hidden={!!assessment && tool !== 'history'}>{submission?.source_text && <details><summary>Your original submitted text</summary><p className="original-text">{submission.source_text}</p></details>}
+    <KeptPanel active={!!submission && (!assessment || tool === 'history')}>{submission?.source_text && <details><summary>Your original submitted text</summary><p className="original-text">{submission.source_text}</p></details>}
       {submission?.attachment_id && <button className="secondary-button" type="button" disabled={busy} onClick={() => { void download() }}>Download original</button>}
       {submission && <VersionHistory key={`history:${submission.revision_id}`} id={id} current={assessment} token={token} />}
-      {canClarify && submission && <DeleteSubmission id={id} revision={submission.revision_id} token={token} onDeleted={() => { setRemoved(true); onFinished() }} />}
-    </div>
+      {canClarify && submission && <DeleteSubmission id={id} revision={submission.revision_id} token={token} onDeleted={() => { setRemoved(true); setAssessment(null); setSubmission(null); setJob(null); onFinished() }} />}
+    </KeptPanel>
   </div>
 }

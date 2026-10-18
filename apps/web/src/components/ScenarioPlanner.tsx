@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { Calculator, RotateCcw } from 'lucide-react'
 import type { Assessment } from '../api/client'
 import { calculateScenario, type ScenarioInput } from '../domain/scenario'
@@ -14,6 +14,7 @@ const fields = [
 const money = (value: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(value)
 
 export function ScenarioPlanner({ value }: { value: Assessment }) {
+  const titleId = useId()
   const [draft, setDraft] = useState<Record<string, string>>({})
   const [stress, setStress] = useState(false)
   const [baseline, setBaseline] = useState<ReturnType<typeof calculateScenario>>(null)
@@ -24,7 +25,7 @@ export function ScenarioPlanner({ value }: { value: Assessment }) {
   const parsed = Object.fromEntries(fields.map(([key]) => [key, draft[key]?.trim() ? Number(draft[key]) : key === 'startup' ? null : NaN])) as ScenarioInput
   const current = complete ? calculateScenario(parsed) : null
   const scenario = current && stress ? calculateScenario({ ...parsed, unitsPerDay: parsed.unitsPerDay * .8 }) : current
-  return <section className="tool-panel scenario-planner" aria-labelledby="scenario-title"><div className="tool-heading"><Calculator size={20} /><h3 id="scenario-title">Try the numbers before you commit</h3><span className="badge">What-if · not a forecast</span></div>
+  return <section className="tool-panel scenario-planner" aria-labelledby={titleId}><div className="tool-heading"><Calculator size={20} /><h3 id={titleId}>Try the numbers before you commit</h3><span className="badge">What-if · not a forecast</span></div>
     <p className="field-note">Enter your own assumptions in INR. This scratchpad stays in this open page; it does not change your submitted facts, score or explanation. All sales must use the same unit.</p>
     {validPrice && <button type="button" className="text-button" onClick={() => setDraft({ ...draft, price: String(price.amount) })}>Use saved selling price: {money(Number(price.amount))} per {price.unit}</button>}
     <div className="scenario-layout"><div className="scenario-inputs">{fields.map(([key, label, hint]) => <label key={key}>{label}<input aria-label={label} type="number" min={key === 'days' ? 1 : 0} max={key === 'days' ? 31 : 1e9} step={key === 'days' ? 1 : 'any'} inputMode="decimal" value={draft[key] || ''} onChange={event => setDraft({ ...draft, [key]: event.target.value })} /><small>{hint}</small></label>)}</div>
