@@ -30,10 +30,12 @@ export function MySubmissions({ items, selectedId, onSelect, token, refresh, act
 }) {
   const { t } = useI18n()
   const [recent, setRecent] = useState<string[]>(selectedId ? [selectedId] : [])
-  if (selectedId && recent[0] !== selectedId) setRecent([selectedId, ...recent.filter(id => id !== selectedId)].slice(0, 3))
+  const [choosing, setChoosing] = useState(!selectedId)
+  if (selectedId && recent[0] !== selectedId) { setRecent([selectedId, ...recent.filter(id => id !== selectedId)].slice(0, 3)); setChoosing(false) }
   return <section className="my-submissions" aria-labelledby="my-submissions-title"><div className="list-heading"><div><span className="eyebrow">{t("SAVED IN YOUR WORKSPACE")}</span><h2 id="my-submissions-title">{t("My submissions")}</h2></div><button type="button" className="secondary-button" onClick={refresh}><RefreshCw size={15} />{t("Refresh list")}</button></div>
     <p className="field-note">{t("Latest 20 submissions. Your accepted ideas and progress stay saved after refresh or sign-out.")}</p>
-    {items.length === 0 ? <p className="empty-state">{t("Your saved ideas will appear here.")}</p> : <div className="submission-list">{items.map(item => { const Icon = item.input_kind === 'text' ? FileText : item.input_kind === 'pdf' ? File : AudioLines; return <button type="button" key={item.id} data-submission-id={item.id} className={selectedId === item.id ? 'selected' : ''} aria-pressed={selectedId === item.id} onClick={() => onSelect(item.id)}><Icon size={21} /><strong>{item.input_kind === 'text' ? t("Written idea") : item.input_kind === 'pdf' ? t("PDF idea") : t("Audio idea")}</strong><span>{new Date(item.created_at).toLocaleString()}</span><small>{t(names[item.status] || t("Saved"))} · {item.preferred_language}{item.synthetic ? ' · Rehearsal' : ''}</small></button> })}</div>}
+    {items.length > 0 && <button type="button" className="secondary-button saved-picker" aria-expanded={choosing} onClick={() => setChoosing(!choosing)}><FileText size={20} />{t('Choose a saved idea')}</button>}
+    {items.length === 0 ? <p className="empty-state">{t("Your saved ideas will appear here.")}</p> : <div className="submission-list" hidden={!choosing}>{items.map(item => { const Icon = item.input_kind === 'text' ? FileText : item.input_kind === 'pdf' ? File : AudioLines; return <button type="button" key={item.id} data-submission-id={item.id} className={selectedId === item.id ? 'selected' : ''} aria-pressed={selectedId === item.id} onClick={() => { onSelect(item.id); setChoosing(false) }}><Icon size={21} /><strong>{item.input_kind === 'text' ? t("Written idea") : item.input_kind === 'pdf' ? t("PDF idea") : t("Audio idea")}</strong><span>{new Date(item.created_at).toLocaleString()}</span><small>{t(names[item.status] || t("Saved"))} · {t(item.preferred_language)}{item.synthetic ? ` · ${t('Rehearsal')}` : ''}</small></button> })}</div>}
     {selectedId && items.find(item => item.id === selectedId)?.synthetic && <p className="form-message" role="note">{t("Synthetic rehearsal input. This fictional example is excluded from ordinary population comparisons.")}</p>}
     {recent.map(id => <div key={id} hidden={id !== selectedId}><SubmissionDetail id={id} token={token} onFinished={refresh} active={active && id === selectedId} /></div>)}
   </section>
@@ -157,14 +159,16 @@ export function SubmissionDetail({ id, token, onFinished, canClarify = true, act
       {(['failed', 'cancelled', 'needs_review'].includes(job?.status || submission.status) || waiting.has(job?.status || submission.status)) && <button className="secondary-button" type="button" disabled={busy} onClick={() => { void control(true) }}>{t("Resume processing")}</button>}
       {submission.attachment_id && <button className="secondary-button" type="button" disabled={busy} onClick={() => { void download() }}>{t("Download original")}</button>}</div>}
     </details>
-    {assessment && <><nav className="idea-tool-nav" aria-label={t("Idea tools")}>{[
+    {assessment && <><nav className="idea-tool-nav simple-main-actions" aria-label={t("Idea tools")}>{[
       { id: 'overview', label: t("Assessment"), icon: ChartNoAxesCombined },
+      ...(canClarify ? [{ id: 'questions', label: t("Next steps"), icon: MessageCircle }] : []),
+    ].map(({ id, label, icon: Icon }) => <button key={id} type="button" aria-pressed={tool === id} onClick={() => setTool(id)}><Icon size={20} />{label}</button>)}</nav>
+    <details className="simple-disclosure extra-tools" open={['plan', 'market', 'history'].includes(tool)}><summary>{t('See more tools')}</summary><nav className="idea-tool-nav" aria-label={t('More help and checks')}>{[
       { id: 'plan', label: t("Business plan"), icon: LayoutGrid },
       { id: 'market', label: t("Explore market"), icon: MapPin },
-      ...(canClarify ? [{ id: 'questions', label: t("Next steps"), icon: MessageCircle }] : []),
       { id: 'history', label: t("Versions & privacy"), icon: History },
-    ].map(({ id, label, icon: Icon }) => <button key={id} type="button" aria-pressed={tool === id} onClick={() => setTool(id)}><Icon size={17} />{label}</button>)}</nav>
-      <KeptPanel key={`overview:${assessment.id}`} active={tool === 'overview'}><ScreeningBrief value={assessment} numbers={numbers?.assessment_id === assessment.id ? numbers : null} idPrefix={`${id}-`} onNext={() => setTool(canClarify ? 'questions' : 'plan')} /><AssessmentView value={assessment} idPrefix={`${id}-`} /><ExplanationPanel value={assessment} token={token} idPrefix={`${id}-`} /></KeptPanel>
+    ].map(({ id, label, icon: Icon }) => <button key={id} type="button" aria-pressed={tool === id} onClick={() => setTool(id)}><Icon size={17} />{label}</button>)}</nav></details>
+      <KeptPanel key={`overview:${assessment.id}`} active={tool === 'overview'}><ScreeningBrief value={assessment} numbers={numbers?.assessment_id === assessment.id ? numbers : null} idPrefix={`${id}-`} active={active && tool === 'overview'} onNext={() => setTool(canClarify ? 'questions' : 'plan')} /><AssessmentView value={assessment} idPrefix={`${id}-`} /><details className="simple-disclosure"><summary>{t('More help and checks')}</summary><ExplanationPanel value={assessment} token={token} idPrefix={`${id}-`} /></details></KeptPanel>
       <KeptPanel key={`plan:${assessment.id}`} active={tool === 'plan'}><BusinessBlueprint value={assessment} onQuestions={() => setTool(canClarify ? 'questions' : 'overview')} /><ScenarioPlanner value={assessment} /><ArithmeticChecks value={assessment} token={token} /></KeptPanel>
       <KeptPanel key={`market:${assessment.id}`} active={tool === 'market'}><SimilarIdeas value={assessment} token={token} /><LocalContext value={assessment} token={token} /></KeptPanel>
       {canClarify && <KeptPanel key={`questions:${assessment.id}`} active={tool === 'questions'}><Clarifications value={assessment} token={token} preferredLanguage={submission?.preferred_language} active={active && tool === 'questions'} onReassess={() => { setTool('history'); setAssessment(null); setRefresh(n => n + 1); onFinished() }} /></KeptPanel>}

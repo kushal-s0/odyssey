@@ -77,3 +77,24 @@ html[lang=hi] .workspace-hero h1,html[lang=hi] .welcome h1{font-size:clamp(2rem,
 .rubric-guide{padding:18px;border:1px solid var(--line);border-radius:8px;margin:20px 0;font-size:13px;line-height:1.8}
 .rubric-guide summary{font-weight:600;cursor:pointer}.rubric-table{overflow-x:auto}.rubric-table table{width:100%;border-collapse:collapse;text-align:left}.rubric-table th,.rubric-table td{border-bottom:1px solid var(--line);padding:8px}.rubric-table caption{text-align:left;margin:10px 0}.rubric-guide ul{padding-left:20px}
 @media(max-width:650px){.screening-brief{padding:18px}.screening-brief ul{grid-template-columns:1fr}.screening-brief h3{font-size:22px}}
+
+
+/* Plain-language applicant flow: large controls, short summaries, optional detail. */
+.welcome-simple{max-width:720px;margin:20px auto;font-family:system-ui,"Nirmala UI",sans-serif}.welcome-simple h1{font-family:inherit;font-size:40px;line-height:1.3}.welcome-simple .intro{font-size:20px;max-width:55ch}.welcome-simple .primary-link{font-size:20px;min-height:56px;margin:18px 0}.simple-format-hints{display:flex;flex-wrap:wrap;gap:24px;margin:28px 0}.simple-format-hints span{display:flex;align-items:center;gap:10px;font-size:17px}
+.simple-workspace{max-width:980px;margin:0 auto;font-family:system-ui,"Nirmala UI",sans-serif;font-size:16px}
+.simple-heading{margin:14px 0 22px}.simple-heading h1{font-family:inherit;font-size:32px;line-height:1.35;margin:0 0 10px}.simple-heading p{font-size:17px;max-width:65ch;color:var(--muted)}
+.simple-workspace h2,.simple-workspace h3{font-family:inherit}.simple-workspace .panel-heading .eyebrow{display:none}
+.simple-workspace .panel-heading h2{font-size:26px}.simple-workspace .panel-heading p{font-size:16px;line-height:1.65}
+.simple-workspace label{font-size:16px}.simple-workspace input,.simple-workspace select,.simple-workspace textarea{font-size:17px;line-height:1.6}
+.simple-workspace button,.simple-workspace summary,.read-aloud button{min-height:48px;font-size:16px;line-height:1.5}
+.simple-workspace .field-note,.simple-workspace .form-message,.simple-workspace small{font-size:14px;line-height:1.65}
+.simple-workspace .studio-toolbar .field-note{display:none}.simple-workspace .format-choices{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.simple-workspace .format-choices button{padding:18px;text-align:left}.simple-workspace .format-choices strong{font-size:19px}.simple-workspace .format-choices span{font-size:14px}
+.simple-disclosure{border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:16px 0;background:var(--surface)}
+.simple-disclosure>summary{cursor:pointer;font-weight:600;display:list-item;min-height:44px;align-content:center;padding:8px 0;font-size:16px}.simple-disclosure[open]>summary{margin-bottom:14px}
+.simple-main-actions{margin:20px 0 8px;gap:12px}.simple-main-actions button{flex:1;justify-content:center;font-size:17px;padding:14px}
+.extra-tools{margin:8px 0 18px}.extra-tools .idea-tool-nav{margin-bottom:0}.simple-workspace .screening-brief{margin:16px 0;padding:22px}.simple-workspace .screening-brief h3{font-size:26px}.simple-workspace .screening-brief p{font-size:16px;line-height:1.65}.simple-workspace .screening-brief li strong{font-size:18px}.simple-workspace .risk-amount{font-size:30px}.simple-workspace .screening-brief>ul{grid-template-columns:1fr}.simple-workspace .screening-brief .primary-link{display:inline-flex;margin:12px 0}
+.read-aloud{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:12px 0}.read-aloud small{max-width:55ch;color:var(--muted);font-size:13px}.read-aloud button{gap:9px}
+.simple-workspace .submission-list{grid-template-columns:repeat(2,minmax(0,1fr))}.simple-workspace .submission-list strong{font-size:17px}.simple-workspace .submission-list small{font-size:14px}
+.simple-workspace .guided-fields{grid-template-columns:1fr}.simple-workspace .builder-intro .badge{display:none}
+.simple-workspace .processing-disclosure{font-size:16px}.simple-workspace .business-facts dd{font-size:16px}.simple-workspace .field-links a{min-height:44px;align-content:center;padding:5px}
+@media(max-width:650px){.simple-heading h1{font-size:28px}.simple-workspace .submission-list{grid-template-columns:1fr}.simple-workspace .screening-brief{padding:16px}.simple-workspace .studio-toolbar{margin-bottom:18px}.simple-main-actions{flex-wrap:wrap}.simple-main-actions button{min-width:130px}.simple-workspace .format-choices button{padding:14px}.simple-disclosure{padding:10px 12px}.simple-workspace .screening-brief h3{font-size:23px}}

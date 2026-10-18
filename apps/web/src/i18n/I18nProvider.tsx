@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
 import { hindi } from './hi'
+import { simpleEnglish, simpleHindi } from './simple'
 
 export type Locale = 'en' | 'hi'
 type I18n = { locale: Locale; setLocale: (locale: Locale) => void; t: (source: string) => string }
@@ -13,7 +14,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     document.documentElement.lang = locale
     try { localStorage.setItem('udyam:language', locale) } catch { /* language still works */ }
   }, [locale])
-  const t = useCallback((source: string) => locale === 'hi' ? hindi[source] ?? source : source, [locale])
+  const t = useCallback((source: string) => locale === 'hi' ? simpleHindi[source] ?? hindi[source] ?? simpleEnglish[source] ?? source : simpleEnglish[source] ?? source, [locale])
   return <Context.Provider value={{ locale, setLocale, t }}>{children}</Context.Provider>
 }
 

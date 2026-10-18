@@ -7,23 +7,23 @@ import { RubricGuide } from './RubricGuide'
 const labels: Record<string, string> = { clarity: 'Business clarity', customer_need: 'Customer need', market_potential: 'Market potential',
   feasibility: 'Feasibility', competition: 'Competition', differentiation: 'Differentiation' }
 
-function describe(value: unknown): string {
-  if (value === null || value === undefined) return 'Not supplied'
-  if (Array.isArray(value)) return value.map(describe).join(', ')
+function describe(value: unknown, t: (text: string) => string): string {
+  if (value === null || value === undefined) return t('Not supplied')
+  if (Array.isArray(value)) return value.map(item => describe(item, t)).join(', ')
   if (typeof value === 'object') {
     const item = value as Record<string, unknown>
     if ('amount' in item) {
       const amount = Number(item.amount)
       const money = item.currency === 'INR' ? new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(amount) : String(item.amount)
-      return `${money}${item.period && item.period !== 'unknown' ? ` / ${String(item.period)}` : ''}${item.unit ? ` per ${String(item.unit)}` : ''}`
+      return `${money}${item.period && item.period !== 'unknown' ? ` / ${t(String(item.period))}` : ''}${item.unit ? ` / ${t(String(item.unit))}` : ''}`
     }
-    return [item.locality, item.district, item.state].filter(Boolean).join(', ') || 'Location needs clarification'
+    return [item.locality, item.district, item.state].filter(Boolean).join(', ') || t('Location needs clarification')
   }
-  return typeof value === 'boolean' ? value ? 'Yes' : 'No' : String(value)
+  return typeof value === 'boolean' ? t(value ? 'Yes' : 'No') : String(value)
 }
 
 export function AssessmentView({ value, idPrefix = '' }: { value: Assessment; idPrefix?: string }) {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   const titleId = useId()
   const [selected, setSelected] = useState<string | null>(null)
   const scores = value.scores
@@ -31,7 +31,9 @@ export function AssessmentView({ value, idPrefix = '' }: { value: Assessment; id
   const gaps = value.gaps || []
   const risks = value.risks || []
   return <section className="assessment-view" aria-labelledby={titleId}>
-    <div className="panel-heading"><span className="eyebrow">{t("AUTOMATED FIRST-LEVEL ASSESSMENT")}</span><h2 id={titleId}>{t("A clearer view of your idea")}</h2><p>{t("Source-backed suggestions for authorized human review. This is not a funding decision or a prediction of business success.")}</p></div>
+    <details className="simple-disclosure assessment-details"><summary id={titleId}>{t('See all details and scores')}</summary>
+    <p>{t('These details are for you and your mentor. The score is not a promise of success.')}</p>
+    {locale === 'hi' && <p className="field-note">{t('Your words are shown as you sent them. English model notes are inside the detailed view.')}</p>}
     <section aria-labelledby={`${titleId}-facts`}><h3 id={`${titleId}-facts`}>{t("What we understood")}</h3><dl className="business-facts">{([
       ['business_type', t("Business type")], ['offer', t("Product or service")], ['target_customers', t("Customers")], ['problem', t("Customer problem")],
       ['location', t("Business location")], ['investment', t("Investment")], ['unit_price', t("Price")],
@@ -40,7 +42,7 @@ export function AssessmentView({ value, idPrefix = '' }: { value: Assessment; id
       ['competition', t("Competition")], ['differentiation', t("What makes it different")], ['existing_business', t("Already operating")],
     ] as const).map(([key, label]) => {
       const field = value.business[key]
-      return <div key={key} id={`${idPrefix}fact-${key}`}><dt>{label}</dt><dd>{field?.status === 'present' ? describe(field.value) : !field || field.status === 'missing' ? t("Not supplied") : field.status.replaceAll('_', ' ')}
+      return <div key={key} id={`${idPrefix}fact-${key}`}><dt>{label}</dt><dd>{field?.status === 'present' ? describe(field.value, t) : !field || field.status === 'missing' ? t("Not supplied") : t(field.status.replaceAll('_', ' '))}
         {(field?.source_segment_ids || []).map(id => <button className="text-button" type="button" key={id} onClick={() => setSelected(id)}>{t("View source")} {value.evidence.findIndex(item => item.id === id) + 1}</button>)}
       </dd></div>
     })}</dl></section>
@@ -58,5 +60,6 @@ export function AssessmentView({ value, idPrefix = '' }: { value: Assessment; id
     {gaps.length > 0 && <details><summary>{t("Information to clarify (")}{gaps.length})</summary><ul>{gaps.map((gap, i) => <li key={i}>{gap}</li>)}</ul></details>}
     {risks.length > 0 && <details><summary>{t("Limits and risks")}</summary><ul>{risks.map((risk, i) => <li key={i}>{risk}</li>)}</ul></details>}
     <p className="field-note">{t("Assessment version")} {value.version} · {value.scores.rubric_version} · {new Date(value.created_at).toLocaleString()}{t(". Original evidence is private.")}</p>
+    </details>
   </section>
 }

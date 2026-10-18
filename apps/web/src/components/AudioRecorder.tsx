@@ -33,6 +33,7 @@ export function AudioRecorder({ onFile, disabled, onActivityChange, active = tru
     }
   }, [onActivityChange])
   async function start() {
+    window.dispatchEvent(new Event('udyam:stop-speech'))
     if (recorder.current?.state === 'recording' || requesting.current) return
     requesting.current = true
     onActivityChange(true)

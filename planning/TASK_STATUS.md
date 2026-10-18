@@ -17,6 +17,14 @@ and adds page/batch/domain detail. [Timings and limits](../docs/PROCESSING_TIME_
 Read [PS review and shortest plan](../docs/PS_REVIEW_AND_DEMO_PLAN.md) and
 [one-page project/model summary](../docs/PROJECT_SUMMARY.md).
 
+**Latest T08 follow-up:** simpler English/Hindi applicant screens, Speak first,
+collapsed saved list, money/next action first, optional detailed scores/tools,
+translated follow-up guidance and local-device read-aloud implemented. Eight
+fixture browser groups pass with zero page errors; build/type/lint pass. Device
+probe finds English voices only, so Hindi speech needs an installed local voice.
+No new model evaluation or rural-user usability validation. See T08 report and
+`evals/reports/simple-ui.json`; task count and existing blockers are unchanged.
+
 **How to read “blocked”:** several features work but their human-quality,
 hosted-validation or publication gates are unfinished. This is not a broken-feature
 count. T06 is now done against its written criteria; broader hosted outage/recovery

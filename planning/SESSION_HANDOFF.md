@@ -1,5 +1,34 @@
 # Current checkpoint - judge functionality, 18 October 2026
 
+## Latest: plain-language applicant UI and device speech
+
+User requested very simple rural-friendly UI, optional detail, useful data first,
+proper translations and possible TTS. T08 follow-up simplifies welcome/applicant
+headings and primary English/Hindi copy, puts Speak first, collapses the idea list
+after selection/acceptance, keeps result/questions as two main actions and moves
+other tools and full facts/scores behind clear disclosures. Financial loss/gap
+findings precede other issues. Compatible saved surplus is shown when calculable;
+no facts/scores/arithmetic/model configuration changed. Source links expand facts.
+Form metadata/rehearsal is under More options; consent/content language stay clear.
+Guided/text/follow-up drafts survive locale changes. Hindi follow-up prompts/hints
+are simplified; original/model prose retains actual language in detailed views.
+
+ReadAloud.tsx uses only matching local browser voices on click. It stops on
+language/navigation/visibility/microphone changes and has no remote fallback.
+Actual Edge voice inventory finds en-GB/en-IN/en-US, no local Hindi; Hindi speech
+therefore remains unavailable on this machine until its local voice is installed.
+No automatic OS installation or provider call. Browser speech tests are fixtures,
+not auditory quality validation. Hindi menus/questions work independently.
+
+Typecheck/lint/build pass (build needed filesystem escalation for existing
+esbuild ancestor reads). Eight updated browser groups pass with0pageerrors,
+390px Hindi layout, drafts/translated questions/speech lifecycle, prior recorded
+loss/gap/unknown outputs, six-minute progress and interrupted upload idempotency.
+Report evals/reports/simple-ui.json; previews .local/simple-ui/. No new inference,
+live applicant writes, model accuracy or rural-user usability study. No runtime
+restart/env/account changes or publication. Main bundle still warns >500kB.
+Read explanations/29-simple-applicant-experience.md and the T08 report.
+
 ## Latest clarification: business input PDF, not a presenter handbook
 
 User clarified the requested artifact is one business-idea input PDF. Created

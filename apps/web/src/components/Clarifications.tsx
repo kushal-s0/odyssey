@@ -5,17 +5,40 @@ import { apiRequest, type Assessment } from '../api/client'
 import type { components } from '../api/generated/schema'
 import { AudioRecorder } from './AudioRecorder'
 import { upload } from '../api/uploads'
+import { ReadAloud } from './ReadAloud'
+
+const hints: Record<string, [string, string]> = {
+  offer: ['Name what you will sell or do for customers.', 'बताएँ कि ग्राहकों को क्या बेचेंगे या कौन-सी सेवा देंगे।'],
+  target_customers: ['Who will buy from you, and where are they?', 'आपसे कौन खरीदेगा और वे कहाँ हैं?'],
+  location: ['Give the village or area, district and state. Your home address is not needed.', 'गाँव या इलाका, ज़िला और राज्य बताएँ। घर का पता देना ज़रूरी नहीं है।'],
+  investment: ['How much money is needed to start? What will you spend it on?', 'शुरू करने के लिए कितने पैसे चाहिए? किन चीज़ों पर खर्च करेंगे?'],
+  own_funds: ['How much of your own money can you use?', 'आप अपने कितने पैसे लगा सकते हैं?'],
+  requested_loan: ['How much more money do you need? Has any loan been approved?', 'और कितने पैसे चाहिए? क्या कोई कर्ज़ मंज़ूर हुआ है?'],
+  unit_price: ['Give the price for one item or one service.', 'एक चीज़ या एक बार की सेवा की कीमत बताएँ।'],
+  revenue: ['How much money will sales bring in per day or per month?', 'बिक्री से एक दिन या एक महीने में कितने पैसे मिलेंगे?'],
+  expenses: ['What will it cost to run the business for the same day or month?', 'उसी दिन या महीने में कारोबार चलाने का कितना खर्च होगा?'],
+  profit: ['How much is left after costs? Say if you do not know yet.', 'खर्च के बाद कितने पैसे बचेंगे? अभी नहीं पता तो बता दें।'],
+  business_type: ['What kind of business do you want to run?', 'आप किस तरह का कारोबार करना चाहते हैं?'],
+  problem: ['What do your customers need help with?', 'आपके ग्राहकों को किस चीज़ की ज़रूरत है?'],
+  market_research: ['What did people say when you asked whether they would buy?', 'जब आपने लोगों से पूछा कि वे खरीदेंगे या नहीं, तो उन्होंने क्या कहा?'],
+  raw_materials: ['What materials or tools will you need?', 'कौन-सा सामान या औज़ार चाहिए?'],
+  suppliers: ['Who will supply the materials? Have you checked their prices?', 'सामान कहाँ से लाएँगे? क्या कीमत पूछी है?'],
+  competition: ['Where do your customers buy the same thing now?', 'आपके ग्राहक अभी यही चीज़ कहाँ से खरीदते हैं?'],
+  differentiation: ['Why would someone choose you instead?', 'लोग दूसरों के बजाय आपसे क्यों खरीदेंगे?'],
+  existing_business: ['Have you started selling, or is this still a plan?', 'क्या बेचना शुरू कर दिया है या अभी योजना है?'],
+}
 
 type Question = components['schemas']['ClarificationQuestion']
 type Language = components['schemas']['LanguageResult']['code']
 export function Clarifications({ value, token, onReassess, preferredLanguage = 'en', active = true }: { value: Assessment; token: string; onReassess: () => void; preferredLanguage?: Language; active?: boolean }) {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   const [questions, setQuestions] = useState<Question[]>([])
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [reload, setReload] = useState(0)
-  const [language, setLanguage] = useState<Language>(preferredLanguage === 'und' ? 'en' : preferredLanguage)
+  const [chosenLanguage, setLanguage] = useState<Language | null>(null)
+  const language = chosenLanguage || (locale === 'hi' ? 'hi' : preferredLanguage === 'und' ? 'en' : preferredLanguage)
   const [mode, setMode] = useState<'text' | 'audio'>('text')
   const [file, setFile] = useState<File | null>(null)
   const [playback, setPlayback] = useState('')
@@ -76,12 +99,18 @@ export function Clarifications({ value, token, onReassess, preferredLanguage = '
     {error && <p role="alert" className="form-error">{error} <button className="text-button" onClick={() => { setError(''); setReload(n => n + 1) }}>{t("Retry questions")}</button></p>}
     {questions.length > 0 ? <form onSubmit={event => { void submit(event) }}><fieldset disabled={busy}>
       <div className="mode-switch" role="group" aria-label={t("Follow-up answer format")}><button type="button" className="secondary-button" aria-pressed={mode === 'text'} disabled={recording} onClick={() => setMode('text')}>{t("Type answers")}</button><button type="button" className="secondary-button" aria-pressed={mode === 'audio'} disabled={recording} onClick={() => setMode('audio')}>{t("Record or upload answers")}</button></div>
-      {questions.map((question, index) => <details key={question.id} open={index < 2}><summary>{question.label}<span className="badge">{question.status}</span></summary>
-        <label lang={question.language}>{question.question}{mode === 'text' && <textarea rows={2} maxLength={1500} value={answers[question.field] || ''} onChange={event => setAnswers(previous => ({ ...previous, [question.field]: event.target.value }))} />}</label>
-        <div className="question-guidance" lang="en"><p><strong>{t("Why this matters")}{question.language !== 'en' ? ' (English)' : ''}</strong> {question.reason}</p><p>{question.answer_hint}</p>
+      {questions.map((question, index) => {
+        const warning = question.status === 'ambiguous' ? 'आपकी कुछ बातें मेल नहीं खातीं। सही बात या रकम बताएँ। ' : question.status === 'unreadable' ? 'यह हिस्सा साफ़ नहीं पढ़ा जा सका। ' : question.status === 'irrelevant' ? 'पिछले जवाब में इस सवाल की बात नहीं थी। ' : ''
+        const questionText = question.language === 'hi' && hints[question.field] ? warning + hints[question.field][1] : question.question
+        return <details key={question.id} open={index === 0}><summary>{question.label}<span className="badge">{t(question.status)}</span></summary>
+        <ReadAloud active={active && !recording} language={question.language} text={questionText} label="Listen to this question" />
+        <label lang={question.language}>{questionText}{mode === 'text' && <textarea rows={2} maxLength={1500} value={answers[question.field] || ''} onChange={event => setAnswers(previous => ({ ...previous, [question.field]: event.target.value }))} />}</label>
+        {hints[question.field] && question.language === 'en' && <p lang="en">{hints[question.field][0]}</p>}
+        <details className="simple-disclosure"><summary>{t('More options')}</summary><div className="question-guidance" lang="en"><p><strong>{t("Why this matters")}{question.language !== 'en' ? ' (English)' : ''}</strong> {question.reason}</p><p>{question.answer_hint}</p>
           {question.source_note && <p>{t("Previous assessment:")} {question.source_note}</p>}
           {question.source_segment_ids?.map(id => { const source = value.evidence.find(item => item.id === id); return source ? <blockquote key={id}>{source.original_text.slice(0, 400)}{source.original_text.length > 400 ? '…' : ''}<cite>{t("Original source")} {value.evidence.findIndex(item => item.id === id) + 1}</cite></blockquote> : null })}
-        </div>{question.english_question && <p className="field-note" lang="en">{t("English original:")} {question.english_question}</p>}</details>)}
+        </div>{question.english_question && <p className="field-note" lang="en">{t("English original:")} {question.english_question}</p>}</details></details>
+      })}
       {questions.some(q => q.localization_note) && <p className="field-note">{t("Prepared translations; human language review is pending. Compare the English originals if anything is unclear.")}</p>}
       {mode === 'audio' && <><p className="field-note">{t("Say which question you are answering before each answer. Answer any of the questions above in one recording. Transcription needs review and cannot guarantee a higher score. Maximum 10 minutes / 25 MB.")}</p><AudioRecorder onFile={setFile} disabled={busy} onActivityChange={recordingChange} active={active} /><label>{t("Audio follow-up file")}<input type="file" accept="audio/*,video/mp4" disabled={recording} onChange={e => { const selected=e.target.files?.[0] || null; if (selected && (selected.size === 0 || selected.size > 25*1024*1024)) { setError(t("Choose nonempty audio smaller than 25 MB.")); setFile(null) } else { setFile(selected); setError('') } }} /></label>{playback && <audio controls src={playback} aria-label={t("Listen to follow-up answers")} />}{progress !== null && <progress value={progress} max={100} aria-label={t("Follow-up upload progress")} />}</>}
       <button type="submit" className="primary-link" disabled={busy || recording || (mode === 'text' ? !Object.values(answers).some(text => text.trim()) : !file)}><Send size={16} />{busy ? t("Saving new version…") : t("Save answers & reassess")}</button>

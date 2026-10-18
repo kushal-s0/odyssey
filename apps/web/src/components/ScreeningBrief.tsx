@@ -2,6 +2,7 @@ import { AlertTriangle, ClipboardCheck, ArrowRight } from 'lucide-react'
 import type { Assessment } from '../api/client'
 import { screeningFindings, type Economics, type Finding } from '../domain/screening'
 import { useI18n } from '../i18n/I18nProvider'
+import { ReadAloud } from './ReadAloud'
 
 const messages: Record<Finding['code'], [string, string]> = {
   loss: ['Operating loss in the supplied figures', 'Check costs and selling price with the entrepreneur before discussing funding. This calculation is not verified net profit.'],
@@ -12,21 +13,33 @@ const messages: Record<Finding['code'], [string, string]> = {
   missing_information: ['Ask for the missing information', 'Unknown is different from a weak business. Ask a useful follow-up question before interpreting the total.'],
 }
 
-export function ScreeningBrief({ value, numbers, idPrefix, onNext }: { value: Assessment; numbers: Economics | null; idPrefix: string; onNext: () => void }) {
+export function ScreeningBrief({ value, numbers, idPrefix, onNext, active = true }: { value: Assessment; numbers: Economics | null; idPrefix: string; onNext: () => void; active?: boolean }) {
   const { t, locale } = useI18n()
-  const findings = screeningFindings(value, numbers)
+  const priority = { loss: 0, funding_gap: 1, number_conflict: 2, source_review: 3, weak_dimension: 4, missing_information: 5 }
+  const findings = screeningFindings(value, numbers).sort((a, b) => priority[a.code] - priority[b.code])
   const financialRisk = findings.some(item => ['loss', 'funding_gap', 'number_conflict'].includes(item.code))
   const title = financialRisk ? 'Resolve the financial risk first' : findings.length ? 'Clarify and verify before deciding' : 'Ready for a mentor’s deeper review'
+  const money = (amount: string) => new Intl.NumberFormat(locale === 'hi' ? 'hi-IN' : 'en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(Number(amount))
+  const surplus = !financialRisk && numbers?.assessment_id === value.id ? numbers.checks.find(check => check.kind === 'profit' && check.currency === 'INR' && check.calculated_amount !== null && Number.isFinite(Number(check.calculated_amount)) && Number(check.calculated_amount) >= 0) : undefined
+  const spoken = [t(title), ...(surplus ? [t('Money left after these running costs'), money(surplus.calculated_amount!), t(surplus.period || '')] : []), ...findings.slice(0, 2).map(finding => [t(messages[finding.code][0]), finding.amount ? money(finding.amount) : '', finding.period ? t(finding.period) : '', t(messages[finding.code][1])].join('. ')), t('Work on the next useful questions')].join('. ')
+  const showFinding = (finding: Finding, index: number) => <li key={`${finding.code}-${index}`}><strong>{t(messages[finding.code][0])}</strong>
+    {finding.amount && <span className="risk-amount">{money(finding.amount)}{finding.period && <small> / {t(finding.period)}</small>}</span>}
+    <p>{t(messages[finding.code][1])}</p><div className="field-links">{finding.fields.map(field => <a key={field} href={`#${idPrefix}fact-${field}`} onClick={() => {
+      const target = document.getElementById(`${idPrefix}fact-${field}`)
+      let ancestor = target?.parentElement
+      while (ancestor) { if (ancestor instanceof HTMLDetailsElement) ancestor.open = true; ancestor = ancestor.parentElement }
+    }}>{t(field.replaceAll('_', ' '))} ↗</a>)}</div>
+  </li>
   return <section className={`screening-brief ${financialRisk ? 'financial-risk' : ''}`} aria-label={t('First review summary')}>
     <div className="tool-heading">{financialRisk ? <AlertTriangle size={23} /> : <ClipboardCheck size={23} />}<span className="eyebrow">{t('YOUR NEXT USEFUL STEP')}</span></div>
     <h3>{t(title)}</h3><p>{t('This review summary uses the saved evidence and arithmetic. It does not approve funding or predict business success.')}</p>
     {!numbers && <p className="field-note">{t('Financial checks are not available in this saved view yet. Open Business plan to check the numbers; do not interpret this as a clean financial result.')}</p>}
-    <ul>{findings.map((finding, index) => <li key={`${finding.code}-${index}`}><strong>{t(messages[finding.code][0])}</strong>
-      {finding.amount && <span className="risk-amount">{new Intl.NumberFormat(locale === 'hi' ? 'hi-IN' : 'en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(Number(finding.amount))}{finding.period && <small> / {t(finding.period)}</small>}</span>}
-      <p>{t(messages[finding.code][1])}</p><div className="field-links">{finding.fields.map(field => <a key={field} href={`#${idPrefix}fact-${field}`}>{t(field.replaceAll('_', ' '))} ↗</a>)}</div>
-    </li>)}</ul>
+    {surplus && <div className="money-first"><strong>{t('Money left after these running costs')}</strong><span className="risk-amount">{money(surplus.calculated_amount!)}{surplus.period && <small> / {t(surplus.period)}</small>}</span><p>{t('This uses the amounts you gave us. Other costs or unpaid loans may change it.')}</p></div>}
+    <ul>{findings.slice(0, 2).map(showFinding)}</ul>
+    {findings.length > 2 && <details className="simple-disclosure"><summary>{t('Show more things to check')} ({findings.length - 2})</summary><ul>{findings.slice(2).map(showFinding)}</ul></details>}
     {!findings.length && <p>{t('Use the original evidence, demand checks and local context to choose mentoring, skilling or deeper evaluation. A lack of flagged arithmetic is not proof that the business will succeed.')}</p>}
-    <p className="field-note">{t('The model has previously overrated weak business cases. Financial warnings take priority over an attractive score; a human reviewer must check demand and feasibility.')}</p>
-    <button type="button" className="secondary-button" onClick={onNext}>{t('Work on the next useful questions')}<ArrowRight size={15} /></button>
+    <ReadAloud active={active} text={spoken} />
+    <button type="button" className="primary-link" onClick={onNext}>{t('Work on the next useful questions')}<ArrowRight size={18} /></button>
+    <details className="simple-disclosure"><summary>{t('How we checked your idea')}</summary><p>{t('The model has previously overrated weak business cases. Financial warnings take priority over an attractive score; a human reviewer must check demand and feasibility.')}</p></details>
   </section>
 }
