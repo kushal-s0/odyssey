@@ -1,5 +1,21 @@
 # Current checkpoint - judge functionality, 18 October 2026
 
+## Latest clarification: business input PDF, not a presenter handbook
+
+User clarified the requested artifact is one business-idea input PDF. Created
+input/quick-demo/office-tea-complete-demo-en.pdf: one-page English text-layer
+fictional Pune office-tea proposal, 293 words. Includes demand/competition,
+location, resources, differentiation, operating stage and economics. Authored
+checks: monthly revenue30000 minus expenses34000 = loss4000; startup60000 minus
+own20000/requested loan25000 = gap15000 even if the unapproved loan is obtained.
+Missing permissions/terms/supplier confirmations support clarification.
+Select Synthetic rehearsal input, English, family office-tea-complete-demo.
+README includes expected arithmetic and feature walkthrough boundaries: other
+indexed records needed for neighbors/comparisons; PDF does not demonstrate
+audio/translation. Generator: scripts/create_business_demo_input.py. Verified
+one-page full-text round trip and visual layout; no model inference rerun.
+Prior handbook and all original inputs preserved.
+
 ## Latest document: functionality and presenter PDF
 
 User requested one PDF to explain the complete application. Created
