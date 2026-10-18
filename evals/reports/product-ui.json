@@ -2,6 +2,7 @@
   "scope": "Real local Edge/API/PostgreSQL. Auth issuer, assessment outputs and vectors are synthetic fixtures. No live external providers or GPU inference in this check.",
   "checks": [
     "Dark theme persists across reload; landing has no horizontal overflow.",
+    "Business map keeps unknowns visible; authorized Markdown brief includes sources and no token; what-if surplus, stress comparison and negative-margin guard work without changing saved assessment.",
     "Confirmed-area UI survives an explicit provider-outage fixture and renders the real attributed/geofenced dated OSM snapshot.",
     "Applicant sees saved facts, evidence, rule-based explanation, missing-key state, arithmetic and follow-ups; stale-assessment explanation is rejected.",
     "Authorized report opens in isolated preview; HTML download excludes credentials; multipage PDF generated.",
@@ -11,7 +12,7 @@
     "Assessor has a real scoped paginated queue, immutable review write and unreviewed filter; no JS errors or mobile overflow.",
     "Localized questions retain English originals; real private audio upload creates a linked queued revision with earlier assessment intact.",
     "Explicit owner deletion removes private audio and both revisions; the workspace confirms actual cleanup.",
-    "Applicant can explicitly label a synthetic rehearsal input and family; saved detail preserves its fictional status."
+    "Guided builder creates a real saved idea using only supplied answers, preserves explicit unknown location and leaves blank finances missing; synthetic status/family and consent are retained."
   ],
   "page_errors": [],
   "model_quality_validated": false,

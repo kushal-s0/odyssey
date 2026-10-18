@@ -31,8 +31,10 @@ def question_list(submission_id: UUID, actor: ActorDep, database: DatabaseDep,
     with database.transaction(actor.id, read_scoped=True) as c:
         revision = c.execute('SELECT preferred_language FROM public.submission_versions WHERE id=%s',
                              (row['current_revision_id'],)).fetchone()
-    return questions(Assessment.model_validate(assessment['payload']).business, row['current_revision_id'],
-                     language or (revision['preferred_language'] if revision else 'en'))
+    value = Assessment.model_validate(assessment['payload'])
+    return questions(value.business, row['current_revision_id'],
+                     language or (revision['preferred_language'] if revision else 'en'),
+                     excluded_fields=frozenset(value.scores.excluded_fields))
 
 
 @router.get('/{submission_id}/history', response_model=list[RevisionView])
@@ -66,7 +68,8 @@ def answer(submission_id: UUID, payload: ClarificationBatch, request: Request, a
             raise HTTPException(409, 'A saved assessment is required before clarification')
         assessment = Assessment.model_validate(stored['payload'])
         language = payload.answer_language or previous['preferred_language']
-        available = {q.field: q for q in questions(assessment.business, payload.expected_revision_id, language)}
+        available = {q.field: q for q in questions(assessment.business, payload.expected_revision_id, language,
+            excluded_fields=frozenset(assessment.scores.excluded_fields))}
         addressed = payload.audio_fields if payload.audio_attachment_id else list(payload.answers)
         if not set(addressed).issubset(available):
             raise HTTPException(422, 'Answer only the requested missing or unresolved fields')

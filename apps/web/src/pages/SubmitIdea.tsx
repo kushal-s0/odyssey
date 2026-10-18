@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
-import { Upload, Send } from 'lucide-react'
+import { Upload, Send, FileText, AudioLines, WandSparkles } from 'lucide-react'
 import { apiRequest, ApiError } from '../api/client'
 import type { components } from '../api/generated/schema'
 import { upload } from '../api/uploads'
 import { AudioRecorder } from '../components/AudioRecorder'
+import { GuidedIdea, guidedSource, type GuidedAnswers } from '../components/GuidedIdea'
 
 type Actor = components['schemas']['ActorView']
 type Accepted = components['schemas']['SubmissionAccepted']
@@ -19,6 +20,9 @@ const mediaTypes: Record<string, string> = { pdf: 'application/pdf', wav: 'audio
 export function SubmitIdea({ actor, token, onAccepted }: { actor: Actor; token: string; onAccepted: (value: Accepted) => void }) {
   const [mode, setMode] = useState<Mode>('text')
   const [text, setText] = useState('')
+  const [guided, setGuided] = useState(false)
+  const [guidedAnswers, setGuidedAnswers] = useState<GuidedAnswers>({})
+  const sourceText = guided ? guidedSource(guidedAnswers) : text
   const [language, setLanguage] = useState<Language>('en')
   const [cohort, setCohort] = useState('')
   const [location, setLocation] = useState('')
@@ -61,13 +65,13 @@ export function SubmitIdea({ actor, token, onAccepted }: { actor: Actor; token: 
     event.preventDefault()
     if (lock.current) return
     if (recordingActive.current) { setError('Finish microphone permission or stop recording before submitting.'); return }
-    if (!consent || (mode === 'text' ? !text.trim() : !file)) { setError('Add your idea and give consent before submitting.'); return }
+    if (!consent || (mode === 'text' ? !sourceText.trim() : !file)) { setError('Add your idea and give consent before submitting.'); return }
     lock.current = true; setBusy(true); setError(''); setMessage('Preparing your private submission…'); setProgress(null)
     const controller = new AbortController()
     operation.current = controller
     try {
       const mime = file ? (file.type.split(';')[0] || mediaTypes[file.name.split('.').pop()?.toLowerCase() || '']) : ''
-      const sourceHash = file && mode !== 'text' ? Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', await file.arrayBuffer()))).map(n => n.toString(16).padStart(2, '0')).join('') : text
+      const sourceHash = file && mode !== 'text' ? Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', await file.arrayBuffer()))).map(n => n.toString(16).padStart(2, '0')).join('') : sourceText
       const fingerprintInput = JSON.stringify({ mode, sourceHash, language, cohort, location, synthetic, family, filename: file?.name })
       const fingerprint = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(fingerprintInput)))).map(n => n.toString(16).padStart(2, '0')).join('')
       let saved = pending.current
@@ -87,13 +91,13 @@ export function SubmitIdea({ actor, token, onAccepted }: { actor: Actor; token: 
       }
       setMessage('Saving your idea and processing request…')
       const accepted = await apiRequest<Accepted>('/v1/submissions', { token, method: 'POST', idempotencyKey: intent.submitKey, signal: controller.signal,
-        body: { ...(mode === 'text' ? { text } : { attachment_ids: [intent.attachmentId] }), preferred_language: language,
+        body: { ...(mode === 'text' ? { text: sourceText } : { attachment_ids: [intent.attachmentId] }), preferred_language: language,
           synthetic, scenario_family: synthetic && family.trim() ? family.trim() : null,
           cohort_id: cohort || null, declared_location: location.trim() ? { locality: location.trim(), precision: 'locality', applicant_confirmed: true } : null, consent: true } })
       if (controller.signal.aborted) return
       try { sessionStorage.removeItem(storageKey) } catch { /* private storage disabled */ }
       pending.current = null
-      setMessage(mode === 'text' ? 'Your idea is saved. Follow its progress below.' : 'Your original upload is saved. Follow its progress below.'); setText(''); setFile(null); setConsent(false)
+      setMessage(mode === 'text' ? 'Your idea is saved. Follow its progress below.' : 'Your original upload is saved. Follow its progress below.'); setText(''); setGuidedAnswers({}); setFile(null); setConsent(false)
       onAccepted(accepted)
     } catch (failure) {
       if (!controller.signal.aborted) {
@@ -110,10 +114,15 @@ export function SubmitIdea({ actor, token, onAccepted }: { actor: Actor; token: 
   }
   return <section className="submission-panel" aria-labelledby="submit-title">
     <div className="panel-heading"><span className="eyebrow">A LITTLE CONTEXT GOES A LONG WAY</span><h2 id="submit-title">Share your business idea</h2><p>Tell us what you offer, who it helps, and what you already know. Unknown details can stay unknown.</p></div>
-    <div className="input-modes" role="group" aria-label="Idea format">{(['text', 'pdf', 'audio'] as const).map(value => <button type="button" aria-pressed={mode === value} disabled={busy} key={value} onClick={() => { setMode(value); setFile(null); setError('') }}>{value === 'text' ? 'Text' : value === 'pdf' ? 'PDF' : 'Audio'}</button>)}</div>
+    <div className="format-choices" role="group" aria-label="Idea format">{[
+      { id: 'guided', icon: WandSparkles, title: 'Guide me', detail: 'Build it with questions' },
+      { id: 'text', icon: FileText, title: 'Text', detail: 'Write in your own words' },
+      { id: 'pdf', icon: Upload, title: 'PDF', detail: 'Bring your business plan' },
+      { id: 'audio', icon: AudioLines, title: 'Audio', detail: 'Speak or upload a recording' },
+    ].map(({ id, icon: Icon, title, detail }) => <button key={id} type="button" aria-pressed={id === 'guided' ? mode === 'text' && guided : mode === id && !guided} disabled={busy} onClick={() => { setMode(id === 'guided' ? 'text' : id as Mode); setGuided(id === 'guided'); setFile(null); setError('') }}><Icon size={22} /><strong>{title}</strong><span>{detail}</span></button>)}</div>
     <form onSubmit={event => { void submit(event) }}>
       <fieldset disabled={busy}>
-        {mode === 'text' ? <label>Your idea<textarea aria-label="Your idea" required maxLength={30000} rows={7} value={text} onChange={event => setText(event.target.value)} placeholder="I plan to sell… My customers are…" /><small>{text.length.toLocaleString()} / 30,000 characters</small></label> : <>
+        {mode === 'text' ? guided ? <GuidedIdea answers={guidedAnswers} onChange={setGuidedAnswers} /> : <label>Your idea<textarea aria-label="Your idea" required maxLength={30000} rows={7} value={text} onChange={event => setText(event.target.value)} placeholder="I plan to sell… My customers are…" /><small>{text.length.toLocaleString()} / 30,000 characters</small></label> : <>
           {mode === 'audio' && <AudioRecorder onFile={pickFile} disabled={busy} onActivityChange={onRecordingActivity} />}
           <label className="file-picker"><Upload size={20} />{mode === 'pdf' ? 'Choose a PDF' : 'Upload an audio file'}<input ref={fileInput} aria-label={mode === 'pdf' ? 'PDF file' : 'Audio file'} type="file" accept={mode === 'pdf' ? 'application/pdf,.pdf' : 'audio/*,video/mp4,.m4a,.mp4,.ogg,.webm,.wav,.mp3'} onChange={event => pickFile(event.target.files?.[0] || null)} /></label>
           <p className="field-note">{mode === 'pdf' ? 'Maximum 20 pages and 25 MB. Digital PDFs are processed by the owned worker; scanned handwriting needs human review.' : 'Maximum 10 minutes and 25 MB. The owned speech worker transcribes supported languages after model provisioning. For Odia, select Odia explicitly; it uses a separate model. All transcriptions need review.'} Your file is saved privately. Uploading does not mean assessment is complete.</p>

@@ -1,5 +1,7 @@
 # Applicant workspace checkpoint
 
+Current studio update (18 October): saved ideas and new submissions have separate views; assessment tools are divided into five work areas. A three-stage optional guided builder composes only supplied source text. Business map/Markdown brief and a separate what-if scratchpad add planning functionality. See [the studio guide](25-guided-business-studio.md) for current behavior, persistence boundaries and interpretation. Older implementation-pending statements below are historical.
+
 Signed-in applicant/admin users get the submission workspace; other roles retain
 the existing preview until their assessor workspace is implemented. SubmitIdea
 supports text, PDF upload and audio upload/recording. Consent, preferred language,

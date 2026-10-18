@@ -20,7 +20,8 @@ def fallback(value: Assessment, status: Literal['ready','not_configured','unavai
     summary = ('This idea needs clarification before a headline potential score can be used. ' if value.scores.needs_clarification
                else 'This is a provisional first-level assessment of the supplied business idea. ')
     summary += 'Potential reflects the assessed business dimensions. Completeness measures supplied details; evidence coverage measures which dimensions can be assessed. These are separate measures.'
-    prompts = questions(value.business, value.input_revision_id)[:3]
+    prompts = questions(value.business, value.input_revision_id,
+        excluded_fields=frozenset(value.scores.excluded_fields))
     return Explanation(assessment_id=value.id, provider='rule_based', status=status, generated_at=datetime.now(timezone.utc),
         summary=summary, domain_notes=[DomainExplanation(domain=d.domain, explanation=d.reason) for d in value.domains],
         next_steps=[NextStep.model_validate({'action':q.question, 'evidence_fields':[q.field]}) for q in prompts] or [NextStep(action='Review the original evidence with your assessor and validate the demand and cost assumptions.')],

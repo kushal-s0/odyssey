@@ -11,6 +11,34 @@ from app.worker.manifest import MANIFEST_HASH
 from app.pipeline.normalize import normalize_text
 from app.pipeline.text import explicit_answers
 from app.pipeline.structure import assemble
+from app.contracts.models import Alternative, BusinessRecord, EvidenceField, Money
+from app.domain.questions import questions
+
+
+def test_conflicts_are_asked_before_missing_details_with_original_source_links():
+    source, revision = uuid4(), uuid4()
+    business = BusinessRecord(investment=EvidenceField[Money](status='ambiguous',
+        note='Two startup figures need confirmation.', alternatives=[
+            Alternative[Money](value=Money(amount='20000', currency='INR'), source_segment_ids=[source], note='First figure'),
+            Alternative[Money](value=Money(amount='40000', currency='INR'), source_segment_ids=[source], note='Second figure')]))
+    requested = questions(business, revision)
+    assert requested[0].field == 'investment'
+    assert requested[0].source_segment_ids == [source]
+    assert requested[0].source_note == 'Two startup figures need confirmation.'
+    assert 'conflicting' in requested[0].reason
+    assert 'currency' in requested[0].answer_hint
+    localized = questions(business, revision, 'hi')
+    assert localized[0].id == requested[0].id
+    assert localized[0].english_question == requested[0].question
+    assert localized[0].source_segment_ids == [source]
+    assert business.investment.value is None  # Guidance never chooses a conflicting figure.
+
+
+def test_questions_skip_trusted_review_exclusions_and_do_not_suggest_fake_benchmarks():
+    requested = questions(BusinessRecord(), uuid4(), excluded_fields=frozenset({'offer', 'location'}))
+    assert [q.field for q in requested] == ['target_customers', 'investment', 'unit_price']
+    assert all(q.reason and q.answer_hint for q in requested)
+    assert all('industry average' not in q.answer_hint for q in requested)
 
 
 def test_clarification_revision_idempotency_staleness_and_owner_scope(database, tmp_path):

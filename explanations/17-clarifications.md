@@ -1,5 +1,7 @@
 # Follow-up answers
 
+Current guidance update (18 October): conflicts take priority over missing fields. Questions now explain why the detail matters, what a useful answer includes and which original sources need clarification. Prepared localized questions retain their English originals; contextual guidance is explicitly English. Trusted reviewer exclusions are omitted by question loading, answer validation and rule-based explanation generation. No industry standard or financial default is inferred. See [the studio guide](25-guided-business-studio.md). Historical checkpoint limitations below are superseded by the later completion notes.
+
 Questions come from unresolved typed business fields, not invented model facts. The server derives stable question IDs from the input revision. Applicant answers create a linked text revision and a normal durable job. Idempotency keys make retries safe; the expected revision rejects stale answers. A PDF/audio parent's transcript is explicitly labelled as extracted, while the parent retains its private file. Scan uncertainty carries into descendants so answering one field cannot quietly certify unreviewed handwriting.
 
 Potential, evidence coverage and information completeness remain separate. More answers can expose a business weakness as well as fill gaps; a higher score is not guaranteed. Questions currently use English and text answers. Localized/audio follow-ups remain incomplete.

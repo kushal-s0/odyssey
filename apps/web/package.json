@@ -11,6 +11,7 @@
     "preview": "vite preview --host 127.0.0.1",
     "test:smoke": "node scripts/browser-smoke.mjs",
     "test:auth": "node scripts/browser-auth.mjs",
+    "test:scenario": "node --experimental-strip-types --test scripts/scenario.test.mjs",
     "generate:types": "openapi-typescript openapi.json -o src/api/generated/schema.ts"
   },
   "dependencies": {

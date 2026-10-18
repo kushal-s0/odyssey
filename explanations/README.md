@@ -24,6 +24,7 @@ This directory explains the implementation as it is built. It is a companion to 
 | [17-clarifications.md](17-clarifications.md) | Three prioritized questions and immutable reassessment |
 | [20-23-evaluation-privacy-capacity.md](20-23-evaluation-privacy-capacity.md) | Private human review, deletion, security, local capacity and release packaging |
 | [24-judge-graphs-and-samples.md](24-judge-graphs-and-samples.md) | Grouped/scatter/radar graphs, evidence confidence, guarded explanations and synthetic inputs |
+| [25-guided-business-studio.md](25-guided-business-studio.md) | Guided questions, contextual gaps, modern workspace, business map and assumption-based scenario planner |
 | [COMMITTEE_QUESTIONS.md](COMMITTEE_QUESTIONS.md) | Likely judging questions and evidence-backed answers |
 
 Each implemented module gets an explanation of its purpose, main files/functions, input/output, data flow, security boundaries, failure handling, verification and tradeoffs. Add a link here when a guide exists. The prepared T27 instructions are in [docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md); public deployment is still unapproved and unverified.

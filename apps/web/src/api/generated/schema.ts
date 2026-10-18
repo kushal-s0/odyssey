@@ -956,6 +956,14 @@ export interface components {
             status: components["schemas"]["FieldStatus"];
             /** Priority */
             priority: number;
+            /** Reason */
+            reason: string;
+            /** Answer Hint */
+            answer_hint: string;
+            /** Source Note */
+            source_note?: string | null;
+            /** Source Segment Ids */
+            source_segment_ids?: string[];
             /**
              * Language
              * @default en

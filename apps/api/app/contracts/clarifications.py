@@ -15,6 +15,10 @@ class ClarificationQuestion(Contract):
     question: str
     status: FieldStatus
     priority: int
+    reason: str
+    answer_hint: str
+    source_note: str | None = None
+    source_segment_ids: list[UUID] = Field(default_factory=list, max_length=50)
     language: Language = 'en'
     english_question: str | None = None
     localization_note: str | None = None
