@@ -1,0 +1,1 @@
+"""Request resource boundaries."""

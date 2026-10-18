@@ -390,6 +390,62 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "privacy"
+        ],
+        "summary": "Delete Submission",
+        "operationId": "delete_submission_v1_submissions__submission_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "submission_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Submission Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeletionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletionResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/v1/jobs/{job_id}": {
@@ -1220,6 +1276,31 @@
               "type": "string",
               "format": "uuid",
               "title": "Submission Id"
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "en",
+                    "hi",
+                    "mr",
+                    "te",
+                    "bn",
+                    "or",
+                    "und"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Language"
             }
           }
         ],
@@ -2324,27 +2405,7 @@
         ],
         "title": "ActorView"
       },
-      "AdditionalFact-Input": {
-        "properties": {
-          "label": {
-            "type": "string",
-            "maxLength": 150,
-            "minLength": 1,
-            "title": "Label"
-          },
-          "fact": {
-            "$ref": "#/components/schemas/EvidenceField_str_"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "label",
-          "fact"
-        ],
-        "title": "AdditionalFact"
-      },
-      "AdditionalFact-Output": {
+      "AdditionalFact": {
         "properties": {
           "label": {
             "type": "string",
@@ -2395,41 +2456,10 @@
         ],
         "title": "Alternative[Location]"
       },
-      "Alternative_Money_-Input": {
+      "Alternative_Money_": {
         "properties": {
           "value": {
-            "$ref": "#/components/schemas/Money-Input"
-          },
-          "source_segment_ids": {
-            "items": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "type": "array",
-            "maxItems": 50,
-            "minItems": 1,
-            "title": "Source Segment Ids"
-          },
-          "note": {
-            "type": "string",
-            "maxLength": 1000,
-            "minLength": 1,
-            "title": "Note"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "value",
-          "source_segment_ids",
-          "note"
-        ],
-        "title": "Alternative[Money]"
-      },
-      "Alternative_Money_-Output": {
-        "properties": {
-          "value": {
-            "$ref": "#/components/schemas/Money-Output"
+            "$ref": "#/components/schemas/Money"
           },
           "source_segment_ids": {
             "items": {
@@ -2658,7 +2688,7 @@
             "title": "Model Manifest Hash"
           },
           "business": {
-            "$ref": "#/components/schemas/BusinessRecord-Output"
+            "$ref": "#/components/schemas/BusinessRecord"
           },
           "evidence": {
             "items": {
@@ -2696,7 +2726,7 @@
             "title": "Domains"
           },
           "scores": {
-            "$ref": "#/components/schemas/ScoreSummary-Output"
+            "$ref": "#/components/schemas/ScoreSummary"
           },
           "strengths": {
             "items": {
@@ -2762,6 +2792,30 @@
       },
       "AudioEvidence": {
         "properties": {
+          "origin_revision_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Origin Revision Id"
+          },
+          "origin_segment_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Origin Segment Id"
+          },
           "id": {
             "type": "string",
             "format": "uuid",
@@ -2843,7 +2897,7 @@
         ],
         "title": "AudioEvidence"
       },
-      "BusinessRecord-Input": {
+      "BusinessRecord": {
         "properties": {
           "schema_version": {
             "type": "string",
@@ -2867,7 +2921,7 @@
             "$ref": "#/components/schemas/EvidenceField_str_"
           },
           "location": {
-            "$ref": "#/components/schemas/EvidenceField_Location_-Input"
+            "$ref": "#/components/schemas/EvidenceField_Location_"
           },
           "market_research": {
             "$ref": "#/components/schemas/EvidenceField_str_"
@@ -2879,25 +2933,25 @@
             "$ref": "#/components/schemas/EvidenceField_list_str__"
           },
           "investment": {
-            "$ref": "#/components/schemas/EvidenceField_Money_-Input"
+            "$ref": "#/components/schemas/EvidenceField_Money_"
           },
           "own_funds": {
-            "$ref": "#/components/schemas/EvidenceField_Money_-Input"
+            "$ref": "#/components/schemas/EvidenceField_Money_"
           },
           "requested_loan": {
-            "$ref": "#/components/schemas/EvidenceField_Money_-Input"
+            "$ref": "#/components/schemas/EvidenceField_Money_"
           },
           "unit_price": {
-            "$ref": "#/components/schemas/EvidenceField_Money_-Input"
+            "$ref": "#/components/schemas/EvidenceField_Money_"
           },
           "revenue": {
-            "$ref": "#/components/schemas/EvidenceField_Money_-Input"
+            "$ref": "#/components/schemas/EvidenceField_Money_"
           },
           "expenses": {
-            "$ref": "#/components/schemas/EvidenceField_Money_-Input"
+            "$ref": "#/components/schemas/EvidenceField_Money_"
           },
           "profit": {
-            "$ref": "#/components/schemas/EvidenceField_Money_-Input"
+            "$ref": "#/components/schemas/EvidenceField_Money_"
           },
           "competition": {
             "$ref": "#/components/schemas/EvidenceField_str_"
@@ -2928,103 +2982,7 @@
           },
           "additional_facts": {
             "items": {
-              "$ref": "#/components/schemas/AdditionalFact-Input"
-            },
-            "type": "array",
-            "maxItems": 50,
-            "title": "Additional Facts"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "title": "BusinessRecord"
-      },
-      "BusinessRecord-Output": {
-        "properties": {
-          "schema_version": {
-            "type": "string",
-            "const": "1",
-            "title": "Schema Version",
-            "default": "1"
-          },
-          "summary": {
-            "$ref": "#/components/schemas/EvidenceField_str_"
-          },
-          "business_type": {
-            "$ref": "#/components/schemas/EvidenceField_str_"
-          },
-          "offer": {
-            "$ref": "#/components/schemas/EvidenceField_str_"
-          },
-          "target_customers": {
-            "$ref": "#/components/schemas/EvidenceField_str_"
-          },
-          "problem": {
-            "$ref": "#/components/schemas/EvidenceField_str_"
-          },
-          "location": {
-            "$ref": "#/components/schemas/EvidenceField_Location_-Output"
-          },
-          "market_research": {
-            "$ref": "#/components/schemas/EvidenceField_str_"
-          },
-          "raw_materials": {
-            "$ref": "#/components/schemas/EvidenceField_list_str__"
-          },
-          "suppliers": {
-            "$ref": "#/components/schemas/EvidenceField_list_str__"
-          },
-          "investment": {
-            "$ref": "#/components/schemas/EvidenceField_Money_-Output"
-          },
-          "own_funds": {
-            "$ref": "#/components/schemas/EvidenceField_Money_-Output"
-          },
-          "requested_loan": {
-            "$ref": "#/components/schemas/EvidenceField_Money_-Output"
-          },
-          "unit_price": {
-            "$ref": "#/components/schemas/EvidenceField_Money_-Output"
-          },
-          "revenue": {
-            "$ref": "#/components/schemas/EvidenceField_Money_-Output"
-          },
-          "expenses": {
-            "$ref": "#/components/schemas/EvidenceField_Money_-Output"
-          },
-          "profit": {
-            "$ref": "#/components/schemas/EvidenceField_Money_-Output"
-          },
-          "competition": {
-            "$ref": "#/components/schemas/EvidenceField_str_"
-          },
-          "differentiation": {
-            "$ref": "#/components/schemas/EvidenceField_str_"
-          },
-          "existing_business": {
-            "$ref": "#/components/schemas/EvidenceField_bool_"
-          },
-          "sector": {
-            "type": "string",
-            "enum": [
-              "agriculture",
-              "food_beverage",
-              "retail",
-              "services",
-              "manufacturing",
-              "other",
-              "unknown"
-            ],
-            "title": "Sector",
-            "default": "unknown"
-          },
-          "trade": {
-            "$ref": "#/components/schemas/Trade",
-            "default": "unknown"
-          },
-          "additional_facts": {
-            "items": {
-              "$ref": "#/components/schemas/AdditionalFact-Output"
+              "$ref": "#/components/schemas/AdditionalFact"
             },
             "type": "array",
             "maxItems": 50,
@@ -3072,16 +3030,54 @@
               "type": "string"
             },
             "type": "object",
-            "maxProperties": 18,
-            "minProperties": 1,
+            "maxProperties": 3,
             "title": "Answers"
+          },
+          "audio_attachment_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Audio Attachment Id"
+          },
+          "audio_fields": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 3,
+            "title": "Audio Fields"
+          },
+          "answer_language": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "en",
+                  "hi",
+                  "mr",
+                  "te",
+                  "bn",
+                  "or",
+                  "und"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Answer Language"
           }
         },
         "additionalProperties": false,
         "type": "object",
         "required": [
-          "expected_revision_id",
-          "answers"
+          "expected_revision_id"
         ],
         "title": "ClarificationBatch"
       },
@@ -3110,6 +3106,42 @@
           "priority": {
             "type": "integer",
             "title": "Priority"
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "hi",
+              "mr",
+              "te",
+              "bn",
+              "or",
+              "und"
+            ],
+            "title": "Language",
+            "default": "en"
+          },
+          "english_question": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "English Question"
+          },
+          "localization_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Localization Note"
           }
         },
         "additionalProperties": false,
@@ -3266,6 +3298,39 @@
           "groups"
         ],
         "title": "ComparisonView"
+      },
+      "DeletionRequest": {
+        "properties": {
+          "expected_revision_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Expected Revision Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "expected_revision_id"
+        ],
+        "title": "DeletionRequest"
+      },
+      "DeletionResult": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "deleted",
+              "cleanup_pending"
+            ],
+            "title": "Status"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "DeletionResult"
       },
       "Domain": {
         "type": "string",
@@ -3551,7 +3616,7 @@
         ],
         "title": "ErrorEnvelope"
       },
-      "EvidenceField_Location_-Input": {
+      "EvidenceField_Location_": {
         "properties": {
           "value": {
             "anyOf": [
@@ -3601,12 +3666,12 @@
         "type": "object",
         "title": "EvidenceField[Location]"
       },
-      "EvidenceField_Location_-Output": {
+      "EvidenceField_Money_": {
         "properties": {
           "value": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/Location"
+                "$ref": "#/components/schemas/Money"
               },
               {
                 "type": "null"
@@ -3628,107 +3693,7 @@
           },
           "alternatives": {
             "items": {
-              "$ref": "#/components/schemas/Alternative_Location_"
-            },
-            "type": "array",
-            "maxItems": 10,
-            "title": "Alternatives"
-          },
-          "note": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 2000
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Note"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "title": "EvidenceField[Location]"
-      },
-      "EvidenceField_Money_-Input": {
-        "properties": {
-          "value": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/Money-Input"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "status": {
-            "$ref": "#/components/schemas/FieldStatus",
-            "default": "missing"
-          },
-          "source_segment_ids": {
-            "items": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "type": "array",
-            "maxItems": 50,
-            "title": "Source Segment Ids"
-          },
-          "alternatives": {
-            "items": {
-              "$ref": "#/components/schemas/Alternative_Money_-Input"
-            },
-            "type": "array",
-            "maxItems": 10,
-            "title": "Alternatives"
-          },
-          "note": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 2000
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Note"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "title": "EvidenceField[Money]"
-      },
-      "EvidenceField_Money_-Output": {
-        "properties": {
-          "value": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/Money-Output"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "status": {
-            "$ref": "#/components/schemas/FieldStatus",
-            "default": "missing"
-          },
-          "source_segment_ids": {
-            "items": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "type": "array",
-            "maxItems": 50,
-            "title": "Source Segment Ids"
-          },
-          "alternatives": {
-            "items": {
-              "$ref": "#/components/schemas/Alternative_Money_-Output"
+              "$ref": "#/components/schemas/Alternative_Money_"
             },
             "type": "array",
             "maxItems": 10,
@@ -4672,64 +4637,7 @@
         ],
         "title": "LocationSettings"
       },
-      "Money-Input": {
-        "properties": {
-          "amount": {
-            "anyOf": [
-              {
-                "type": "number",
-                "minimum": 0.0
-              },
-              {
-                "type": "string",
-                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,12}|(?=[\\d.]{1,15}0*$)\\d{0,12}\\.\\d{0,2}0*$)"
-              }
-            ],
-            "title": "Amount"
-          },
-          "currency": {
-            "type": "string",
-            "enum": [
-              "INR",
-              "unknown"
-            ],
-            "title": "Currency"
-          },
-          "period": {
-            "type": "string",
-            "enum": [
-              "day",
-              "week",
-              "month",
-              "year",
-              "once",
-              "unknown"
-            ],
-            "title": "Period",
-            "default": "unknown"
-          },
-          "unit": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 100
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Unit"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "amount",
-          "currency"
-        ],
-        "title": "Money"
-      },
-      "Money-Output": {
+      "Money": {
         "properties": {
           "amount": {
             "type": "string",
@@ -4824,6 +4732,30 @@
       },
       "PdfEvidence": {
         "properties": {
+          "origin_revision_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Origin Revision Id"
+          },
+          "origin_segment_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Origin Segment Id"
+          },
           "id": {
             "type": "string",
             "format": "uuid",
@@ -5199,6 +5131,26 @@
             "type": "boolean",
             "title": "Replace Transcript",
             "default": false
+          },
+          "transcript_language": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "en",
+                  "hi",
+                  "mr",
+                  "te",
+                  "bn",
+                  "or",
+                  "und"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Transcript Language"
           }
         },
         "additionalProperties": false,
@@ -5329,128 +5281,7 @@
         ],
         "title": "RevisionView"
       },
-      "ScoreSummary-Input": {
-        "properties": {
-          "rubric_version": {
-            "type": "string",
-            "const": "rubric-v1",
-            "title": "Rubric Version",
-            "default": "rubric-v1"
-          },
-          "provisional_potential": {
-            "anyOf": [
-              {
-                "type": "number",
-                "maximum": 100.0,
-                "minimum": 0.0
-              },
-              {
-                "type": "string",
-                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Provisional Potential"
-          },
-          "headline_potential": {
-            "anyOf": [
-              {
-                "type": "number",
-                "maximum": 100.0,
-                "minimum": 0.0
-              },
-              {
-                "type": "string",
-                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Headline Potential"
-          },
-          "evidence_coverage": {
-            "anyOf": [
-              {
-                "type": "number",
-                "maximum": 1.0,
-                "minimum": 0.0
-              },
-              {
-                "type": "string",
-                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
-              }
-            ],
-            "title": "Evidence Coverage"
-          },
-          "completeness_percent": {
-            "anyOf": [
-              {
-                "type": "number",
-                "maximum": 100.0,
-                "minimum": 0.0
-              },
-              {
-                "type": "string",
-                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
-              }
-            ],
-            "title": "Completeness Percent"
-          },
-          "usable_fields": {
-            "type": "integer",
-            "minimum": 0.0,
-            "title": "Usable Fields"
-          },
-          "applicable_fields": {
-            "type": "integer",
-            "minimum": 0.0,
-            "title": "Applicable Fields"
-          },
-          "excluded_fields": {
-            "additionalProperties": {
-              "type": "string"
-            },
-            "type": "object",
-            "title": "Excluded Fields"
-          },
-          "needs_clarification": {
-            "type": "boolean",
-            "title": "Needs Clarification"
-          },
-          "ranking_eligible": {
-            "type": "boolean",
-            "title": "Ranking Eligible"
-          },
-          "withheld_reason": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Withheld Reason"
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "provisional_potential",
-          "headline_potential",
-          "evidence_coverage",
-          "completeness_percent",
-          "usable_fields",
-          "applicable_fields",
-          "needs_clarification",
-          "ranking_eligible"
-        ],
-        "title": "ScoreSummary"
-      },
-      "ScoreSummary-Output": {
+      "ScoreSummary": {
         "properties": {
           "rubric_version": {
             "type": "string",
@@ -5734,6 +5565,40 @@
       },
       "StageInput": {
         "properties": {
+          "inherited_evidence": {
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/TextEvidence"
+                },
+                {
+                  "$ref": "#/components/schemas/PdfEvidence"
+                },
+                {
+                  "$ref": "#/components/schemas/AudioEvidence"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "kind",
+                "mapping": {
+                  "audio": "#/components/schemas/AudioEvidence",
+                  "pdf": "#/components/schemas/PdfEvidence",
+                  "text": "#/components/schemas/TextEvidence"
+                }
+              }
+            },
+            "type": "array",
+            "maxItems": 180,
+            "title": "Inherited Evidence"
+          },
+          "answer_fields": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 3,
+            "title": "Answer Fields"
+          },
           "submission_id": {
             "type": "string",
             "format": "uuid",
@@ -6095,6 +5960,25 @@
               }
             ]
           },
+          "synthetic": {
+            "type": "boolean",
+            "title": "Synthetic",
+            "default": false
+          },
+          "scenario_family": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1,
+                "pattern": "^[a-zA-Z0-9_-]+$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario Family"
+          },
           "consent": {
             "type": "boolean",
             "const": true,
@@ -6114,6 +5998,11 @@
             "type": "string",
             "format": "uuid",
             "title": "Id"
+          },
+          "synthetic": {
+            "type": "boolean",
+            "title": "Synthetic",
+            "default": false
           },
           "cohort_id": {
             "anyOf": [
@@ -6215,6 +6104,30 @@
       },
       "TextEvidence": {
         "properties": {
+          "origin_revision_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Origin Revision Id"
+          },
+          "origin_segment_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Origin Segment Id"
+          },
           "id": {
             "type": "string",
             "format": "uuid",
@@ -6452,6 +6365,13 @@
           "type": {
             "type": "string",
             "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
           }
         },
         "type": "object",
@@ -6494,153 +6414,6 @@
           "manifest_hash"
         ],
         "title": "WorkerRequest"
-      },
-      "AdditionalFact": {
-        "additionalProperties": false,
-        "properties": {
-          "label": {
-            "maxLength": 150,
-            "minLength": 1,
-            "title": "Label",
-            "type": "string"
-          },
-          "fact": {
-            "$ref": "#/components/schemas/EvidenceField_str_"
-          }
-        },
-        "required": [
-          "label",
-          "fact"
-        ],
-        "title": "AdditionalFact",
-        "type": "object"
-      },
-      "Alternative_Money_": {
-        "additionalProperties": false,
-        "properties": {
-          "value": {
-            "$ref": "#/components/schemas/Money"
-          },
-          "source_segment_ids": {
-            "items": {
-              "format": "uuid",
-              "type": "string"
-            },
-            "maxItems": 50,
-            "minItems": 1,
-            "title": "Source Segment Ids",
-            "type": "array"
-          },
-          "note": {
-            "maxLength": 1000,
-            "minLength": 1,
-            "title": "Note",
-            "type": "string"
-          }
-        },
-        "required": [
-          "value",
-          "source_segment_ids",
-          "note"
-        ],
-        "title": "Alternative[Money]",
-        "type": "object"
-      },
-      "BusinessRecord": {
-        "additionalProperties": false,
-        "properties": {
-          "schema_version": {
-            "const": "1",
-            "default": "1",
-            "title": "Schema Version",
-            "type": "string"
-          },
-          "summary": {
-            "$ref": "#/components/schemas/EvidenceField_str_"
-          },
-          "business_type": {
-            "$ref": "#/components/schemas/EvidenceField_str_"
-          },
-          "offer": {
-            "$ref": "#/components/schemas/EvidenceField_str_"
-          },
-          "target_customers": {
-            "$ref": "#/components/schemas/EvidenceField_str_"
-          },
-          "problem": {
-            "$ref": "#/components/schemas/EvidenceField_str_"
-          },
-          "location": {
-            "$ref": "#/components/schemas/EvidenceField_Location_"
-          },
-          "market_research": {
-            "$ref": "#/components/schemas/EvidenceField_str_"
-          },
-          "raw_materials": {
-            "$ref": "#/components/schemas/EvidenceField_list_str__"
-          },
-          "suppliers": {
-            "$ref": "#/components/schemas/EvidenceField_list_str__"
-          },
-          "investment": {
-            "$ref": "#/components/schemas/EvidenceField_Money_"
-          },
-          "own_funds": {
-            "$ref": "#/components/schemas/EvidenceField_Money_"
-          },
-          "requested_loan": {
-            "$ref": "#/components/schemas/EvidenceField_Money_"
-          },
-          "unit_price": {
-            "$ref": "#/components/schemas/EvidenceField_Money_"
-          },
-          "revenue": {
-            "$ref": "#/components/schemas/EvidenceField_Money_"
-          },
-          "expenses": {
-            "$ref": "#/components/schemas/EvidenceField_Money_"
-          },
-          "profit": {
-            "$ref": "#/components/schemas/EvidenceField_Money_"
-          },
-          "competition": {
-            "$ref": "#/components/schemas/EvidenceField_str_"
-          },
-          "differentiation": {
-            "$ref": "#/components/schemas/EvidenceField_str_"
-          },
-          "existing_business": {
-            "$ref": "#/components/schemas/EvidenceField_bool_"
-          },
-          "sector": {
-            "default": "unknown",
-            "enum": [
-              "agriculture",
-              "food_beverage",
-              "retail",
-              "services",
-              "manufacturing",
-              "other",
-              "unknown"
-            ],
-            "title": "Sector",
-            "type": "string"
-          },
-          "trade": {
-            "$ref": "#/components/schemas/Trade",
-            "default": "unknown"
-          },
-          "additional_facts": {
-            "items": {
-              "$ref": "#/components/schemas/AdditionalFact"
-            },
-            "maxItems": 50,
-            "title": "Additional Facts",
-            "type": "array"
-          }
-        },
-        "title": "BusinessRecord",
-        "type": "object"
       },
       "ClarificationAnswer": {
         "additionalProperties": false,
@@ -6690,160 +6463,6 @@
         "title": "ClarificationAnswer",
         "type": "object"
       },
-      "EvidenceField_Location_": {
-        "additionalProperties": false,
-        "properties": {
-          "value": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/Location"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null
-          },
-          "status": {
-            "$ref": "#/components/schemas/FieldStatus",
-            "default": "missing"
-          },
-          "source_segment_ids": {
-            "items": {
-              "format": "uuid",
-              "type": "string"
-            },
-            "maxItems": 50,
-            "title": "Source Segment Ids",
-            "type": "array"
-          },
-          "alternatives": {
-            "items": {
-              "$ref": "#/components/schemas/Alternative_Location_"
-            },
-            "maxItems": 10,
-            "title": "Alternatives",
-            "type": "array"
-          },
-          "note": {
-            "anyOf": [
-              {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Note"
-          }
-        },
-        "title": "EvidenceField[Location]",
-        "type": "object"
-      },
-      "EvidenceField_Money_": {
-        "additionalProperties": false,
-        "properties": {
-          "value": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/Money"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null
-          },
-          "status": {
-            "$ref": "#/components/schemas/FieldStatus",
-            "default": "missing"
-          },
-          "source_segment_ids": {
-            "items": {
-              "format": "uuid",
-              "type": "string"
-            },
-            "maxItems": 50,
-            "title": "Source Segment Ids",
-            "type": "array"
-          },
-          "alternatives": {
-            "items": {
-              "$ref": "#/components/schemas/Alternative_Money_"
-            },
-            "maxItems": 10,
-            "title": "Alternatives",
-            "type": "array"
-          },
-          "note": {
-            "anyOf": [
-              {
-                "maxLength": 2000,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Note"
-          }
-        },
-        "title": "EvidenceField[Money]",
-        "type": "object"
-      },
-      "Money": {
-        "additionalProperties": false,
-        "properties": {
-          "amount": {
-            "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,12}|(?=[\\d.]{1,15}0*$)\\d{0,12}\\.\\d{0,2}0*$)",
-            "title": "Amount",
-            "type": "string"
-          },
-          "currency": {
-            "enum": [
-              "INR",
-              "unknown"
-            ],
-            "title": "Currency",
-            "type": "string"
-          },
-          "period": {
-            "default": "unknown",
-            "enum": [
-              "day",
-              "week",
-              "month",
-              "year",
-              "once",
-              "unknown"
-            ],
-            "title": "Period",
-            "type": "string"
-          },
-          "unit": {
-            "anyOf": [
-              {
-                "maxLength": 100,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Unit"
-          }
-        },
-        "required": [
-          "amount",
-          "currency"
-        ],
-        "title": "Money",
-        "type": "object"
-      },
       "ReviewCreate": {
         "additionalProperties": false,
         "properties": {
@@ -6887,100 +6506,6 @@
           "reason"
         ],
         "title": "ReviewCreate",
-        "type": "object"
-      },
-      "ScoreSummary": {
-        "additionalProperties": false,
-        "properties": {
-          "rubric_version": {
-            "const": "rubric-v1",
-            "default": "rubric-v1",
-            "title": "Rubric Version",
-            "type": "string"
-          },
-          "provisional_potential": {
-            "anyOf": [
-              {
-                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Provisional Potential"
-          },
-          "headline_potential": {
-            "anyOf": [
-              {
-                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Headline Potential"
-          },
-          "evidence_coverage": {
-            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
-            "title": "Evidence Coverage",
-            "type": "string"
-          },
-          "completeness_percent": {
-            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
-            "title": "Completeness Percent",
-            "type": "string"
-          },
-          "usable_fields": {
-            "minimum": 0,
-            "title": "Usable Fields",
-            "type": "integer"
-          },
-          "applicable_fields": {
-            "minimum": 0,
-            "title": "Applicable Fields",
-            "type": "integer"
-          },
-          "excluded_fields": {
-            "additionalProperties": {
-              "type": "string"
-            },
-            "title": "Excluded Fields",
-            "type": "object"
-          },
-          "needs_clarification": {
-            "title": "Needs Clarification",
-            "type": "boolean"
-          },
-          "ranking_eligible": {
-            "title": "Ranking Eligible",
-            "type": "boolean"
-          },
-          "withheld_reason": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Withheld Reason"
-          }
-        },
-        "required": [
-          "provisional_potential",
-          "headline_potential",
-          "evidence_coverage",
-          "completeness_percent",
-          "usable_fields",
-          "applicable_fields",
-          "needs_clarification",
-          "ranking_eligible"
-        ],
-        "title": "ScoreSummary",
         "type": "object"
       },
       "StageClaim": {

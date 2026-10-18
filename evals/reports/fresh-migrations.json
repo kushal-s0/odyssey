@@ -1,0 +1,18 @@
+{
+  "scope": "Fresh temporary database on existing loopback pgvector test server; local Auth/Storage shims",
+  "migrations": [
+    "202610170001_core.sql",
+    "202610170002_access.sql",
+    "202610170003_stages.sql",
+    "202610170004_worker_runtime.sql",
+    "202610170005_worker_execution.sql",
+    "202610180006_enrichment_cache.sql",
+    "202610180007_revision_cleanup_indexes.sql",
+    "202610180008_set_based_read_policies.sql"
+  ],
+  "public_tables": 25,
+  "passed": true,
+  "hosted_database_touched": false,
+  "temporary_database_removed": true,
+  "deployed": false
+}

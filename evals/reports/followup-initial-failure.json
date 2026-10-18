@@ -1,0 +1,8 @@
+{
+  "scope": "Actual local owned-model initial follow-up attempt",
+  "baseline_seconds": 91.531,
+  "typed_followup_seconds": 50.735,
+  "failure": "Typed startup investment INR 20000 was omitted from extracted fields; completed job alone did not meet acceptance",
+  "passed": false,
+  "repair": "Add exact-question answer quote grounding, keep money/unknown/conflict/instruction guards; rerun required"
+}

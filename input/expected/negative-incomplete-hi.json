@@ -1,0 +1,30 @@
+{
+  "id": "negative-incomplete-hi",
+  "family": "incomplete-002",
+  "language": "hi",
+  "polarity": "negative",
+  "title": "Hindi missing-information case",
+  "text": "मैं एक व्यवसाय शुरू करना चाहता हूँ। अभी उत्पाद, ग्राहक, जगह, लागत और बिक्री की जानकारी तय नहीं है। कृपया बताएं कि पहले कौन सी जानकारी जुटानी चाहिए।",
+  "facts": {},
+  "unknowns": [
+    "Offer",
+    "Customers",
+    "Location",
+    "Costs",
+    "Sales"
+  ],
+  "expect": [
+    "Do not fill unknown fields",
+    "Ask clarifications",
+    "Translation needs human review"
+  ],
+  "synthetic": true,
+  "ground_truth_scope": "Authored input statements only; not external verification or model-quality evaluation",
+  "confidence": {
+    "authored_reference_facts": "Explicitly supplied in this synthetic source",
+    "real_world_truth": "Not verified; fictional business",
+    "model_extraction_probability": null,
+    "human_language_quality_review": "pending",
+    "audio_or_scan": "Transcription needs source review before ranking"
+  }
+}

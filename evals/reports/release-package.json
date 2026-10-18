@@ -1,0 +1,43 @@
+{
+  "scope": "Local allowlisted archives only; no publishing, source/model upload or deployment",
+  "artifacts": [
+    {
+      "name": "api-source",
+      "path": ".local/release/api-source.zip",
+      "files": 111,
+      "source_tree_sha256": "b453f5f29323ee1b6989033fa2b56af59a607bbf384d74da1737fff2d080991c",
+      "archive_sha256": "70381abecd771e1f7478f576e45b53ef7fae2f17294dbf93ff7717547590eb53",
+      "bytes": 172503
+    },
+    {
+      "name": "web-source",
+      "path": ".local/release/web-source.zip",
+      "files": 42,
+      "source_tree_sha256": "5c9c0c3bf3bb7c90fff77a3dda27ba8d32ff6c75658c4e168f9057fda28684f7",
+      "archive_sha256": "0484d1b48739c34b58e94c53fb4274e0e063d660d2c3bc97eda5bc3611abcdf2",
+      "bytes": 124041
+    },
+    {
+      "name": "owned-worker-source",
+      "path": ".local/release/owned-worker-source.zip",
+      "files": 96,
+      "source_tree_sha256": "2f9de2a4eff5b70a84824e36ac400b59022273eeb80a13e22dd58b5ec0c9dd34",
+      "archive_sha256": "6084dc814765a448a5b6d5b9ba71286c150229048889dc9a473b533a29515815",
+      "bytes": 140661
+    },
+    {
+      "name": "web-static-local-preview",
+      "path": ".local/release/web-static-local-preview.zip",
+      "files": 8,
+      "source_tree_sha256": "85b116a5dd7b7cb53985684b9d2cb1a8cc16ce16a188e1e07cf8d8f841d731f0",
+      "archive_sha256": "a34506a3f9379f8c6e282e4ddb9026e06e6ca125a958120cf14e3e24c2ed9eeb",
+      "bytes": 158274
+    }
+  ],
+  "configured_private_values_found": false,
+  "original_datasets_included": false,
+  "model_weights_included": false,
+  "static_frontend_note": "Local-preview build uses currently configured public origins; rebuild with approved HTTPS API origin before publishing.",
+  "publication_approved": false,
+  "deployed": false
+}

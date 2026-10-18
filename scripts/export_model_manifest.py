@@ -13,7 +13,8 @@ licenses={'qwen':'Apache-2.0','ocr':'Apache-2.0','asr':'MIT','indic_en':'MIT','e
 payload={'schema_version':'1','manifest_hash':MANIFEST_HASH,'pipeline':MANIFEST['pipeline'],
     'protocol':MANIFEST['protocol'],'preprocessing':MANIFEST['preprocessing'],'rubric':MANIFEST['rubric'],
     'assessment_policy':MANIFEST['assessment_policy'],'extraction_policy':MANIFEST['extraction_policy'],
-    'document_policy':MANIFEST['document_policy'],
+    'document_policy':MANIFEST['document_policy'],'clarification_policy':MANIFEST['clarification_policy'],
+    'speech_policy':MANIFEST['speech_policy'],'judgment_recovery':MANIFEST['judgment_recovery'],
     'language_detector':{'id':MANIFEST['language_detector'],'license':'BSD-3-Clause','provenance':'pretrained third-party detector'},
     'artifacts':[{'task':name,**MANIFEST[name],'license':license_name,'provenance':'third-party pretrained open weights',
                   'owned_framework':'PyTorch/Transformers','readiness':'see measured reports; not a deployment claim'}

@@ -1,0 +1,47 @@
+{
+  "id": "negative-conflicting-en",
+  "family": "tea-conflict-001",
+  "language": "en",
+  "polarity": "negative",
+  "title": "Conflicting costs and prices",
+  "text": "I want to sell tea to office workers in Bengaluru. I wrote INR 10 per cup in my first answer and INR 15 per cup in my second answer. I cannot confirm which selling price is correct. My total initial investment is INR 20000, but my own funds are INR 12000 and my requested loan is INR 18000. I plan to sell 120 cups per day for 25 days per month. I called INR 90000 my monthly profit, but I have not supplied ingredient costs, rent, other expenses or verified sales. I have not researched customers or nearby competitors.",
+  "facts": {
+    "offer": "tea",
+    "target_customers": "office workers",
+    "investment_INR_claim": "20000",
+    "own_funds_INR_claim": "12000",
+    "requested_loan_INR_claim": "18000",
+    "profit_INR_per_month_claim": "90000"
+  },
+  "conflicts": {
+    "unit_price_INR_per_cup": [
+      "10",
+      "15"
+    ],
+    "funding_sum_vs_investment_INR": [
+      "30000",
+      "20000"
+    ]
+  },
+  "unknowns": [
+    "Confirmed selling price",
+    "Expenses",
+    "Verified revenue",
+    "Verified profit"
+  ],
+  "expect": [
+    "Ask for the correct selling price",
+    "Flag the funding mismatch",
+    "Do not verify or silently replace the profit claim",
+    "Withhold ranking where a critical conflict remains"
+  ],
+  "synthetic": true,
+  "ground_truth_scope": "Authored input statements only; not external verification or model-quality evaluation",
+  "confidence": {
+    "authored_reference_facts": "Explicitly supplied in this synthetic source",
+    "real_world_truth": "Not verified; fictional business",
+    "model_extraction_probability": null,
+    "human_language_quality_review": "pending",
+    "audio_or_scan": "Transcription needs source review before ranking"
+  }
+}

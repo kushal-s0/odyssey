@@ -1,0 +1,11 @@
+{
+  "scope": "Initial sandbox attempt, synthetic business only; retained before approved network retry",
+  "model": "openai/gpt-oss-20b",
+  "results": [
+    {"language":"en","passed":false,"reason":"ConnectError","seconds":0.8},
+    {"language":"hi","passed":false,"reason":"ConnectError","seconds":0.457}
+  ],
+  "passed": false,
+  "resolution": "Approved identical command outside sandbox passed both requests; see groq-live-synthetic.json",
+  "deployed": false
+}

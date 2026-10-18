@@ -1,0 +1,9 @@
+{
+  "scope": "Read-only configured Supabase schema; no applicant rows read",
+  "migration_007_recorded": true,
+  "expected_indexes": 12,
+  "verified_indexes": 12,
+  "migration_008_recorded": false,
+  "passed": true,
+  "published": false
+}

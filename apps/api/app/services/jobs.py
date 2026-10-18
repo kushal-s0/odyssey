@@ -20,6 +20,7 @@ from ..worker.capabilities import Capabilities
 from ..worker.manifest import MANIFEST_HASH
 from .storage import configured_storage
 from ..pipeline.persistence import persist_text_stage
+from ..pipeline.inheritance import inherited_evidence
 from ..pipeline.assessment_persistence import persist_assessment_stage
 
 
@@ -111,7 +112,11 @@ class Jobs:
                 JOIN public.job_stages st ON st.id=p.stage_id WHERE st.job_id=%s AND st.stage_order<%s
                 AND st.status='completed' ORDER BY st.stage_order''', (job['id'], stage['stage_order'])).fetchall()
             assert revision
+            answer_fields = [row['question_key'] for row in c.execute(
+                'SELECT question_key FROM public.clarifications WHERE answer_revision_id=%s', (revision['id'],)).fetchall()]
             return StageInput(submission_id=job['submission_id'], input_revision_id=job['input_revision_id'],
+                inherited_evidence=inherited_evidence(c, revision),
+                answer_fields=answer_fields if revision['input_kind'] == 'text' else [],
                 input_kind=revision['input_kind'], source_hash=revision['input_hash'], source_text=revision['source_text'],
                 preferred_language=revision['preferred_language'], attachment_id=attachment['id'] if attachment else None,
                 media_type=attachment['media_type'] if attachment else None, bytes=attachment['bytes'] if attachment else None,

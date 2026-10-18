@@ -9,6 +9,7 @@ from app.contracts.models import Domain, DomainRating, RelevanceCheck
 from app.contracts.pipeline import AssessmentBundle, ExtractionDraft
 from app.contracts.worker import StagePublish, WorkerRequest
 from app.pipeline.assessment_rules import domain_facts, validate_ratings
+from app.pipeline.assess import grounded_judgment
 from app.pipeline.structure import assemble
 from app.providers.local_models import MANIFEST
 from app.services.jobs import Jobs
@@ -32,6 +33,30 @@ def structured_fixture():
     source=bundle('Tea for office workers.')
     return assemble(source,[ExtractionDraft(facts=[{'field':'offer','segment':0,'quote':'Tea'},
         {'field':'target_customers','segment':0,'quote':'office workers'}])])
+
+
+@pytest.mark.parametrize('payload', [
+    {'rating': 2, 'reason': 'Offer is supplied.', 'segments': [199]},
+    {'rating': 2, 'reason': 'Offer is supplied.', 'segments': []},
+    {'rating': 4, 'reason': 'Offer is supplied.', 'segments': [0]},
+    {'rating': 2, 'reason': 'There are 999 customers.', 'segments': [0]},
+])
+def test_judgment_retry_validator_rejects_schema_citation_and_numeric_invention(payload):
+    structured = structured_fixture()
+    with pytest.raises(ValueError):
+        grounded_judgment(structured, Domain.clarity, payload, {0: structured.evidence[0].id})
+
+
+def test_valid_and_null_judgments_preserve_grounding():
+    structured = structured_fixture()
+    rating = grounded_judgment(structured, Domain.clarity,
+        {'rating': 2, 'reason': 'Offer and customers are supplied.', 'segments': [0]},
+        {0: structured.evidence[0].id})
+    assert rating.rating == 2 and rating.source_segment_ids == [structured.evidence[0].id]
+    rating = grounded_judgment(structured, Domain.clarity,
+        {'rating': None, 'reason': 'Human review is required.', 'segments': []},
+        {0: structured.evidence[0].id})
+    assert rating.rating is None and rating.basis == 'insufficient'
 
 
 @pytest.mark.parametrize('change',['unrelated','verified','maximum','invented_number','missing_domain'])

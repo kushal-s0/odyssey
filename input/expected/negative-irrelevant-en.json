@@ -1,0 +1,25 @@
+{
+  "id": "negative-irrelevant-en",
+  "family": "irrelevant-001",
+  "language": "en",
+  "polarity": "negative",
+  "title": "An answer unrelated to a business",
+  "text": "The sky is blue. I enjoy cricket and my favourite season is winter. This paragraph contains no proposal to sell a product or provide a service, no customer group, no business location and no financial plan.",
+  "facts": {},
+  "unknowns": [
+    "All business fields"
+  ],
+  "expect": [
+    "Identify irrelevant or insufficient business evidence",
+    "Do not invent a product, customer group or financial plan"
+  ],
+  "synthetic": true,
+  "ground_truth_scope": "Authored input statements only; not external verification or model-quality evaluation",
+  "confidence": {
+    "authored_reference_facts": "Explicitly supplied in this synthetic source",
+    "real_world_truth": "Not verified; fictional business",
+    "model_extraction_probability": null,
+    "human_language_quality_review": "pending",
+    "audio_or_scan": "Transcription needs source review before ranking"
+  }
+}

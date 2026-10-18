@@ -3,12 +3,15 @@
   "checks": [
     "Dark theme persists across reload; landing has no horizontal overflow.",
     "Confirmed-area UI survives an explicit provider-outage fixture and renders the real attributed/geofenced dated OSM snapshot.",
-    "Applicant sees saved facts, evidence, rule-based explanation, missing-key state, arithmetic and follow-ups.",
+    "Applicant sees saved facts, evidence, rule-based explanation, missing-key state, arithmetic and follow-ups; stale-assessment explanation is rejected.",
     "Authorized report opens in isolated preview; HTML download excludes credentials; multipage PDF generated.",
     "Applicant workspace fits mobile in both themes.",
-    "All four scoped comparison views render known fixtures, missing values and denominators.",
+    "All four scoped comparison views, grouped bars, keyboard-focus scatter, table and CSV preserve missing values and scored denominators; assessment radar omits unknown dimensions.",
     "Trusted transcript replacement queues a new revision while the earlier assessment remains navigable.",
-    "Assessor has a real scoped paginated queue, immutable review write and unreviewed filter; no JS errors or mobile overflow."
+    "Assessor has a real scoped paginated queue, immutable review write and unreviewed filter; no JS errors or mobile overflow.",
+    "Localized questions retain English originals; real private audio upload creates a linked queued revision with earlier assessment intact.",
+    "Explicit owner deletion removes private audio and both revisions; the workspace confirms actual cleanup.",
+    "Applicant can explicitly label a synthetic rehearsal input and family; saved detail preserves its fictional status."
   ],
   "page_errors": [],
   "model_quality_validated": false,

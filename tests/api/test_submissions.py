@@ -109,6 +109,22 @@ def test_text_acceptance_is_atomic_private_and_idempotent(database, tmp_path):
             assert row['input_hash'] == hashlib.sha256(payload['text'].encode()).hexdigest()
 
 
+def test_rehearsal_metadata_is_explicit_owner_namespaced_and_idempotent(database, tmp_path):
+    with workspace(database, tmp_path) as (client, data, _):
+        assert submit(client, {'text': 'A real idea', 'scenario_family': 'tea-001'}).status_code == 422
+        assert submit(client, {'text': 'An example', 'synthetic': True, 'scenario_family': '../real'}).status_code == 422
+        key = str(uuid4())
+        payload = {'text': 'Synthetic tea example', 'synthetic': True, 'scenario_family': 'tea-001'}
+        first = submit(client, payload, key)
+        assert first.status_code == 202, first.text
+        assert submit(client, payload, key).json() == first.json()
+        assert submit(client, {**payload, 'synthetic': False, 'scenario_family': None}, key).status_code == 409
+        with database.transaction() as c:
+            row = c.execute('SELECT synthetic,family_id FROM public.submissions WHERE id=%s',
+                (first.json()['submission_id'],)).fetchone()
+        assert row['synthetic'] and row['family_id'] == f"demo:{data['people'][0]}:tea-001"
+
+
 @pytest.mark.parametrize('kind,mime', [('pdf','application/pdf'),('wav','audio/wav'),
     ('ogg','audio/ogg'),('mp4','video/mp4'),('webm','audio/webm'),('mp3','audio/mpeg')])
 def test_real_formats_preserve_exact_bytes_and_accept_eleven_pages(database, tmp_path, kind, mime):

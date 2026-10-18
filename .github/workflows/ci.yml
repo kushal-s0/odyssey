@@ -5,18 +5,45 @@ permissions:
 jobs:
   api:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector@sha256:ac08538c6f8b9904c33c8224c5e5706dbe760aca29db1d096972b4052c22a75d
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: udyam
+          POSTGRES_PASSWORD: ci_synthetic_only
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres -d udyam"
+          --health-interval 3s --health-timeout 3s --health-retries 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - run: pip install -r apps/api/requirements-dev.lock
+      - name: Prepare isolated local database
+        run: |
+          python -c "from pathlib import Path; p=Path('.local'); p.mkdir(exist_ok=True); (p/'test-database-url').write_text('postgresql://postgres:ci_synthetic_only@127.0.0.1:5432/udyam')"
+          python scripts/migrate.py --local
       - run: python -m pytest
         working-directory: apps/api
       - run: python -m ruff check app ../../tests/api
         working-directory: apps/api
       - run: python -m mypy app
         working-directory: apps/api
+      - name: Check generated contract
+        run: |
+          python scripts/export_openapi.py
+          git diff --exit-code -- apps/web/openapi.json
+      - name: Build local API image without publishing
+        run: docker build -f infra/Dockerfile.api -t odyssey-api:ci .
+      - name: Check container resources and root paths
+        run: >-
+          docker run --rm odyssey-api:ci python -c
+          "import os,importlib.util; from app.domain.questions import localizations; from app.config import ROOT;
+          assert os.getuid()!=0; assert len(localizations())==5; assert (ROOT/'data/osm/bengaluru-tea.json').is_file();
+          assert importlib.util.find_spec('torch') is None"
   web:
     runs-on: ubuntu-latest
     steps:
@@ -27,6 +54,10 @@ jobs:
           cache: npm
           cache-dependency-path: apps/web/package-lock.json
       - run: npm ci
+        working-directory: apps/web
+      - run: npm run generate:types && git diff --exit-code -- src/api/generated/schema.ts
+        working-directory: apps/web
+      - run: npm run typecheck
         working-directory: apps/web
       - run: npm run build
         working-directory: apps/web

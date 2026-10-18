@@ -1,0 +1,15 @@
+{
+  "synthetic": true,
+  "language": "und",
+  "facts": {},
+  "expect": [
+    "No business speech available",
+    "Do not hallucinate a transcript or financial facts",
+    "Actionable needs-review or no-speech failure is acceptable"
+  ],
+  "confidence": {
+    "business_facts": "none",
+    "real_world_truth": "synthetic silence",
+    "model_extraction_probability": null
+  }
+}

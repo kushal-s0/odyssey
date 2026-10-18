@@ -33,24 +33,35 @@ class LocalSpeech:
     def transcribe(self, samples: Any, preferred: Language) -> tuple[str, LanguageResult]:
         if (preferred == 'or') != self.odia:
             raise ModelUnavailable('Select the pinned language-specific speech model before inference')
-        encoded = self.processor(samples, sampling_rate=16000, return_tensors='pt', return_attention_mask=True)
-        features = encoded.input_features.to(self.device, dtype=self.dtype)
-        mask = encoded.attention_mask.to(self.device)
         language: str = preferred
         provenance = 'declared'
         with self.torch.inference_mode():
             if language == 'und':
+                encoded = self.processor(samples, sampling_rate=16000, return_tensors='pt', return_attention_mask=True)
+                features = encoded.input_features.to(self.device, dtype=self.dtype)
                 token = int(self.model.detect_language(features)[0])
                 raw = str(self.processor.tokenizer.convert_ids_to_tokens(token)).strip('<|>')
                 if raw not in SUPPORTED:
                     raise ModelUnavailable('Detected audio language requires a supported model or human transcript')
                 language = raw
                 provenance = 'detected'
-            output = self.model.generate(input_features=features, attention_mask=mask,
-                **({} if self.odia else {'language':language, 'task':'transcribe'}),
-                max_new_tokens=384, do_sample=False, num_beams=1, return_timestamps=False)
-        if output.shape[1] >= 384:
-            raise ModelUnavailable('Audio chunk transcription was truncated')
-        result = str(self.processor.batch_decode(output,skip_special_tokens=True)[0]).strip()
+        def generate_part(part: Any, depth: int = 0) -> str:
+            encoded_part = self.processor(part, sampling_rate=16000, return_tensors='pt', return_attention_mask=True)
+            with self.torch.inference_mode():
+                output = self.model.generate(input_features=encoded_part.input_features.to(self.device, dtype=self.dtype),
+                    attention_mask=encoded_part.attention_mask.to(self.device),
+                    **({} if self.odia else {'language':language, 'task':'transcribe'}),
+                    max_new_tokens=384, do_sample=False, num_beams=1, return_timestamps=False)
+            if output.shape[1] >= 384:
+                # Retry disjoint source halves, never publish a capped prefix.
+                # At most three levels / eight leaves within the stage deadline.
+                if depth >= 3 or len(part) <= 5 * 16000:
+                    raise ValueError('Bounded audio subdivision still requires human transcription')
+                midpoint = len(part) // 2
+                return ' '.join(filter(None, (generate_part(part[:midpoint], depth + 1),
+                                               generate_part(part[midpoint:], depth + 1))))
+            return str(self.processor.batch_decode(output,skip_special_tokens=True)[0]).strip()
+
+        result = generate_part(samples)
         return result, LanguageResult.model_validate({'code':language,'provenance':provenance,
             'model_id':MANIFEST['speech']['id'] if provenance == 'detected' else None,'needs_confirmation':True})

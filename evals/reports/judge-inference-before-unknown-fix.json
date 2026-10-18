@@ -1,0 +1,53 @@
+{
+  "scope": "Actual owned GPU and local API/PostgreSQL; three authored synthetic text cases only",
+  "manifest_hash": "d2a6fb1adef3b6579ed921930b43f6a678d08aaa646f5bd9ebe486a23257170a",
+  "cases": [
+    {
+      "case": "positive-tea-en",
+      "seconds": 141.016,
+      "status": "completed",
+      "passed": true,
+      "checks": {
+        "investment_preserved": true,
+        "own_funds_preserved": true,
+        "requested_loan_preserved": true,
+        "unit_price_preserved": true,
+        "expenses_preserved": true,
+        "offer_and_customers_present": true
+      },
+      "completeness": "77.78",
+      "coverage": "0.9",
+      "withheld_reason": "source_requires_review"
+    },
+    {
+      "case": "negative-incomplete-en",
+      "seconds": 116.282,
+      "status": "completed",
+      "passed": false,
+      "checks": {
+        "no_invented_business": false,
+        "no_ranking": true
+      },
+      "completeness": "16.67",
+      "coverage": "0.15",
+      "withheld_reason": "insufficient_coverage"
+    },
+    {
+      "case": "negative-conflicting-en",
+      "seconds": 86.172,
+      "status": "completed",
+      "passed": true,
+      "checks": {
+        "price_conflict_preserved": true,
+        "headline_withheld": true,
+        "no_ranking": true
+      },
+      "completeness": "38.89",
+      "coverage": "0.55",
+      "withheld_reason": "critical_conflict"
+    }
+  ],
+  "passed": false,
+  "human_quality_validated": false,
+  "deployed": false
+}

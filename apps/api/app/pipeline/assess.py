@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 from collections.abc import Iterator
 from typing import Annotated, Any
+from uuid import UUID
 
 from pydantic import Field
 
@@ -21,6 +22,19 @@ class JudgmentDraft(Contract):
     rating: Annotated[int,Field(strict=True,ge=0,le=3)] | None
     reason: str=Field(min_length=1,max_length=700)
     segments: list[Annotated[int,Field(strict=True,ge=0,le=199)]]=Field(default_factory=list,max_length=30)
+
+
+def grounded_judgment(bundle: StructuredBundle, domain: Domain, payload: dict[str,Any],
+                      indices: dict[int,UUID]) -> DomainRating:
+    raw=JudgmentDraft.model_validate(payload)
+    if raw.rating is not None and (not raw.segments or any(i not in indices for i in raw.segments)):
+        raise ValueError('Judgment must cite supplied usable evidence')
+    rating=DomainRating(domain=domain,rating=raw.rating,reason=raw.reason,
+        source_segment_ids=list(dict.fromkeys(indices[i] for i in raw.segments)) if raw.rating is not None else [],
+        basis='self_reported' if raw.rating is not None else 'insufficient')
+    validate_ratings(bundle,[rating if d==domain else DomainRating(domain=d,rating=None,
+        reason='Insufficient usable evidence.',basis='insufficient') for d in Domain])
+    return rating
 
 
 def handler(context: dict[str,Any]) -> Iterator[dict[str,Any]]:
@@ -60,11 +74,18 @@ def handler(context: dict[str,Any]) -> Iterator[dict[str,Any]]:
                     'Missing/ambiguous information means null, never zero. Zero requires explicit evidenced weakness. '
                     'Cite only supplied segment indices for numerical ratings. Use at most two short sentences. '
                     'If insufficient return null, empty segments and a reason. '+ANCHORS[domain])
-                raw=JudgmentDraft.model_validate(model.json(prompt,json.dumps({'domain':domain,'question':QUESTIONS[domain],
-                    'facts':facts,'segment_indices':{str(i):str(ref) for i,ref in indices.items()}})))
-                rating=DomainRating(domain=domain,rating=raw.rating,reason=raw.reason,
-                    source_segment_ids=list(dict.fromkeys(indices[i] for i in raw.segments)) if raw.rating is not None else [],
-                    basis='self_reported' if raw.rating is not None else 'insufficient')
+                def validate_judgment(payload: dict[str,Any]) -> None:
+                    grounded_judgment(bundle,domain,payload,indices)
+                try:
+                    payload=model.json(prompt,json.dumps({'domain':domain,'question':QUESTIONS[domain],
+                        'facts':facts,'segment_indices':{str(i):str(ref) for i,ref in indices.items()}}),validator=validate_judgment)
+                    rating=grounded_judgment(bundle,domain,payload,indices)
+                except ValueError:
+                    # A malformed/un-grounded domain must not erase usable facts
+                    # or other valid domains. No score is invented as fallback.
+                    rating=DomainRating(domain=domain,rating=None,
+                        reason='A model judgment could not be grounded in the supplied evidence; human review is required.',
+                        basis='insufficient')
             ratings.append(rating)
             relevance.append(check)
             # Validate completed judgments with absent domains filled as null.

@@ -64,7 +64,7 @@ def handler(context: dict[str,Any]) -> Iterator[dict[str,Any]]:
         samples = decode(Path(context['source_path']), min(600,value.duration_seconds or 600))
         np = importlib.import_module('numpy')
         checkpoint = value.checkpoint or {}
-        bundle = EvidenceBundle.model_validate(checkpoint['bundle']) if checkpoint.get('bundle') else EvidenceBundle(evidence=[],
+        bundle = EvidenceBundle.model_validate(checkpoint['bundle']) if checkpoint.get('bundle') else EvidenceBundle(evidence=list(value.inherited_evidence),
             warnings=['audio_transcript_requires_review','audio_times_are_chunk_ranges_not_word_alignment'])
         completed = int(checkpoint.get('completed_chunks',0))
         model = None
@@ -84,7 +84,7 @@ def handler(context: dict[str,Any]) -> Iterator[dict[str,Any]]:
                         attachment_id=value.attachment_id,start_seconds=start/16000,end_seconds=stop/16000,
                         original_text=transcript,language=language,transcription_uncertain=True))
             yield {'checkpoint':{'completed_chunks':index+1,'bundle':bundle.model_dump(mode='json')}}
-        if not bundle.evidence:
+        if len(bundle.evidence) == len(value.inherited_evidence):
             yield {'failure':{'code':'needs_review'}}
             return
         yield {'publish':bundle.model_dump(mode='json')}

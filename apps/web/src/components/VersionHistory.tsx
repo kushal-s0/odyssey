@@ -28,6 +28,22 @@ export function VersionHistory({ id, current, token }: { id: string; current: As
     return () => controller.abort()
   }, [version, id, token])
   const selected = version ? previous : current
+  const selectedRevision = revisions.find(r => r.assessment_version === selected?.version)
+  async function downloadOriginal() {
+    if (!selectedRevision?.attachment_id || busy) return
+    setBusy(true); setError('')
+    try {
+      const base = import.meta.env.VITE_API_BASE_URL as string | undefined
+      if (!base) throw new Error('Workspace API unavailable.')
+      const response = await fetch(`${base.replace(/\/$/,'')}/v1/uploads/${selectedRevision.attachment_id}/content`, {
+        headers:{ Authorization:`Bearer ${token}` }, signal:AbortSignal.timeout(30000) })
+      if (!response.ok) throw new Error('Could not retrieve this version’s private original.')
+      const url = URL.createObjectURL(await response.blob())
+      const link=document.createElement('a');link.href=url;link.download=`idea-original-revision-${selectedRevision.revision_number}${selectedRevision.input_kind === 'pdf' ? '.pdf' : '-audio'}`;link.click()
+      window.setTimeout(() => URL.revokeObjectURL(url),1000)
+    } catch (e) { setError(e instanceof Error ? e.message : 'Original download unavailable.') }
+    finally { setBusy(false) }
+  }
   async function report() {
     if (!selected || busy) return
     setBusy(true); setError('')
@@ -47,6 +63,7 @@ export function VersionHistory({ id, current, token }: { id: string; current: As
   }).map(([key]) => key.replaceAll('_',' ')) : []
   return <section className="tool-panel"><div className="tool-heading"><History size={20} /><h3>Versions & report</h3></div><p className="field-note">Every revision keeps its original evidence and earlier decisions. Choose a saved assessment to inspect or export it.</p>
     <div className="version-toolbar"><label>Assessment version<select aria-label="Assessment version" value={version} onChange={e => { setPrevious(null); setVersion(e.target.value) }}><option value="">{current ? `Current assessment · v${current.version}` : 'Select a saved assessment'}</option>{revisions.filter(r => r.assessment_version !== null && r.assessment_version !== current?.version).map(r => <option key={r.id} value={r.assessment_version!}>v{r.assessment_version} · input revision {r.revision_number} · {new Date(r.created_at).toLocaleDateString()}</option>)}</select></label><button disabled={!selected || busy} className="secondary-button" onClick={() => { void report() }}><Printer size={16} />{busy ? 'Preparing report…' : 'View & print report'}</button></div>
+    {selectedRevision?.attachment_id && <button className="secondary-button" disabled={busy} onClick={() => { void downloadOriginal() }}><Download size={16} />Download original for selected version</button>}
     {error && <p role="alert" className="form-error">{error}<button className="text-button" onClick={() => setReload(n => n + 1)}>Retry history</button></p>}
     {revisions.length > 0 && <small>{revisions.length} input revision(s) · {revisions.filter(r => r.assessment_version !== null).length} saved assessment(s). Versions still processing are not shown as completed assessments.</small>}
     {version && previous && <><div className="version-diff"><strong>Historical version {previous.version}</strong><p>Created {new Date(previous.created_at).toLocaleString()}. This is a saved earlier result.</p>{current && <><dl><div><dt>Potential</dt><dd>{previous.scores.headline_potential ?? 'Withheld'} → {current.scores.headline_potential ?? 'Withheld'}</dd></div><div><dt>Completeness</dt><dd>{previous.scores.completeness_percent}% → {current.scores.completeness_percent}%</dd></div><div><dt>Coverage</dt><dd>{(Number(previous.scores.evidence_coverage)*100).toFixed(0)}% → {(Number(current.scores.evidence_coverage)*100).toFixed(0)}%</dd></div></dl><p>Fields with changed values, status or evidence: {changes.length ? changes.join(', ') : 'None'}.</p></>}</div><details><summary>Inspect this historical assessment</summary><AssessmentView value={previous} idPrefix="historical-" /></details></>}

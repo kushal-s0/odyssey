@@ -1,0 +1,26 @@
+{
+  "scope": "Actual owned GPU and local API/PostgreSQL; three authored synthetic text cases only",
+  "manifest_hash": "755958b6fc82cfd5f237f7a4199e16c52cc2c836ee5876b3c6b959b0a2004ea8",
+  "cases": [
+    {
+      "case": "positive-tea-en",
+      "seconds": 226.609,
+      "status": "completed",
+      "passed": false,
+      "checks": {
+        "investment_preserved": false,
+        "own_funds_preserved": false,
+        "requested_loan_preserved": false,
+        "unit_price_preserved": false,
+        "expenses_preserved": true,
+        "offer_and_customers_present": false
+      },
+      "completeness": "33.33",
+      "coverage": "0.2",
+      "withheld_reason": "source_requires_review"
+    }
+  ],
+  "passed": false,
+  "human_quality_validated": false,
+  "deployed": false
+}

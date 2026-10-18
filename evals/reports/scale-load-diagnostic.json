@@ -1,0 +1,23 @@
+{
+  "scope": "Diagnostic owned loopback load only; recovery deliberately not rerun",
+  "rows": 10000,
+  "virtual_users": 50,
+  "requested_seconds": 15,
+  "elapsed_seconds": 15.984,
+  "requests": 625,
+  "p50_ms": 774.464,
+  "p95_ms": 1944.633,
+  "error_count": 0,
+  "route_p95_ms": {
+    "submissions": 1609.435,
+    "jobs": 2182.339,
+    "analytics": 2370.41
+  },
+  "public_services_called": false,
+  "replicas_seen": [
+    "0",
+    "1"
+  ],
+  "recovery_rerun": false,
+  "passed": false
+}

@@ -1,0 +1,10 @@
+{
+  "scope": "Extended local browser check after graph acceptance; synthetic fixtures",
+  "passed": false,
+  "failure": "Exact Explanation language label selector timed out before stale-response check",
+  "repair": "Added explicit accessible name to the language select; rerun reached the final synthetic-input flow, then its exact Your idea label also timed out because the wrapping label includes a dynamic character count. Added explicit accessible name to textarea; rerun required.",
+  "later_cleanup_failure": "All 11 UI journeys passed; cleanup failed with a profile/submission FK because the final journey added a new idea outside the original two fixture rows. Fixture cleanup now deletes all submissions/attachments owned by its fresh random test identities. Pending clean rerun.",
+  "model_quality_validated": false,
+  "resolution": "Final exact command exited 0 with all 11 browser journeys and scoped fixture cleanup passing; see product-ui.json",
+  "deployed": false
+}

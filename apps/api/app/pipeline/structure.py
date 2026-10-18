@@ -12,8 +12,9 @@ from .normalize import numeric_tokens
 MONEY_FIELDS={'investment','own_funds','requested_loan','unit_price','revenue','expenses','profit'}
 LIST_FIELDS={'raw_materials','suppliers'}
 IDENTITY=re.compile(r'\b(?:my name|applicant name|phone|mobile number|caste|gender|my education|educational qualification|aadhaar)\b',re.I)
-SOURCE_INSTRUCTION=re.compile(r'ignore.{0,50}instructions|\b(?:system|assistant)\s*:|\bgive\s+(?:every|all)\s+(?:rating|score)|\binvent\s+(?:INR|₹|\d)',re.I)
-UNKNOWN_STATEMENT=re.compile(r"\b(?:not known|unknown|not sure|not decided|don't know|do not know|not available|yet to decide)\b",re.I)
+SOURCE_INSTRUCTION=re.compile(r'ignore.{0,50}(?:instructions|rules)|\b(?:system|assistant)\s*:|\bgive\s+(?:every|all)\s+(?:rating|score)|\binvent\s+(?:INR|₹|\d|market|research|facts)|\btreat.{0,60}system prompt',re.I)
+UNKNOWN_STATEMENT=re.compile(r"\b(?:not known|unknown|not sure|not decided|(?:don't|do not)\s+(?:yet\s+)?know|not available|yet to decide)\b",re.I)
+GENERIC_OFFER=re.compile(r"^(?:(?:a |my )?(?:new )?business|(?:I )?(?:(?:would like|want|plan|hope) to )?(?:start|open|run|set up) (?:a |my |an )?(?:own |new )?business)[.!]?\s*$",re.I)
 
 
 def quoted_money(quote: str) -> Money | None:
@@ -56,8 +57,12 @@ def assemble(bundle: EvidenceBundle, drafts: list[ExtractionDraft]) -> Structure
             if fact.status!='present':
                 candidates.setdefault(fact.field,[]).append({'status':fact.status,'source_segment_ids':[segment.id]})
                 continue
-            if UNKNOWN_STATEMENT.search(fact.quote):
-                continue  # Explicit ignorance cannot become a positive fact in another domain.
+            if UNKNOWN_STATEMENT.search(source):
+                warnings.append('unknown_source_statement:'+fact.field)
+                continue  # A shorter quote cannot strip its surrounding uncertainty.
+            if fact.field=='offer' and (GENERIC_OFFER.fullmatch(fact.quote.strip()) or GENERIC_OFFER.fullmatch(source.strip())):
+                warnings.append('generic_business_intent_is_not_offer')
+                continue
             if fact.field in MONEY_FIELDS:
                 value=quoted_money(fact.quote)
                 if value is None:
@@ -70,7 +75,7 @@ def assemble(bundle: EvidenceBundle, drafts: list[ExtractionDraft]) -> Structure
                 value=[fact.quote]
             elif fact.field=='existing_business':
                 lowered=fact.quote.lower()
-                if re.search(r'\b(?:no existing|not yet|new business|plan to|will start)\b',lowered):
+                if re.search(r'\b(?:no existing|not yet|not started|new business|plan to|will start)\b',lowered):
                     value=False
                 elif re.search(r'\b(?:already|currently|existing business|running)\b',lowered):
                     value=True
@@ -86,6 +91,9 @@ def assemble(bundle: EvidenceBundle, drafts: list[ExtractionDraft]) -> Structure
     fields: dict[str,Any]={}
     for field,values in candidates.items():
         refs=list(dict.fromkeys(ref for row in values for ref in row['source_segment_ids']))
+        if len(refs)>50:
+            warnings.append('field_reference_limit:'+field)
+            refs=refs[:50]  # All segments remain in the original evidence bundle.
         resolved=[row for row in values if 'value' in row]
         unique: list[dict[str,Any]]=[]
         for row in resolved:
@@ -104,7 +112,10 @@ def assemble(bundle: EvidenceBundle, drafts: list[ExtractionDraft]) -> Structure
             fields[field]={'value':list(dict.fromkeys(row['value'][0] for row in unique)),
                            'status':'present','source_segment_ids':refs}
         else:
-            fields[field]={'status':'ambiguous','source_segment_ids':refs,'note':'Multiple source-backed values need review.',
+            note = 'Multiple source-backed values need review.'
+            if len(unique)>10:
+                note += f' First 10 of {len(unique)} alternatives shown; inspect all source segments.'
+            fields[field]={'status':'ambiguous','source_segment_ids':refs,'note':note,
                 'alternatives':[{'value':row['value'],'source_segment_ids':row['source_segment_ids'],
                                  'note':'Supplied alternative'} for row in unique[:10]]}
     trades={d.trade for d in drafts if d.trade in {trade.value for trade in Trade} and d.trade!='unknown'}

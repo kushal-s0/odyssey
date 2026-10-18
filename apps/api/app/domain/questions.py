@@ -1,7 +1,10 @@
 from uuid import UUID, uuid5
+import json
+from functools import lru_cache
 
 from ..contracts.clarifications import ClarificationQuestion
-from ..contracts.models import BusinessRecord, FieldStatus
+from ..contracts.models import BusinessRecord, FieldStatus, Language
+from ..config import ROOT
 
 # The eighteen rubric fields have one stable, reviewable question each.
 QUESTIONS = {
@@ -26,7 +29,13 @@ QUESTIONS = {
 }
 
 
-def questions(business: BusinessRecord, revision: UUID) -> list[ClarificationQuestion]:
+@lru_cache(maxsize=1)
+def localizations() -> dict[str, dict[str, dict[str, str]]]:
+    path = ROOT / 'data/localization/questions.json'
+    return json.loads(path.read_text(encoding='utf-8'))['translations'] if path.is_file() else {}
+
+
+def questions(business: BusinessRecord, revision: UUID, language: Language = 'en') -> list[ClarificationQuestion]:
     result = []
     for field, (label, text, priority) in QUESTIONS.items():
         status = getattr(business, field).status
@@ -38,6 +47,14 @@ def questions(business: BusinessRecord, revision: UUID) -> list[ClarificationQue
             text = 'The previous answer did not address this topic. ' + text
         elif status == FieldStatus.unreadable:
             text = 'This part could not be read reliably. ' + text
+        english = text
+        translated = localizations().get(language, {}).get(field)
+        if translated:
+            label, text = translated['label'], translated['question']
+            if status in {FieldStatus.ambiguous, FieldStatus.irrelevant, FieldStatus.unreadable}:
+                text = localizations()[language]['_status'][status.value] + ' ' + text
         result.append(ClarificationQuestion(id=uuid5(revision, field), field=field, label=label,
-                                           question=text, status=status, priority=priority))
+            question=text, status=status, priority=priority, language=language if translated else 'en',
+            english_question=english if translated else None,
+            localization_note='Prepared translation; compare the English original if unclear. Human language review is pending.' if translated else None))
     return sorted(result, key=lambda item: (item.priority, list(QUESTIONS).index(item.field)))[:3]

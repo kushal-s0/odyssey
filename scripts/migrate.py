@@ -16,7 +16,12 @@ ROOT = Path(__file__).resolve().parents[1]
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--local", action="store_true")
+    paths=sorted((ROOT/'supabase/migrations').glob('*.sql'))
+    parser.add_argument('--through',choices=[path.name for path in paths],
+                        help='Apply/check only through this exact reviewed migration, leaving later versions untouched')
     args = parser.parse_args()
+    if args.through:
+        paths=[path for path in paths if path.name<=args.through]
     load_dotenv(ROOT / ".env.local", override=False)
     url = ((ROOT / ".local/test-database-url").read_text().strip() if args.local else os.environ.get("DATABASE_URL"))
     if not url:
@@ -30,7 +35,7 @@ def main() -> None:
         connection.execute("CREATE TABLE IF NOT EXISTS public.schema_migrations(version text PRIMARY KEY, sha256 text NOT NULL, applied_at timestamptz NOT NULL DEFAULT now())")
         connection.execute("ALTER TABLE public.schema_migrations ENABLE ROW LEVEL SECURITY")
         connection.execute("REVOKE ALL ON public.schema_migrations FROM PUBLIC,anon,authenticated")
-        for path in sorted((ROOT / "supabase/migrations").glob("*.sql")):
+        for path in paths:
             source = path.read_bytes()
             digest = hashlib.sha256(source).hexdigest()
             row = connection.execute("SELECT sha256 FROM public.schema_migrations WHERE version=%s", (path.name,)).fetchone()

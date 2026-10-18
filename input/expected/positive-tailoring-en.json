@@ -1,0 +1,37 @@
+{
+  "id": "positive-tailoring-en",
+  "family": "tailoring-001",
+  "language": "en",
+  "polarity": "positive",
+  "title": "An operating tailoring service",
+  "text": "I run a tailoring service in Jaipur, Rajasthan. I stitch school uniforms for parents and offer alterations to local residents. In my own order book I recorded 40 completed uniform orders last month. The price is INR 250 per uniform. My reported uniform revenue last month was INR 10000. Fabric, thread, electricity and transport for those orders cost INR 6500 last month. I already own the sewing machine. I am not asking for a loan. Two other tailors operate on the same street according to my observation. I offer scheduled school pickup and free size adjustment within one week. I have no independent audit of my order book and I have not supplied an initial investment amount.",
+  "facts": {
+    "offer": "school uniforms and alterations",
+    "location": "Jaipur, Rajasthan",
+    "unit_price_INR_per_uniform": "250",
+    "reported_orders_last_month": 40,
+    "revenue_INR_last_month": "10000",
+    "expenses_INR_last_month": "6500",
+    "existing_business": true
+  },
+  "derived_checks": {
+    "reported_profit_INR_last_month": "3500"
+  },
+  "unknowns": [
+    "Initial investment",
+    "Independent order-book verification"
+  ],
+  "expect": [
+    "Keep reported orders self-reported",
+    "Do not invent missing initial investment"
+  ],
+  "synthetic": true,
+  "ground_truth_scope": "Authored input statements only; not external verification or model-quality evaluation",
+  "confidence": {
+    "authored_reference_facts": "Explicitly supplied in this synthetic source",
+    "real_world_truth": "Not verified; fictional business",
+    "model_extraction_probability": null,
+    "human_language_quality_review": "pending",
+    "audio_or_scan": "Transcription needs source review before ranking"
+  }
+}

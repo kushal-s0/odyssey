@@ -23,7 +23,7 @@ def main() -> None:
     parser.add_argument('--session-seconds', type=int, default=900, choices=range(1, 3601), metavar='1..3600')
     parser.add_argument('--idle-seconds', type=int, default=60, choices=range(1, 301), metavar='1..300')
     parser.add_argument('--stage-seconds', type=int, default=120, choices=range(1, 601), metavar='1..600')
-    parser.add_argument('--handler', help='Trusted installed Python module:function; model handlers arrive in T09-T12')
+    parser.add_argument('--handler', help='Trusted installed Python module:function, e.g. app.pipeline.run:handler')
     parser.add_argument('--stages', nargs='+', help='Advertise only stages the selected handler implements')
     parser.add_argument('--probe', action='store_true', help='Synthetic orchestration ONLY; never claims screening stages')
     parser.add_argument('--continuous', action='store_true', help='Operator-run owned worker until Ctrl+C; no provider keep-alive')

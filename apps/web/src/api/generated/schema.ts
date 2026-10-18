@@ -118,7 +118,8 @@ export interface paths {
         get: operations["detail_v1_submissions__submission_id__get"];
         put?: never;
         post?: never;
-        delete?: never;
+        /** Delete Submission */
+        delete: operations["delete_submission_v1_submissions__submission_id__delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -693,13 +694,7 @@ export interface components {
             cohorts: components["schemas"]["CohortAccess"][];
         };
         /** AdditionalFact */
-        "AdditionalFact-Input": {
-            /** Label */
-            label: string;
-            fact: components["schemas"]["EvidenceField_str_"];
-        };
-        /** AdditionalFact */
-        "AdditionalFact-Output": {
+        AdditionalFact: {
             /** Label */
             label: string;
             fact: components["schemas"]["EvidenceField_str_"];
@@ -713,16 +708,8 @@ export interface components {
             note: string;
         };
         /** Alternative[Money] */
-        "Alternative_Money_-Input": {
-            value: components["schemas"]["Money-Input"];
-            /** Source Segment Ids */
-            source_segment_ids: string[];
-            /** Note */
-            note: string;
-        };
-        /** Alternative[Money] */
-        "Alternative_Money_-Output": {
-            value: components["schemas"]["Money-Output"];
+        Alternative_Money_: {
+            value: components["schemas"]["Money"];
             /** Source Segment Ids */
             source_segment_ids: string[];
             /** Note */
@@ -810,12 +797,12 @@ export interface components {
             pipeline_version: string;
             /** Model Manifest Hash */
             model_manifest_hash: string;
-            business: components["schemas"]["BusinessRecord-Output"];
+            business: components["schemas"]["BusinessRecord"];
             /** Evidence */
             evidence: (components["schemas"]["TextEvidence"] | components["schemas"]["PdfEvidence"] | components["schemas"]["AudioEvidence"])[];
             /** Domains */
             domains: components["schemas"]["DomainRating"][];
-            scores: components["schemas"]["ScoreSummary-Output"];
+            scores: components["schemas"]["ScoreSummary"];
             /** Strengths */
             strengths?: string[];
             /** Gaps */
@@ -839,6 +826,10 @@ export interface components {
         };
         /** AudioEvidence */
         AudioEvidence: {
+            /** Origin Revision Id */
+            origin_revision_id?: string | null;
+            /** Origin Segment Id */
+            origin_segment_id?: string | null;
             /**
              * Id
              * Format: uuid
@@ -885,7 +876,7 @@ export interface components {
             transcription_uncertain: boolean;
         };
         /** BusinessRecord */
-        "BusinessRecord-Input": {
+        BusinessRecord: {
             /**
              * Schema Version
              * @default 1
@@ -897,17 +888,17 @@ export interface components {
             offer?: components["schemas"]["EvidenceField_str_"];
             target_customers?: components["schemas"]["EvidenceField_str_"];
             problem?: components["schemas"]["EvidenceField_str_"];
-            location?: components["schemas"]["EvidenceField_Location_-Input"];
+            location?: components["schemas"]["EvidenceField_Location_"];
             market_research?: components["schemas"]["EvidenceField_str_"];
             raw_materials?: components["schemas"]["EvidenceField_list_str__"];
             suppliers?: components["schemas"]["EvidenceField_list_str__"];
-            investment?: components["schemas"]["EvidenceField_Money_-Input"];
-            own_funds?: components["schemas"]["EvidenceField_Money_-Input"];
-            requested_loan?: components["schemas"]["EvidenceField_Money_-Input"];
-            unit_price?: components["schemas"]["EvidenceField_Money_-Input"];
-            revenue?: components["schemas"]["EvidenceField_Money_-Input"];
-            expenses?: components["schemas"]["EvidenceField_Money_-Input"];
-            profit?: components["schemas"]["EvidenceField_Money_-Input"];
+            investment?: components["schemas"]["EvidenceField_Money_"];
+            own_funds?: components["schemas"]["EvidenceField_Money_"];
+            requested_loan?: components["schemas"]["EvidenceField_Money_"];
+            unit_price?: components["schemas"]["EvidenceField_Money_"];
+            revenue?: components["schemas"]["EvidenceField_Money_"];
+            expenses?: components["schemas"]["EvidenceField_Money_"];
+            profit?: components["schemas"]["EvidenceField_Money_"];
             competition?: components["schemas"]["EvidenceField_str_"];
             differentiation?: components["schemas"]["EvidenceField_str_"];
             existing_business?: components["schemas"]["EvidenceField_bool_"];
@@ -920,45 +911,7 @@ export interface components {
             /** @default unknown */
             trade: components["schemas"]["Trade"];
             /** Additional Facts */
-            additional_facts?: components["schemas"]["AdditionalFact-Input"][];
-        };
-        /** BusinessRecord */
-        "BusinessRecord-Output": {
-            /**
-             * Schema Version
-             * @default 1
-             * @constant
-             */
-            schema_version: "1";
-            summary?: components["schemas"]["EvidenceField_str_"];
-            business_type?: components["schemas"]["EvidenceField_str_"];
-            offer?: components["schemas"]["EvidenceField_str_"];
-            target_customers?: components["schemas"]["EvidenceField_str_"];
-            problem?: components["schemas"]["EvidenceField_str_"];
-            location?: components["schemas"]["EvidenceField_Location_-Output"];
-            market_research?: components["schemas"]["EvidenceField_str_"];
-            raw_materials?: components["schemas"]["EvidenceField_list_str__"];
-            suppliers?: components["schemas"]["EvidenceField_list_str__"];
-            investment?: components["schemas"]["EvidenceField_Money_-Output"];
-            own_funds?: components["schemas"]["EvidenceField_Money_-Output"];
-            requested_loan?: components["schemas"]["EvidenceField_Money_-Output"];
-            unit_price?: components["schemas"]["EvidenceField_Money_-Output"];
-            revenue?: components["schemas"]["EvidenceField_Money_-Output"];
-            expenses?: components["schemas"]["EvidenceField_Money_-Output"];
-            profit?: components["schemas"]["EvidenceField_Money_-Output"];
-            competition?: components["schemas"]["EvidenceField_str_"];
-            differentiation?: components["schemas"]["EvidenceField_str_"];
-            existing_business?: components["schemas"]["EvidenceField_bool_"];
-            /**
-             * Sector
-             * @default unknown
-             * @enum {string}
-             */
-            sector: "agriculture" | "food_beverage" | "retail" | "services" | "manufacturing" | "other" | "unknown";
-            /** @default unknown */
-            trade: components["schemas"]["Trade"];
-            /** Additional Facts */
-            additional_facts?: components["schemas"]["AdditionalFact-Output"][];
+            additional_facts?: components["schemas"]["AdditionalFact"][];
         };
         /** ClaimResponse */
         ClaimResponse: {
@@ -977,9 +930,15 @@ export interface components {
              */
             expected_revision_id: string;
             /** Answers */
-            answers: {
+            answers?: {
                 [key: string]: string;
             };
+            /** Audio Attachment Id */
+            audio_attachment_id?: string | null;
+            /** Audio Fields */
+            audio_fields?: string[];
+            /** Answer Language */
+            answer_language?: ("en" | "hi" | "mr" | "te" | "bn" | "or" | "und") | null;
         };
         /** ClarificationQuestion */
         ClarificationQuestion: {
@@ -997,6 +956,16 @@ export interface components {
             status: components["schemas"]["FieldStatus"];
             /** Priority */
             priority: number;
+            /**
+             * Language
+             * @default en
+             * @enum {string}
+             */
+            language: "en" | "hi" | "mr" | "te" | "bn" | "or" | "und";
+            /** English Question */
+            english_question?: string | null;
+            /** Localization Note */
+            localization_note?: string | null;
         };
         /** CohortAccess */
         CohortAccess: {
@@ -1045,6 +1014,22 @@ export interface components {
             dimension: "domain" | "trade" | "cohort" | "across_cohort";
             /** Groups */
             groups: components["schemas"]["ComparisonGroup"][];
+        };
+        /** DeletionRequest */
+        DeletionRequest: {
+            /**
+             * Expected Revision Id
+             * Format: uuid
+             */
+            expected_revision_id: string;
+        };
+        /** DeletionResult */
+        DeletionResult: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "deleted" | "cleanup_pending";
         };
         /**
          * Domain
@@ -1136,19 +1121,7 @@ export interface components {
             request_id: string;
         };
         /** EvidenceField[Location] */
-        "EvidenceField_Location_-Input": {
-            value?: components["schemas"]["Location"] | null;
-            /** @default missing */
-            status: components["schemas"]["FieldStatus"];
-            /** Source Segment Ids */
-            source_segment_ids?: string[];
-            /** Alternatives */
-            alternatives?: components["schemas"]["Alternative_Location_"][];
-            /** Note */
-            note?: string | null;
-        };
-        /** EvidenceField[Location] */
-        "EvidenceField_Location_-Output": {
+        EvidenceField_Location_: {
             value?: components["schemas"]["Location"] | null;
             /** @default missing */
             status: components["schemas"]["FieldStatus"];
@@ -1160,26 +1133,14 @@ export interface components {
             note?: string | null;
         };
         /** EvidenceField[Money] */
-        "EvidenceField_Money_-Input": {
-            value?: components["schemas"]["Money-Input"] | null;
+        EvidenceField_Money_: {
+            value?: components["schemas"]["Money"] | null;
             /** @default missing */
             status: components["schemas"]["FieldStatus"];
             /** Source Segment Ids */
             source_segment_ids?: string[];
             /** Alternatives */
-            alternatives?: components["schemas"]["Alternative_Money_-Input"][];
-            /** Note */
-            note?: string | null;
-        };
-        /** EvidenceField[Money] */
-        "EvidenceField_Money_-Output": {
-            value?: components["schemas"]["Money-Output"] | null;
-            /** @default missing */
-            status: components["schemas"]["FieldStatus"];
-            /** Source Segment Ids */
-            source_segment_ids?: string[];
-            /** Alternatives */
-            alternatives?: components["schemas"]["Alternative_Money_-Output"][];
+            alternatives?: components["schemas"]["Alternative_Money_"][];
             /** Note */
             note?: string | null;
         };
@@ -1521,25 +1482,7 @@ export interface components {
             supported_trade: boolean;
         };
         /** Money */
-        "Money-Input": {
-            /** Amount */
-            amount: number | string;
-            /**
-             * Currency
-             * @enum {string}
-             */
-            currency: "INR" | "unknown";
-            /**
-             * Period
-             * @default unknown
-             * @enum {string}
-             */
-            period: "day" | "week" | "month" | "year" | "once" | "unknown";
-            /** Unit */
-            unit?: string | null;
-        };
-        /** Money */
-        "Money-Output": {
+        Money: {
             /** Amount */
             amount: string;
             /**
@@ -1565,6 +1508,10 @@ export interface components {
         };
         /** PdfEvidence */
         PdfEvidence: {
+            /** Origin Revision Id */
+            origin_revision_id?: string | null;
+            /** Origin Segment Id */
+            origin_segment_id?: string | null;
             /**
              * Id
              * Format: uuid
@@ -1731,6 +1678,8 @@ export interface components {
              * @default false
              */
             replace_transcript: boolean;
+            /** Transcript Language */
+            transcript_language?: ("en" | "hi" | "mr" | "te" | "bn" | "or" | "und") | null;
         };
         /** ReviewView */
         ReviewView: {
@@ -1780,38 +1729,7 @@ export interface components {
             assessment_version: number | null;
         };
         /** ScoreSummary */
-        "ScoreSummary-Input": {
-            /**
-             * Rubric Version
-             * @default rubric-v1
-             * @constant
-             */
-            rubric_version: "rubric-v1";
-            /** Provisional Potential */
-            provisional_potential: number | string | null;
-            /** Headline Potential */
-            headline_potential: number | string | null;
-            /** Evidence Coverage */
-            evidence_coverage: number | string;
-            /** Completeness Percent */
-            completeness_percent: number | string;
-            /** Usable Fields */
-            usable_fields: number;
-            /** Applicable Fields */
-            applicable_fields: number;
-            /** Excluded Fields */
-            excluded_fields?: {
-                [key: string]: string;
-            };
-            /** Needs Clarification */
-            needs_clarification: boolean;
-            /** Ranking Eligible */
-            ranking_eligible: boolean;
-            /** Withheld Reason */
-            withheld_reason?: string | null;
-        };
-        /** ScoreSummary */
-        "ScoreSummary-Output": {
+        ScoreSummary: {
             /**
              * Rubric Version
              * @default rubric-v1
@@ -1924,6 +1842,10 @@ export interface components {
         };
         /** StageInput */
         StageInput: {
+            /** Inherited Evidence */
+            inherited_evidence?: (components["schemas"]["TextEvidence"] | components["schemas"]["PdfEvidence"] | components["schemas"]["AudioEvidence"])[];
+            /** Answer Fields */
+            answer_fields?: string[];
             /**
              * Submission Id
              * Format: uuid
@@ -2073,6 +1995,13 @@ export interface components {
             cohort_id?: string | null;
             declared_location?: components["schemas"]["Location"] | null;
             /**
+             * Synthetic
+             * @default false
+             */
+            synthetic: boolean;
+            /** Scenario Family */
+            scenario_family?: string | null;
+            /**
              * Consent
              * @constant
              */
@@ -2085,6 +2014,11 @@ export interface components {
              * Format: uuid
              */
             id: string;
+            /**
+             * Synthetic
+             * @default false
+             */
+            synthetic: boolean;
             /** Cohort Id */
             cohort_id: string | null;
             /**
@@ -2123,6 +2057,10 @@ export interface components {
         };
         /** TextEvidence */
         TextEvidence: {
+            /** Origin Revision Id */
+            origin_revision_id?: string | null;
+            /** Origin Segment Id */
+            origin_segment_id?: string | null;
             /**
              * Id
              * Format: uuid
@@ -2219,6 +2157,10 @@ export interface components {
             msg: string;
             /** Error Type */
             type: string;
+            /** Input */
+            input?: unknown;
+            /** Context */
+            ctx?: Record<string, never>;
         };
         /** WorkerRequest */
         WorkerRequest: {
@@ -2228,58 +2170,6 @@ export interface components {
             supported_stages: string[];
             /** Manifest Hash */
             manifest_hash: string;
-        };
-        /** AdditionalFact */
-        AdditionalFact: {
-            /** Label */
-            label: string;
-            fact: components["schemas"]["EvidenceField_str_"];
-        };
-        /** Alternative[Money] */
-        Alternative_Money_: {
-            value: components["schemas"]["Money"];
-            /** Source Segment Ids */
-            source_segment_ids: string[];
-            /** Note */
-            note: string;
-        };
-        /** BusinessRecord */
-        BusinessRecord: {
-            /**
-             * Schema Version
-             * @default 1
-             * @constant
-             */
-            schema_version: "1";
-            summary?: components["schemas"]["EvidenceField_str_"];
-            business_type?: components["schemas"]["EvidenceField_str_"];
-            offer?: components["schemas"]["EvidenceField_str_"];
-            target_customers?: components["schemas"]["EvidenceField_str_"];
-            problem?: components["schemas"]["EvidenceField_str_"];
-            location?: components["schemas"]["EvidenceField_Location_"];
-            market_research?: components["schemas"]["EvidenceField_str_"];
-            raw_materials?: components["schemas"]["EvidenceField_list_str__"];
-            suppliers?: components["schemas"]["EvidenceField_list_str__"];
-            investment?: components["schemas"]["EvidenceField_Money_"];
-            own_funds?: components["schemas"]["EvidenceField_Money_"];
-            requested_loan?: components["schemas"]["EvidenceField_Money_"];
-            unit_price?: components["schemas"]["EvidenceField_Money_"];
-            revenue?: components["schemas"]["EvidenceField_Money_"];
-            expenses?: components["schemas"]["EvidenceField_Money_"];
-            profit?: components["schemas"]["EvidenceField_Money_"];
-            competition?: components["schemas"]["EvidenceField_str_"];
-            differentiation?: components["schemas"]["EvidenceField_str_"];
-            existing_business?: components["schemas"]["EvidenceField_bool_"];
-            /**
-             * Sector
-             * @default unknown
-             * @enum {string}
-             */
-            sector: "agriculture" | "food_beverage" | "retail" | "services" | "manufacturing" | "other" | "unknown";
-            /** @default unknown */
-            trade: components["schemas"]["Trade"];
-            /** Additional Facts */
-            additional_facts?: components["schemas"]["AdditionalFact"][];
         };
         /** ClarificationAnswer */
         ClarificationAnswer: {
@@ -2304,59 +2194,6 @@ export interface components {
              */
             attachment_id: string | null;
         };
-        /** EvidenceField[Location] */
-        EvidenceField_Location_: {
-            /** @default null */
-            value: components["schemas"]["Location"] | null;
-            /** @default missing */
-            status: components["schemas"]["FieldStatus"];
-            /** Source Segment Ids */
-            source_segment_ids?: string[];
-            /** Alternatives */
-            alternatives?: components["schemas"]["Alternative_Location_"][];
-            /**
-             * Note
-             * @default null
-             */
-            note: string | null;
-        };
-        /** EvidenceField[Money] */
-        EvidenceField_Money_: {
-            /** @default null */
-            value: components["schemas"]["Money"] | null;
-            /** @default missing */
-            status: components["schemas"]["FieldStatus"];
-            /** Source Segment Ids */
-            source_segment_ids?: string[];
-            /** Alternatives */
-            alternatives?: components["schemas"]["Alternative_Money_"][];
-            /**
-             * Note
-             * @default null
-             */
-            note: string | null;
-        };
-        /** Money */
-        Money: {
-            /** Amount */
-            amount: string;
-            /**
-             * Currency
-             * @enum {string}
-             */
-            currency: "INR" | "unknown";
-            /**
-             * Period
-             * @default unknown
-             * @enum {string}
-             */
-            period: "day" | "week" | "month" | "year" | "once" | "unknown";
-            /**
-             * Unit
-             * @default null
-             */
-            unit: string | null;
-        };
         /** ReviewCreate */
         ReviewCreate: {
             /**
@@ -2373,40 +2210,6 @@ export interface components {
             reason: string;
             /** @default null */
             corrections: components["schemas"]["BusinessRecord"] | null;
-        };
-        /** ScoreSummary */
-        ScoreSummary: {
-            /**
-             * Rubric Version
-             * @default rubric-v1
-             * @constant
-             */
-            rubric_version: "rubric-v1";
-            /** Provisional Potential */
-            provisional_potential: string | null;
-            /** Headline Potential */
-            headline_potential: string | null;
-            /** Evidence Coverage */
-            evidence_coverage: string;
-            /** Completeness Percent */
-            completeness_percent: string;
-            /** Usable Fields */
-            usable_fields: number;
-            /** Applicable Fields */
-            applicable_fields: number;
-            /** Excluded Fields */
-            excluded_fields?: {
-                [key: string]: string;
-            };
-            /** Needs Clarification */
-            needs_clarification: boolean;
-            /** Ranking Eligible */
-            ranking_eligible: boolean;
-            /**
-             * Withheld Reason
-             * @default null
-             */
-            withheld_reason: string | null;
         };
         /** StageClaim */
         StageClaim: {
@@ -2679,6 +2482,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SubmissionView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_submission_v1_submissions__submission_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                submission_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeletionRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeletionResult"];
                 };
             };
             /** @description Validation Error */
@@ -3201,7 +3039,9 @@ export interface operations {
     };
     question_list_v1_submissions__submission_id__questions_get: {
         parameters: {
-            query?: never;
+            query?: {
+                language?: ("en" | "hi" | "mr" | "te" | "bn" | "or" | "und") | null;
+            };
             header?: never;
             path: {
                 submission_id: string;

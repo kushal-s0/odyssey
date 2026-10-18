@@ -13,3 +13,6 @@
 **/__pycache__/
 **/*.pyc
 **/.env*
+
+!data/localization/
+!data/localization/questions.json

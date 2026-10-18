@@ -1,0 +1,141 @@
+{
+  "synthetic": true,
+  "scope": "Judge rehearsal inputs, never a scored model benchmark",
+  "artifacts": [
+    {
+      "path": "text/positive-tea-en.txt",
+      "case_id": "positive-tea-en",
+      "format": "text",
+      "sha256": "e008922eb5f91b1737ad2343e61ada3a21da7dac958c349bc73957e9fb70b2df",
+      "bytes": 814
+    },
+    {
+      "path": "text/positive-tailoring-en.txt",
+      "case_id": "positive-tailoring-en",
+      "format": "text",
+      "sha256": "14f2849e652a3def46f6cf9b99d8f1d123bfa8a381c9eeee1fd505979191322b",
+      "bytes": 682
+    },
+    {
+      "path": "text/negative-conflicting-en.txt",
+      "case_id": "negative-conflicting-en",
+      "format": "text",
+      "sha256": "ddc056b6b25bae0c4d68f49e15c76dbc1e2bcea54a41557e9ae3a6824d9b6de5",
+      "bytes": 522
+    },
+    {
+      "path": "text/negative-incomplete-en.txt",
+      "case_id": "negative-incomplete-en",
+      "format": "text",
+      "sha256": "a5b96b9ef3954b56a26d384fca8f55f7b1c9ee6c92b6eb208457a345100256b6",
+      "bytes": 214
+    },
+    {
+      "path": "text/negative-irrelevant-en.txt",
+      "case_id": "negative-irrelevant-en",
+      "format": "text",
+      "sha256": "23e3e0f1b439466f1d2c5a4d3ea5a02f253120e471d97e3c51475b6dcda4958d",
+      "bytes": 208
+    },
+    {
+      "path": "text/negative-instructions-en.txt",
+      "case_id": "negative-instructions-en",
+      "format": "text",
+      "sha256": "048a79ca821ea0668a2ee433a910cf9bed92c23dfa17b97700d35eff9cde6326",
+      "bytes": 279
+    },
+    {
+      "path": "text/positive-tea-hi.txt",
+      "case_id": "positive-tea-hi",
+      "format": "text",
+      "sha256": "c0fa556ae638b6c46389f887b03fb3c72d83f32a8b2b68283dd7775e2a07f786",
+      "bytes": 889
+    },
+    {
+      "path": "text/negative-incomplete-hi.txt",
+      "case_id": "negative-incomplete-hi",
+      "format": "text",
+      "sha256": "f722d3316d43bfe30f14964dfa13380ff8254a463dd1326aef67c646ecbe233f",
+      "bytes": 383
+    },
+    {
+      "path": "pdf/positive-tea-en.pdf",
+      "case_id": "positive-tea-en",
+      "format": "digital_pdf",
+      "sha256": "0564200e7fd598c9d87c95b00694388fca345352e842d3bc98297d1c286b9274",
+      "bytes": 2584
+    },
+    {
+      "path": "pdf/positive-tea-en-scan.pdf",
+      "case_id": "positive-tea-en",
+      "format": "image_only_pdf",
+      "sha256": "cf6589a81039980af4571639bbd0559459851e8e0635b46b6f40a84b93bc04d2",
+      "bytes": 3387173
+    },
+    {
+      "path": "pdf/positive-tailoring-en.pdf",
+      "case_id": "positive-tailoring-en",
+      "format": "digital_pdf",
+      "sha256": "1ba2f76ec37804218158101988ae5ddf007c71d3ae1819f679351a532bc7fb52",
+      "bytes": 2474
+    },
+    {
+      "path": "pdf/negative-conflicting-en.pdf",
+      "case_id": "negative-conflicting-en",
+      "format": "digital_pdf",
+      "sha256": "8506e95a379b8d78bd44d174ffa26da9020c3fe2bb415ad4e4714c8bc42bd729",
+      "bytes": 2377
+    },
+    {
+      "path": "pdf/negative-conflicting-en-scan.pdf",
+      "case_id": "negative-conflicting-en",
+      "format": "image_only_pdf",
+      "sha256": "f91b25d33fa21f859bcf77389dffafbf26c090ee58b8ac40ea6be0bd9ff91e04",
+      "bytes": 3387173
+    },
+    {
+      "path": "pdf/negative-irrelevant-en.pdf",
+      "case_id": "negative-irrelevant-en",
+      "format": "digital_pdf",
+      "sha256": "f04065369176530e8a03b3cc6ca804d46e5c110dc2931cb6ee75f9dd646f3882",
+      "bytes": 2180
+    },
+    {
+      "path": "audio/positive-tea-en.wav",
+      "case_id": "positive-tea-en",
+      "format": "synthetic_speech_wav",
+      "sha256": "d0878324126b416310be9a16c53a5bb8a3ba2f7eb27ff9dc1d6097ec6384800f",
+      "bytes": 2836038
+    },
+    {
+      "path": "audio/negative-conflicting-en.wav",
+      "case_id": "negative-conflicting-en",
+      "format": "synthetic_speech_wav",
+      "sha256": "b39d2a1c64e881904bfdc6744b3becf63f9c98ca028ddef8635dc22c64f0e381",
+      "bytes": 1864438
+    },
+    {
+      "path": "audio/negative-irrelevant-en.wav",
+      "case_id": "negative-irrelevant-en",
+      "format": "synthetic_speech_wav",
+      "sha256": "6cb9dca4d51de20e5fbb9d5c35494a446f04451dac5e19c801a9cac9983b714c",
+      "bytes": 661402
+    },
+    {
+      "path": "audio/negative-silence.wav",
+      "case_id": "negative-silence",
+      "format": "silent_wav",
+      "sha256": "d303811b8c84619667cd0501342f84ec6cbe69f7aa3856dcf52fabda374c92b8",
+      "bytes": 96044
+    }
+  ],
+  "formats": {
+    "text": 8,
+    "digital_pdf": 4,
+    "image_only_pdf": 2,
+    "synthetic_speech_wav": 3,
+    "silent_wav": 1
+  },
+  "external_business_facts_verified": false,
+  "expected_model_scores": null
+}

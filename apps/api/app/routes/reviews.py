@@ -81,6 +81,8 @@ def review(submission_id: UUID, payload: ReviewInput, request: Request, actor: A
         if not current or current['current_revision_id'] != payload.expected_revision_id:
             raise HTTPException(409, 'This idea has a newer revision. Refresh before reviewing.')
         correction_revision = None
+        if payload.transcript_language == 'und':
+            raise HTTPException(422,'Choose the language of the reviewed transcript')
         if payload.replace_transcript and not (payload.source_verified and payload.correction_text):
             raise HTTPException(422, 'Replacing the transcript requires a complete correction and explicit source verification')
         if payload.correction_text or payload.source_verified:
@@ -89,8 +91,7 @@ def review(submission_id: UUID, payload: ReviewInput, request: Request, actor: A
             if not previous or not stored:
                 raise HTTPException(409, 'Wait for a saved assessment before correcting its interpretation')
             assessment = Assessment.model_validate(stored['payload'])
-            source = previous['source_text'] if previous['input_kind'] == 'text' else (
-                '[Extracted transcript; original document retained in the parent revision.]\n' +
+            source = ('[Evidence transcript; originals and lineage retained in version history.]\n' +
                 '\n'.join(segment.original_text for segment in assessment.evidence))
             if payload.replace_transcript:
                 source = '[Reviewer-corrected business transcript; original retained in the parent revision.]\n' + (payload.correction_text or '')
@@ -112,7 +113,7 @@ def review(submission_id: UUID, payload: ReviewInput, request: Request, actor: A
             c.execute('''INSERT INTO public.submission_versions(id,submission_id,revision_number,parent_revision_id,
                 input_kind,source_text,input_hash,preferred_language,declared_location,created_by)
                 VALUES(%s,%s,%s,%s,'text',%s,%s,%s,%s,%s)''', (correction_revision, submission_id,
-                previous['revision_number'] + 1, previous['id'], source, source_hash, previous['preferred_language'],
+                previous['revision_number'] + 1, previous['id'], source, source_hash, payload.transcript_language or previous['preferred_language'],
                 Jsonb(previous['declared_location']) if previous['declared_location'] else None, actor.id))
             c.execute('UPDATE public.submissions SET current_revision_id=%s,updated_at=now() WHERE id=%s', (correction_revision, submission_id))
             c.execute('''INSERT INTO public.processing_jobs(id,submission_id,input_revision_id,pipeline_version,backend)

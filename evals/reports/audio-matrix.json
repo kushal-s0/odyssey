@@ -1,0 +1,175 @@
+{
+  "scope": "Actual full organizer recordings, owned models/local API/PostgreSQL; synthetic operator identity",
+  "manifest_hash": "755958b6fc82cfd5f237f7a4199e16c52cc2c836ee5876b3c6b959b0a2004ea8",
+  "requested_languages": [
+    "hi",
+    "te",
+    "bn",
+    "or"
+  ],
+  "cases": [
+    {
+      "language_selection": "hi",
+      "source_sha256": "9dc51c79d8867e2a718d0a6ce3701ef3f1df10a33917a2c4ff173c8a099ac0d9",
+      "input_seconds": 124.096,
+      "human_quality_validated": false,
+      "original_download_intact": true,
+      "stages": [
+        {
+          "stage": "extract:audio",
+          "status": "completed",
+          "error_code": null
+        },
+        {
+          "stage": "translate",
+          "status": "completed",
+          "error_code": null
+        },
+        {
+          "stage": "structure",
+          "status": "completed",
+          "error_code": null
+        },
+        {
+          "stage": "assess",
+          "status": "completed",
+          "error_code": null
+        }
+      ],
+      "status": "completed",
+      "error_code": null,
+      "extraction_published": true,
+      "segments": 5,
+      "all_transcripts_uncertain": true,
+      "interruption_exercised": true,
+      "lease_generation": 2,
+      "assessment_persisted": true,
+      "withheld_reason": "source_requires_review",
+      "functional_passed": true,
+      "seconds": 171.797
+    },
+    {
+      "language_selection": "te",
+      "source_sha256": "9a131e0ed594eb9183fc36dcb8ad3016ba6501d8a5b38ce28f7aa675208a2b86",
+      "input_seconds": 98.944,
+      "human_quality_validated": false,
+      "original_download_intact": true,
+      "stages": [
+        {
+          "stage": "extract:audio",
+          "status": "completed",
+          "error_code": null
+        },
+        {
+          "stage": "translate",
+          "status": "completed",
+          "error_code": null
+        },
+        {
+          "stage": "structure",
+          "status": "completed",
+          "error_code": null
+        },
+        {
+          "stage": "assess",
+          "status": "completed",
+          "error_code": null
+        }
+      ],
+      "status": "completed",
+      "error_code": null,
+      "extraction_published": true,
+      "segments": 4,
+      "all_transcripts_uncertain": true,
+      "interruption_exercised": false,
+      "lease_generation": 1,
+      "assessment_persisted": true,
+      "withheld_reason": "source_requires_review",
+      "functional_passed": true,
+      "seconds": 74.985
+    },
+    {
+      "language_selection": "bn",
+      "source_sha256": "c51c3f274d11c5689b5e347a5047ef4c6b32b7a8c13fe6ebd1631c0b0d5bf5b6",
+      "input_seconds": 159.454,
+      "human_quality_validated": false,
+      "original_download_intact": true,
+      "stages": [
+        {
+          "stage": "extract:audio",
+          "status": "completed",
+          "error_code": null
+        },
+        {
+          "stage": "translate",
+          "status": "completed",
+          "error_code": null
+        },
+        {
+          "stage": "structure",
+          "status": "completed",
+          "error_code": null
+        },
+        {
+          "stage": "assess",
+          "status": "completed",
+          "error_code": null
+        }
+      ],
+      "status": "completed",
+      "error_code": null,
+      "extraction_published": true,
+      "segments": 7,
+      "all_transcripts_uncertain": true,
+      "interruption_exercised": false,
+      "lease_generation": 1,
+      "assessment_persisted": true,
+      "withheld_reason": "source_requires_review",
+      "functional_passed": true,
+      "seconds": 114.625
+    },
+    {
+      "language_selection": "or",
+      "source_sha256": "7418927bbc0c20e800f5861bf55996c5863a5677c16bc916b859680b45eb50b5",
+      "input_seconds": 128.555,
+      "human_quality_validated": false,
+      "original_download_intact": true,
+      "stages": [
+        {
+          "stage": "extract:audio",
+          "status": "completed",
+          "error_code": null
+        },
+        {
+          "stage": "translate",
+          "status": "completed",
+          "error_code": null
+        },
+        {
+          "stage": "structure",
+          "status": "completed",
+          "error_code": null
+        },
+        {
+          "stage": "assess",
+          "status": "completed",
+          "error_code": null
+        }
+      ],
+      "status": "completed",
+      "error_code": null,
+      "extraction_published": true,
+      "segments": 16,
+      "all_transcripts_uncertain": true,
+      "interruption_exercised": false,
+      "lease_generation": 1,
+      "assessment_persisted": true,
+      "withheld_reason": "source_requires_review",
+      "functional_passed": true,
+      "seconds": 215.312
+    }
+  ],
+  "passed": true,
+  "human_quality_validated": false,
+  "deployed": false
+}

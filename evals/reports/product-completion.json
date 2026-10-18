@@ -1,37 +1,39 @@
 {
-  "scope": "Local product completion checkpoint, 18 October 2026",
+  "scope": "Local judge functionality checkpoint, 18 October 2026; public release incomplete",
   "backend": {
-    "passed": 162,
+    "passed": 183,
     "skipped": 0,
-    "seconds": 81.22,
+    "seconds": 89.65,
     "known_warnings": [
-      "Starlette testclient anyio alias deprecation"
+      "Starlette TestClient/httpx deprecation"
     ]
   },
   "static_checks": {
     "ruff": "passed",
-    "mypy_files": 79,
+    "mypy_files": 87,
     "frontend_typecheck": "passed",
     "frontend_lint": "passed",
     "production_build": "passed"
   },
   "browser": {
-    "checks": 8,
+    "checks": 11,
     "javascript_errors": 0,
-    "fixture_boundaries": "Local real Edge/API/PostgreSQL; synthetic identity/model outputs/vectors; external OSM outage fixture with real saved snapshot"
+    "fixture_boundaries": "Local real Edge/API/PostgreSQL; synthetic identity/model outputs/vectors; OSM outage fixture with real snapshot; scoped cleanup passed"
   },
   "live_providers": {
     "supabase_migration_006": "explicitly approved, applied; six read-only schema checks pass",
-    "groq": "real configured gpt-oss-20b English/Hindi synthetic explanations pass; first Hindi attempt unavailable",
+    "groq": "real configured gpt-oss-20b English/Hindi synthetic explanations pass in 1.194/1.334 seconds; unchanged scores; sandbox ConnectError retained",
     "osm": "real bounded public lookup and dated ODbL snapshot"
   },
+  "judge_samples": {"files":18,"admission_and_original_integrity":"passed all18 on loopback only","synthetic_facts_not_external_truth":true,"actual_model_report":"evals/reports/judge-inference.json","actual_model_cases_passed":3,"policy":"quoted-facts-v7-explicit-spans-and-unknown-context","human_quality_validated":false},
+  "running_app": {"url":"http://127.0.0.1:5173","workspace_health":200,"api_health":200,"synthetic_submission_contract_present":true,"public":false},
   "model_quality_validated": false,
   "published": false,
   "limitations": [
     "No population accuracy, WER, Recall@5 or fairness claim",
-    "Full regional audio-to-assessment/recovery matrix incomplete",
+    "Full regional audio processing/recovery measured, but semantic transcript accuracy remains unvalidated",
     "Handwriting contains unreadable/capped pages",
-    "Question localization/audio follow-ups unfinished",
+    "Localized and audio follow-ups functionally verified; fluent question-language review remains pending",
     "Free public deployment and clean-machine reproduction unverified"
   ]
 }

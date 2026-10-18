@@ -12,6 +12,7 @@ from ..repositories.idempotency import canonical_hash
 from ..worker.manifest import MANIFEST, MANIFEST_HASH
 from .normalize import numeric_tokens
 from .structure import assemble
+from .inheritance import inherited_evidence
 
 
 def persist_text_stage(c: Connection[DictRow], stage: DictRow, job: DictRow, payload: dict[str,Any]) -> None:
@@ -26,11 +27,20 @@ def persist_text_stage(c: Connection[DictRow], stage: DictRow, job: DictRow, pay
         revision=c.execute('SELECT * FROM public.submission_versions WHERE id=%s',(job['input_revision_id'],)).fetchone()
         if not revision:
             raise ValueError('Revision unavailable')
+        inherited = {segment.id:segment for segment in inherited_evidence(c, revision)}
+        if not set(inherited).issubset({segment.id for segment in bundle.evidence}):
+            raise ValueError('Clarification cannot discard previous evidence')
         attachment=c.execute("SELECT id,pages,duration_seconds FROM public.attachments WHERE input_revision_id=%s AND status='attached'",
                              (job['input_revision_id'],)).fetchone()
         for segment in bundle.evidence:
             if segment.submission_id!=job['submission_id'] or segment.input_revision_id!=job['input_revision_id']:
                 raise ValueError('Unrelated evidence')
+            if segment.id in inherited:
+                if segment.model_dump() != inherited[segment.id].model_dump():
+                    raise ValueError('Inherited source evidence or translation changed')
+                continue
+            if segment.origin_revision_id or segment.origin_segment_id:
+                raise ValueError('Worker cannot invent source ancestry')
             if segment.kind=='text':
                 if (not revision['source_text'] or revision['source_text'][segment.start_character:segment.end_character]!=segment.original_text):
                     raise ValueError('Original text differs')

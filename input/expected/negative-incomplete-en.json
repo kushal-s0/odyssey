@@ -1,0 +1,32 @@
+{
+  "id": "negative-incomplete-en",
+  "family": "incomplete-001",
+  "language": "en",
+  "polarity": "negative",
+  "title": "Missing business information",
+  "text": "I would like to start a business. I do not yet know what product or service I will offer, who my customers will be, where I will operate, or how much money I will need. Please help me identify the next questions.",
+  "facts": {},
+  "unknowns": [
+    "Offer",
+    "Customers",
+    "Location",
+    "Investment",
+    "Selling price",
+    "Revenue",
+    "Expenses"
+  ],
+  "expect": [
+    "Keep unsupported fields missing",
+    "Request useful clarifications",
+    "Do not interpret missing evidence as a zero-quality business"
+  ],
+  "synthetic": true,
+  "ground_truth_scope": "Authored input statements only; not external verification or model-quality evaluation",
+  "confidence": {
+    "authored_reference_facts": "Explicitly supplied in this synthetic source",
+    "real_world_truth": "Not verified; fictional business",
+    "model_extraction_probability": null,
+    "human_language_quality_review": "pending",
+    "audio_or_scan": "Transcription needs source review before ranking"
+  }
+}

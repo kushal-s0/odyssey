@@ -1,0 +1,14 @@
+[
+  {
+    "id": "positive-tea-en",
+    "text": "I plan to open a tea stall in Jayanagar, Bengaluru, Karnataka. My customers are office workers who need quick morning tea. I spoke to 30 office workers; 18 said they would consider buying tea, but these are not confirmed orders. I plan to sell 120 cups per day at INR 10 per cup and operate 25 days per month. My total initial investment is INR 20000, consisting of INR 12000 own funds and an INR 8000 requested loan. Planned monthly expenses are INR 22000, including ingredients, rent and transport. I will buy tea leaves and milk from a local wholesale supplier. I need a stove, kettle and reusable cups. Two nearby stalls are alternatives, according to my own observation. My difference is pre-order pickup and reusable cups. The business has not started. All figures and market observations are my estimates."
+  },
+  {
+    "id": "negative-conflicting-en",
+    "text": "I want to sell tea to office workers in Bengaluru. I wrote INR 10 per cup in my first answer and INR 15 per cup in my second answer. I cannot confirm which selling price is correct. My total initial investment is INR 20000, but my own funds are INR 12000 and my requested loan is INR 18000. I plan to sell 120 cups per day for 25 days per month. I called INR 90000 my monthly profit, but I have not supplied ingredient costs, rent, other expenses or verified sales. I have not researched customers or nearby competitors."
+  },
+  {
+    "id": "negative-irrelevant-en",
+    "text": "The sky is blue. I enjoy cricket and my favourite season is winter. This paragraph contains no proposal to sell a product or provide a service, no customer group, no business location and no financial plan."
+  }
+]

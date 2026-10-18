@@ -27,6 +27,9 @@ class PipelineManifest(TypedDict):
     relevance: str
     extraction_policy: str
     document_policy: str
+    clarification_policy: str
+    speech_policy: str
+    judgment_recovery: str
 
 # Expected pipeline artifacts, not a deployment/quality claim. T09+ verify individual handlers.
 MANIFEST: PipelineManifest = {
@@ -42,8 +45,11 @@ MANIFEST: PipelineManifest = {
     'translation': {'id':'facebook/nllb-200-distilled-600M','revision':'f8d333a098d19b4fd9a8b18f94170487ad3f821d'},
     'rubric': 'rubric-v1', 'preprocessing':'text-evidence-v1', 'language_detector':'py3langid-0.3.0',
     'assessment_policy':'grounded-domain-v1', 'relevance':'rules-cosine-baseline-v1',
-    'extraction_policy':'quoted-facts-v5-individual-grounding-repair',
+    'extraction_policy':'quoted-facts-v7-explicit-spans-and-unknown-context',
     'document_policy':'pdf-pages-v1-review-required-ocr',
+    'clarification_policy':'linked-evidence-text-audio-v2',
+    'speech_policy':'bounded-adaptive-chunks-v2',
+    'judgment_recovery':'validated-retry-null-domain-v1',
 }
 MANIFEST_HASH = hashlib.sha256(json.dumps(MANIFEST, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
 

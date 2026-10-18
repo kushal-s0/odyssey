@@ -29,6 +29,7 @@ from app.providers.osm import OsmUnavailable
 import app.routes.location_insights as location_routes
 from product_helpers import save_assessment
 from test_database import seeded
+from test_submissions import wav
 from test_similar import index
 from verify_applicant_ui import free_port, server
 
@@ -39,6 +40,7 @@ def main():
         raise SystemExit('Product UI verification is restricted to the local test database')
     directory = ROOT/'.local'/('product-ui-' + uuid4().hex)
     directory.mkdir(parents=True)
+    (directory/'synthetic-followup.wav').write_bytes(wav(1))
     apiport, webport = free_port(), free_port()
     origin, web = f'http://127.0.0.1:{apiport}', f'http://127.0.0.1:{webport}'
     settings = Settings(_env_file=None, app_env='test', database_url=dsn, storage_backend='local',
@@ -59,6 +61,12 @@ def main():
     fixture = directory/'session.private.json'
     try:
         with seeded(database) as data:
+            # Private cleanup identities survive a failed UI/cleanup attempt.
+            # Never use a name/prefix search to remove other fixtures or users.
+            (directory/'cleanup.private.json').write_text(json.dumps({
+                'people':[str(value) for value in data['people']],
+                'cohorts':[str(value) for value in data['cohorts']],
+                'original_storage_path':data['object_path']}),encoding='utf-8')
             original = save_assessment(database,data['submissions'][0],data['revisions'][0])
             other = save_assessment(database,data['submissions'][1],data['revisions'][1])
             index(database,original,[1.] + [0.] * 383)
@@ -76,7 +84,7 @@ def main():
                 c.execute("INSERT INTO public.job_stages(job_id,stage_key,stage_order,input_hash,status) VALUES(%s,'extract:text',0,%s,'completed')",(job['id'],'a'*64))
             expires = int(time.time()) + 3600
             accounts = {}
-            for name, person in [('applicant',data['people'][0]),('assessor',data['people'][2])]:
+            for name, person in [('applicant',data['people'][0]),('assessor',data['people'][2]),('second_applicant',data['people'][1])]:
                 token = jwt.encode({'sub':str(person),'iss':settings.auth_issuer,'aud':'authenticated',
                     'role':'authenticated','exp':expires,'iat':int(time.time())-1},key,algorithm='RS256',headers={'kid':'product-fixture'})
                 accounts[name] = {'token':token,'user':str(person)}

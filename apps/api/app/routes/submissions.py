@@ -8,6 +8,7 @@ from fastapi import APIRouter, Header, HTTPException, Query, Request
 from psycopg.types.json import Jsonb
 
 from ..auth.access import ActorDep, DatabaseDep, submission_access
+from ..auth.scope import submission_scope
 from ..contracts.models import SubmissionAccepted, SubmissionCreate
 from ..contracts.uploads import SubmissionView
 from ..repositories.idempotency import begin_idempotent, finish_idempotent
@@ -17,7 +18,7 @@ from ..worker.gradio import activity
 
 router = APIRouter(prefix='/v1/submissions', tags=['submissions'])
 PIPELINE_VERSION = 'screening-v1'
-SELECT_VIEW = '''SELECT s.id,s.cohort_id,v.id AS revision_id,v.revision_number,v.input_kind,
+SELECT_VIEW = '''SELECT s.id,s.synthetic,s.cohort_id,v.id AS revision_id,v.revision_number,v.input_kind,
     v.preferred_language,v.source_text,a.id AS attachment_id,j.id AS job_id,j.status,s.created_at
     FROM public.submissions s JOIN public.submission_versions v ON v.id=s.current_revision_id
     JOIN public.processing_jobs j ON j.input_revision_id=v.id
@@ -60,8 +61,11 @@ def create(payload: SubmissionCreate, request: Request, actor: ActorDep, databas
             kind = 'pdf' if attachment['media_type'] == 'application/pdf' else 'audio'
         digest = attachment['sha256'] if attachment else hashlib.sha256((source_text or '').encode()).hexdigest()
         submission, revision, job = uuid4(), uuid4(), uuid4()
-        connection.execute('''INSERT INTO public.submissions(id,owner_id,cohort_id)
-            VALUES(%s,%s,%s)''', (submission, actor.id, payload.cohort_id))
+        # User-provided families may deduplicate only that user's synthetic inputs.
+        # Prefixing prevents collisions with real source families or other owners.
+        family = f'demo:{actor.id}:{payload.scenario_family}' if payload.scenario_family else None
+        connection.execute('''INSERT INTO public.submissions(id,owner_id,cohort_id,synthetic,family_id)
+            VALUES(%s,%s,%s,%s,%s)''', (submission, actor.id, payload.cohort_id, payload.synthetic, family))
         connection.execute('''INSERT INTO public.submission_versions
             (id,submission_id,revision_number,input_kind,source_text,input_hash,preferred_language,declared_location,created_by)
             VALUES(%s,%s,1,%s,%s,%s,%s,%s,%s)''',
@@ -87,9 +91,10 @@ def create(payload: SubmissionCreate, request: Request, actor: ActorDep, databas
 def listing(actor: ActorDep, database: DatabaseDep,
             limit: Annotated[int, Query(ge=1, le=100)] = 20,
             offset: Annotated[int, Query(ge=0, le=10000)] = 0) -> list[SubmissionView]:
+    scope,params=submission_scope(actor)
     with database.transaction(actor.id, read_scoped=True) as connection:
-        rows = connection.execute(SELECT_VIEW+'''WHERE s.deleted_at IS NULL
-            ORDER BY s.created_at DESC,s.id LIMIT %s OFFSET %s''', (limit, offset)).fetchall()
+        rows = connection.execute(SELECT_VIEW+f'''WHERE s.deleted_at IS NULL AND {scope}
+            ORDER BY s.created_at DESC,s.id LIMIT %s OFFSET %s''', (*params,limit,offset)).fetchall()
     return [SubmissionView(**row) for row in rows]
 
 

@@ -134,6 +134,8 @@ def content(attachment_id: UUID, request: Request, actor: ActorDep, database: Da
     data = configured_storage(settings).download(row['object_path'], settings.max_upload_mb*1024*1024)
     if hashlib.sha256(data).hexdigest() != row['sha256']:
         raise HTTPException(503, 'Stored source integrity could not be verified')
+    # Deletion may have tombstoned the source during object-storage I/O.
+    resource_access(database,actor,'attachments',attachment_id)
     return Response(data, media_type=row['media_type'], headers={
         'Content-Disposition': 'attachment; filename="original"', 'Content-Security-Policy': "sandbox; default-src 'none'"})
 

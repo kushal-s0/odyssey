@@ -1,0 +1,29 @@
+{
+  "scope": "Observed native scale-process working sets/CPU during local load, not isolated free-host container measurements",
+  "processes": [
+    {
+      "kind": "api-replica",
+      "rss_bytes": 79974400,
+      "peak_rss_bytes": 80044032,
+      "observed_cpu_percent_one_core": 3.0
+    },
+    {
+      "kind": "streaming-proxy",
+      "rss_bytes": 48689152,
+      "peak_rss_bytes": 50319360,
+      "observed_cpu_percent_one_core": 4.5
+    },
+    {
+      "kind": "load-driver",
+      "rss_bytes": 117571584,
+      "peak_rss_bytes": 122929152,
+      "observed_cpu_percent_one_core": 13.8
+    },
+    {
+      "kind": "api-replica",
+      "rss_bytes": 79622144,
+      "peak_rss_bytes": 79691776,
+      "observed_cpu_percent_one_core": 6.2
+    }
+  ]
+}

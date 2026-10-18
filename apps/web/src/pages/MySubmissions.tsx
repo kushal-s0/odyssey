@@ -9,6 +9,7 @@ import { ExplanationPanel } from '../components/ExplanationPanel'
 import { LocalContext } from '../components/LocalContext'
 import { ArithmeticChecks } from '../components/ArithmeticChecks'
 import { VersionHistory } from '../components/VersionHistory'
+import { DeleteSubmission } from '../components/DeleteSubmission'
 
 export type Submission = components['schemas']['SubmissionView']
 const finished = new Set(['completed', 'partial', 'needs_review', 'failed', 'cancelled'])
@@ -24,6 +25,7 @@ export function MySubmissions({ items, selectedId, onSelect, token, refresh }: {
   return <section className="my-submissions" aria-labelledby="my-submissions-title"><div className="list-heading"><div><span className="eyebrow">SAVED IN YOUR WORKSPACE</span><h2 id="my-submissions-title">My submissions</h2></div><button type="button" className="secondary-button" onClick={refresh}><RefreshCw size={15} />Refresh list</button></div>
     <p className="field-note">Latest 20 submissions. Your accepted ideas and progress stay saved after refresh or sign-out.</p>
     {items.length === 0 ? <p className="empty-state">Your saved ideas will appear here.</p> : <div className="submission-list">{items.map(item => <button type="button" key={item.id} className={selectedId === item.id ? 'selected' : ''} aria-pressed={selectedId === item.id} onClick={() => onSelect(item.id)}><strong>{item.input_kind === 'text' ? 'Written idea' : item.input_kind === 'pdf' ? 'PDF idea' : 'Audio idea'}</strong><span>{new Date(item.created_at).toLocaleString()}</span><small>{names[item.status] || 'Saved'} · {item.preferred_language}</small></button>)}</div>}
+    {selectedId && items.find(item => item.id === selectedId)?.synthetic && <p className="form-message" role="note">Synthetic rehearsal input. This fictional example is excluded from ordinary population comparisons.</p>}
     {selectedId && <SubmissionDetail key={selectedId} id={selectedId} token={token} onFinished={refresh} />}
   </section>
 }
@@ -37,6 +39,7 @@ export function SubmissionDetail({ id, token, onFinished, canClarify = true }: {
   const [busy, setBusy] = useState(false)
   const [checking, setChecking] = useState(false)
   const [refresh, setRefresh] = useState(0)
+  const [removed, setRemoved] = useState(false)
   const operation = useRef<AbortController | null>(null)
   useEffect(() => {
     const controller = new AbortController()
@@ -115,6 +118,7 @@ export function SubmissionDetail({ id, token, onFinished, canClarify = true }: {
     } catch (failure) { if (!controller.signal.aborted) setError(failure instanceof Error ? failure.message : 'Download failed.') }
     finally { if (!controller.signal.aborted) setBusy(false) }
   }
+  if (removed) return <p role="status" className="form-message">Idea deleted. Its originals and all derived versions have been removed.</p>
   return <div className="submission-detail"><div className="detail-heading"><h3>Saved processing status</h3><button className="secondary-button" type="button" disabled={busy || checking} onClick={() => setRefresh(value => value + 1)}>Refresh status</button></div>
     <p className="processing-status" role="status">{job ? names[job.status] || job.status : 'Loading…'}</p>
     {job && <><progress aria-label="Completed processing stages" value={job.completed_stages} max={job.total_stages} /><p className="field-note">{job.completed_stages} of {job.total_stages} processing stages saved. {job.error?.message}</p></>}
@@ -124,7 +128,8 @@ export function SubmissionDetail({ id, token, onFinished, canClarify = true }: {
       {(['failed', 'cancelled', 'needs_review'].includes(job.status) || waiting.has(job.status)) && <button className="secondary-button" type="button" disabled={busy} onClick={() => { void control(true) }}>Resume processing</button>}
       {submission.attachment_id && <button className="secondary-button" type="button" disabled={busy} onClick={() => { void download() }}>Download original</button>}</div>}
     {submission?.source_text && <details><summary>Your original submitted text</summary><p className="original-text">{submission.source_text}</p></details>}
-    {assessment && <><AssessmentView key={assessment.id} value={assessment} /><ExplanationPanel key={`explain:${assessment.id}`} value={assessment} token={token} /><ArithmeticChecks key={`math:${assessment.id}`} value={assessment} token={token} /><SimilarIdeas key={`similar:${assessment.id}`} value={assessment} token={token} /><LocalContext key={`local:${assessment.id}`} value={assessment} token={token} />{canClarify && <Clarifications value={assessment} token={token} onReassess={() => { setAssessment(null); setRefresh(n => n + 1); onFinished() }} />}</>}
+    {assessment && <><AssessmentView key={assessment.id} value={assessment} /><ExplanationPanel key={`explain:${assessment.id}`} value={assessment} token={token} /><ArithmeticChecks key={`math:${assessment.id}`} value={assessment} token={token} /><SimilarIdeas key={`similar:${assessment.id}`} value={assessment} token={token} /><LocalContext key={`local:${assessment.id}`} value={assessment} token={token} />{canClarify && <Clarifications value={assessment} token={token} preferredLanguage={submission?.preferred_language} onReassess={() => { setAssessment(null); setRefresh(n => n + 1); onFinished() }} />}</>}
+    {canClarify && submission && <DeleteSubmission id={id} revision={submission.revision_id} token={token} onDeleted={() => { setRemoved(true); onFinished() }} />}
     {submission && <VersionHistory key={`history:${submission.revision_id}`} id={id} current={assessment} token={token} />}
   </div>
 }

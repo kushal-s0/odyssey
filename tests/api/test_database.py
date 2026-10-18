@@ -46,7 +46,11 @@ def seeded(database):
     finally:
         with database.transaction() as c:
             c.execute("DELETE FROM storage.objects WHERE name=%s", (object_path,))
-            c.execute("DELETE FROM public.submissions WHERE id=ANY(%s)", (submissions,))
+            # Browser/submission tests may create additional revisions and ideas.
+            # The fresh random fixture identities own all of them; never leave a
+            # queued synthetic job behind when the original two rows are removed.
+            c.execute("DELETE FROM public.submissions WHERE owner_id=ANY(%s)", (people,))
+            c.execute("DELETE FROM public.attachments WHERE owner_id=ANY(%s)", (people,))
             c.execute("DELETE FROM public.cohorts WHERE id=ANY(%s)", (cohorts,))
             c.execute("DELETE FROM auth.users WHERE id=ANY(%s)", (people,))
 

@@ -1,0 +1,41 @@
+{
+  "id": "positive-tea-hi",
+  "family": "tea-001",
+  "language": "hi",
+  "polarity": "positive",
+  "title": "Hindi tea proposal",
+  "text": "मैं बेंगलुरु में दफ्तर के कर्मचारियों के लिए चाय की दुकान शुरू करना चाहता हूँ। एक कप चाय की कीमत 10 रुपये होगी। मैं रोज 120 कप और महीने में 25 दिन बिक्री का अनुमान लगाता हूँ। शुरुआती निवेश 20000 रुपये है। मेरे अपने 12000 रुपये हैं और मुझे 8000 रुपये का ऋण चाहिए। मासिक खर्च का अनुमान 22000 रुपये है। ये मेरे अनुमान हैं, पक्के ग्राहक या सत्यापित बिक्री नहीं हैं।",
+  "facts": {
+    "offer": "tea",
+    "target_customers": "office workers",
+    "location": "Bengaluru",
+    "unit_price_INR_per_cup": "10",
+    "investment_INR": "20000",
+    "own_funds_INR": "12000",
+    "requested_loan_INR": "8000",
+    "expenses_INR_per_month": "22000"
+  },
+  "derived_checks": {
+    "planned_revenue_INR_per_month": "30000",
+    "planned_profit_INR_per_month": "8000"
+  },
+  "unknowns": [
+    "Verified demand",
+    "Competitor details",
+    "Supplier details"
+  ],
+  "expect": [
+    "Preserve original Hindi and financial units",
+    "Translation needs human review",
+    "Do not treat the shorter version as an equivalent-language fairness benchmark"
+  ],
+  "synthetic": true,
+  "ground_truth_scope": "Authored input statements only; not external verification or model-quality evaluation",
+  "confidence": {
+    "authored_reference_facts": "Explicitly supplied in this synthetic source",
+    "real_world_truth": "Not verified; fictional business",
+    "model_extraction_probability": null,
+    "human_language_quality_review": "pending",
+    "audio_or_scan": "Transcription needs source review before ranking"
+  }
+}

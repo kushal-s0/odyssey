@@ -6,7 +6,7 @@
 **Application state:** Supabase-backed applicant and assessor workspaces, reviews/corrections, current/historical reports, similarity, four comparison views, financial checks, confirmed-area OSM and optional Groq explanations implemented. Dark/light/system responsive UI. Actual Groq English/Hindi, OSM, local translation/Hindi/Odia speech and full scan processing measured with limits; see [current checkpoint](../evals/reports/product-completion.json). No public application deployment.
 **Budget:** zero paid API or hosting dependencies.  
 **Active application task:** none. **Current scope:** full implementation, explanations/ and final T27 deployment walkthrough; local commits only.
-**Last update:** 2026-10-18, Asia/Calcutta. **Progress:** 9 / 29 tasks done.
+**Last update:** 2026-10-18, Asia/Calcutta. **Progress:** 12 / 29 tasks done.
 
 **Deadline:** 2026-10-18 06:00 Asia/Calcutta, working deployed demo included. Read [SESSION_HANDOFF.md](SESSION_HANDOFF.md), [HACKATHON_DELIVERY_PLAN.md](HACKATHON_DELIVERY_PLAN.md) and [PROJECT_REVIEW.md](PROJECT_REVIEW.md). Prefer verified laptop inference; English/Hindi human review only. Implementation is authorized by the latest user request; publication remains unapproved.
 
@@ -16,7 +16,7 @@ Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FRE
 
 | ID | Task | Status | Report path (create during execution) | Blocker |
 |---|---|---|---|---|
-| T01 | Inspect dataset and prove free-runtime feasibility | blocked | `task-reports/T01.md` | Gated language models/handwriting/audio and HF provisioning/access/quota unverified; owned English assessment and embeddings restored |
+| T01 | Inspect dataset and prove free-runtime feasibility | blocked | `task-reports/T01.md` | Owned multimodal runtime measured; free HF provisioning/quota and human language/handwriting validation remain unverified |
 | T02 | Scaffold application and local toolchain | done | `task-reports/T02.md` | None confirmed |
 | T03 | Define contracts, domain rules and rubric | done | `task-reports/T03.md` | None confirmed |
 | T04 | Implement database, durable stage leases and private storage | blocked | `task-reports/T04.md` | Actual Supabase migrations/private-object operations pass; hosted Free-plan quota/account and recovery gates unverified |
@@ -24,26 +24,26 @@ Read [execution instructions](CODEX_EXECUTION_PLAN.md), [free model hosting](FRE
 | T06 | Implement uploads and submission APIs | blocked | `task-reports/T06.md` | Actual hosted private PDF upload/download/delete pass; hosted retry/recovery matrix incomplete |
 | T07 | Implement durable Postgres jobs and free-runtime dispatch | blocked | `task-reports/T07.md` | Owned HTTP/native recovery verified; secondary HF provisioning/quota compatibility deferred and unverified |
 | T08 | Build applicant submission and recording UI | done | `task-reports/T08.md` | None confirmed |
-| T09 | Implement self-hosted extraction and Indic translation | blocked | `task-reports/T09.md` | English/adversarial owned assessments verified; IndicTrans2 401, longer exact-quote extraction, human review and remaining runtime gates pending |
+| T09 | Implement self-hosted extraction and Indic translation | blocked | `task-reports/T09.md` | Actual positive/missing/conflicting source checks pass under v7; corpus and regional human-reference quality remain unvalidated |
 | T09A | Train and evaluate our answer-relevance model | done | `task-reports/T09A.md` | None confirmed |
-| T10 | Implement PDF and handwritten scans with open weights | blocked | `task-reports/T10.md` | Digital PDF passes; full Hindi handwriting quality failed; OCR replacement not integrated |
-| T11 | Implement self-hosted regional audio transcription | blocked | `task-reports/T11.md` | Owned Hindi ASR smoke passes; full audio/language/recovery matrix pending and selected model lacks Odia |
+| T10 | Implement PDF and handwritten scans with open weights | blocked | `task-reports/T10.md` | PaddleOCR integrated and full 11-page processing/recovery measured; unreadable pages and mixed/overwritten semantic quality still fail or lack review |
+| T11 | Implement self-hosted regional audio transcription | blocked | `task-reports/T11.md` | Full Hindi/Telugu/Bengali/Odia processing and Hindi recovery pass; human transcript/reference quality remains unvalidated |
 | T12 | Implement evidence-backed ratings and deterministic totals | done | `task-reports/T12.md` | None confirmed |
 | T13 | Build assessor workspace, evidence viewer and review | blocked | `task-reports/T13.md` | Scoped queue/review/correction tests pass; all-format source and model/browser acceptance pending |
 | T14 | Implement authorized similar-idea retrieval | blocked | `task-reports/T14.md` | Scoped pgvector retrieval passes; real embedding publication and annotated Recall@5 pending |
 | T15 | Implement free OpenStreetMap business context | done | `task-reports/T15.md` | None confirmed |
 | T16 | Implement all four comparison views | done | `task-reports/T16.md` | None confirmed |
-| T17 | Implement clarification and reassessment | blocked | `task-reports/T17.md` | Text revision flow verified; localized/audio follow-ups and real-model before/after pending |
+| T17 | Implement clarification and reassessment | done | `task-reports/T17.md` | None confirmed |
 | T18 | Implement business arithmetic checks | done | `task-reports/T18.md` | None confirmed |
 | T19 | Implement reports and version history | done | `task-reports/T19.md` | None confirmed |
-| T20 | Evaluate dataset and our model with real measurements | pending | `task-reports/T20.md` | Human review currently available only for English/Hindi; other language quality unvalidated |
-| T21 | Harden access, uploads and failure boundaries | pending | `task-reports/T21.md` | None confirmed |
-| T22 | Measure portable API and model scalability | pending | `task-reports/T22.md` | Docker verified locally at T04; required two-API/two-worker scale experiment not run |
-| T23 | Package zero-spend application deployment | pending | `task-reports/T23.md` | None confirmed |
-| T23A | Package and deploy versioned model runtimes | pending | `task-reports/T23A.md` | Required HF provisioning/model access unverified; publication approval absent |
-| T24 | Deploy and verify the full free hosted application | pending | `task-reports/T24.md` | Service projects/access not verified; publication approval absent |
-| T25 | Run deployed acceptance and recovery checks | pending | `task-reports/T25.md` | None confirmed |
-| T26 | Write final implementation and readiness handover | pending | `task-reports/T26.md` | None confirmed |
+| T20 | Evaluate dataset and our model with real measurements | blocked | `task-reports/T20.md` | 18 synthetic rehearsal inputs accepted locally; original-corpus human annotations, transcript references and retrieval labels still missing |
+| T21 | Harden access, uploads and failure boundaries | done | `task-reports/T21.md` | None confirmed |
+| T22 | Measure portable API and model scalability | done | `task-reports/T22.md` | None confirmed |
+| T23 | Package zero-spend application deployment | blocked | `task-reports/T23.md` | Local image/packages pass; provider Free-plan/account limits and clean hosted deployment/recovery unverified |
+| T23A | Package and deploy versioned model runtimes | blocked | `task-reports/T23A.md` | Owned worker packaged/measured; secondary free HF provisioning, quota and approved publication remain missing |
+| T24 | Deploy and verify the full free hosted application | blocked | `task-reports/T24.md` | No approved public host projects/Free-plan verification or application publication |
+| T25 | Run deployed acceptance and recovery checks | blocked | `task-reports/T25.md` | No T24 public release URL exists for deployed acceptance and recovery |
+| T26 | Write final implementation and readiness handover | blocked | `task-reports/T26.md` | Local handover prepared; human evaluation and T24/T25 deployed release evidence unavailable |
 | T27 | Write detailed free-deployment walkthrough | blocked | `task-reports/T27.md` | Detailed actual-configuration guide prepared; publication/host provisioning and deployed reproduction unverified |
 
 ## Prerequisite record

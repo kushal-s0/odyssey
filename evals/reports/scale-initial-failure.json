@@ -1,0 +1,39 @@
+{
+  "scope": "Owned loopback only; two independent FastAPI instances in native threads, local round-robin proxy and two native worker processes; synthetic Auth issuer/business metadata/handlers",
+  "rows": 10000,
+  "virtual_users": 50,
+  "requested_seconds": 10,
+  "elapsed_seconds": 15.906,
+  "pace": "One request/user/second, no sticky sessions",
+  "requests": 104,
+  "p50_ms": 6690.914,
+  "p95_ms": 9230.294,
+  "error_count": 39,
+  "unexpected_error_percent": 37.5,
+  "route_p95_ms": {
+    "submissions": 8010.451,
+    "jobs": 13240.591,
+    "analytics": 13902.675
+  },
+  "replicas_seen": [
+    "0",
+    "1"
+  ],
+  "recovery": {
+    "jobs": 20,
+    "remaining": 0,
+    "interrupted_after_checkpoint": true,
+    "lease_expiry": "Explicitly injected only for one synthetic local stage after worker termination",
+    "recovered_generation": 2,
+    "publications": 20,
+    "unique_stages": 20
+  },
+  "cpu_logical_count": 16,
+  "platform": "Windows-10-10.0.26200-SP0",
+  "api_pool_max_each": 3,
+  "model_inference": false,
+  "public_services_called": false,
+  "target_p95_below_500ms": false,
+  "target_errors_below_one_percent": false,
+  "passed": true
+}

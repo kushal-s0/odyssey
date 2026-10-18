@@ -1,9 +1,13 @@
 # Optional Groq explanations — 18 October 2026
 
 ## Status
-- State: `blocked`
+- State: `done`
 - Scope: newly authorized optional explanation provider; supplements T12, does not replace owned scoring.
-- Uncommitted; live key/account/model availability still unverified.
+- Local implementation verified with configured synthetic provider requests; account billing entitlements and human explanation-quality validation remain unverified.
+
+## Latest judge verification, 18 October 2026
+
+Fresh actual configured English/Hindi synthetic requests passed in 1.194/1.334 seconds with six domain notes and unchanged scores. The initial sandbox ConnectError is retained in groq-network-blocked.json; the identical approved network retry passed. No applicant data sent. Frontend now rejects mismatched assessment IDs, resets state on assessment changes, prevents stale saved GET responses replacing generation and links suggested actions to fields. Eleven local UI journeys reached completion including an injected stale explanation; final fixture cleanup recheck is recorded with T12. Human explanation quality and Free account billing entitlements remain unverified, not inferred from successful inference. No paid fallback or publication.
 
 ## Outcome and checks
 providers/groq.py, routes/explanations.py, contracts/explanations.py and ExplanationPanel.tsx explain saved results in English/Hindi with field references, next steps, provenance and cached rule-based fallback. The provider cannot mutate scores. Raw files/transcripts, applicant identity and contact fields are excluded; contact patterns in structured text are redacted. Output schemas, domain completeness, present-field citations and unsupported numeric tokens are checked. These guards do not prove factual correctness; explanations remain labelled for evidence review.

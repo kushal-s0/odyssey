@@ -1,0 +1,14 @@
+{
+  "scope": "Local Edge/private review screen; synthetic form values only",
+  "inputs": 55,
+  "checks": [
+    "Missing review prerequisites denied",
+    "Navigation preserves private form state",
+    "Export includes complete JSON and expected fields",
+    "Mobile has no horizontal overflow"
+  ],
+  "javascript_errors": 0,
+  "human_labels_created": false,
+  "passed": true,
+  "deployed": false
+}

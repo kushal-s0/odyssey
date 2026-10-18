@@ -4,7 +4,7 @@ from uuid import UUID
 
 from pydantic import Field
 
-from .models import Contract, Language, StageClaim
+from .models import Contract, Evidence, Language, StageClaim
 
 
 class WorkerRequest(Contract):
@@ -26,6 +26,8 @@ class ClaimResponse(Contract):
 
 
 class StageInput(Contract):
+    inherited_evidence: list[Evidence] = Field(default_factory=list, max_length=180)
+    answer_fields: list[str] = Field(default_factory=list, max_length=3)
     submission_id: UUID
     input_revision_id: UUID
     input_kind: Literal['text', 'pdf', 'audio']

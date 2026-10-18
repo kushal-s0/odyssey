@@ -40,6 +40,7 @@ class UploadCompleted(Contract):
 
 class SubmissionView(Contract):
     id: UUID
+    synthetic: bool = False
     cohort_id: UUID | None
     revision_id: UUID
     revision_number: int

@@ -57,6 +57,7 @@ function ReviewForm({ id, token, onSaved }: { id: string; token: string; onSaved
   const [reason, setReason] = useState('')
   const [correction, setCorrection] = useState('')
   const [sourceVerified, setSourceVerified] = useState(false)
+  const [transcriptLanguage,setTranscriptLanguage]=useState('en')
   const [replaceTranscript, setReplaceTranscript] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -77,7 +78,7 @@ function ReviewForm({ id, token, onSaved }: { id: string; token: string; onSaved
     setBusy(true); setError(''); setSaved('')
     try {
       const body = { expected_revision_id: expectedRevision, outcome, reason, correction_text: correction.trim() || null,
-        source_verified: sourceVerified, replace_transcript: replaceTranscript }
+        source_verified: sourceVerified, replace_transcript: replaceTranscript, ...(sourceVerified ? { transcript_language:transcriptLanguage } : {}) }
       // Keep a failed write's exact expected revision for safe retry.
       const serialized = JSON.stringify(body)
       if (pending.current?.body !== serialized) pending.current = { body: serialized, key: crypto.randomUUID() }
@@ -94,7 +95,7 @@ function ReviewForm({ id, token, onSaved }: { id: string; token: string; onSaved
     <label>Reason<textarea required minLength={5} maxLength={4000} rows={3} value={reason} onChange={e => setReason(e.target.value)} placeholder="Explain your decision using the original evidence." /></label>
     <details><summary>Check or correct the transcript</summary><p className="field-note">Compare every relevant answer and figure with the original file. A correction or transcript verification creates a new revision for reassessment; previous results and decisions remain in history.</p><label>Correction or complete corrected business transcript<textarea minLength={5} maxLength={6000} rows={4} value={correction} onChange={e => setCorrection(e.target.value)} /></label>
       <label className="consent"><input type="checkbox" checked={sourceVerified} onChange={e => { setSourceVerified(e.target.checked); if (!e.target.checked) setReplaceTranscript(false) }} /><span>I checked the complete business transcript against the original, including language, financial figures and overwritten answers. This verifies the transcription, not the business claims.</span></label>
-      <label className="consent"><input type="checkbox" disabled={!sourceVerified || correction.trim().length < 5} checked={replaceTranscript} onChange={e => setReplaceTranscript(e.target.checked)} /><span>Use my correction as the complete business transcript for the new version. Keep the original in history.</span></label></details>
+      <label>Reviewed transcript language<select aria-label="Reviewed transcript language" disabled={!sourceVerified} value={transcriptLanguage} onChange={e=>setTranscriptLanguage(e.target.value)}>{[["en","English"],["hi","Hindi"],["mr","Marathi ? fluent reviewer required"],["te","Telugu ? fluent reviewer required"],["bn","Bengali ? fluent reviewer required"],["or","Odia ? fluent reviewer required"]].map(([code,label])=><option key={code} value={code}>{label}</option>)}</select></label><label className="consent"><input type="checkbox" disabled={!sourceVerified || correction.trim().length < 5} checked={replaceTranscript} onChange={e => setReplaceTranscript(e.target.checked)} /><span>Use my correction as the complete business transcript for the new version. Keep the original in history.</span></label></details>
     <button className="primary-link" type="submit" disabled={!expectedRevision}>{busy ? 'Saving review…' : 'Save review'}</button></fieldset></form>
     {error && <p role="alert" className="form-error">{error}</p>}{saved && <p role="status" className="form-message">{saved}</p>}
     {reviews.length > 0 && <details><summary>Review history ({reviews.length})</summary>{reviews.map(review => <article key={review.id} className="review-entry"><strong>{review.outcome.replaceAll('_', ' ')}</strong><p>{review.reason}</p><small>{new Date(review.created_at).toLocaleString()}{review.correction_revision_id ? ' · correction revision created' : ''}</small></article>)}</details>}

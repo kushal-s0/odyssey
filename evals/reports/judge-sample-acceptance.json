@@ -1,0 +1,153 @@
+{
+  "scope": "Real local API/PostgreSQL/private storage; synthetic files and test identity; jobs cancelled before inference",
+  "cases": [
+    {
+      "path": "text/positive-tea-en.txt",
+      "format": "text",
+      "hash_verified": true,
+      "accepted": true,
+      "original_intact": true,
+      "synthetic_metadata_preserved": true
+    },
+    {
+      "path": "text/positive-tailoring-en.txt",
+      "format": "text",
+      "hash_verified": true,
+      "accepted": true,
+      "original_intact": true,
+      "synthetic_metadata_preserved": true
+    },
+    {
+      "path": "text/negative-conflicting-en.txt",
+      "format": "text",
+      "hash_verified": true,
+      "accepted": true,
+      "original_intact": true,
+      "synthetic_metadata_preserved": true
+    },
+    {
+      "path": "text/negative-incomplete-en.txt",
+      "format": "text",
+      "hash_verified": true,
+      "accepted": true,
+      "original_intact": true,
+      "synthetic_metadata_preserved": true
+    },
+    {
+      "path": "text/negative-irrelevant-en.txt",
+      "format": "text",
+      "hash_verified": true,
+      "accepted": true,
+      "original_intact": true,
+      "synthetic_metadata_preserved": true
+    },
+    {
+      "path": "text/negative-instructions-en.txt",
+      "format": "text",
+      "hash_verified": true,
+      "accepted": true,
+      "original_intact": true,
+      "synthetic_metadata_preserved": true
+    },
+    {
+      "path": "text/positive-tea-hi.txt",
+      "format": "text",
+      "hash_verified": true,
+      "accepted": true,
+      "original_intact": true,
+      "synthetic_metadata_preserved": true
+    },
+    {
+      "path": "text/negative-incomplete-hi.txt",
+      "format": "text",
+      "hash_verified": true,
+      "accepted": true,
+      "original_intact": true,
+      "synthetic_metadata_preserved": true
+    },
+    {
+      "path": "pdf/positive-tea-en.pdf",
+      "format": "digital_pdf",
+      "hash_verified": true,
+      "accepted": true,
+      "original_intact": true,
+      "synthetic_metadata_preserved": true
+    },
+    {
+      "path": "pdf/positive-tea-en-scan.pdf",
+      "format": "image_only_pdf",
+      "hash_verified": true,
+      "accepted": true,
+      "original_intact": true,
+      "synthetic_metadata_preserved": true
+    },
+    {
+      "path": "pdf/positive-tailoring-en.pdf",
+      "format": "digital_pdf",
+      "hash_verified": true,
+      "accepted": true,
+      "original_intact": true,
+      "synthetic_metadata_preserved": true
+    },
+    {
+      "path": "pdf/negative-conflicting-en.pdf",
+      "format": "digital_pdf",
+      "hash_verified": true,
+      "accepted": true,
+      "original_intact": true,
+      "synthetic_metadata_preserved": true
+    },
+    {
+      "path": "pdf/negative-conflicting-en-scan.pdf",
+      "format": "image_only_pdf",
+      "hash_verified": true,
+      "accepted": true,
+      "original_intact": true,
+      "synthetic_metadata_preserved": true
+    },
+    {
+      "path": "pdf/negative-irrelevant-en.pdf",
+      "format": "digital_pdf",
+      "hash_verified": true,
+      "accepted": true,
+      "original_intact": true,
+      "synthetic_metadata_preserved": true
+    },
+    {
+      "path": "audio/positive-tea-en.wav",
+      "format": "synthetic_speech_wav",
+      "hash_verified": true,
+      "accepted": true,
+      "original_intact": true,
+      "synthetic_metadata_preserved": true
+    },
+    {
+      "path": "audio/negative-conflicting-en.wav",
+      "format": "synthetic_speech_wav",
+      "hash_verified": true,
+      "accepted": true,
+      "original_intact": true,
+      "synthetic_metadata_preserved": true
+    },
+    {
+      "path": "audio/negative-irrelevant-en.wav",
+      "format": "synthetic_speech_wav",
+      "hash_verified": true,
+      "accepted": true,
+      "original_intact": true,
+      "synthetic_metadata_preserved": true
+    },
+    {
+      "path": "audio/negative-silence.wav",
+      "format": "silent_wav",
+      "hash_verified": true,
+      "accepted": true,
+      "original_intact": true,
+      "synthetic_metadata_preserved": true
+    }
+  ],
+  "passed": true,
+  "model_inference_run": false,
+  "human_quality_validated": false,
+  "deployed": false
+}

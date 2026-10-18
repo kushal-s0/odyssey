@@ -39,6 +39,7 @@ class ReviewInput(Contract):
     correction_text: str | None = Field(default=None, min_length=5, max_length=6000)
     source_verified: bool = False
     replace_transcript: bool = False
+    transcript_language: Language | None = None
 
     @field_validator('reason', 'correction_text')
     @classmethod

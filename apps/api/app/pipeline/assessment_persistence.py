@@ -19,6 +19,18 @@ from ..worker.manifest import MANIFEST, MANIFEST_HASH
 from .assessment_rules import domain_facts, validate_ratings
 
 
+def source_review_required(bundle: StructuredBundle, *, verified: bool = False,
+                           input_kind: str = '', language: str = 'und') -> bool:
+    if (verified and input_kind=='text' and bundle.evidence and
+            all(s.kind=='text' and not s.translation_uncertain and s.language.code in {'en',language}
+                for s in bundle.evidence)):
+        return False
+    return any(s.language.needs_confirmation or s.translation_uncertain or
+        (s.kind=='pdf' and s.extraction_uncertain) or (s.kind=='audio' and s.transcription_uncertain)
+        for s in bundle.evidence) or any(warning.startswith(('pdf_ocr_','pdf_page_','pdf_corrupt_'))
+                                        for warning in bundle.warnings)
+
+
 def persist_assessment_stage(c: Connection[DictRow],stage: DictRow,job: DictRow,payload: dict[str,Any]) -> None:
     if job['pipeline_version']!='screening-v1' or stage['stage_key']!='assess':
         return
@@ -54,11 +66,8 @@ def persist_assessment_stage(c: Connection[DictRow],stage: DictRow,job: DictRow,
         version=c.execute('SELECT coalesce(max(version),0)+1 AS n FROM public.assessments WHERE submission_id=%s',
                           (job['submission_id'],)).fetchone()
         assert version is not None
-        source_review=any(s.language.needs_confirmation or s.translation_uncertain or
-                         (s.kind=='pdf' and s.extraction_uncertain) or
-                         (s.kind=='audio' and s.transcription_uncertain) for s in bundle.evidence) or any(
-            warning.startswith(('pdf_ocr_', 'pdf_page_', 'pdf_corrupt_')) for warning in bundle.warnings)
-        revision = c.execute('SELECT parent_revision_id FROM public.submission_versions WHERE id=%s',
+        source_review=source_review_required(bundle)
+        revision = c.execute('SELECT parent_revision_id,input_kind,preferred_language FROM public.submission_versions WHERE id=%s',
                              (job['input_revision_id'],)).fetchone()
         parent_id = revision['parent_revision_id'] if revision else None
         if parent_id:
@@ -66,6 +75,11 @@ def persist_assessment_stage(c: Connection[DictRow],stage: DictRow,job: DictRow,
             verified = c.execute('''SELECT 1 FROM public.audit_events WHERE resource_id=%s
                 AND event_type='source_transcript_verified' AND safe_metadata->>'correction_revision_id'=%s LIMIT 1''',
                 (parent_id,str(job['input_revision_id']))).fetchone()
+            if verified and revision:
+                # An exact-revision trusted source/language check supersedes a
+                # detector's low confidence, but never uncertain translation.
+                source_review=source_review_required(bundle,verified=True,input_kind=revision['input_kind'],
+                                                     language=revision['preferred_language'])
             source_review = source_review or bool(parent and not verified and
                 parent['payload']['scores'].get('withheld_reason') == 'source_requires_review')
         scores=summarize(output.domains,bundle.business,source_review_required=source_review)

@@ -73,6 +73,8 @@ class LanguageResult(Contract):
 
 
 class EvidenceBase(Contract):
+    origin_revision_id: UUID | None = None
+    origin_segment_id: UUID | None = None
     id: UUID
     submission_id: UUID
     input_revision_id: UUID
@@ -328,10 +330,14 @@ class SubmissionCreate(Contract):
     preferred_language: Language = "en"
     cohort_id: UUID | None = None
     declared_location: Location | None = None
+    synthetic: bool = False
+    scenario_family: str | None = Field(default=None, min_length=1, max_length=100, pattern=r'^[a-zA-Z0-9_-]+$')
     consent: Literal[True]
 
     @model_validator(mode="after")
     def exactly_one_input(self) -> SubmissionCreate:
+        if self.scenario_family and not self.synthetic:
+            raise ValueError('Scenario families are only available for synthetic rehearsal inputs')
         if bool(self.text and self.text.strip()) == bool(self.attachment_ids):
             raise ValueError("Provide text or one attachment")
         return self

@@ -1,8 +1,6 @@
-# T07 worker operations
+# Owned worker operations
 
-The outbound runner and HTTP recovery work with local PostgreSQL. Model handlers
-and final assessment persistence remain T09–T12. No model inference or hosted
-Space/deployment was verified in this continuation.
+The outbound runner, native model handlers and final assessment persistence are connected. Real English/text/PDF and text/audio follow-ups have passed; regional and handwriting quality limits remain explicit. This is owned-laptop inference, with a separate optional loopback PostgreSQL test database. No hosted Space or public deployment has been verified.
 
 ## Configuration and startup
 
@@ -44,9 +42,13 @@ create/clean their own synthetic jobs and exercise actual HTTP/subprocesses:
 .venv/Scripts/python.exe -B -m pytest -c apps/api/pyproject.toml tests/api/test_worker_process.py -q
 ```
 
-`--handler module:function --stages ...` loads trusted operator-installed code.
-No real model handler command exists yet. T09–T12 must implement/measure those
-handlers; never advertise unsupported stages just to empty the queue.
+`--handler module:function --stages ...` loads trusted operator-installed code. The implemented handler is `app.pipeline.run:handler` with `extract:text extract:pdf extract:audio translate structure assess`. Use the model environment, not the lightweight API environment:
+
+```powershell
+.venv-model/Scripts/python.exe -B -m app.worker --allow-loopback --handler app.pipeline.run:handler --stages extract:text extract:pdf extract:audio translate structure assess --continuous --stage-seconds 600
+```
+
+This separate command requires the narrow worker-only file above; the normal local `start.cmd` instead supplies worker values from the one root `.env.local`. For a remote API use its approved HTTPS origin and omit `--allow-loopback`. Do not run both launcher and separate worker on the same 8 GB GPU. Continuous mode runs until the operator stops it and polls actual work; it does not keep a free hosted model alive.
 
 ## Recovery and limits
 

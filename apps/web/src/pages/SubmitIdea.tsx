@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { Upload, Send } from 'lucide-react'
 import { apiRequest, ApiError } from '../api/client'
 import type { components } from '../api/generated/schema'
+import { upload } from '../api/uploads'
 import { AudioRecorder } from '../components/AudioRecorder'
 
 type Actor = components['schemas']['ActorView']
@@ -14,36 +15,6 @@ const MAX_BYTES = 25 * 1024 * 1024
 const mediaTypes: Record<string, string> = { pdf: 'application/pdf', wav: 'audio/wav', mp3: 'audio/mpeg',
   m4a: 'audio/mp4', mp4: 'video/mp4', webm: 'audio/webm', ogg: 'audio/ogg' }
 
-function upload(path: string, file: File, mime: string, token: string, signal: AbortSignal, progress: (n: number) => void) {
-  return new Promise<void>((resolve, reject) => {
-    const base = import.meta.env.VITE_API_BASE_URL as string | undefined
-    if (!base) { reject(new Error('The workspace API is not configured.')); return }
-    // Upload paths come from this API but must still remain under its origin.
-    if (!/^\/v1\/uploads\/[a-f0-9-]+\/complete$/.test(path)) { reject(new Error('Invalid upload destination.')); return }
-    const request = new XMLHttpRequest()
-    const abort = () => request.abort()
-    signal.addEventListener('abort', abort, { once: true })
-    const cleanup = () => signal.removeEventListener('abort', abort)
-    request.open('PUT', `${base.replace(/\/$/, '')}${path}`)
-    request.timeout = 120_000
-    request.setRequestHeader('Authorization', `Bearer ${token}`)
-    request.setRequestHeader('Content-Type', mime)
-    request.upload.onprogress = event => { if (event.lengthComputable) progress(Math.round(event.loaded / event.total * 100)) }
-    request.onload = () => {
-      cleanup()
-      if (request.status >= 200 && request.status < 300) resolve()
-      else {
-        let message = 'Upload could not be saved. Check the file and try again.'
-        try { message = (JSON.parse(request.responseText) as { message?: string }).message || message } catch { /* generic safe error */ }
-        reject(new Error(message))
-      }
-    }
-    request.onerror = request.ontimeout = () => { cleanup(); reject(new Error('Upload interrupted. Keep this file selected and retry.')) }
-    request.onabort = () => { cleanup(); reject(new DOMException('Upload cancelled', 'AbortError')) }
-    if (signal.aborted) { cleanup(); reject(new DOMException('Upload cancelled', 'AbortError')); return }
-    request.send(file)
-  })
-}
 
 export function SubmitIdea({ actor, token, onAccepted }: { actor: Actor; token: string; onAccepted: (value: Accepted) => void }) {
   const [mode, setMode] = useState<Mode>('text')
@@ -52,6 +23,8 @@ export function SubmitIdea({ actor, token, onAccepted }: { actor: Actor; token: 
   const [cohort, setCohort] = useState('')
   const [location, setLocation] = useState('')
   const [consent, setConsent] = useState(false)
+  const [synthetic, setSynthetic] = useState(false)
+  const [family, setFamily] = useState('')
   const [file, setFile] = useState<File | null>(null)
   const [playback, setPlayback] = useState('')
   const [busy, setBusy] = useState(false)
@@ -95,7 +68,7 @@ export function SubmitIdea({ actor, token, onAccepted }: { actor: Actor; token: 
     try {
       const mime = file ? (file.type.split(';')[0] || mediaTypes[file.name.split('.').pop()?.toLowerCase() || '']) : ''
       const sourceHash = file && mode !== 'text' ? Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', await file.arrayBuffer()))).map(n => n.toString(16).padStart(2, '0')).join('') : text
-      const fingerprintInput = JSON.stringify({ mode, sourceHash, language, cohort, location, filename: file?.name })
+      const fingerprintInput = JSON.stringify({ mode, sourceHash, language, cohort, location, synthetic, family, filename: file?.name })
       const fingerprint = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(fingerprintInput)))).map(n => n.toString(16).padStart(2, '0')).join('')
       let saved = pending.current
       try { saved = JSON.parse(sessionStorage.getItem(storageKey) || 'null') as Pending | null } catch { /* storage may be disabled */ }
@@ -115,6 +88,7 @@ export function SubmitIdea({ actor, token, onAccepted }: { actor: Actor; token: 
       setMessage('Saving your idea and processing request…')
       const accepted = await apiRequest<Accepted>('/v1/submissions', { token, method: 'POST', idempotencyKey: intent.submitKey, signal: controller.signal,
         body: { ...(mode === 'text' ? { text } : { attachment_ids: [intent.attachmentId] }), preferred_language: language,
+          synthetic, scenario_family: synthetic && family.trim() ? family.trim() : null,
           cohort_id: cohort || null, declared_location: location.trim() ? { locality: location.trim(), precision: 'locality', applicant_confirmed: true } : null, consent: true } })
       if (controller.signal.aborted) return
       try { sessionStorage.removeItem(storageKey) } catch { /* private storage disabled */ }
@@ -139,7 +113,7 @@ export function SubmitIdea({ actor, token, onAccepted }: { actor: Actor; token: 
     <div className="input-modes" role="group" aria-label="Idea format">{(['text', 'pdf', 'audio'] as const).map(value => <button type="button" aria-pressed={mode === value} disabled={busy} key={value} onClick={() => { setMode(value); setFile(null); setError('') }}>{value === 'text' ? 'Text' : value === 'pdf' ? 'PDF' : 'Audio'}</button>)}</div>
     <form onSubmit={event => { void submit(event) }}>
       <fieldset disabled={busy}>
-        {mode === 'text' ? <label>Your idea<textarea required maxLength={30000} rows={7} value={text} onChange={event => setText(event.target.value)} placeholder="I plan to sell… My customers are…" /><small>{text.length.toLocaleString()} / 30,000 characters</small></label> : <>
+        {mode === 'text' ? <label>Your idea<textarea aria-label="Your idea" required maxLength={30000} rows={7} value={text} onChange={event => setText(event.target.value)} placeholder="I plan to sell… My customers are…" /><small>{text.length.toLocaleString()} / 30,000 characters</small></label> : <>
           {mode === 'audio' && <AudioRecorder onFile={pickFile} disabled={busy} onActivityChange={onRecordingActivity} />}
           <label className="file-picker"><Upload size={20} />{mode === 'pdf' ? 'Choose a PDF' : 'Upload an audio file'}<input ref={fileInput} aria-label={mode === 'pdf' ? 'PDF file' : 'Audio file'} type="file" accept={mode === 'pdf' ? 'application/pdf,.pdf' : 'audio/*,video/mp4,.m4a,.mp4,.ogg,.webm,.wav,.mp3'} onChange={event => pickFile(event.target.files?.[0] || null)} /></label>
           <p className="field-note">{mode === 'pdf' ? 'Maximum 20 pages and 25 MB. Digital PDFs are processed by the owned worker; scanned handwriting needs human review.' : 'Maximum 10 minutes and 25 MB. The owned speech worker transcribes supported languages after model provisioning. For Odia, select Odia explicitly; it uses a separate model. All transcriptions need review.'} Your file is saved privately. Uploading does not mean assessment is complete.</p>
@@ -150,6 +124,8 @@ export function SubmitIdea({ actor, token, onAccepted }: { actor: Actor; token: 
           <label>Program / cohort<select value={cohort} onChange={event => setCohort(event.target.value)}><option value="">Personal submission</option>{actor.cohorts.filter(value => value.role === 'applicant' || actor.role === 'admin').map(value => <option key={value.id} value={value.id}>{value.name}</option>)}</select></label></div>
         <label>Known business location <span className="optional">(optional)</span><input maxLength={200} value={location} onChange={event => setLocation(event.target.value)} placeholder="Village, locality or district you know" /></label>
         <p className="field-note">Regional text uses an owned translation model when provisioned. Originals remain available for review. Language and transcription quality must be checked before decisions.</p>
+        <label className="inline-check"><input type="checkbox" checked={synthetic} onChange={event => setSynthetic(event.target.checked)} />Synthetic rehearsal input</label>
+        {synthetic && <><p className="field-note">This fictional example is excluded from ordinary population charts. Enable labelled examples in Comparisons to show it.</p><label>Scenario family (optional)<input value={family} maxLength={100} pattern="[a-zA-Z0-9_-]+" onChange={event => setFamily(event.target.value)} placeholder="tea-001" /><small>Use the same identifier for text, PDF and audio versions of this fictional idea.</small></label></>}
         <label className="consent"><input type="checkbox" checked={consent} required onChange={event => setConsent(event.target.checked)} /><span>I consent to my idea and original file being stored privately and used for this assessment and authorized human review.</span></label>
         <button className="primary-link submit-button" type="submit"><Send size={16} />{busy ? 'Saving…' : 'Submit idea'}</button>
       </fieldset>

@@ -1,0 +1,3 @@
+# Prepared application translations
+
+questions.json contains generic application copy only, generated through the configured Groq model. Provider/model provenance is recorded in the file. No organizer or applicant content was sent. The English original remains canonical and visible alongside translations; human language review is pending. These translations do not establish extraction, transcription or population-language accuracy. The app works from this bundled copy without a translation API call. Regeneration is an explicit developer operation with scripts/localize_questions.py, preserving already prepared languages.

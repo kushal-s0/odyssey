@@ -33,7 +33,10 @@ from .routes.explanations import router as explanations_router
 from .routes.location_insights import router as location_router
 from .routes.economics import router as economics_router
 from .routes.reports import router as reports_router
+from .routes.deletion import router as deletion_router
+from .middleware.body_limits import JsonBodyLimits
 from .services.jobs import Jobs
+from .services.comparison_cache import ComparisonMemo
 from .worker.gradio import activity
 from .services.storage import StorageUnavailable
 
@@ -67,6 +70,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     application = FastAPI(title="Udyam Saathi API", version=config.app_version,
                           docs_url="/docs" if config.app_env != "production" else None, lifespan=lifespan)
     application.state.settings = config
+    application.state.comparison_cache = ComparisonMemo()
     application.state.token_verifier = TokenVerifier(config)
     application.include_router(auth_router)
     application.include_router(uploads_router)
@@ -82,6 +86,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     application.include_router(location_router)
     application.include_router(economics_router)
     application.include_router(reports_router)
+    application.include_router(deletion_router)
+    application.add_middleware(JsonBodyLimits)
     application.add_middleware(CORSMiddleware, allow_origins=config.cors_origins,
                                allow_credentials=False, allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
                                allow_headers=["Authorization", "Content-Type", "Idempotency-Key", "X-Request-ID"])

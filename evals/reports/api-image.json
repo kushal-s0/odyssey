@@ -1,0 +1,15 @@
+{
+  "scope": "Actual local Docker image/runtime, no hosted account/data/credentials",
+  "image_id": "sha256:bd17ce2445f785f51b3d7045a16c104f2261162071d7db94d5b42645b0c0c5ce",
+  "size_bytes": 105232638,
+  "non_root_user": "appuser",
+  "liveness_start_seconds": 2.688,
+  "memory_limit_bytes": 536870912,
+  "cpu_limit": 1,
+  "localization_and_osm_bundled": true,
+  "gpu_framework_in_image": false,
+  "private_env_in_image": false,
+  "hosted_auth_storage_models_validated": false,
+  "deployed": false,
+  "passed": true
+}

@@ -1,0 +1,3 @@
+*.pdf binary
+*.wav binary
+input/text/*.txt -text whitespace=cr-at-eol

@@ -1,0 +1,40 @@
+{
+  "scope": "Actual owned GPU text/ASR/translation/extraction/ratings through local API/PostgreSQL; synthetic applicant identity, business and SAPI audio",
+  "manifest_hash": "3159e805a0305583215977c65c5ba2b525569b2869441bb6a0a7a2f9ddc397f4",
+  "cases": [
+    {
+      "case": "baseline",
+      "seconds": 51.843,
+      "status": "completed",
+      "evidence_count": 2,
+      "completeness_percent": "16.67",
+      "evidence_coverage": "0.15",
+      "potential": null,
+      "withheld_reason": "source_requires_review"
+    },
+    {
+      "case": "typed-followup",
+      "seconds": 60.625,
+      "status": "completed",
+      "evidence_count": 4,
+      "completeness_percent": "22.22",
+      "evidence_coverage": "0.4",
+      "potential": null,
+      "withheld_reason": "source_requires_review"
+    },
+    {
+      "case": "audio-followup",
+      "seconds": 79.656,
+      "status": "completed",
+      "evidence_count": 5,
+      "completeness_percent": "27.78",
+      "evidence_coverage": "0.6",
+      "potential": null,
+      "withheld_reason": "source_requires_review"
+    }
+  ],
+  "passed": true,
+  "history_intact": true,
+  "human_quality_validated": false,
+  "deployed": false
+}

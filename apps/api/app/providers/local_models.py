@@ -11,8 +11,8 @@ from typing import Any
 
 from ..contracts.models import Language, LanguageResult
 from ..worker.manifest import MANIFEST
+from ..config import ROOT
 
-ROOT=Path(__file__).resolve().parents[4]
 CACHE=ROOT/'.cache/huggingface/hub'
 
 
@@ -98,7 +98,7 @@ class Qwen:
     def json(self, system: str, source: str, *, validator: Callable[[dict[str,Any]],None] | None=None) -> dict[str,Any]:
         for attempt in range(2):
             try:
-                raw=self.generate(system+(' Previous output was invalid. Return one complete schema-valid JSON object. Every quote must be an EXACT contiguous source substring; never paraphrase or remove words inside a quote. Omit unsupported facts; at most eight short facts.' if attempt else ''),source)
+                raw=self.generate(system+(' Previous output was invalid. Return one complete JSON object following the requested schema. Use only supplied evidence and allowed citation indices. Every requested quote must be an EXACT contiguous source substring. Omit unsupported claims and keep the response concise.' if attempt else ''),source)
                 value=json.loads(raw.removeprefix('```json').removeprefix('```').removesuffix('```').strip())
                 if not isinstance(value,dict):
                     raise ValueError('Expected an object')
