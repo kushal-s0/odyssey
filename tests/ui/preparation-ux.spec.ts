@@ -25,7 +25,7 @@ test("guided preparation shows financial checks and a normalized preview without
   await page.locator("#guided-monthlyCosts").fill("12000");
   await expect(page.locator(".draft-financials")).toContainText("₹8,000");
   await page
-    .getByRole("button", { name: "Preview standardized input" })
+    .getByRole("button", { name: "Preview my answers" })
     .click();
   const dialog = page.getByRole("dialog", { name: "Review your submission" });
   await expect(dialog).toBeVisible();
@@ -54,13 +54,13 @@ test("preview identifies the invalid field and preserves entered answers", async
     .fill("Tea and biscuits for commuters.");
   await page.locator("#guided-unitPrice").fill("10");
   await page
-    .getByRole("button", { name: "Preview standardized input" })
+    .getByRole("button", { name: "Preview my answers" })
     .click();
   await expect(page.locator("#guided-priceUnit")).toBeFocused();
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await page.locator("#guided-priceUnit").fill("cup");
   await page
-    .getByRole("button", { name: "Preview standardized input" })
+    .getByRole("button", { name: "Preview my answers" })
     .click();
   await expect(page.getByRole("dialog")).toBeVisible();
 });
@@ -167,7 +167,7 @@ test("reviewed input submits once through the normal validated submission flow",
   expect(writes).toBe(0);
   await page
     .getByRole("dialog")
-    .getByRole("button", { name: "Submit for assessment" })
+    .getByRole("button", { name: "Check my idea" })
     .click();
   await expect(page).toHaveURL(new RegExp(`/submissions/${records[0]!.id}$`));
   expect(writes).toBe(1);

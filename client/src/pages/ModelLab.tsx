@@ -1,4 +1,5 @@
 // localized-ui
+import ValueHelp from "../ValueHelp";
 import ReadMore from "../ReadMore";
 import { t, useLanguage } from "../i18n";
 import { useEffect, useState } from "react";
@@ -131,10 +132,12 @@ export default function ModelLab() {
       <div className="model-stats">
         {readiness.checks.map((check) => (
           <div key={check.label}>
-            <strong>
-              {check.current} / {check.required}
-            </strong>
-            <span>{check.label}</span>
+            <ValueHelp topic="training">
+              <strong>
+                {check.current} / {check.required}
+              </strong>
+            </ValueHelp>
+            <span>{t(check.label)}</span>
           </div>
         ))}
       </div>
@@ -144,12 +147,15 @@ export default function ModelLab() {
             ? t(
                 "These saved labels meet the minimum count checks. Verify business families and inspect grouped evaluation in Colab before using the model.",
               )
-            : `These saved labels are not ready for training. Still needed: ${readiness.checks
-                .filter((check) => check.remaining > 0)
-                .map((check) => `${check.remaining} ${check.label}`)
-                .join(
-                  ", ",
-                )}. Exports from this screen contain only labels saved here.`}{" "}
+            : t(
+                "Training needs more examples: {items}. Only saved labels are exported.",
+                {
+                  items: readiness.checks
+                    .filter((check) => check.remaining > 0)
+                    .map((check) => `${check.remaining} ${t(check.label)}`)
+                    .join(", "),
+                },
+              )}{" "}
           {t(
             "Keep translations and revisions of the same business in one family.",
           )}
@@ -176,11 +182,23 @@ export default function ModelLab() {
               ["Abstention rate", remoteModel.metrics.abstentionRate],
             ].map(([label, value]) => (
               <div key={t(label)}>
-                <strong>
-                  {typeof value === "number"
-                    ? `${Math.round(value * 100)}%`
-                    : "—"}
-                </strong>
+                <ValueHelp
+                  topic={
+                    label === "Macro-F1"
+                      ? "macroF1"
+                      : label === "Off-topic recall"
+                        ? "recall"
+                        : label === "Evaluation coverage"
+                          ? "evaluationCoverage"
+                          : "abstention"
+                  }
+                >
+                  <strong>
+                    {typeof value === "number"
+                      ? `${Math.round(value * 100)}%`
+                      : "—"}
+                  </strong>
+                </ValueHelp>
                 <span>{t(label)}</span>
               </div>
             ))}

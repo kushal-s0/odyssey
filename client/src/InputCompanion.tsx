@@ -1,4 +1,5 @@
 // localized-ui
+import ValueHelp from "./ValueHelp";
 import { t, useLanguage } from "./i18n";
 import { Check, CircleHelp, ArrowDown, Wallet } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -40,10 +41,12 @@ export default function InputCompanion({
       <span className="eyebrow">{t("YOUR SUBMISSION")}</span>
       <h2>{t("A clear starting point.")}</h2>
       <div className="preparation-count">
-        <strong>
-          {status.entered}
-          <span> / {status.total}</span>
-        </strong>
+        <ValueHelp topic="form">
+          <strong>
+            {status.entered}
+            <span> / {status.total}</span>
+          </strong>
+        </ValueHelp>
         <span>{t("guided details entered")}</span>
       </div>
       <Progress value={(status.entered / status.total) * 100} />
@@ -84,11 +87,15 @@ export default function InputCompanion({
           </h3>
           <div>
             <span>{t("Projected monthly surplus")}</span>
-            <strong>{money(status.surplus)}</strong>
+            <ValueHelp topic="surplus">
+              <strong>{t(money(status.surplus))}</strong>
+            </ValueHelp>
           </div>
           <div>
             <span>{t("Funding-plan gap")}</span>
-            <strong>{money(status.fundingGap)}</strong>
+            <ValueHelp topic="fundingGap">
+              <strong>{t(money(status.fundingGap))}</strong>
+            </ValueHelp>
           </div>
           <p>
             {t(
@@ -114,8 +121,10 @@ export default function InputCompanion({
                   ? t(
                       "Start with your products and services. Other details can wait.",
                     )
-                  : (status.issues[0] ??
-                    "Add the required business description.")}
+                  : t(
+                      status.issues[0] ??
+                        "Add the required business description.",
+                    )}
               </span>
             </>
           )}

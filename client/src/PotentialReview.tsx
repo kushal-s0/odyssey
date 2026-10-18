@@ -1,4 +1,5 @@
 // localized-ui
+import ValueHelp, { DimensionHelp } from "./ValueHelp";
 import { t, useLanguage } from "./i18n";
 import {
   BUSINESS_DOMAINS,
@@ -44,12 +45,21 @@ export function PotentialReviewFields({
         const rating = ratings.find((r) => r.key === d.key);
         return (
           <fieldset key={d.key}>
-            <legend>{t(d.label)}</legend>
-            <p className="hint">{d.prompt}</p>
+            <legend>
+              {t(d.label)}{" "}
+              <DimensionHelp
+                human
+                dimension={d.key}
+                label={d.label}
+                score={rating?.score ?? null}
+                weight={d.weight}
+              />
+            </legend>
+            <p className="hint">{t(d.prompt)}</p>
             <label>
               {t(d.label)} {t("rating")}
               <select
-                aria-label={`${t(d.label)} rating`}
+                aria-label={t("{part} rating", { part: t(d.label) })}
                 disabled={disabled}
                 value={rating ? String(rating.score) : ""}
                 onChange={(e) => {
@@ -90,7 +100,7 @@ export function PotentialReviewFields({
                 <label>
                   {t(d.label)} {t("evidence")}
                   <select
-                    aria-label={`${t(d.label)} evidence`}
+                    aria-label={t("{part} sources", { part: t(d.label) })}
                     multiple
                     required
                     disabled={disabled}
@@ -142,11 +152,13 @@ export function PotentialReviewResult({
             )}
           </p>
         </div>
-        <strong>
-          {summary.score === null
-            ? t("Not fully rated")
-            : `${summary.score} / 100`}
-        </strong>
+        <ValueHelp topic="potential">
+          <strong>
+            {summary.score === null
+              ? t("Not fully rated")
+              : `${summary.score} / 100`}
+          </strong>
+        </ValueHelp>
       </div>
       {!summary.ratings.length ? (
         <p className="notes-body">
@@ -160,7 +172,15 @@ export function PotentialReviewResult({
             <article key={r.key}>
               <div>
                 <strong>{t(r.label)}</strong>
-                <span>{r.score} / 4</span>
+                <DimensionHelp
+                  human
+                  dimension={r.key}
+                  label={r.label}
+                  score={r.score}
+                  weight={r.weight}
+                >
+                  <span>{r.score} / 4</span>
+                </DimensionHelp>
               </div>
               <p>{r.reason}</p>
               <button

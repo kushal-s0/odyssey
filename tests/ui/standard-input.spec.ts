@@ -104,7 +104,7 @@ test("entrepreneur navigation and direct routes hide assessor tools", async ({
   await workspace(page, "entrepreneur");
   await page.goto("/model");
   await expect(
-    page.getByRole("heading", { name: "Assessor access required" }),
+    page.getByRole("heading", { name: "Reviewer account needed" }),
   ).toBeVisible();
   await expect(
     page.getByRole("link", { name: "Comparisons", exact: true }),
@@ -132,7 +132,7 @@ test("guided input rejects excess funding and serializes unknown amounts as null
   await page.locator("#guided-investment").fill("100");
   await page.locator("#guided-selfInvestment").fill("80");
   await page.locator("#guided-loan").fill("50");
-  await page.getByRole("button", { name: "Submit for assessment" }).click();
+  await page.getByRole("button", { name: "Check my idea" }).click();
   await expect(
     page
       .getByText("Own investment plus funding needed exceeds", { exact: false })
@@ -142,7 +142,7 @@ test("guided input rejects excess funding and serializes unknown amounts as null
     0,
   );
   await page.locator("#guided-selfInvestment").fill("50");
-  await page.getByRole("button", { name: "Submit for assessment" }).click();
+  await page.getByRole("button", { name: "Check my idea" }).click();
   await expect
     .poll(() => writes.filter((write) => write.path === "/submissions").length)
     .toBe(1);
@@ -158,10 +158,10 @@ test("assessor sign-off needs reasons, cited evidence and a source confirmation"
   const writes = await workspace(page, "assessor");
   await page.goto(`/submissions/${recordId}`);
   await page.getByRole("button", { name: "Add review" }).click();
-  const dialog = page.getByRole("dialog", { name: "Record assessor review" });
+  const dialog = page.getByRole("dialog", { name: "Save a review" });
   await dialog.getByLabel("Recommended next step").selectOption("mentoring");
   await dialog
-    .getByLabel("Review rationale")
+    .getByLabel("Why this decision?")
     .fill("The proposal needs support with customer validation.");
   await dialog
     .getByLabel("Next action", { exact: false })

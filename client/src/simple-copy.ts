@@ -1,4 +1,6 @@
+import PLAIN_COPY from "./locales/plain-en.json" with {type:"json"};
 export const SIMPLE_ENGLISH: Record<string, string> = {
+  ...PLAIN_COPY,
   "Information readiness": "Details score",
   "INFORMATION READINESS": "DETAILS SCORE",
   "Core information completeness": "Details added",

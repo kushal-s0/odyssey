@@ -17,7 +17,7 @@ test("assessor sees explainable financial risk with unknowns instead of invented
   await page.goto(`/submissions/${records[0]!.id}`);
   const support = page.locator(".assessor-insights");
   await expect(
-    support.getByRole("heading", { name: "Assessor decision support" }),
+    support.getByRole("heading", { name: "Review helper" }),
   ).toBeVisible();
   await expect(
     support.getByText("Not enough details", { exact: true }),

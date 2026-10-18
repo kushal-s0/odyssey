@@ -237,7 +237,7 @@ export default function App() {
       {w.toast && (
         <div className="toast" role="status">
           <ShieldCheck size={17} />
-          {w.toast}
+          {t(w.toast)}
         </div>
       )}
     </div>

@@ -1,4 +1,5 @@
 // localized-ui
+import ValueHelp, { DimensionHelp } from "../ValueHelp";
 import ReadMore from "../ReadMore";
 import { t, useLanguage } from "../i18n";
 import { useMemo, useState } from "react";
@@ -273,26 +274,36 @@ export default function Comparisons() {
                       <div className="cell-secondary">{g.version}</div>
                     </td>
                     <td>{g.records.length}</td>
-                    <td>{g.comparable.length}</td>
                     <td>
-                      <span className="comparison-score">
-                        {g.median ?? "—"}
-                      </span>
-                      {g.median != null && (
-                        <span className="muted"> / 100</span>
-                      )}
+                      <ValueHelp topic="comparison">
+                        {g.comparable.length}
+                      </ValueHelp>
                     </td>
                     <td>
-                      {g.potential === null
-                        ? t("Not rated")
-                        : `${g.potential} / 100`}
+                      <ValueHelp topic="median">
+                        <span className="comparison-score">
+                          {g.median ?? "—"}
+                        </span>
+                        {g.median != null && (
+                          <span className="muted"> / 100</span>
+                        )}
+                      </ValueHelp>
+                    </td>
+                    <td>
+                      <ValueHelp topic="medianPotential">
+                        {g.potential === null
+                          ? t("Not rated")
+                          : `${g.potential} / 100`}
+                      </ValueHelp>
                       <div className="cell-secondary">
                         {g.potentialCount} {t("fully rated")}
                       </div>
                     </td>
                     <td>
                       <div className="table-progress">
-                        <span>{g.completeness ?? 0}%</span>
+                        <ValueHelp topic="medianCompleteness">
+                          <span>{g.completeness ?? 0}%</span>
+                        </ValueHelp>
                         <Progress value={g.completeness ?? 0} />
                       </div>
                     </td>
@@ -358,11 +369,18 @@ export default function Comparisons() {
                 .map((d) => (
                   <p key={d.key}>
                     <span>{t(d.label)}</span>
-                    <strong>
-                      {d.potential === null
-                        ? t("Not rated")
-                        : `${d.potential} / 4`}
-                    </strong>
+                    <DimensionHelp
+                      human
+                      dimension={d.key}
+                      label={d.label}
+                      score={d.potential}
+                    >
+                      <strong>
+                        {d.potential === null
+                          ? t("Not rated")
+                          : `${d.potential} / 4`}
+                      </strong>
+                    </DimensionHelp>
                   </p>
                 ))}
             </div>

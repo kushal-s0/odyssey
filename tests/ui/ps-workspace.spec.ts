@@ -71,7 +71,7 @@ test("switching submissions clears source selection and confirmation", async ({
     }),
   ).toBeVisible();
   await expect(
-    panel.getByRole("button", { name: "Confirm selected evidence" }),
+    panel.getByRole("button", { name: "Mark selected sources as checked" }),
   ).toBeDisabled();
   await expect(
     panel.locator('.source-segment input[type="checkbox"]:checked'),
@@ -144,23 +144,23 @@ test("evidence opens original and English together, follows citations and deep-l
     /source#page=2$/,
   );
   await panel
-    .getByRole("button", { name: "Expand evidence workspace" })
+    .getByRole("button", { name: "Open larger source view" })
     .click();
   const dialog = page.getByRole("dialog", {
-    name: "Source evidence workspace",
+    name: "Original sources",
   });
   await expect(dialog).toBeVisible();
   await dialog
     .getByRole("button", { name: "Side by side", exact: true })
     .click();
   await expect(
-    dialog.getByRole("button", { name: "Confirm selected evidence" }),
+    dialog.getByRole("button", { name: "Mark selected sources as checked" }),
   ).toBeDisabled();
   await dialog
     .getByLabel("I compared the selected original passages", { exact: false })
     .check();
   await expect(
-    dialog.getByRole("button", { name: "Confirm selected evidence" }),
+    dialog.getByRole("button", { name: "Mark selected sources as checked" }),
   ).toBeEnabled();
   await page.screenshot({
     path: ".planning/screenshots/evidence-workspace-desktop.png",
@@ -179,17 +179,17 @@ test("source evidence search, state filters and mobile layout remain readable", 
   const panel = page.locator(".evidence-panel");
   await panel.scrollIntoViewIfNeeded();
   await panel
-    .getByLabel("Search source evidence")
+    .getByLabel("Search original sources")
     .fill("no-such-source-phrase");
   await expect(
     panel.getByText("No source segments match.", { exact: false }),
   ).toBeVisible();
-  await panel.getByLabel("Search source evidence").fill("");
+  await panel.getByLabel("Search original sources").fill("");
   await panel
-    .getByLabel("Evidence verification filter")
+    .getByLabel("Source check filter")
     .selectOption("unchecked");
   await expect(
-    panel.getByRole("button", { name: "Confirm selected evidence" }),
+    panel.getByRole("button", { name: "Mark selected sources as checked" }),
   ).toHaveCount(0);
   expect(
     await page.evaluate(
@@ -197,10 +197,10 @@ test("source evidence search, state filters and mobile layout remain readable", 
     ),
   ).toBe(true);
   await panel
-    .getByRole("button", { name: "Expand evidence workspace" })
+    .getByRole("button", { name: "Open larger source view" })
     .click();
   await expect(
-    page.getByRole("dialog", { name: "Source evidence workspace" }),
+    page.getByRole("dialog", { name: "Original sources" }),
   ).toBeVisible();
   expect(
     await page.evaluate(
@@ -389,11 +389,11 @@ test("an assessor can assign a cohort after entrepreneur submission", async ({
     await route.fulfill({ json: { submission: records[0] } });
   });
   await page.goto(`/submissions/${records[0]!.id}`);
-  await page.getByText("Assign programme cohort", { exact: true }).click();
+  await page.getByText("Assign programme group", { exact: true }).click();
   await page
-    .getByLabel("Assign programme cohort", { exact: true })
+    .getByLabel("Assign programme group", { exact: true })
     .selectOption("bbbbbbbbbbbbbbbbbbbbbbbb");
-  await page.getByRole("button", { name: "Save cohort" }).click();
+  await page.getByRole("button", { name: "Save group" }).click();
   await expect(page.locator(".detail-meta")).toContainText(
     "Actual programme cohort",
   );
@@ -410,16 +410,16 @@ test("assessor domain ratings collect a rationale and source references without 
     .getByText("Rate business potential across six domains", { exact: true })
     .click();
   await expect(
-    dialog.getByLabel("Clarity rating", { exact: true }),
+    dialog.getByLabel("Clear idea rating", { exact: true }),
   ).toHaveValue("");
-  await dialog.getByLabel("Clarity rating", { exact: true }).selectOption("2");
+  await dialog.getByLabel("Clear idea rating", { exact: true }).selectOption("2");
   await expect(
     dialog.getByLabel("Clarity rationale", { exact: true }),
   ).toBeVisible();
   await expect(
-    dialog.getByLabel("Clarity evidence", { exact: true }),
+    dialog.getByLabel("Clear idea sources", { exact: true }),
   ).toBeVisible();
   await expect(
-    dialog.getByLabel("Market potential rating", { exact: true }),
+    dialog.getByLabel("Customers and sales rating", { exact: true }),
   ).toHaveValue("");
 });

@@ -1,4 +1,5 @@
 // localized-ui
+import ValueHelp from "./ValueHelp";
 import { t, useLanguage } from "./i18n";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -161,9 +162,7 @@ export default function EvidencePanel({
       <>
         <div className="evidence-summary">
           <span>
-            <strong>
-              {a.segments.filter((s) => s.verified).length}/{a.segments.length}
-            </strong>{" "}
+            <ValueHelp topic="sourceCheck"><strong>{a.segments.filter((s) => s.verified).length}/{a.segments.length}</strong></ValueHelp>{" "}
             {t("source segments checked")}
           </span>
           <span>

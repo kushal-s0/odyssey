@@ -1111,3 +1111,133 @@
     break-inside: avoid;
   }
 }
+/* Values are also buttons: mouse hover, keyboard focus, or tap reveals the same help. */
+.value-help {
+  max-width: 100%;
+  vertical-align: baseline;
+}
+.value-help-trigger {
+  font: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  line-height: inherit;
+  text-align: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: help;
+  text-decoration: underline dotted #aaa;
+  text-underline-offset: 5px;
+  max-width: 100%;
+  border-radius: 3px;
+}
+.value-help-trigger:hover {
+  text-decoration-color: #222;
+}
+.value-help-trigger:focus-visible {
+  outline: 2px solid #333;
+  outline-offset: 4px;
+}
+.friendly-help-card.friendly-help-portal {
+  display: block;
+  position: fixed !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  z-index: 1000;
+  font-family: inherit;
+  text-align: left;
+  font-size: 16px;
+  line-height: 1.75;
+}
+.friendly-help-portal .help-paragraph {
+  display: block;
+  margin: 12px 0 0;
+}
+.friendly-help-portal .help-paragraph:first-child {
+  margin-top: 0;
+}
+.rating-explanation {
+  margin-top: 12px;
+}
+.rating-explanation > summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: #777;
+}
+.rating-explanation p {
+  margin-top: 10px;
+}
+.dimension-heading > .value-help {
+  margin-left: auto;
+}
+.dimension-heading .value-help-trigger {
+  font-size: 13px;
+  white-space: nowrap;
+}
+.preparation-count > .value-help strong {
+  font-size: 26px;
+  letter-spacing: -1px;
+}
+.metric-body > .value-help strong {
+  font-size: 34px;
+  letter-spacing: -1px;
+  line-height: 1.25;
+}
+.friendly-stat-strip > div > .value-help strong {
+  font-size: 27px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.friendly-stat-strip > div > .value-help {
+  grid-column: 2;
+}
+.model-stats > div > .value-help strong {
+  display: block;
+  font-size: 28px;
+}
+.support-metrics > div > .value-help strong {
+  display: block;
+}
+.dimension-bars > div > .value-help {
+  justify-self: end;
+}
+.comparison-table .value-help {
+  white-space: normal;
+}
+@media (max-width: 760px) {
+  .friendly-help-card.friendly-help-portal {
+    width: calc(100vw - 36px);
+    max-width: none;
+    max-height: 60vh;
+  }
+  .metric-body > .value-help strong {
+    font-size: 28px;
+  }
+}
+@media print {
+  .friendly-help-portal {
+    display: none !important;
+  }
+  .value-help-trigger {
+    text-decoration: none !important;
+  }
+}
+.risk-summary .value-help strong {
+  display: block;
+  font-size: 26px;
+  line-height: 1.35;
+}
+.potential-review-result > .panel-heading > .value-help {
+  white-space: nowrap;
+}
+.dimension-heading > .value-help {
+  min-width: 0;
+}
+.dimension-steps {
+  pointer-events: none;
+}

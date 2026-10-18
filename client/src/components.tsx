@@ -1,4 +1,6 @@
 // localized-ui
+import { FIELD_METRIC_HELP } from "../../shared/score-help";
+import ValueHelp from "./ValueHelp";
 import ReadMore from "./ReadMore";
 import { t, useLanguage } from "./i18n";
 import { useEffect, useRef, useState, type ReactNode } from "react";
@@ -138,8 +140,8 @@ export function Busy({ label = "Loading workspace" }: { label?: string }) {
     </div>
   );
 }
-const modalStack:HTMLElement[]=[];
-let savedBodyOverflow="";
+const modalStack: HTMLElement[] = [];
+let savedBodyOverflow = "";
 export function Modal({
   title,
   children,
@@ -153,20 +155,23 @@ export function Modal({
 }) {
   useLanguage();
   const ref = useRef<HTMLDivElement>(null);
-  const closeRef=useRef(onClose);closeRef.current=onClose;
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
   useEffect(() => {
     const previous = document.activeElement as HTMLElement;
-    if (!modalStack.length) savedBodyOverflow=document.body.style.overflow;
-    if(ref.current)modalStack.push(ref.current);
+    if (!modalStack.length) savedBodyOverflow = document.body.style.overflow;
+    if (ref.current) modalStack.push(ref.current);
     document.body.style.overflow = "hidden";
     ref.current?.focus();
     const listener = (e: KeyboardEvent) => {
-      if(modalStack.at(-1)!==ref.current)return;
+      if (modalStack.at(-1) !== ref.current) return;
       if (e.key === "Escape") closeRef.current();
       if (e.key === "Tab") {
-        const items = Array.from(ref.current?.querySelectorAll<HTMLElement>(
-          "button:not(:disabled),input:not(:disabled),textarea:not(:disabled),select:not(:disabled),a[href]",
-        )??[]).filter(item=>item.getClientRects().length>0);
+        const items = Array.from(
+          ref.current?.querySelectorAll<HTMLElement>(
+            "button:not(:disabled),input:not(:disabled),textarea:not(:disabled),select:not(:disabled),a[href]",
+          ) ?? [],
+        ).filter((item) => item.getClientRects().length > 0);
         if (!items?.length) return;
         const first = items[0]!,
           last = items[items.length - 1]!;
@@ -181,8 +186,9 @@ export function Modal({
     };
     document.addEventListener("keydown", listener);
     return () => {
-      const index=modalStack.indexOf(ref.current!);if(index>=0)modalStack.splice(index,1);
-      if(!modalStack.length)document.body.style.overflow=savedBodyOverflow;
+      const index = modalStack.indexOf(ref.current!);
+      if (index >= 0) modalStack.splice(index, 1);
+      if (!modalStack.length) document.body.style.overflow = savedBodyOverflow;
       document.removeEventListener("keydown", listener);
       previous?.focus();
     };
@@ -280,9 +286,11 @@ export function SubmissionsTable({
               )}
               {personal && (
                 <td>
-                  {item.assessment?.score == null
-                    ? t("Pending")
-                    : `${item.assessment.score} / 100`}
+                  <ValueHelp topic="readiness">
+                    {item.assessment?.score == null
+                      ? t("Pending")
+                      : `${item.assessment.score} / 100`}
+                  </ValueHelp>
                 </td>
               )}
               <td>
@@ -353,11 +361,13 @@ export function FieldCard({
       </div>
       <p>
         {field.value ??
-          (field.status === "ambiguous"
-            ? "Conflicting values need confirmation."
-            : field.status === "irrelevant"
-              ? "The response does not answer this question."
-              : "No supporting information supplied.")}
+          t(
+            field.status === "ambiguous"
+              ? "Conflicting values need confirmation."
+              : field.status === "irrelevant"
+                ? "The response does not answer this question."
+                : "No supporting information supplied.",
+          )}
       </p>
       {field.evidenceIds.length > 0 && (
         <button

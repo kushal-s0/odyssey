@@ -1,5 +1,5 @@
 // localized-ui
-import { t, useLanguage } from "../i18n";
+import { questionText, t, useLanguage } from "../i18n";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import {
@@ -24,6 +24,8 @@ import {
   Empty,
 } from "../components";
 import { csvCell, download } from "../api";
+import ValueHelp from "../ValueHelp";
+import type { HelpTopic } from "../../../shared/score-help";
 import PersonalDashboard from "./PersonalDashboard";
 export default function Dashboard() {
   useLanguage();
@@ -142,6 +144,7 @@ export default function Dashboard() {
       </div>
       <div className="metric-grid">
         <Metric
+          topic="submitted"
           label={t("Ideas submitted")}
           value={String(total).padStart(2, "0")}
           icon={FileText}
@@ -159,6 +162,7 @@ export default function Dashboard() {
           }
         />
         <Metric
+          topic="scored"
           label={t("Assessment available")}
           value={String(assessable).padStart(2, "0")}
           icon={CheckCheck}
@@ -171,6 +175,7 @@ export default function Dashboard() {
           }
         />
         <Metric
+          topic="missing"
           label={t("Need clarification")}
           value={String(repair).padStart(2, "0")}
           icon={MessageSquare}
@@ -178,6 +183,7 @@ export default function Dashboard() {
           visual={<span className="metric-pill">{t("Review queue")}</span>}
         />
         <Metric
+          topic="average"
           label={t("Information completeness")}
           value={`${completion}%`}
           icon={ScanLine}
@@ -299,8 +305,11 @@ export default function Dashboard() {
                 </div>
                 <h3>{s.title}</h3>
                 <p>
-                  {s.assessment?.questions[0]?.question ??
-                    "Review the original evidence and confirm unclear details."}
+                  {s.assessment?.questions[0]
+                    ? questionText(s.assessment.questions[0])
+                    : t(
+                        "Review the original evidence and confirm unclear details.",
+                      )}
                 </p>
                 <span className="repair-card-footer">
                   {s.beneficiaryName}
@@ -341,12 +350,14 @@ export default function Dashboard() {
   );
 }
 function Metric({
+  topic,
   label,
   value,
   icon: Icon,
   foot,
   visual,
 }: {
+  topic: HelpTopic;
   label: string;
   value: string;
   icon: typeof FileText;
@@ -361,10 +372,12 @@ function Metric({
         <Icon size={17} />
       </div>
       <div className="metric-body">
-        <strong>{value}</strong>
+        <ValueHelp topic={topic}>
+          <strong>{value}</strong>
+        </ValueHelp>
         {visual}
       </div>
-      <div className="metric-foot">{foot}</div>
+      <div className="metric-foot">{t(foot)}</div>
     </div>
   );
 }

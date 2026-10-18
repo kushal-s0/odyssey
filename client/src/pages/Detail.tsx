@@ -51,6 +51,7 @@ import AssessorInsights from "../AssessorInsights";
 import LocationPanel from "../LocationPanel";
 import EvidencePanel from "../EvidencePanel";
 import { flushSync } from "react-dom";
+import ValueHelp, { DimensionHelp } from "../ValueHelp";
 import AssessmentPrint from "../AssessmentPrint";
 import MissingAnswers from "../MissingAnswers";
 import ScoreExplanation from "../ScoreExplanation";
@@ -425,16 +426,20 @@ export default function Detail() {
           <div className="assessment-summary">
             <div className="score-block">
               <span className="eyebrow">{t("INFORMATION READINESS")}</span>
-              <div className="score-number">
-                {a.score ?? "—"}
-                <span>{a.score == null ? t("Not assessable") : "/ 100"}</span>
-              </div>
+              <ValueHelp topic="readiness">
+                <div className="score-number">
+                  {a.score ?? "—"}
+                  <span>{a.score == null ? t("Not assessable") : "/ 100"}</span>
+                </div>
+              </ValueHelp>
               <p>{t("Supporting information, not predicted success.")}</p>
             </div>
             <div className="summary-measure">
               <div>
                 <span>{t("Core information completeness")}</span>
-                <strong>{a.completeness}%</strong>
+                <ValueHelp topic="completeness">
+                  <strong>{a.completeness}%</strong>
+                </ValueHelp>
               </div>
               <Progress value={a.completeness} />
               <p>
@@ -444,7 +449,9 @@ export default function Detail() {
             <div className="summary-measure">
               <div>
                 <span>{t("Assessment coverage")}</span>
-                <strong>{a.coverage}%</strong>
+                <ValueHelp topic="coverage">
+                  <strong>{a.coverage}%</strong>
+                </ValueHelp>
               </div>
               <Progress value={a.coverage} />
               <p>
@@ -721,11 +728,18 @@ export default function Detail() {
                       <div className="dimension-row" key={d.key}>
                         <div className="dimension-heading">
                           <strong>{t(d.label)}</strong>
-                          <span>
-                            {d.score == null
-                              ? t("Not assessable")
-                              : `${d.score} / 4`}
-                          </span>
+                          <DimensionHelp
+                            dimension={d.key}
+                            label={d.label}
+                            score={d.score}
+                            weight={d.weight}
+                          >
+                            <span>
+                              {d.score == null
+                                ? t("Not assessable")
+                                : `${d.score} / 4`}
+                            </span>
+                          </DimensionHelp>
                         </div>
                         <div className="dimension-steps">
                           {[1, 2, 3, 4].map((step) => (
@@ -739,13 +753,17 @@ export default function Detail() {
                             />
                           ))}
                         </div>
-                        <p>{t(d.explanation)}</p>
+                        <details className="rating-explanation">
+                          <summary>{t("Why this score?")}</summary>
+                          <p>{t(d.explanation)}</p>
+                        </details>
                         {d.evidenceIds.length > 0 && (
                           <button
                             className="evidence-link"
                             onClick={() => {
                               setSelected(d.evidenceIds);
                               setSourceTab("compare");
+                              setSourceOpen(true);
                             }}
                           >
                             {t("View supporting evidence")}{" "}
@@ -903,16 +921,12 @@ export default function Detail() {
                 {matches.length ? (
                   <div className="similar-list">
                     {matches.map((m) => (
-                      <Link
-                        key={m.submission.id}
-                        to={`/submissions/${m.submission.id}`}
-                        className="similar-card"
-                      >
+                      <div key={m.submission.id} className="similar-card">
                         <div className="similar-icon">
                           <Icon type={m.submission.inputType} />
                         </div>
                         <div>
-                          <h3>{m.submission.title}</h3>
+                          <h3><Link to={`/submissions/${m.submission.id}`}>{m.submission.title}</Link></h3>
                           <p>
                             {m.submission.beneficiaryName} ·{" "}
                             {m.submission.cohortName ?? "Unassigned cohort"}
@@ -922,17 +936,17 @@ export default function Detail() {
                               <span key={t}>{t}</span>
                             ))}
                           </div>
-                          <small>
+                          <ValueHelp topic="similarity"><small>
                             {m.method === "embedding"
                               ? t("Semantic similarity")
                               : t("Keyword overlap")}
                             {m.method === "embedding"
                               ? ` · ${m.similarity.toFixed(2)} cosine score`
                               : ""}
-                          </small>
+                          </small></ValueHelp>
                         </div>
-                        <ArrowUpRight size={17} />
-                      </Link>
+                        <Link to={`/submissions/${m.submission.id}`} aria-label={t("Open {title}",{title:m.submission.title})}><ArrowUpRight size={17}/></Link>
+                      </div>
                     ))}
                   </div>
                 ) : (
@@ -991,7 +1005,7 @@ export default function Detail() {
                           {new Date(version.createdAt).toLocaleString("en-IN")}{" "}
                           {t("· Completeness")} {version.completeness}
                           {t("% · Assessment")}{" "}
-                          {version.score ?? "not assessable"}
+                          <ValueHelp topic="readiness">{version.score ?? t("Not enough details")}</ValueHelp>
                         </p>
                         {changed.map((f) => (
                           <div className="history-change" key={f.key}>

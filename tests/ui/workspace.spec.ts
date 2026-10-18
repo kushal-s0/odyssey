@@ -61,7 +61,7 @@ test("assessor dashboard navigation and filtering use authenticated records", as
   ).toBeVisible();
   await page.getByRole("button", { name: "Version history" }).click();
   await expect(
-    page.getByText("Initial extraction and assessment."),
+    page.getByText("Initial extraction and idea check."),
   ).toBeVisible();
   expect(errors).toEqual([]);
 });

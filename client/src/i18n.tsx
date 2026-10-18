@@ -72,6 +72,15 @@ export function t(
   values: Record<string, string | number> = {},
 ): string {
   if (text === undefined) return "";
+  const complete =
+    /^(\d+)% of the core information areas are supplied\. Completeness is shown separately from the weighted assessment\.$/.exec(
+      text,
+    );
+  if (complete)
+    return t(
+      "{value}% of the 14 main details were found. This is separate from the total score.",
+      { value: complete[1]! },
+    );
   const evidence =
     /^(\d+) of (\d+) evidence areas supplied\. (The proposal describes this dimension\.|Further information is needed\.) This rates the supporting information, not predicted business success\.$/.exec(
       text,

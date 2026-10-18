@@ -124,7 +124,7 @@ export default function Auth({ register = false }: { register?: boolean }) {
           )}
           {w.authNotice && (
             <div className="notice" role="status">
-              {w.authNotice}
+              {t(w.authNotice)}
             </div>
           )}
           {(w.serviceUnavailable || !w.session?.health.database) && (

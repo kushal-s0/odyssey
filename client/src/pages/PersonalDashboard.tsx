@@ -10,6 +10,7 @@ import {
 import { t, useLanguage } from "../i18n";
 import { useWorkspace } from "../workspace";
 import { PageIntro, Status, Empty } from "../components";
+import ValueHelp from "../ValueHelp";
 import IdeaVisualizer from "../IdeaVisualizer";
 import BusinessNextSteps from "../BusinessNextSteps";
 export default function PersonalDashboard() {
@@ -77,7 +78,19 @@ export default function PersonalDashboard() {
             <span className="friendly-stat-icon">
               <Icon size={17} />
             </span>
-            <strong>{value}</strong>
+            <ValueHelp
+              topic={
+                label === "My ideas"
+                  ? "submitted"
+                  : label === "Need my answers"
+                    ? "missing"
+                    : label === "Ideas checked"
+                      ? "assessed"
+                      : "processing"
+              }
+            >
+              <strong>{value}</strong>
+            </ValueHelp>
             <span>{t(label)}</span>
           </div>
         ))}
@@ -143,23 +156,19 @@ export default function PersonalDashboard() {
         {w.submissions.length ? (
           <div className="personal-ideas">
             {w.submissions.slice(0, 4).map((s) => (
-              <Link
-                className="personal-idea"
-                key={s.id}
-                to={`/submissions/${s.id}`}
-              >
+              <div className="personal-idea" key={s.id}>
                 <div>
-                  <strong>{s.title}</strong>
+                  <Link to={`/submissions/${s.id}`}><strong>{s.title}</strong></Link>
                   <small>{new Date(s.createdAt).toLocaleDateString()}</small>
                 </div>
                 <Status status={s.status} />
-                <span className="personal-idea-score">
+                <ValueHelp topic="readiness"><span className="personal-idea-score">
                   {s.assessment?.score == null
                     ? t("Score pending")
                     : `${s.assessment.score} / 100`}
-                </span>
-                <ArrowRight size={16} />
-              </Link>
+                </span></ValueHelp>
+                <Link to={`/submissions/${s.id}`} aria-label={t("Open {title}",{title:s.title})}><ArrowRight size={16}/></Link>
+              </div>
             ))}
           </div>
         ) : (

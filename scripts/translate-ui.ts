@@ -105,7 +105,8 @@ for (const language of languages) {
           )
           .join("\n");
         const translated = await translate(input, language);
-        const numbered = translated.replace(
+        const asciiMarkers = translated.replace(/([\[{])([\s\d\u0966-\u096f\u09e6-\u09ef\u0c66-\u0c6f\u0b66-\u0b6f]+)([\]}])/gu,(_all,left,number,right)=>left+number.replace(/[\u0966-\u096f\u09e6-\u09ef\u0c66-\u0c6f\u0b66-\u0b6f]/gu,(c:string)=>String(c.charCodeAt(0)-[0x0966,0x09e6,0x0c66,0x0b66].find(base=>c.charCodeAt(0)>=base&&c.charCodeAt(0)<=base+9)!))+right);
+        const numbered = asciiMarkers.replace(
           /\[\s*(\d{1,4})\s*\]/g,
           (_marker, n) => `[${n.padStart(4, "0")}]`,
         );

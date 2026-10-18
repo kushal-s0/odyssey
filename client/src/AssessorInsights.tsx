@@ -1,4 +1,5 @@
 // localized-ui
+import ValueHelp from "./ValueHelp";
 import HelpTip from "./HelpTip";
 import { t, useLanguage } from "./i18n";
 import { useEffect, useState } from "react";
@@ -130,7 +131,14 @@ export default function AssessorInsights({
                       <div>
                         <strong>{t(d.label)}</strong>
                         <span className="status">
-                          {d.status.replaceAll("_", " ")}
+                          {t(
+                            {
+                              missing: "Missing details",
+                              described: "Details added",
+                              concern: "Needs a check",
+                              not_validated: "Not checked yet",
+                            }[d.status],
+                          )}
                         </span>
                       </div>
                       <p>{t(d.explanation)}</p>
@@ -156,15 +164,27 @@ export default function AssessorInsights({
           <div className="risk-summary">
             <div>
               <span className="eyebrow">{t("FINANCIAL RISK SCORE")}</span>
-              <strong>
-                {support.risk.score === null
-                  ? t("Not assessable")
-                  : `${support.risk.score} / 100`}
-              </strong>
+              <ValueHelp topic="risk">
+                <strong>
+                  {support.risk.score === null
+                    ? t("Not assessable")
+                    : `${support.risk.score} / 100`}
+                </strong>
+              </ValueHelp>
               <span>
-                {support.risk.band.replaceAll("_", " ")} ·{" "}
-                {support.risk.coverage}
-                {t("% rule coverage")}
+                {t(
+                  {
+                    lower: "Fewer money concerns",
+                    moderate: "Some money concerns",
+                    higher: "More money concerns",
+                    insufficient_data: "Not enough details",
+                  }[support.risk.band],
+                )}{" "}
+                ·{" "}
+                <ValueHelp topic="riskCoverage">
+                  {support.risk.coverage}
+                  {t("% rule coverage")}
+                </ValueHelp>
               </span>
             </div>
             <HelpTip label={t("FINANCIAL RISK SCORE")}>
@@ -191,7 +211,19 @@ export default function AssessorInsights({
             ].map(([label, value]) => (
               <div key={t(label)}>
                 <span>{t(label)}</span>
-                <strong>{value}</strong>
+                <ValueHelp
+                  topic={
+                    label === "Projected monthly surplus"
+                      ? "surplus"
+                      : label === "Projected operating margin"
+                        ? "margin"
+                        : label === "Funding-plan gap"
+                          ? "fundingGap"
+                          : "stress"
+                  }
+                >
+                  <strong>{t(value)}</strong>
+                </ValueHelp>
               </div>
             ))}
           </div>
@@ -222,13 +254,15 @@ export default function AssessorInsights({
                 <article className="risk-factor" key={f.key}>
                   <div>
                     <strong>{t(f.label)}</strong>
-                    <span>
-                      {f.points === null
-                        ? t("Unknown")
-                        : `${f.points} / 4 concern`}{" "}
-                      · {f.weight}
-                      {t("% weight")}
-                    </span>
+                    <ValueHelp topic="riskFactor">
+                      <span>
+                        {f.points === null
+                          ? t("Unknown")
+                          : t("{points} / 4 concerns",{points:f.points})}{" "}
+                        · {f.weight}
+                        {t("% weight")}
+                      </span>
+                    </ValueHelp>
                   </div>
                   <p>{t(f.explanation)}</p>
                   {f.evidenceIds.length > 0 && (
@@ -257,7 +291,7 @@ export default function AssessorInsights({
                 {support.followUps.map((item, i) => (
                   <li key={i}>
                     <strong>{t(item.title)}</strong>
-                    <p>{item.detail}</p>
+                    <p>{t(item.detail)}</p>
                   </li>
                 ))}
               </ul>

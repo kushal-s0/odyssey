@@ -82,7 +82,7 @@ test("submission help is optional and page help keeps the original explanation",
   );
   await expect(
     page.getByText(
-      "Organise the business, customers, resources, and financial assumptions.",
+      "Set up the business, customers, resources, and money plans",
       { exact: true },
     ),
   ).toHaveCount(0);
@@ -91,7 +91,7 @@ test("submission help is optional and page help keeps the original explanation",
     .getByRole("button", { name: "How it works", exact: true })
     .click();
   await expect(page.getByRole("dialog")).toContainText(
-    "Organise the business, customers, resources, and financial assumptions.",
+    "Set up the business, customers, resources, and money plans",
   );
   await page
     .getByRole("dialog")

@@ -171,7 +171,7 @@ test("a fully answered input has no follow-up fields or answer buttons", async (
     .click();
   await expect(
     page.getByText(
-      "All parameters have answers in the available evidence. No additional questions are needed.",
+      "All details have answers. There are no more questions to answer.",
     ),
   ).toBeVisible();
   await expect(page.locator(".completion-question")).toHaveCount(0);

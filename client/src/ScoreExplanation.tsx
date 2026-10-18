@@ -1,3 +1,4 @@
+import ValueHelp, { DimensionHelp } from "./ValueHelp";
 import type { Assessment } from "../../shared/types";
 import { t, useLanguage } from "./i18n";
 
@@ -32,10 +33,12 @@ export default function ScoreExplanation({
             <span className="eyebrow">{t("UNDERSTAND YOUR SCORE")}</span>
             <h2>{t("What this number means")}</h2>
           </div>
-          <span className="score-explanation-total">
-            {a.score ?? "—"}
-            <small>{t("out of 100")}</small>
-          </span>
+          <ValueHelp topic="readiness">
+            <span className="score-explanation-total">
+              {a.score ?? "—"}
+              <small>{t("out of 100")}</small>
+            </span>
+          </ValueHelp>
         </div>
         <p>
           {t(
@@ -44,17 +47,23 @@ export default function ScoreExplanation({
         </p>
         <div className="score-facts">
           <div>
-            <strong>
-              {answered} / {a.fields.length}
-            </strong>
+            <ValueHelp topic="answered">
+              <strong>
+                {answered} / {a.fields.length}
+              </strong>
+            </ValueHelp>
             <span>{t("Parameters with source support")}</span>
           </div>
           <div>
-            <strong>{a.completeness}%</strong>
+            <ValueHelp topic="completeness">
+              <strong>{a.completeness}%</strong>
+            </ValueHelp>
             <span>{t("Core details supplied")}</span>
           </div>
           <div>
-            <strong>{a.coverage}%</strong>
+            <ValueHelp topic="coverage">
+              <strong>{a.coverage}%</strong>
+            </ValueHelp>
             <span>{t("Weight of assessable areas")}</span>
           </div>
         </div>
@@ -76,22 +85,33 @@ export default function ScoreExplanation({
             {dimensions.map((d) => (
               <div className="score-breakdown-row" role="listitem" key={d.key}>
                 <strong>{t(d.label)}</strong>
-                <span>
-                  {d.score === null ? t("Not assessable") : `${d.score} / 4`}
-                </span>
-                <span>
-                  {t("Weight")} {d.weight}%
-                </span>
+                <DimensionHelp
+                  dimension={d.key}
+                  label={d.label}
+                  score={d.score}
+                  weight={d.weight}
+                >
+                  <span>
+                    {d.score === null ? t("Not assessable") : `${d.score} / 4`}
+                  </span>
+                </DimensionHelp>
+                <ValueHelp topic="weight">
+                  <span>
+                    {t("Weight")} {d.weight}%
+                  </span>
+                </ValueHelp>
                 <div className="score-area-track" aria-hidden="true">
                   <span style={{ width: `${(d.score ?? 0) * 25}%` }} />
                 </div>
-                <small>
-                  {d.score === null
-                    ? t("No points included")
-                    : t("{points} weighted points", {
-                        points: ((d.score / 4) * d.weight).toFixed(2),
-                      })}
-                </small>
+                <ValueHelp topic="points">
+                  <small>
+                    {d.score === null
+                      ? t("No points included")
+                      : t("{points} weighted points", {
+                          points: ((d.score / 4) * d.weight).toFixed(2),
+                        })}
+                  </small>
+                </ValueHelp>
               </div>
             ))}
           </div>
